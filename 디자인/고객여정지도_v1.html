@@ -1,0 +1,862 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>고객 여정 지도 — 대구 이야기 여행</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #f6f7fb;
+    --panel: #ffffff;
+    --ink: #1d2230;
+    --sub: #5b6274;
+    --line: #dfe3ec;
+    --accent: #2f6bff;
+    --gray: #8a93a6;
+    --warn: #d9534f;
+    --ok: #1f9d6b;
+    --stage-1: #6c5ce7;
+    --stage-2: #2f6bff;
+    --stage-3: #0ea5b7;
+    --stage-4: #1f9d6b;
+    --stage-5: #f59f00;
+    --stage-6: #e64980;
+    --g-1: #6b7280;
+    --g-2: #7c8594;
+    --g-3: #8a94a6;
+    --g-4: #5f6b7a;
+    --g-5: #9aa3b2;
+    --g-6: #4b5563;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #12151c;
+      --panel: #1b202b;
+      --ink: #eef1f7;
+      --sub: #a7afc0;
+      --line: #2c3342;
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #12151c;
+    --panel: #1b202b;
+    --ink: #eef1f7;
+    --sub: #a7afc0;
+    --line: #2c3342;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { height: 100%; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Noto Sans KR", "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", sans-serif;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+  }
+
+  /* 16:9 캔버스 (1280×720 기준, 화면에 맞춰 비율 유지 축소·확대) */
+  .deck {
+    width: 1280px;
+    height: 720px;
+    position: relative;
+    transform-origin: center center;
+  }
+  .slide {
+    position: absolute;
+    inset: 0;
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 28px 40px;
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .slide.active { display: flex; }
+
+  header { display: flex; justify-content: space-between; align-items: flex-end; }
+  header h1 { font-size: 26px; font-weight: 900; letter-spacing: -0.5px; }
+  header .sub { font-size: 13px; color: var(--sub); margin-top: 4px; }
+  .persona {
+    font-size: 12px;
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 8px 12px;
+    line-height: 1.5;
+    max-width: 380px;
+  }
+  .persona b { color: var(--accent); }
+  .persona.gray b { color: var(--g-4); }
+
+  /* 감정 곡선 */
+  .emotion {
+    position: relative;
+    height: 84px;
+    margin-top: 6px;
+    width: 100%;
+  }
+  .emotion svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .emotion .label {
+    position: absolute; left: 0; top: 0; width: 80px;
+    font-size: 12px; font-weight: 700; color: var(--sub);
+    padding-top: 36px;
+  }
+
+  /* 여정 그리드 */
+  .journey {
+    display: grid;
+    grid-template-columns: 90px repeat(6, 1fr);
+    grid-template-rows: 52px 74px 48px 56px 74px 74px;
+    gap: 5px 0;
+    flex: none;
+  }
+  .stage-head {
+    border-radius: 10px 10px 0 0;
+    color: #fff;
+    padding: 8px 10px;
+    margin: 0 4px;
+    display: flex; flex-direction: column; gap: 2px;
+  }
+  .stage-head .no { font-size: 11px; opacity: 0.85; font-weight: 500; }
+  .stage-head .name { font-size: 15px; font-weight: 900; }
+  .row-label {
+    font-size: 12px; font-weight: 700; color: var(--sub);
+    display: flex; align-items: center;
+    padding-right: 6px;
+  }
+  .cell {
+    background: var(--bg);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 5px 7px;
+    font-size: 11px;
+    line-height: 1.35;
+    margin: 0 4px;
+    overflow: hidden;
+  }
+  .cell ul { list-style: none; }
+  .cell li::before { content: "· "; color: var(--sub); }
+  .cell.opp { border-color: #b7e4cf; background: #effaf5; }
+  .cell.risk { border-color: #f3c5c3; background: #fff3f2; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .cell.opp { background: #15281f; border-color: #2a5a44; }
+    :root:not([data-theme="light"]) .cell.risk { background: #2b1a1a; border-color: #5a2e2e; }
+  }
+  :root[data-theme="dark"] .cell.opp { background: #15281f; border-color: #2a5a44; }
+  :root[data-theme="dark"] .cell.risk { background: #2b1a1a; border-color: #5a2e2e; }
+  .tag { font-size: 11px; font-weight: 700; display: block; margin-bottom: 3px; }
+  .tag.ok { color: var(--ok); }
+  .tag.warn { color: var(--warn); }
+  .tag.gray { color: var(--g-4); }
+
+  /* 비교 페이지: 우리 / 일반 행 */
+  .cmp-row {
+    display: grid;
+    grid-template-columns: 90px repeat(6, 1fr);
+    gap: 6px 0;
+  }
+  .cmp-cell {
+    border-radius: 8px;
+    padding: 6px 8px;
+    font-size: 11.5px;
+    line-height: 1.4;
+    margin: 0 4px;
+    border: 1px solid var(--line);
+    background: var(--bg);
+  }
+  .cmp-cell.us { border-color: #b9cdfb; background: #eef3ff; }
+  .cmp-cell.them { border-color: #d5d9e2; background: #f3f4f7; }
+  .cmp-cell.diff { border-color: #ffd8a8; background: #fff8e8; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .cmp-cell.us { background: #1a2440; border-color: #2c4a8a; }
+    :root:not([data-theme="light"]) .cmp-cell.them { background: #232832; border-color: #3a4150; }
+    :root:not([data-theme="light"]) .cmp-cell.diff { background: #2e2716; border-color: #6b5520; }
+  }
+  :root[data-theme="dark"] .cmp-cell.us { background: #1a2440; border-color: #2c4a8a; }
+  :root[data-theme="dark"] .cmp-cell.them { background: #232832; border-color: #3a4150; }
+  :root[data-theme="dark"] .cmp-cell.diff { background: #2e2716; border-color: #6b5520; }
+  .cmp-cell b { font-size: 10.5px; display: block; margin-bottom: 2px; }
+  .legend { display: flex; gap: 16px; font-size: 12px; font-weight: 700; margin-left: 90px; }
+  .legend span::before { content: ""; display: inline-block; width: 22px; height: 0; vertical-align: middle; margin-right: 6px; border-top: 3px solid; }
+  .legend .l-us { color: var(--accent); }
+  .legend .l-us::before { border-color: var(--accent); }
+  .legend .l-them { color: var(--g-4); }
+  .legend .l-them::before { border-top-style: dashed; border-color: var(--gray); }
+
+  /* 하단 인사이트 */
+  .insights {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+  }
+  .insight {
+    border-left: 4px solid var(--accent);
+    background: var(--bg);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 12px;
+    line-height: 1.5;
+  }
+  .insight.gray { border-left-color: var(--gray); }
+  .insight.amber { border-left-color: #f59f00; }
+  .insight b { display: block; font-size: 13px; margin-bottom: 2px; }
+  .foot {
+    position: absolute; right: 40px; bottom: 10px;
+    font-size: 10px; color: var(--sub);
+  }
+
+  /* 페이지 이동 */
+  .nav {
+    position: fixed;
+    left: 50%;
+    transform: translateX(-50%);
+    bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    font-family: inherit;
+    font-size: 13px;
+    color: var(--sub);
+    z-index: 10;
+  }
+  .nav button {
+    font-family: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    background: var(--panel);
+    color: var(--ink);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 14px;
+    cursor: pointer;
+  }
+  .nav button:disabled { opacity: 0.4; cursor: default; }
+  .dots { display: flex; gap: 8px; }
+  .dots i {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: var(--line); display: inline-block; cursor: pointer;
+  }
+  .dots i.on { background: var(--accent); }
+
+  /* 페르소나 페이지 */
+  .persona-wrap { display: grid; grid-template-columns: 300px 1fr; gap: 14px; flex: 1; min-height: 0; }
+  .p-card { background: var(--bg); border: 1px solid var(--line); border-radius: 12px; padding: 14px; }
+  .avatar {
+    width: 72px; height: 72px; border-radius: 50%;
+    background: linear-gradient(135deg, #2f6bff, #6c5ce7);
+    color: #fff; font-size: 28px; font-weight: 900;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .p-name { font-size: 20px; font-weight: 900; margin-top: 10px; }
+  .p-meta { font-size: 12px; color: var(--sub); margin-top: 4px; line-height: 1.6; }
+  .quote {
+    margin-top: 12px; border-left: 4px solid var(--accent);
+    padding: 8px 10px; font-size: 13px; font-weight: 700;
+    background: var(--panel); border-radius: 8px; line-height: 1.5;
+  }
+  .p-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .p-card h3 { font-size: 13px; margin-bottom: 6px; }
+  .p-card ul { padding-left: 14px; }
+  .p-card li { font-size: 12px; line-height: 1.55; }
+  .p-card.pain { border-color: #f3c5c3; background: #fff3f2; }
+  .p-card.goal { border-color: #b7e4cf; background: #effaf5; }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) .p-card.pain { background: #2b1a1a; border-color: #5a2e2e; }
+    :root:not([data-theme="light"]) .p-card.goal { background: #15281f; border-color: #2a5a44; }
+  }
+  :root[data-theme="dark"] .p-card.pain { background: #2b1a1a; border-color: #5a2e2e; }
+  :root[data-theme="dark"] .p-card.goal { background: #15281f; border-color: #2a5a44; }
+
+  /* 터치포인트·페인포인트 표 */
+  .tp-grid {
+    display: grid;
+    grid-template-columns: 90px repeat(6, 1fr);
+    grid-template-rows: 48px 80px 96px 26px 96px;
+    gap: 6px 0;
+  }
+  .sev { font-size: 12px; font-weight: 900; color: #d9534f; letter-spacing: 1px; }
+  .sev i { font-style: normal; color: var(--line); }
+  .sev.mid { color: #f59f00; }
+
+  /* 통합 한 페이지 */
+  .one-grid {
+    display: grid;
+    grid-template-columns: 90px repeat(6, 1fr);
+    grid-template-rows: 50px 100px 74px 52px 60px 80px 70px;
+    gap: 6px 0;
+  }
+  .one-grid .cell { font-size: 10.5px; padding: 5px 6px; line-height: 1.35; }
+  .one-grid .row-label { font-size: 11.5px; }
+  .one-grid .emo-cell { grid-column: 2 / span 6; position: relative; margin: 0 4px; }
+  .one-grid .emo-cell svg { position: absolute; left: 0; top: 0; width: 100%; height: 100%; }
+  .one-grid .sev-inline { font-size: 10px; font-weight: 900; color: #d9534f; margin-left: 4px; }
+  .one-grid .sev-inline.mid { color: #f59f00; }
+</style>
+</head>
+<body>
+<div class="deck" id="deck">
+
+  <!-- ============ 페이지 1: 우리 고객 ============ -->
+  <section class="slide active" data-title="1 · 우리 고객 (타깃 추천안)">
+    <header>
+      <div>
+        <h1>고객 여정 지도 · 대구 이야기 여행</h1>
+        <div class="sub">방문 전 발견부터 재방문까지, 타깃이 겪는 6단계와 우리 서비스의 개입 지점</div>
+      </div>
+      <div class="persona">
+        <b>타깃 (추천안, 팀 확정 전)</b><br>
+        대구에 1박 이상 머무는 20~30대 개인여행객 · 걷기와 기록을 좋아함<br>
+        <span style="color:var(--sub)">목표: 걷는 시간을 엽서와 이야기 책으로 남기기</span>
+      </div>
+    </header>
+
+    <div class="emotion">
+      <div class="label">감정<br>(추정)</div>
+      <svg viewBox="-50 0 1200 112" preserveAspectRatio="none" aria-hidden="true">
+        <line x1="0" y1="72" x2="1200" y2="72" stroke="var(--line)" stroke-dasharray="4 4"/>
+        <text x="1140" y="68" font-size="10" fill="var(--sub)" text-anchor="end">보통</text>
+        <polyline fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"
+          points="132.5,48 317.5,60 502.5,76 687.5,30 872.5,40 1057.5,48"/>
+        <g fill="var(--accent)">
+          <circle cx="132.5" cy="48" r="6"/>
+          <circle cx="317.5" cy="60" r="6"/>
+          <circle cx="502.5" cy="76" r="6"/>
+          <circle cx="687.5" cy="30" r="6"/>
+          <circle cx="872.5" cy="40" r="6"/>
+          <circle cx="1057.5" cy="48" r="6"/>
+        </g>
+        <g font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">
+          <text x="132.5" y="12">호기심 +1</text>
+          <text x="317.5" y="12">비교 중 0</text>
+          <text x="502.5" y="12">귀찮음 −1</text>
+          <text x="687.5" y="12">설렘 정점 +3</text>
+          <text x="872.5" y="12">뿌듯함 +2</text>
+          <text x="1057.5" y="12">기대 +1</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="journey">
+      <div></div>
+      <div class="stage-head" style="background: var(--stage-1)"><span class="no">1단계</span><span class="name">발견</span></div>
+      <div class="stage-head" style="background: var(--stage-2)"><span class="no">2단계</span><span class="name">비교·결정</span></div>
+      <div class="stage-head" style="background: var(--stage-3)"><span class="no">3단계</span><span class="name">출발 준비</span></div>
+      <div class="stage-head" style="background: var(--stage-4)"><span class="no">4단계</span><span class="name">현장 체험</span></div>
+      <div class="stage-head" style="background: var(--stage-5)"><span class="no">5단계</span><span class="name">엽서 완성</span></div>
+      <div class="stage-head" style="background: var(--stage-6)"><span class="no">6단계</span><span class="name">공유·재방문</span></div>
+
+      <div class="row-label">행동</div>
+      <div class="cell"><ul><li>SNS·지인 추천 확인</li><li>"대구 여행 뭐 하지" 검색</li></ul></div>
+      <div class="cell"><ul><li>코스 후기와 소개 비교</li><li>다른 투어와 차이 확인</li></ul></div>
+      <div class="cell"><ul><li>웹 접속, 위치·카메라 권한</li><li>날씨와 출발 시간 확인</li></ul></div>
+      <div class="cell"><ul><li>근대골목 걷기</li><li>이야기 듣고 퀴즈 풀기</li><li>건축 사진 촬영</li></ul></div>
+      <div class="cell"><ul><li>사진 업로드, 문구 확인</li><li>엽서 PNG 저장</li></ul></div>
+      <div class="cell"><ul><li>엽서 SNS 게시</li><li>다음 동네 코스 고민</li></ul></div>
+
+      <div class="row-label">생각</div>
+      <div class="cell"><ul><li>"대구에서 뭘 하지?"</li></ul></div>
+      <div class="cell"><ul><li>"역사 투어랑 뭐가 다르지?"</li></ul></div>
+      <div class="cell"><ul><li>"권한 줘도 되나?"</li><li>"귀찮은데 간단할까?"</li></ul></div>
+      <div class="cell"><ul><li>"이 장면은 찍어야지"</li><li>"퀴즈 맞히는 재미"</li></ul></div>
+      <div class="cell"><ul><li>"내 사진이 이렇게 바뀌네"</li></ul></div>
+      <div class="cell"><ul><li>"다음엔 다른 동네도"</li></ul></div>
+
+      <div class="row-label">접점</div>
+      <div class="cell"><ul><li>짧은 영상, 엽서 샘플</li></ul></div>
+      <div class="cell"><ul><li>랜딩 페이지, 코스 카드</li></ul></div>
+      <div class="cell"><ul><li>시작 화면, 권한 요청 창</li></ul></div>
+      <div class="cell"><ul><li>계산성당 등 현장</li><li>미션 화면, 도착 확인</li></ul></div>
+      <div class="cell"><ul><li>엽서 생성 화면</li></ul></div>
+      <div class="cell"><ul><li>공유 카드, 이야기 책</li></ul></div>
+
+      <div class="row-label">기회</div>
+      <div class="cell opp"><span class="tag ok">우리 개입</span><ul><li>엽서 샘플을 먼저 보여줌</li></ul></div>
+      <div class="cell opp"><span class="tag ok">우리 개입</span><ul><li>1~2시간 완결 코스 명시</li><li>결과물 미리보기</li></ul></div>
+      <div class="cell opp"><span class="tag ok">우리 개입</span><ul><li>계정 없이 첫 체험</li><li>권한 이유를 짧게 설명</li></ul></div>
+      <div class="cell opp"><span class="tag ok">우리 개입</span><ul><li>촬영 포인트 안내</li><li>정답보다 사진 미션 중심</li></ul></div>
+      <div class="cell opp"><span class="tag ok">우리 개입</span><ul><li>PNG 저장, 책에 추가</li></ul></div>
+      <div class="cell opp"><span class="tag ok">우리 개입</span><ul><li>이야기 책 누적</li><li>다음 장소 해금</li></ul></div>
+
+      <div class="row-label">주의</div>
+      <div class="cell risk"><span class="tag warn">리스크</span><ul><li>도달쑤 공개 허가 전 사용 금지</li></ul></div>
+      <div class="cell risk"><span class="tag warn">리스크</span><ul><li>역사 설명만 나열하면 뻔함</li></ul></div>
+      <div class="cell risk"><span class="tag warn">리스크</span><ul><li>권한 거부 시 이탈</li><li>→ 수동 선택 모드</li></ul></div>
+      <div class="cell risk"><span class="tag warn">리스크</span><ul><li>촬영 금지구역, 폭염 낮 시간</li><li>GPS 오차</li></ul></div>
+      <div class="cell risk"><span class="tag warn">리스크</span><ul><li>사진 위치·얼굴 정보</li><li>생성 실패 시 대체 템플릿</li></ul></div>
+      <div class="cell risk"><span class="tag warn">리스크</span><ul><li>과한 알림은 이탈</li><li>공유 전 정보 가림</li></ul></div>
+    </div>
+
+    <div class="insights">
+      <div class="insight"><b>가장 큰 이탈 구간: 3단계 출발 준비</b>권한과 가입 요구를 줄이고, 첫 체험은 계정 없이 시작하게 합니다.</div>
+      <div class="insight"><b>감정 정점은 체험과 엽서 완성</b>사진 미션과 결과물 중심 설계를 유지합니다. 정답 맞히기는 보조 역할로 둡니다.</div>
+      <div class="insight"><b>재방문 장치가 약함</b>엽서가 쌓이는 이야기 책과 다음 장소 해금으로 6단계에서 다시 1단계로 돌아오게 합니다.</div>
+    </div>
+
+    <div class="foot">TREAGENT · 제안 단계 · 감정 곡선은 팀 가설 기준 추정치</div>
+  </section>
+
+  <!-- ============ 페이지 2: 일반 대구 방문객 ============ -->
+  <section class="slide" data-title="2 · 일반 대구 방문객 (팀 가정)">
+    <header>
+      <div>
+        <h1>고객 여정 지도 · 일반 대구 방문객</h1>
+        <div class="sub">검색과 지인 추천으로 찾아와, 명소와 맛집을 보고 떠나는 기존 방식의 여정</div>
+      </div>
+      <div class="persona gray">
+        <b>비교 대상 (팀 가정, 실측 아님)</b><br>
+        대구를 당일 또는 1박으로 찾는 일반 관광객<br>
+        <span style="color:var(--sub)">목표: 명소 보기, 맛집 가기, 사진 남기기</span>
+      </div>
+    </header>
+
+    <div class="emotion">
+      <div class="label">감정<br>(추정)</div>
+      <svg viewBox="-50 0 1200 112" preserveAspectRatio="none" aria-hidden="true">
+        <line x1="0" y1="72" x2="1200" y2="72" stroke="var(--line)" stroke-dasharray="4 4"/>
+        <text x="1140" y="68" font-size="10" fill="var(--sub)" text-anchor="end">보통</text>
+        <polyline fill="none" stroke="var(--g-4)" stroke-width="3" stroke-linejoin="round" stroke-dasharray="7 5"
+          points="132.5,48 317.5,76 502.5,60 687.5,48 872.5,60 1057.5,60"/>
+        <g fill="var(--g-4)">
+          <circle cx="132.5" cy="48" r="6"/>
+          <circle cx="317.5" cy="76" r="6"/>
+          <circle cx="502.5" cy="60" r="6"/>
+          <circle cx="687.5" cy="48" r="6"/>
+          <circle cx="872.5" cy="60" r="6"/>
+          <circle cx="1057.5" cy="60" r="6"/>
+        </g>
+        <g font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">
+          <text x="132.5" y="12">기대 +1</text>
+          <text x="317.5" y="12">막막함 −1</text>
+          <text x="502.5" y="12">정보 확인 0</text>
+          <text x="687.5" y="12">즐거움 +1</text>
+          <text x="872.5" y="12">사진만 남음 0</text>
+          <text x="1057.5" y="12">다음 계획 없음 0</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="journey">
+      <div></div>
+      <div class="stage-head" style="background: var(--g-1)"><span class="no">1단계</span><span class="name">발견</span></div>
+      <div class="stage-head" style="background: var(--g-2)"><span class="no">2단계</span><span class="name">비교·결정</span></div>
+      <div class="stage-head" style="background: var(--g-3)"><span class="no">3단계</span><span class="name">출발 준비</span></div>
+      <div class="stage-head" style="background: var(--g-4)"><span class="no">4단계</span><span class="name">현장 방문</span></div>
+      <div class="stage-head" style="background: var(--g-5)"><span class="no">5단계</span><span class="name">사진 정리</span></div>
+      <div class="stage-head" style="background: var(--g-6)"><span class="no">6단계</span><span class="name">후기·재방문</span></div>
+
+      <div class="row-label">행동</div>
+      <div class="cell"><ul><li>검색, 블로그와 유튜브 보기</li><li>지인에게 추천 받기</li></ul></div>
+      <div class="cell"><ul><li>여러 블로그와 지도 앱 비교</li><li>일정 직접 짜기</li></ul></div>
+      <div class="cell"><ul><li>숙소, 교통 따로 확인</li><li>날씨는 별도 조회</li></ul></div>
+      <div class="cell"><ul><li>명소 관람, 사진 찍기</li><li>맛집 줄서기, 쇼핑</li></ul></div>
+      <div class="cell"><ul><li>사진 앨범에 저장</li><li>일부만 SNS 게시</li></ul></div>
+      <div class="cell"><ul><li>후기 작성은 드묾</li><li>다음 여행 목적지 고민</li></ul></div>
+
+      <div class="row-label">생각</div>
+      <div class="cell"><ul><li>"대구에서 뭐 먹고 뭐 보지?"</li></ul></div>
+      <div class="cell"><ul><li>"정보가 너무 많아 헷갈려"</li></ul></div>
+      <div class="cell"><ul><li>"날씨 괜찮을까?"</li></ul></div>
+      <div class="cell"><ul><li>"여기 왔다 갔다"</li></ul></div>
+      <div class="cell"><ul><li>"사진은 많은데 기억이 안 나"</li></ul></div>
+      <div class="cell"><ul><li>"좋았는데 다음엔 어디?"</li></ul></div>
+
+      <div class="row-label">접점</div>
+      <div class="cell"><ul><li>검색 결과, 블로그</li></ul></div>
+      <div class="cell"><ul><li>블로그, 지도 앱</li></ul></div>
+      <div class="cell"><ul><li>교통 앱, 숙소 앱</li></ul></div>
+      <div class="cell"><ul><li>명소, 식당</li><li>지도 앱 길찾기</li></ul></div>
+      <div class="cell"><ul><li>사진 앨범, SNS</li></ul></div>
+      <div class="cell"><ul><li>리뷰 사이트</li></ul></div>
+
+      <div class="row-label">한계</div>
+      <div class="cell risk"><span class="tag warn">기존 방식의 한계</span><ul><li>정보가 흩어져 있음</li></ul></div>
+      <div class="cell risk"><span class="tag warn">기존 방식의 한계</span><ul><li>일정 짜기 부담</li></ul></div>
+      <div class="cell risk"><span class="tag warn">기존 방식의 한계</span><ul><li>날씨 리스크를 혼자 판단</li></ul></div>
+      <div class="cell risk"><span class="tag warn">기존 방식의 한계</span><ul><li>설명 부족, 목적 없이 걷기</li></ul></div>
+      <div class="cell risk"><span class="tag warn">기존 방식의 한계</span><ul><li>기록이 앨범에 묻힘</li></ul></div>
+      <div class="cell risk"><span class="tag warn">기존 방식의 한계</span><ul><li>재방문 이유가 약함</li></ul></div>
+
+      <div class="row-label">우리 기회</div>
+      <div class="cell opp"><span class="tag ok">우리가 메울 점</span><ul><li>한 화면에서 코스 선택</li></ul></div>
+      <div class="cell opp"><span class="tag ok">우리가 메울 점</span><ul><li>1~2시간 완결 코스</li></ul></div>
+      <div class="cell opp"><span class="tag ok">우리가 메울 점</span><ul><li>폭염 시간 안내</li></ul></div>
+      <div class="cell opp"><span class="tag ok">우리가 메울 점</span><ul><li>미션이 있는 걷기</li></ul></div>
+      <div class="cell opp"><span class="tag ok">우리가 메울 점</span><ul><li>엽서·책으로 한 권</li></ul></div>
+      <div class="cell opp"><span class="tag ok">우리가 메울 점</span><ul><li>장소 해금 재방문</li></ul></div>
+    </div>
+
+    <div class="insights">
+      <div class="insight gray"><b>발견은 검색에 의존</b>정보가 여러 곳에 흩어져 있어, 고르는 과정 자체가 부담입니다.</div>
+      <div class="insight gray"><b>현장은 즐겁지만 얇다</b>명소를 보고 사진을 찍는 데서 끝나서, 장소의 의미가 기억에 남기 어렵습니다.</div>
+      <div class="insight gray"><b>기록이 흩어지고 재방문이 약하다</b>사진은 앨범에 묻히고, 다음 여행의 이유가 만들어지지 않습니다.</div>
+    </div>
+
+    <div class="foot">팀 가정 기준 비교용 여정 · 실제 방문객 조사 결과 아님</div>
+  </section>
+
+  <!-- ============ 페이지 3: 비교 ============ -->
+  <section class="slide" data-title="3 · 우리 고객 vs 일반 방문객">
+    <header>
+      <div>
+        <h1>우리 고객 vs 일반 대구 방문객</h1>
+        <div class="sub">같은 6단계를 나란히 놓고, 어디서 다르고 어디서 약한지 봅니다</div>
+      </div>
+      <div class="persona">
+        <b>읽는 법</b><br>
+        파란 실선 = 우리 고객 · 회색 점선 = 일반 방문객 (둘 다 팀 가정)<br>
+        <span style="color:var(--sub)">약한 지점은 노란 칸에서 확인</span>
+      </div>
+    </header>
+
+    <div class="legend">
+      <span class="l-us">우리 고객</span>
+      <span class="l-them">일반 방문객</span>
+    </div>
+
+    <div class="emotion" style="height:110px; margin-top:0">
+      <svg viewBox="-50 0 1200 112" preserveAspectRatio="none" aria-hidden="true">
+        <line x1="0" y1="72" x2="1200" y2="72" stroke="var(--line)" stroke-dasharray="4 4"/>
+        <!-- 우리 고객 (실선) -->
+        <polyline fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"
+          points="132.5,48 317.5,60 502.5,76 687.5,30 872.5,40 1057.5,48"/>
+        <g fill="var(--accent)">
+          <circle cx="132.5" cy="48" r="6"/><circle cx="317.5" cy="60" r="6"/><circle cx="502.5" cy="76" r="6"/>
+          <circle cx="687.5" cy="30" r="6"/><circle cx="872.5" cy="40" r="6"/><circle cx="1057.5" cy="48" r="6"/>
+        </g>
+        <!-- 일반 방문객 (점선) -->
+        <polyline fill="none" stroke="var(--g-4)" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="7 5"
+          points="132.5,48 317.5,76 502.5,60 687.5,48 872.5,60 1057.5,60"/>
+        <g fill="var(--g-4)">
+          <circle cx="317.5" cy="76" r="5"/><circle cx="502.5" cy="60" r="5"/><circle cx="687.5" cy="48" r="5"/>
+          <circle cx="872.5" cy="60" r="5"/><circle cx="1057.5" cy="60" r="5"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="journey" style="grid-template-rows: 36px 58px 58px 62px; gap: 6px 0;">
+      <div class="row-label" style="font-size:11px">단계</div>
+      <div class="stage-head" style="background: var(--stage-1); padding:5px 8px"><span class="name" style="font-size:13px">발견</span></div>
+      <div class="stage-head" style="background: var(--stage-2); padding:5px 8px"><span class="name" style="font-size:13px">비교·결정</span></div>
+      <div class="stage-head" style="background: var(--stage-3); padding:5px 8px"><span class="name" style="font-size:13px">출발 준비</span></div>
+      <div class="stage-head" style="background: var(--stage-4); padding:5px 8px"><span class="name" style="font-size:13px">현장</span></div>
+      <div class="stage-head" style="background: var(--stage-5); padding:5px 8px"><span class="name" style="font-size:13px">결과물</span></div>
+      <div class="stage-head" style="background: var(--stage-6); padding:5px 8px"><span class="name" style="font-size:13px">공유·재방문</span></div>
+
+      <div class="row-label" style="color:var(--accent)">우리 고객</div>
+      <div class="cell us" style="border-color:#b9cdfb;background:#eef3ff">샘플 영상·엽서로 결정</div>
+      <div class="cell" style="border-color:#b9cdfb;background:#eef3ff">1~2시간 코스 카드 비교</div>
+      <div class="cell" style="border-color:#b9cdfb;background:#eef3ff">권한 허용과 짧은 시작</div>
+      <div class="cell" style="border-color:#b9cdfb;background:#eef3ff">걷기 + 미션 + 촬영</div>
+      <div class="cell" style="border-color:#b9cdfb;background:#eef3ff">엽서 저장, 책에 쌓임</div>
+      <div class="cell" style="border-color:#b9cdfb;background:#eef3ff">장소 해금으로 재방문</div>
+
+      <div class="row-label" style="color:var(--g-4)">일반 방문객</div>
+      <div class="cell" style="background:#f3f4f7;border-color:#d5d9e2">검색·블로그 탐색</div>
+      <div class="cell" style="background:#f3f4f7;border-color:#d5d9e2">여러 블로그·지도 앱 비교</div>
+      <div class="cell" style="background:#f3f4f7;border-color:#d5d9e2">교통·숙소·날씨 따로 확인</div>
+      <div class="cell" style="background:#f3f4f7;border-color:#d5d9e2">명소 관람과 사진, 맛집</div>
+      <div class="cell" style="background:#f3f4f7;border-color:#d5d9e2">사진 앨범에 흩어짐</div>
+      <div class="cell" style="background:#f3f4f7;border-color:#d5d9e2">좋았지만 다음 계획 없음</div>
+
+      <div class="row-label" style="color:#b7791f">차이</div>
+      <div class="cell diff" style="border-color:#ffd8a8;background:#fff8e8"><span class="tag" style="color:#b7791f">약함</span>발견 채널이 없음</div>
+      <div class="cell diff" style="border-color:#ffd8a8;background:#fff8e8"><span class="tag" style="color:var(--ok)">강점</span>한 화면에서 고름</div>
+      <div class="cell diff" style="border-color:#ffd8a8;background:#fff8e8"><span class="tag" style="color:#b7791f">약함</span>권한·설치 마찰</div>
+      <div class="cell diff" style="border-color:#ffd8a8;background:#fff8e8"><span class="tag" style="color:var(--ok)">강점</span>미션이 있는 목적</div>
+      <div class="cell diff" style="border-color:#ffd8a8;background:#fff8e8"><span class="tag" style="color:var(--ok)">강점</span>기록이 한 권으로 남음</div>
+      <div class="cell diff" style="border-color:#ffd8a8;background:#fff8e8"><span class="tag" style="color:var(--ok)">강점</span>다음 이유를 줌</div>
+    </div>
+
+    <div class="insights">
+      <div class="insight"><b>차별이 가장 큰 곳: 현장과 결과물</b>미션이 있는 걷기와 한 권으로 남는 기록이 일반 방문객과 가장 다릅니다.</div>
+      <div class="insight amber"><b>약한 곳: 발견과 출발 준비</b>일반 방문객은 검색으로 자연스럽게 들어오지만, 우리에게는 발견 채널이 없습니다. 준비 단계의 권한 요구도 마찰입니다.</div>
+      <div class="insight"><b>우선순위 제안</b>검색에 걸리는 콘텐츠와 권한 요구 최소화를 먼저 설계하고, 현장과 결과물 경험은 유지합니다.</div>
+    </div>
+
+    <div class="foot">두 여정 모두 팀 가정 기준 · 실제 조사 결과 아님</div>
+  </section>
+
+  <!-- ============ 페이지 4: 페르소나 ============ -->
+  <section class="slide" data-title="4 · 페르소나">
+    <header>
+      <div>
+        <h1>고객 페르소나 · 이서연 (가상 인물)</h1>
+        <div class="sub">타깃 추천안(대구 방문 2030 개인여행객)을 한 사람으로 구체화한 가상 인물입니다. 팀 가정이며 실제 조사 결과가 아닙니다.</div>
+      </div>
+      <div class="persona">
+        <b>설계 기준</b><br>
+        짧게 가도 기록을 남기고 싶은 사람<br>
+        <span style="color:var(--sub)">귀찮음과 사생활 노출을 가장 싫어함</span>
+      </div>
+    </header>
+
+    <div class="persona-wrap">
+      <div class="p-card">
+        <div class="avatar">서</div>
+        <div class="p-name">이서연, 28세</div>
+        <div class="p-meta">
+          서울 거주 · 마케팅 회사 직장인<br>
+          1박 2일 혼자 여행, 연 2~3회<br>
+          스마트폰 사용 능숙, 앱은 최소한만 설치
+        </div>
+        <div class="quote">"짧게 가도 제대로 남기고 싶어요. 대신 귀찮은 건 싫어요."</div>
+        <div class="p-meta" style="margin-top:12px">
+          <b style="color:var(--ink)">하루 장면 예시</b><br>
+          오전 역에서 출발 → 낮엔 카페와 골목 → 해질녘 근대골목에서 엽서 완성 → 밤에 비공개 앨범 정리
+        </div>
+      </div>
+
+      <div class="p-grid">
+        <div class="p-card goal">
+          <h3>목표</h3>
+          <ul>
+            <li>대구에서 "여기 아니면 못 본 것" 하나 남기기</li>
+            <li>짧은 시간에 동네 분위기를 제대로 느끼기</li>
+            <li>사진과 기록이 쌓여서 나중에 다시 보기</li>
+          </ul>
+        </div>
+        <div class="p-card">
+          <h3>동기</h3>
+          <ul>
+            <li>기록 욕구: 찍은 사진이 흩어지는 게 아쉬움</li>
+            <li>새로운 동네 발견과 가성비 있는 하루</li>
+            <li>친구에게 "이건 해볼 만하다"고 말할 거리</li>
+          </ul>
+        </div>
+        <div class="p-card pain">
+          <h3>걱정과 불만</h3>
+          <ul>
+            <li>시간 낭비, 실패한 맛집과 광고성 후기</li>
+            <li>위치와 얼굴 같은 개인정보 노출</li>
+            <li>가입, 권한 요청이 많은 앱</li>
+          </ul>
+        </div>
+        <div class="p-card">
+          <h3>선택 기준 (앱을 고를 때)</h3>
+          <ul>
+            <li>첫 5분 안에 쓸모가 보이는가</li>
+            <li>소요 시간과 난이도가 명확한가</li>
+            <li>결과물을 내가 소유하는가</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="insights">
+      <div class="insight"><b>첫 화면에서 가치를 보여준다</b>가입 없이 엽서 샘플과 소요 시간을 먼저 보여줍니다.</div>
+      <div class="insight amber"><b>권한은 이유와 함께 요청한다</b>위치와 카메라는 쓰는 순간에만, 이유를 한 줄로 설명합니다.</div>
+      <div class="insight gray"><b>기록은 기기에 두고 공유는 본인이 고른다</b>사생활을 걱정하는 사용자에게 가장 강한 신뢰 신호입니다.</div>
+    </div>
+
+    <div class="foot">가상 인물 · 팀 설계 기준 · 실제 사용자 인터뷰 전 가설</div>
+  </section>
+
+  <!-- ============ 페이지 5: 터치포인트·페인포인트 ============ -->
+  <section class="slide" data-title="5 · 터치포인트와 페인포인트">
+    <header>
+      <div>
+        <h1>이서연의 터치포인트와 페인포인트</h1>
+        <div class="sub">6단계마다 만나는 접점, 겪는 불편, 심각도(●●● 높음), 우리의 대응</div>
+      </div>
+      <div class="persona">
+        <b>가장 큰 불편 구간</b><br>
+        비교 결정(정보 부족)과 출발 준비(권한·가입)<br>
+        <span style="color:var(--sub)">두 곳을 먼저 줄여야 이탈이 줄어듭니다</span>
+      </div>
+    </header>
+
+    <div class="tp-grid">
+      <div></div>
+      <div class="stage-head" style="background: var(--stage-1)"><span class="no">1단계</span><span class="name">발견</span></div>
+      <div class="stage-head" style="background: var(--stage-2)"><span class="no">2단계</span><span class="name">비교·결정</span></div>
+      <div class="stage-head" style="background: var(--stage-3)"><span class="no">3단계</span><span class="name">출발 준비</span></div>
+      <div class="stage-head" style="background: var(--stage-4)"><span class="no">4단계</span><span class="name">현장 체험</span></div>
+      <div class="stage-head" style="background: var(--stage-5)"><span class="no">5단계</span><span class="name">엽서 저장</span></div>
+      <div class="stage-head" style="background: var(--stage-6)"><span class="no">6단계</span><span class="name">공유·재방문</span></div>
+
+      <div class="row-label">터치포인트</div>
+      <div class="cell"><ul><li>인스타 릴스</li><li>지인 DM 추천</li><li>"대구 1박" 검색</li></ul></div>
+      <div class="cell"><ul><li>코스 소개 카드</li><li>후기 글</li></ul></div>
+      <div class="cell"><ul><li>가입 화면</li><li>위치·카메라 권한 창</li><li>날씨 확인</li></ul></div>
+      <div class="cell"><ul><li>도착 확인 버튼</li><li>미션 화면, 자막</li></ul></div>
+      <div class="cell"><ul><li>엽서 미리보기</li><li>저장 버튼</li></ul></div>
+      <div class="cell"><ul><li>공유 카드</li><li>이야기 책 알림</li></ul></div>
+
+      <div class="row-label">페인포인트</div>
+      <div class="cell risk"><ul><li>대구 정보가 흩어짐</li><li>광고성 글이 많아 신뢰 어려움</li></ul></div>
+      <div class="cell risk"><ul><li>소요 시간과 난이도 불명확</li><li>1~2시간 코스인지 알 수 없음</li></ul></div>
+      <div class="cell risk"><ul><li>가입이 귀찮음</li><li>권한 이유를 모름</li><li>야외 더위 걱정</li></ul></div>
+      <div class="cell risk"><ul><li>GPS 오차로 도착 인식 실패</li><li>배터리 소모, 혼잡</li></ul></div>
+      <div class="cell risk"><ul><li>사진이 이상하게 합쳐짐</li><li>얼굴·위치 노출 걱정</li></ul></div>
+      <div class="cell risk"><ul><li>알림이 과함</li><li>공유 후 정보 노출 걱정</li></ul></div>
+
+      <div class="row-label">심각도</div>
+      <div class="sev mid" style="text-align:center">●●<i>●</i></div>
+      <div class="sev" style="text-align:center">●●●</div>
+      <div class="sev" style="text-align:center">●●●</div>
+      <div class="sev mid" style="text-align:center">●●<i>●</i></div>
+      <div class="sev mid" style="text-align:center">●●<i>●</i></div>
+      <div class="sev mid" style="text-align:center">●●<i>●</i></div>
+
+      <div class="row-label" style="color:var(--ok)">우리 대응</div>
+      <div class="cell opp"><ul><li>샘플 영상과 엽서 공개</li><li>검색에 걸리는 장소 글</li></ul></div>
+      <div class="cell opp"><ul><li>소요 시간, 난이도, 날씨 표기</li><li>한 화면에서 고르기</li></ul></div>
+      <div class="cell opp"><ul><li>계정 없이 첫 체험</li><li>권한 이유 한 줄</li><li>폭염 시간 경고</li></ul></div>
+      <div class="cell opp"><ul><li>도착 확인 버튼을 기본으로</li><li>배터리 절약 모드</li></ul></div>
+      <div class="cell opp"><ul><li>미리보기 후 저장</li><li>실패 시 대체 템플릿</li></ul></div>
+      <div class="cell opp"><ul><li>알림 최소화</li><li>공유 전 개인정보 확인</li></ul></div>
+    </div>
+
+    <div class="insights">
+      <div class="insight amber"><b>가장 먼저 줄일 불편: 2·3단계</b>정보가 흩어져 있고 가입과 권한 요구가 많아, 여기서 이탈이 가장 큽니다.</div>
+      <div class="insight"><b>가장 큰 만족 구간: 4·5단계</b>미션과 결과물이 있는 현장 체험에서 가치가 드러납니다. 이 경험이 깨지지 않게 기술 문제를 우선 막습니다.</div>
+      <div class="insight gray"><b>검증 방법</b>실제 대구 방문객 3~5명에게 같은 여정을 걷게 하고, 페인포인트를 말로 기록하면 가설을 확인할 수 있습니다.</div>
+    </div>
+
+    <div class="foot">가상 인물 기준 · 팀 설계 가설 · 실제 사용자 검증 전</div>
+  </section>
+
+  <!-- ============ 페이지 6: 통합 한 페이지 (페르소나 기준) ============ -->
+  <section class="slide" data-title="6 · 통합 여정 지도 (페르소나)">
+    <header>
+      <div>
+        <h1>통합 여정 지도 · 이서연 (가상 인물)</h1>
+        <div class="sub">행동 · 생각 · 감정 곡선 · 터치포인트 · 페인포인트 · 기회를 한 장에 정리 (팀 가정 기준)</div>
+      </div>
+      <div class="persona">
+        <b>이서연, 28세 · 1박 2일 혼행</b><br>
+        목표: 여기 아니면 못 본 것 하나 남기기<br>
+        <span style="color:var(--sub)">걱정: 시간 낭비, 개인정보 노출, 귀찮은 가입</span>
+      </div>
+    </header>
+
+    <div class="one-grid">
+      <div></div>
+      <div class="stage-head" style="background: var(--stage-1)"><span class="no">1단계</span><span class="name">발견</span></div>
+      <div class="stage-head" style="background: var(--stage-2)"><span class="no">2단계</span><span class="name">비교·결정</span></div>
+      <div class="stage-head" style="background: var(--stage-3)"><span class="no">3단계</span><span class="name">출발 준비</span></div>
+      <div class="stage-head" style="background: var(--stage-4)"><span class="no">4단계</span><span class="name">현장 체험</span></div>
+      <div class="stage-head" style="background: var(--stage-5)"><span class="no">5단계</span><span class="name">엽서 저장</span></div>
+      <div class="stage-head" style="background: var(--stage-6)"><span class="no">6단계</span><span class="name">공유·재방문</span></div>
+
+      <div class="row-label">감정 곡선<br><span style="font-weight:400">(추정)</span></div>
+      <div class="emo-cell">
+        <svg viewBox="0 0 1110 96" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="0" y1="70" x2="1110" y2="70" stroke="var(--line)" stroke-dasharray="4 4"/>
+          <polyline fill="none" stroke="var(--accent)" stroke-width="3" stroke-linejoin="round"
+            points="92.5,56 277.5,70 462.5,84 647.5,28 832.5,42 1017.5,56"/>
+          <g fill="var(--accent)">
+            <circle cx="92.5" cy="56" r="6"/><circle cx="277.5" cy="70" r="6"/><circle cx="462.5" cy="84" r="6"/>
+            <circle cx="647.5" cy="28" r="6"/><circle cx="832.5" cy="42" r="6"/><circle cx="1017.5" cy="56" r="6"/>
+          </g>
+          <g font-size="12" font-weight="700" fill="var(--ink)" text-anchor="middle">
+            <text x="92.5" y="12">호기심 +1</text>
+            <text x="277.5" y="12">비교 중 0</text>
+            <text x="462.5" y="12">귀찮음 −1</text>
+            <text x="647.5" y="12">설렘 정점 +3</text>
+            <text x="832.5" y="12">뿌듯함 +2</text>
+            <text x="1017.5" y="12">기대 +1</text>
+          </g>
+        </svg>
+      </div>
+
+      <div class="row-label">행동</div>
+      <div class="cell"><ul><li>인스타 릴스 보기</li><li>"대구 1박" 검색</li></ul></div>
+      <div class="cell"><ul><li>코스 카드 비교</li><li>후기 읽기</li></ul></div>
+      <div class="cell"><ul><li>가입 화면 넘기기</li><li>날씨 확인</li></ul></div>
+      <div class="cell"><ul><li>근대골목 걷기</li><li>도착 확인, 사진 찍기</li></ul></div>
+      <div class="cell"><ul><li>사진 올리고 문구 확인</li><li>엽서 저장</li></ul></div>
+      <div class="cell"><ul><li>엽서 공유</li><li>다음 동네 고민</li></ul></div>
+
+      <div class="row-label">생각</div>
+      <div class="cell"><ul><li>"대구에서 뭘 하지?"</li></ul></div>
+      <div class="cell"><ul><li>"1~2시간이면 충분할까?"</li></ul></div>
+      <div class="cell"><ul><li>"권한 줘도 되나? 귀찮아"</li></ul></div>
+      <div class="cell"><ul><li>"이 장면은 찍어야지"</li></ul></div>
+      <div class="cell"><ul><li>"내 사진이 이렇게 바뀌네"</li></ul></div>
+      <div class="cell"><ul><li>"다음엔 다른 동네도"</li></ul></div>
+
+      <div class="row-label">터치포인트</div>
+      <div class="cell"><ul><li>인스타 릴스, 지인 DM</li></ul></div>
+      <div class="cell"><ul><li>코스 소개 카드, 후기</li></ul></div>
+      <div class="cell"><ul><li>가입 화면, 권한 창</li></ul></div>
+      <div class="cell"><ul><li>도착 확인 버튼, 미션 화면</li></ul></div>
+      <div class="cell"><ul><li>엽서 미리보기, 저장 버튼</li></ul></div>
+      <div class="cell"><ul><li>공유 카드, 알림</li></ul></div>
+
+      <div class="row-label" style="color:var(--warn)">페인포인트</div>
+      <div class="cell risk"><ul><li>정보가 흩어짐 <span class="sev-inline mid">●●</span></li><li>광고성 후기</li></ul></div>
+      <div class="cell risk"><ul><li>소요 시간 불명 <span class="sev-inline">●●●</span></li></ul></div>
+      <div class="cell risk"><ul><li>가입·권한 이유 모름 <span class="sev-inline">●●●</span></li></ul></div>
+      <div class="cell risk"><ul><li>GPS 오차, 배터리 <span class="sev-inline mid">●●</span></li></ul></div>
+      <div class="cell risk"><ul><li>사진 이상 합성 <span class="sev-inline mid">●●</span></li><li>얼굴·위치 노출 걱정</li></ul></div>
+      <div class="cell risk"><ul><li>알림 과다 <span class="sev-inline mid">●●</span></li><li>공유 후 정보 노출</li></ul></div>
+
+      <div class="row-label" style="color:var(--ok)">기회</div>
+      <div class="cell opp"><ul><li>샘플 영상, 엽서 공개</li></ul></div>
+      <div class="cell opp"><ul><li>소요 시간·난이도·날씨 표기</li></ul></div>
+      <div class="cell opp"><ul><li>계정 없이 첫 체험</li><li>권한 이유 한 줄</li></ul></div>
+      <div class="cell opp"><ul><li>도착 확인 버튼 기본</li><li>배터리 절약 모드</li></ul></div>
+      <div class="cell opp"><ul><li>미리보기 후 저장</li><li>실패 시 대체 템플릿</li></ul></div>
+      <div class="cell opp"><ul><li>알림 최소화</li><li>공유 전 개인정보 확인</li></ul></div>
+    </div>
+
+    <div class="foot">팀 설계 가설 · 가상 인물 기준 · 실제 사용자 검증 전</div>
+  </section>
+
+</div>
+
+<div class="nav" id="nav">
+  <button id="prev" type="button">← 이전</button>
+  <div class="dots" id="dots"></div>
+  <button id="next" type="button">다음 →</button>
+</div>
+
+<script>
+  const pages = Array.from(document.querySelectorAll('.slide'));
+  const dots = document.getElementById('dots');
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  let idx = 0;
+
+  pages.forEach((p, i) => {
+    const d = document.createElement('i');
+    d.title = p.dataset.title;
+    d.addEventListener('click', () => show(i));
+    dots.appendChild(d);
+  });
+
+  function show(i) {
+    idx = Math.max(0, Math.min(pages.length - 1, i));
+    pages.forEach((p, j) => p.classList.toggle('active', j === idx));
+    [...dots.children].forEach((d, j) => d.classList.toggle('on', j === idx));
+    prev.disabled = idx === 0;
+    next.disabled = idx === pages.length - 1;
+    document.title = pages[idx].dataset.title + ' — 고객 여정 지도';
+  }
+
+  prev.addEventListener('click', () => show(idx - 1));
+  next.addEventListener('click', () => show(idx + 1));
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight' || e.key === 'PageDown') show(idx + 1);
+    if (e.key === 'ArrowLeft' || e.key === 'PageUp') show(idx - 1);
+  });
+
+  // 1280×720 캔버스를 화면에 맞춰 비율 유지 축소·확대 (하단 이동 버튼 공간 확보)
+  function fit() {
+    const k = Math.min(window.innerWidth / 1280, (window.innerHeight - 56) / 720) * 0.96;
+    document.getElementById('deck').style.transform = 'scale(' + k + ')';
+    document.getElementById('nav').style.bottom = '10px';
+  }
+  window.addEventListener('resize', fit);
+  fit();
+  show(0);
+</script>
+</body>
+</html>
