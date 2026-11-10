@@ -1,0 +1,50 @@
+# 후보 목록 (사람 편집 반영본)
+
+- 작성일: 2026-11-09
+- 편집 기준: 팀 편집 지시 9건 반영 (아래 "편집 기록" 참고)
+- 열 설명
+  - **이름**: 자료에 쓰인 명칭
+  - **추정 유형**: 자연·역사·문화·인물·산업·커뮤니티 중 자료 근거가 있는 값. 근거가 없으면 "확인 불가 (유형 미표기)"
+  - **상위**: 하위 구역·행사일 때 상위 이름. 없으면 "—"
+  - **근거 id**: 해당 이름이 나온 파일 (metadata.csv에는 id 열이 없어서 파일명 사용)
+  - **등장 횟수**: 해당 이름의 출현 횟수 (`grep -F` 기준)
+  - **점수**: 비워 둠 (4교시 실습에서 입력)
+
+| 이름 | 추정 유형 | 상위 | 근거 id | 등장 횟수 | 점수 |
+|---|---|---|---|---|---|
+| 대프리카 | 자연·문화 | — | crosscheck.md, keyword_map.md, source_map.md, daeprica_hidden_quest_plan.md, story/story_assets.md, story/daeprica_research_note.md, metadata.csv | 60 | |
+| 서문시장 (서문야시장 포함) | 산업·커뮤니티 | — | keyword_map.md, source_map.md, daegu_history_tour_cases.md, daegu_differentiation_ideas.md, daeprica_hidden_quest_plan.md | 35 | |
+| 동성로 | 문화·커뮤니티 | — | keyword_map.md, source_map.md, daegu_2030_service_ideas_v2.md, daeprica_hidden_quest_plan.md, story/daeprica_research_note.md | 41 | |
+| 3호선 하늘열차 | 문화·산업 | — | keyword_map.md, source_map.md | 12 | |
+| 대구치맥페스티벌 | 문화·커뮤니티 | — | crosscheck.md, keyword_map.md, story/daeprica_research_note.md | 9 | |
+| 쿨링포그 | 확인 불가 (유형 미표기) | 동성로 | source_map.md, story/story_assets.md, story/daeprica_research_note.md | 13 | |
+| 대구약령시 | 산업·역사 | — | crosscheck.md, keyword_map.md, daeprica_hidden_quest_plan.md | 9 | |
+| 한방문화축제 | 문화·커뮤니티 | 대구약령시 | crosscheck.md, keyword_map.md, daeprica_hidden_quest_plan.md, story/story_assets.md | 4 | |
+| 근대골목 | 역사·문화 | — | keyword_map.md, daegu_history_tour_cases.md, daeprica_hidden_quest_plan.md, overseas_benchmark_cases.md | 48 | |
+| 청라언덕 | 역사 | 근대골목 | keyword_map.md, daegu_history_tour_cases.md, daeprica_hidden_quest_plan.md, story/story_assets.md, overseas_benchmark_cases.md | 29 | |
+| 계산성당 | 역사 | 근대골목 | keyword_map.md, daegu_2030_service_ideas_v2.md, daegu_history_tour_cases.md | 13 | |
+| 팔공산 | 자연·역사 | — | keyword_map.md, daeprica_hidden_quest_plan.md, story/story_assets.md | 27 | |
+| 수성못 | 자연 | — | crosscheck.md, keyword_map.md, source_map.md, daegu_2030_service_ideas_v2.md, daeprica_hidden_quest_plan.md, story/story_assets.md, story/daeprica_research_note.md | 19 | |
+| 공산전투 지명 설화 | 역사·자연 | — | keyword_map.md, story/story_assets.md | 10 | |
+| 신숭겸 | 인물 | 공산전투 지명 설화 | keyword_map.md, story/story_assets.md | 7 | |
+| 이상화 | 인물·역사 | — | keyword_map.md, story/story_assets.md | 11 | |
+| 박태준 | 인물·역사 | — | keyword_map.md, story/story_assets.md | 10 | |
+| 대구 사과 | 역사·산업 | — | keyword_map.md, story/story_assets.md, story/daeprica_research_note.md | 10 | |
+| 칠성야시장 | 산업·커뮤니티 | — | keyword_map.md, daegu_history_tour_cases.md, daegu_differentiation_ideas.md | 3 | |
+| 대구마라톤 | 문화 | — | crosscheck.md, keyword_map.md, story/daeprica_research_note.md | 6 | |
+
+## 편집 기록
+
+1. 서문시장 + 서문야시장 → **서문시장 (서문야시장 포함)** 하나로 합침. 등장 횟수는 두 이름의 출현 수를 합산 (29 + 6 = 35)
+2. 서문시장 / 동성로 → **서문시장**과 **동성로**로 나눔. 동성로는 자료에 유형이 없어 "확인 불가"
+3. 워터피아 → **삭제**
+4. 쿨링포그 → 유지, 상위 "동성로"
+5. 한방문화축제 → 상위 "대구약령시"로 상하위 구조 유지
+6. 청라언덕, 계산성당, 수성못 → 유지
+7. 신숭겸 → 추정 유형 **인물**로 지정 (상위 "공산전투 지명 설화" 유지)
+8. 칠성야시장 → 별도 후보로 유지
+9. 대구마라톤 → 유지
+10. 비짓대구 → **삭제**
+11. (추가) 점수 열을 맨 뒤에 추가하고 비워 둠
+
+> 편집 지시 반영: 서문시장 산업·커뮤니티, 동성로 문화·커뮤니티, 한방문화축제 문화·커뮤니티, 청라언덕·계산성당 역사, 수성못 자연(커뮤니티 추가 여부 확인 필요), 칠성야시장 산업·커뮤니티, 대구마라톤 문화.

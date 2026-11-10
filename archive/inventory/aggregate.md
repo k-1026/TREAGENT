@@ -1,7 +1,7 @@
 # 집계표
 
 - 작성일: 2026-11-09
-- 기준: `자료/metadata.csv` (11행), `자료/` 아래 노트(.md)
+- 기준: `archive/metadata.csv` (11행), `archive/` 아래 노트(.md)
 - 원칙: 파일에 있는 값만 셉니다. 추정하지 않습니다.
 - 참고: metadata.csv에 id 열이 없어서 행은 `file_name`으로 구분합니다.
 

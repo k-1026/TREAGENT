@@ -2,9 +2,9 @@
 
 - 작성일: 2026-11-09
 - 입력 자료
-  - `자료/스토리/대프리카.md` (research/story 노트, 1건)
+  - `archive/story/daeprica_research_note.md` (research/story 노트, 1건)
   - `research/crosscheck.md` **없음** (찾지 못함. 경로를 알려 주시면 반영)
-  - `자료/keyword_map.md` (인물·역사·문화 자산 항목, 출처는 대부분 "검색"으로만 표기)
+  - `research/keyword_map.md` (인물·역사·문화 자산 항목, 출처는 대부분 "검색"으로만 표기)
   - 웹 검색 3회 (공산전투 설화, 달성군 지명 전설, 약령시 축제)
 - 목록이 10개 미만이라 웹 검색으로 보강했습니다. 현재 14개입니다.
 - 출처 등급: A 학술·공공, B 언론, C 블로그·태그, D 팀 내부·출처 URL 미확보 또는 추정

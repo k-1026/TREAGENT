@@ -1,17 +1,19 @@
 # 훅 후보 v1: 대구약령시 (핵심 자산 1번)
 
+> 대체됨: `storyboard/hooks_v2_diverse.md`. 판단 기록용입니다.
+
 - 작성일: 2026-11-09
-- 기준 파일: `자료/inventory/top3_rationale.md`(1장), `.claude/skills/brand-daepricca/worldview.md`
+- 기준 파일: `archive/inventory/top3_rationale.md`(1장), `.claude/skills/brand-daeprica/worldview.md`
 - 데: `brand/segment_definition.md`는 **파일이 없음** (확인 필요)
-- 톤 기준: `.claude/skills/brand-daepricca/SKILL.md` (짧고 가벼움, 담백함, 과장 없이 숫자, 근거 없는 유래 금지)
+- 톤 기준: `.claude/skills/brand-daeprica/SKILL.md` (짧고 가벼움, 담백함, 과장 없이 숫자, 근거 없는 유래 금지)
 
 ## 뜻밖의 사실 3개 (출처 번호)
 
 | 번호 | 사실 | 출처 |
 |---|---|---|
-| 사실 1 | 1658년 개설, 2001년 약령시 인증 | [1] keyword_map.md:252 |
-| 사실 2 | 2026 축제는 조선 약령시 개장행사를 현대식으로 재해석 (개장 368주년) | [2] 자료/스토리/story_assets.md:27 |
-| 사실 3 | 2026 축제 방문객 11만여 명 (언론 집계, 주최 측 확인 필요) | [3] 자료/crosscheck.md:16 |
+| 사실 1 | 1658년 개설, 2001년 약령시 인증 | [1] research/keyword_map.md:252 |
+| 사실 2 | 2026 축제는 조선 약령시 개장행사를 현대식으로 재해석 (개장 368주년) | [2] archive/story/story_assets.md:27 |
+| 사실 3 | 2026 축제 방문객 11만여 명 (언론 집계, 주최 측 확인 필요) | [3] archive/crosscheck.md:16 |
 
 ## 훅 (명사형, 한 줄)
 

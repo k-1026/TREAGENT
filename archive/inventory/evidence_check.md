@@ -2,7 +2,7 @@
 
 - 점검일: 2026-11-09
 - 대상: `inventory/inventory_v1.csv` (20행) 의 `근거파일` 열
-- 경로 대응: `archive/metadata.csv` → `자료/metadata.csv`, `research/` → `자료/` 노트 (TREAGENT에는 research 폴더가 없음)
+- 경로 대응: `archive/metadata.csv` → `archive/metadata.csv`, `research/` → `archive/` 노트 (TREAGENT에는 research 폴더가 없음)
 - 원칙: 수정하지 않고 보고만 함. 판정은 근거파일 안에 한줄설명의 사실이 있는지만 봄.
 
 ## 1. 근거 파일 존재 여부
@@ -50,13 +50,13 @@
 | 근거 id | 쓰인 행 수 | 행 (asset_id) |
 |---|---|---|
 | keyword_map.md | 19 | A01 A03 A04 A05 A06 A07 A08 A09 A10 A11 A12 A13 A14 A15 A16 A17 A18 A19 A20 |
-| 스토리/story_assets.md | 11 | A01 A06 A08 A10 A12 A13 A14 A15 A16 A17 A18 |
-| 대프리카_히든퀘스트_기획안.md | 9 | A01 A02 A05 A07 A08 A09 A10 A11 A12 |
-| 스토리/대프리카.md | 7 | A01 A03 A05 A06 A13 A18 A20 |
+| story/story_assets.md | 11 | A01 A06 A08 A10 A12 A13 A14 A15 A16 A17 A18 |
+| daeprica_hidden_quest_plan.md | 9 | A01 A02 A05 A07 A08 A09 A10 A11 A12 |
+| story/daeprica_research_note.md | 7 | A01 A03 A05 A06 A13 A18 A20 |
 | source_map.md | 6 | A01 A03 A04 A06 A13 A02 |
 | crosscheck.md | 6 | A01 A05 A07 A08 A13 A20 |
-| 대구_역사관광_사례조사.md | 5 | A02 A09 A10 A11 A19 |
-| 대구_2030_서비스_아이디어_v2.md | 3 | A03 A11 A13 |
+| daegu_history_tour_cases.md | 5 | A02 A09 A10 A11 A19 |
+| daegu_2030_service_ideas_v2.md | 3 | A03 A11 A13 |
 
 > 해석: 근거가 한 문서에 몰려 있어, 행마다 근거가 독립적이지 않음. 특히 keyword_map.md 한 파일이 19행의 근거. 이는 기준 위반은 아니지만 "근거 다양성"이 낮다는 신호임.
 

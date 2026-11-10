@@ -1,7 +1,7 @@
 # 결과 공유용 집계
 
 - 작성일: 2026-11-09
-- 기준 파일: `자료/metadata.csv` (11행), `자료/check_report.md`
+- 기준 파일: `archive/metadata.csv` (11행), `archive/check_report.md`
 - 원칙: 파일에 있는 값만 셉니다. 추정하지 않습니다.
 
 ## 1. 총 건수

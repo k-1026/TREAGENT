@@ -1,7 +1,7 @@
 # 메타데이터 점검 보고서
 
 - 점검일: 2026-11-09
-- 대상: `자료/metadata.csv` (11행)
+- 대상: `archive/metadata.csv` (11행)
 - 기준: 점검 항목 6개 (수정하지 않고 보고만 함)
 - 참고: 이 파일에는 `id`, `url`, `collected_at` 열이 없습니다. 실제 열은 `file_name`, `source_url`, `collected_date`입니다. 아래는 실제 열 기준으로 점검했습니다.
 
@@ -20,8 +20,8 @@
 
 | 행 | id 또는 file_name | 사유 |
 |---|---|---|
-| 5 | `대구_2030_서비스_아이디어_v2.md` | 항목 5: `source_url`이 "웹 검색 및 팀 기획"으로 행 7과 같음 |
-| 7 | `대구_차별화_서비스_아이디어.md` | 항목 5: `source_url`이 "웹 검색 및 팀 기획"으로 행 5와 같음 |
+| 5 | `daegu_2030_service_ideas_v2.md` | 항목 5: `source_url`이 "웹 검색 및 팀 기획"으로 행 7과 같음 |
+| 7 | `daegu_differentiation_ideas.md` | 항목 5: `source_url`이 "웹 검색 및 팀 기획"으로 행 5와 같음 |
 | 1–11 (전체) | 11개 파일 모두 | 항목 6: `collected_date`에 시각(HH:MM)이 없음 |
 | 1–11 (전체) | 11개 파일 모두 | 항목 2 참고: `source_url`이 URL이 아니라 설명문임 |
 

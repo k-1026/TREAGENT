@@ -1,10 +1,10 @@
 ---
-name: brand-daepricca
+name: brand-daeprica
 description: 대프리카 히든 퀘스트의 글·퀘스트 문구·캐릭터 대사·이미지 프롬프트를 쓸 때 사용한다. 여름 더위 피난, 쉼터, 대구 장소를 다루는 콘텐츠를 만들 때 이 세계관과 톤을 따른다.
 ---
 # 역할
 - 브랜드 문구, 퀘스트 텍스트, 캐릭터 대사를 쓴다.
-- 세계관은 `worldview.md`(인물 3종·사건 2개), 캐릭터는 `brand/character/concept.md`를 따른다.
+- 세계관은 `worldview.md`(인물 3종·사건 2개), 캐릭터는 `versions/daeprica/concept_candidates.md`를 따른다.
 - 이미지 프롬프트는 `brand/character/prompts.md`에 기록한다.
 # 톤앤매너 (잠정, 팀 결정 전)
 - 짧고 가벼운 문장. 질문으로 다음 단서를 던진다.
@@ -30,5 +30,5 @@ description: 대프리카 히든 퀘스트의 글·퀘스트 문구·캐릭터 �
 - 창작 문장은 "창작"이라고 표시하고 후보는 두 개 이하로 제시한다.
 - 팀 결정이 필요한 항목은 결정 필요로 남긴다.
 # 참고
-- worldview.md, brand/persona_sheet.md, brand/character/concept.md
+- worldview.md, brand/persona_sheet.md, versions/daeprica/concept_candidates.md
 - brand/tone_table.md: 파일이 없음. 만들어지면 톤 기준을 이 파일에 맞춘다.

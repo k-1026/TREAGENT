@@ -1,8 +1,10 @@
 # 캐릭터 기준 이미지 (원본 시트) 초안: 대프리카 히든 퀘스트
 
+> 대체됨: `brand/character/hongok_squirrel.md`, `versions/daeprica/concept_candidates.md`. 판단 기록용입니다.
+
 - 작성일: 2026-11-09
 - 트랙: AX 크리에이티브 트랙. 외형을 고정하고, 이후 모든 장면에서 같은 캐릭터로 보이게 함.
-- 기반: `brand/persona_sheet.md` (9장 비주얼 키워드, 4장 성격 형용사), `.claude/skills/brand-daepricca/SKILL.md`
+- 기반: `brand/persona_sheet.md` (9장 비주얼 키워드, 4장 성격 형용사), `.claude/skills/brand-daeprica/SKILL.md`
 - 표기: 사실은 근거 id 괄호, 창작은 "창작" 표시 후보 2개. 최종 선택은 팀이 정함.
 
 ## 1. 의인화 대상 — 창작 후보 2개
@@ -14,10 +16,10 @@
 - 세트 2 (창작): 장난기 있는 · 차분한 · 호기심 많은 (persona_sheet 4장 세트 2)
 
 ## 3. 비주얼 키워드 — 사실 (근거 id)
-- 약재·약전골목 (대프리카_히든퀘스트_기획안.md:89, 스토리/story_assets.md:26)
-- 쿨링포그 장면 (스토리/대프리카.md:68)
-- 워터피아 물 공간 (스토리/대프리카.md:72)
-- 83타워 미디어 테마파크 (keyword_map.md:214)
+- 약재·약전골목 (plan/daeprica_hidden_quest_plan.md:89, story/story_assets.md:26)
+- 쿨링포그 장면 (story/daeprica_research_note.md:68)
+- 워터피아 물 공간 (story/daeprica_research_note.md:72)
+- 83타워 미디어 테마파크 (research/keyword_map.md:214)
 
 ## 4. 금지 — 창작 후보
 - 후보 1 (창작): 네온 색, 과포화 색 (persona_sheet 비주얼 방향과 맞춤)
@@ -37,7 +39,7 @@
 - 예시 문장: "여름 대구의 그늘을 좋아하는 [의인화 대상], 성격은 [형용사 3], 색은 [분위기 키워드], 배경 없이 단색 바탕, 정면·측면·표정 3컷"
 
 ## 8. 레퍼런스와 무료 한도
-- 레퍼런스 업로드: `자료/` 안에 공공누리 사진 파일이 없음. **확인 필요** (사진 자료 확보 전에는 텍스트 키워드만 사용)
+- 레퍼런스 업로드: `archive/` 안에 공공누리 사진 파일이 없음. **확인 필요** (사진 자료 확보 전에는 텍스트 키워드만 사용)
 - 무료 플랜 생성 횟수는 팀 시트에 기록. 생성 전 프롬프트를 글로 완성하고 횟수를 제한
 
 ## 9. 완성 기준
