@@ -1,12 +1,13 @@
 # 페르소나 시트 (초안)
+- 선택 자산: **대구약령시 (A07)**. 이유: 트랙 총점 81.0으로 1위, 역사·산업 유형, 근거 `archive/inventory/track_creative_v2.md` (재계산 결과) 및 `archive/inventory/top3_rationale.md` (1장).
 
 - 작성일: 2026-11-09
 - 프로젝트: 대프리카 히든 퀘스트 (크리에이티브 트랙)
-- 근거: `inventory/top3_rationale.md` (선정 자산 3개와 근거 파일)
+- 근거: `archive/inventory/top3_rationale.md` (선정 자산 3개와 근거 파일)
 - 표기
   - **사실** 항목(핵심 자산, 비주얼 키워드)은 근거 파일의 내용만 쓰고, 근거 id를 괄호로 적음
   - **창작** 항목은 후보 2개씩만 제안. 하나로 확정하지 않음 (팀 결정)
-  - 근거 id는 `archive/` 기준 파일명 (metadata.csv의 id 열은 없음)
+  - 근거 id는 저장소 기준 파일 경로와 행 번호 (metadata.csv의 id 열은 없음)
 
 ---
 
@@ -18,11 +19,11 @@
 ## 2. 핵심 자산 — 사실
 
 - **1순위 (선정 자산)**: 대구약령시 (A07)
-  - 1658년 개설. 2001년 한국 최고(最古) 약령시 인증, 2004년 한방특구 (`keyword_map.md`)
-  - 2026 한방문화축제 5월 7~10일, 11만여 명 (언론 보도 집계, `crosscheck.md`)
+  - 1658년 개설. 2001년 약령시 인증, 2004년 한방특구 (`research/keyword_map.md`)
+  - 2026 한방문화축제 5월 7~10일, 11만여 명 (언론 보도 집계, `archive/crosscheck.md`)
 - 대안 (팀이 고를 때 참고)
-  - 대프리카 (A01): 체감 40℃ 현장 취재 (`daeprica_hidden_quest_plan.md`), 쿨링포그·워터피아 장면 (`story/daeprica_research_note.md`)
-  - 이월드·83타워: 2024 입장객 1위 약 315만 명, 2026.5 83타워 미디어 테마파크 개장 (`keyword_map.md`). 담당 조원 자료와 병합 필요
+  - 대프리카 (A01): 체감 40℃ 현장 취재 (`plan/daeprica_hidden_quest_plan.md`), 쿨링포그·워터피아 장면 (`archive/story/daeprica_research_note.md`)
+  - 이월드·83타워: 2024 입장객 1위 약 315만 명, 2026.5 83타워 미디어 테마파크 개장 (`research/keyword_map.md`). 담당 조원 자료와 병합 필요
 
 ## 3. 정체성 한 줄 — 창작
 
@@ -44,15 +45,17 @@
 - 후보 1: "더위를 핑계로 집에만 있지 않도록, 실내와 그늘에서 할 일을 드립니다"
 - 후보 2: "안전 정보는 정확하게, 재미는 발견에서 나옵니다"
 
-## 7. 금칙어 — 후보 (archive 과장 표현 근거, 팀 결정)
+## 7. 금칙어 — 후보 (과장 표현 기록 근거, 팀 결정)
 
 | 후보 | 근거 (파일 · 사실) |
 |---|---|
-| 유일 | `keyword_map.md` 36행: 국내에 다른 음악창의도시가 있어 '유일' 표현 금지 |
-| 최초 | `keyword_map.md` 59행: '최초' 주장은 자료마다 다름. 113행 커피명가도 '최초' 주장 주의 |
-| 최고 | `keyword_map.md`와 `crosscheck.md`에 "최고" 표현이 여러 번 나옴. 확인된 근거와 함께 쓰는 경우만 허용 |
+| 유일 | `research/keyword_map.md` 36행: 국내에 다른 음악창의도시가 있어 '유일' 표현 금지 |
+| 최초 | `research/keyword_map.md` 59행: '최초' 주장은 자료마다 다름. 113행 커피명가도 '최초' 주장 주의 |
+| 가장 | `research/keyword_map.md` 117행: "국내에서 가장 오래된" 같은 최상급 표현. 근거 날짜와 함께 쓰는 경우만 허용 |
+| 최대 | `research/keyword_map.md` 256행: "대구 최대 산업 공구골목" 같은 규모 표현. 근거 수치가 없으면 쓰지 않음 |
+| 최고 | `research/keyword_map.md`와 `archive/crosscheck.md`에 "최고" 표현이 여러 번 나옴. 확인된 근거와 함께 쓰는 경우만 허용 |
 
-> 참고: 3호선은 "국내 최초 도시철도 모노레일"로 기록돼 있음 (`keyword_map.md` 219행). 사실이지만 출처 확인 후 사용.
+> 참고: 3호선은 "국내 최초 도시철도 모노레일"로 기록돼 있음 (`research/keyword_map.md` 219행). 사실이지만 출처 확인 후 사용.
 
 ## 8. 핵심 메시지 3 — 창작
 
@@ -61,9 +64,9 @@
 
 ## 9. 비주얼 키워드 — 사실
 
-- 약재·약전골목 (`daeprica_hidden_quest_plan.md` 89행, `story/story_assets.md` 26행)
-- 쿨링포그 (`story/daeprica_research_note.md`), 워터피아 (`story/daeprica_research_note.md`)
-- 83타워 미디어 테마파크 (`keyword_map.md` 214행, 2026.5 개장)
+- 약재·약전골목 (`plan/daeprica_hidden_quest_plan.md` 89행, `archive/story/story_assets.md` 26행)
+- 쿨링포그 (`archive/story/daeprica_research_note.md`), 워터피아 (`archive/story/daeprica_research_note.md`)
+- 83타워 미디어 테마파크 (`research/keyword_map.md` 214행, 2026.5 개장)
 
 ---
 
@@ -71,6 +74,6 @@
 
 - [x] 핵심 자산·비주얼 키워드는 근거 파일 사실만 사용하고 근거 id를 괄호로 표기
 - [x] 창작 항목은 모두 후보 2개씩, "창작" 표시
-- [x] 금칙어는 archive 자료의 과장 표현에서 가져옴
+- [x] 금칙어는 research/keyword_map.md의 과장 표현 기록에서 가져옴 (archive에 리뷰·블로그 자료는 수집 필요)
 - [ ] 팀 결정: 브랜드명, 정체성, 성격, 말투, 가치, 메시지, 금칙어 확정
 - [ ] 핵심 자산 최종 선택 (대구약령시 / 대프리카 / 이월드)
