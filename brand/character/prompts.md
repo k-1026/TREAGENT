@@ -20,3 +20,22 @@
 "Cute chibi SD-style squirrel mascot, big round head and small body, vivid apple-red fur (like a Hongok apple, not neon), wearing a short red scarf, carrying a red school backpack, holding a small magnifying glass in one hand, soft clean lines, simple flat colors, plain single-color background, one sheet with front view, side view and three expressions (happy, calm, surprised), friendly and calm mood, no neon colors, no oversaturated colors, no logos, no text, no brand marks, keep accessories to three items."
 
 한국어 참고: 큰 머리와 작은 몸의 귀여운 SD 다람쥐 마스코트, 홍옥 사과처럼 진한 빨간 털(네온 아님), 짧은 빨간 스카프, 빨간 책가방을 멤, 한 손에 작은 돋보기, 부드럽고 깔끔한 선, 단순한 단색 평면 색, 단색 배경, 정면·측면·표정 3종을 한 장에, 액세서리는 3가지 이하, 로고·글자·상표 없음.
+
+## v3 이미지 프롬프트 (2026-11-10, 발표 자료용)
+
+공통 조건: 동물형 SD 다람쥐 "홍옥이"(가칭). 몸 색은 홍옥 사과 빨강, 꼬리와 얼굴 배는 크림색, 머리 위에 사과 이파리. 도트 RPG 스타일, 배경은 단색. 캐릭터 시트(`presentation/assets/hongoki_sheet.webp`)를 참고 이미지로 함께 첨부.
+
+### P1 · 표정 3종 (행복 / 차분 / 놀람)
+Chibi SD-style squirrel mascot named Hongoki, apple-red fur like a Hongok apple, cream-colored face and belly, a green apple leaf on top of the head, dark blue eyes, pixel-art RPG style with clean outlines, three expressions side by side: happy closed-eye smile, calm gentle look, surprised open mouth. Plain light background. Keep accessories to a fan and a small bag only.
+
+### P2 · 사과 스탬프 아이콘
+Pixel-art RPG stamp icon of a red apple with a small green leaf, round stamp border, flat colors, centered on a transparent or plain cream background. No text.
+
+### P3 · 계절 의상 (여름 / 가을 / 겨울)
+Same chibi squirrel mascot Hongoki wearing a seasonal outfit: summer light hanbok-style jacket with a short hood (summer), autumn knit scarf with a golden leaf accent (autumn), winter padded jacket with a red scarf (winter). Pixel-art RPG style, three poses in a row, plain background.
+
+### P4 · SNS 스티커 세트
+Set of 6 pixel-art sticker emoji of Hongoki: waving, holding a fan, eating a red apple, thumbs up, sleeping under a tree, sitting with a small bag. Each sticker has a white outline. Plain background.
+
+- 생성 도구: GPT 이미지 생성 등. 결과물은 팀 검토 후 채택합니다.
+- 주의: 캐릭터 이름은 가칭이므로 이미지에 글자를 넣지 않습니다. 이름 확정 후 다시 생성합니다.
