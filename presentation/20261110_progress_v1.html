@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>대프리카 히든 퀘스트 진행 현황</title>
+<style>
+:root{--ink:#1d2a2a;--sub:#5b6b6b;--line:#d9e3e2;--bg:#f6f9f8;--brand:#2a7f78;--warn:#b5651d;--card:#ffffff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#e8f0ef;--sub:#a6b8b6;--line:#2c3d3d;--bg:#0f1b1b;--card:#162626;--brand:#4fb3aa;--warn:#e3a25f}}
+:root[data-theme="dark"]{--ink:#e8f0ef;--sub:#a6b8b6;--line:#2c3d3d;--bg:#0f1b1b;--card:#162626;--brand:#4fb3aa;--warn:#e3a25f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif}
+.deck{position:relative;width:100vw;height:100vh;overflow:hidden}
+.slide{position:absolute;inset:0;padding:6vh 7vw;display:none;flex-direction:column;gap:2.2vh;background:var(--bg)}
+.slide.on{display:flex}
+.kicker{font-size:14px;color:var(--brand);letter-spacing:.08em}
+h1{font-size:34px;margin:0}
+h2{font-size:24px;margin:0}
+p,li{font-size:18px;line-height:1.5;margin:0}
+.sub{color:var(--sub);font-size:16px}
+.grid{display:grid;gap:2vw}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:2vh 2vw}
+.num{font-size:40px;font-weight:700;color:var(--brand)}
+.warn{color:var(--warn)}
+table{border-collapse:collapse;width:100%;font-size:15px}
+th,td{border-bottom:1px solid var(--line);padding:.7vh .6vw;text-align:left}
+th{color:var(--sub);font-weight:600}
+.bar{height:12px;background:var(--brand);border-radius:6px;display:inline-block;vertical-align:middle}
+.bar.w{background:var(--warn)}
+.foot{margin-top:auto;font-size:13px;color:var(--sub)}
+.nav{position:fixed;bottom:2vh;right:2vw;font-size:14px;color:var(--sub)}
+ul{padding-left:1.2em;margin:0}li{margin:.4em 0}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<section class="slide on">
+  <div class="kicker">PROJECT STATUS · 2026-11-10 기준</div>
+  <h1>대프리카 히든 퀘스트 — 진행 현황</h1>
+  <p class="sub">대구 관광 AX 크리에이티브 트랙 · 콘텐츠 & 뷰티</p>
+  <div class="grid g3" style="margin-top:4vh">
+    <div class="card"><div class="num">3</div><p>교시 분석까지 완료 (수집 → 분석 → 여정 지도)</p></div>
+    <div class="card"><div class="num">1</div><p>4교시 VOC 분류 v1 완료 (불만·요청 52건)</p></div>
+    <div class="card"><div class="num">~335</div><p>수집 리뷰·블로그 행 (요약 기준)</p></div>
+  </div>
+  <p class="foot">근거: research/reviews/raw/, painpoint/voc_classified.csv · 요약문 기준, 원문 대조는 표본 10건</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">01 · 목표와 범위</div>
+  <h2>무엇을 확인하고 있나</h2>
+  <div class="grid g2">
+    <div class="card"><p><b>질문</b><br>대구 관광에서 고객이 어디서 막히는가?</p></div>
+    <div class="card"><p><b>행위자 (팀 결정 2026-11-10)</b><br>1박 2일 대구 방문 2030 혼행객</p></div>
+    <div class="card"><p><b>핵심 장소</b><br>동성로 · 교동 · 수성못</p></div>
+    <div class="card"><p><b>보조 장소</b><br>대구약령시 · 이월드 · 칠성야시장 · 신천 · 두류공원 등</p></div>
+  </div>
+  <p class="foot">근거: research/reviews/README.md, brand/customer_persona.md</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">02 · 진행 단계</div>
+  <h2>단계별 상태</h2>
+  <table>
+    <tr><th>단계</th><th>내용</th><th>상태</th></tr>
+    <tr><td>1교시</td><td>주제·자산 선정, 인벤토리 20건, 평가 가중치 A안</td><td>완료</td></tr>
+    <tr><td>2교시</td><td>리뷰·블로그 수집 (지도 중심)</td><td>진행 중 (교동 자료 부족, 신천 미수집)</td></tr>
+    <tr><td>3교시</td><td>태깅(단계·주제·감정), 차트, 보고서, 여정 지도 v0</td><td>완료 (표본 20건, 근거 부족 칸 다수)</td></tr>
+    <tr><td>4교시</td><td>VOC 분류, 원인 묶음, 진술문, 우선순위</td><td>v1 완료 (해결 가능성은 팀 판단 필요)</td></tr>
+    <tr><td>브랜드</td><td>페르소나, 캐릭터 홍옥 다람쥐, 스토리보드, 금칙어</td><td>초안 (이름·금칙어 확정 대기)</td></tr>
+  </table>
+  <p class="foot">근거: research/reviews/README.md 6·7장, painpoint/candidates.md</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">03 · 수집 현황</div>
+  <h2>장소별 수집 행 (요약 기준)</h2>
+  <table>
+    <tr><th>장소</th><th>구분</th><th>행</th><th></th></tr>
+    <tr><td>이월드·83타워</td><td>보조</td><td>40</td><td><span class="bar" style="width:100%"></span></td></tr>
+    <tr><td>두류공원</td><td>보조</td><td>38</td><td><span class="bar" style="width:95%"></span></td></tr>
+    <tr><td>실내빙상장</td><td>보조</td><td>29</td><td><span class="bar" style="width:73%"></span></td></tr>
+    <tr><td>대구아쿠아리움</td><td>보조</td><td>25</td><td><span class="bar" style="width:63%"></span></td></tr>
+    <tr><td>청라언덕</td><td>보조</td><td>20</td><td><span class="bar" style="width:50%"></span></td></tr>
+    <tr><td>국채보상운동기념공원</td><td>보조</td><td>19</td><td><span class="bar" style="width:48%"></span></td></tr>
+    <tr><td>동촌유원지</td><td>보조</td><td>16</td><td><span class="bar" style="width:40%"></span></td></tr>
+    <tr><td>달성공원</td><td>보조</td><td>15</td><td><span class="bar" style="width:38%"></span></td></tr>
+    <tr><td>대구약령시 (한의약박물관)</td><td>보조</td><td>10</td><td><span class="bar" style="width:25%"></span></td></tr>
+    <tr><td>동성로</td><td>핵심</td><td>5 (지도) + 블로그</td><td><span class="bar w" style="width:13%"></span></td></tr>
+    <tr><td>수성못</td><td>핵심</td><td>9</td><td><span class="bar w" style="width:23%"></span></td></tr>
+    <tr><td>교동</td><td>핵심</td><td>1 (+ 진골목 3, 블로그)</td><td><span class="bar w" style="width:3%"></span></td></tr>
+  </table>
+  <p class="foot">근거: research/reviews/raw/*.csv 행 수. 교동·동성로·수성못은 핵심 장소인데 지도 리뷰가 적음. 신천은 아직 수집 전.</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">04 · 3교시 분석</div>
+  <h2>표본 20건 분류 결과</h2>
+  <div class="grid g2">
+    <div class="card">
+      <p><b>여정 단계</b></p>
+      <table>
+        <tr><td>둘러보기</td><td>10</td></tr>
+        <tr><td>먹기</td><td>5</td></tr>
+        <tr><td>알아보기</td><td>3</td></tr>
+        <tr><td>이동</td><td>1</td></tr>
+        <tr><td>결제</td><td>1</td></tr>
+        <tr><td>재방문</td><td>0</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <p><b>감정 (혼합은 중립 규칙)</b></p>
+      <table>
+        <tr><td>긍정 (+)</td><td>13</td></tr>
+        <tr><td>중립 (0)</td><td>7</td></tr>
+        <tr><td>부정 (−)</td><td>0</td></tr>
+      </table>
+      <p class="sub" style="margin-top:1.5vh">19번 불만 표현 없음 → 중립 재분류 (팀 결정)</p>
+    </div>
+  </div>
+  <p class="foot">근거: research/reviews/analysis/reviews_tagged.csv, report.md · 건수 10 미만은 비율 미표기</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">05 · 여정 지도 v0</div>
+  <h2>단계별 근거 상태</h2>
+  <table>
+    <tr><th>단계</th><th>근거 건수</th><th>페인포인트 상태</th></tr>
+    <tr><td>알아보기</td><td>3</td><td>근거 부족 (정보 불일치 1건)</td></tr>
+    <tr><td>이동</td><td>1</td><td>근거 부족</td></tr>
+    <tr><td>둘러보기</td><td>10</td><td>불편 4건, 원인은 4가지로 분산</td></tr>
+    <tr><td>결제</td><td>1</td><td>근거 부족</td></tr>
+    <tr><td>먹기</td><td>5</td><td>웨이팅·품절 등 원인별 2건 이하</td></tr>
+    <tr><td>재방문</td><td>0</td><td>수집 필요</td></tr>
+  </table>
+  <p class="foot">근거: painpoint/journey_map.md. 감정 점수 환산식은 팀 결정 대기. 지도 리뷰가 늘면 다시 채움.</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">06 · 4교시 VOC</div>
+  <h2>불만·요청 52건, 원인별 건수</h2>
+  <table>
+    <tr><th>원인</th><th>건수</th><th></th></tr>
+    <tr><td>대기·혼잡</td><td>13</td><td><span class="bar w" style="width:100%"></span></td></tr>
+    <tr><td>휴관·공사·운영 변경</td><td>10</td><td><span class="bar w" style="width:77%"></span></td></tr>
+    <tr><td>날씨·온도</td><td>4</td><td><span class="bar" style="width:31%"></span></td></tr>
+    <tr><td>좌석 부족 / 시설 노후·운영 중단 / 벌레·냄새</td><td>각 3</td><td><span class="bar" style="width:23%"></span></td></tr>
+    <tr><td>그 밖 (가격, 주차, 공포·안전 등)</td><td>1~2</td><td><span class="bar" style="width:15%"></span></td></tr>
+  </table>
+  <p class="foot">근거: painpoint/voc_classified.csv. 키워드로 추린 행만 분류해 누락이 있을 수 있음. 축제 기간 글 포함.</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">07 · 우선순위 v1</div>
+  <h2>점수 = 강도 합 (빈도 × 평균 강도)</h2>
+  <div class="grid g2">
+    <div class="card">
+      <table>
+        <tr><th>원인</th><th>점수</th><th>출처</th></tr>
+        <tr><td>대기·혼잡</td><td>21</td><td>지도 11 · 블로그 2</td></tr>
+        <tr><td>휴관·공사·운영 변경</td><td>20</td><td>지도 9 · 블로그 1</td></tr>
+        <tr><td>날씨·온도</td><td>5</td><td>지도 3 · 블로그 1</td></tr>
+        <tr><td>가격·요금 불투명</td><td>6</td><td>지도 2 (근거 부족)</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <p><b>해결 가능성은 팀이 채울 칸</b></p>
+      <ul>
+        <li>운영 정보 공지 개선: 검토 대상</li>
+        <li>대기 완화 (예약·시간대 분산): 검토 대상</li>
+        <li>날씨: 실내 대안 안내 검토</li>
+      </ul>
+      <p class="sub" style="margin-top:1.5vh">강도 기준과 축제 글 분리 여부에 따라 순위가 바뀔 수 있음</p>
+    </div>
+  </div>
+  <p class="foot">근거: painpoint/candidates.md</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">08 · 진술문 후보</div>
+  <h2>누가 · 언제 · 무엇을 · 왜 막히는가</h2>
+  <div class="grid g2">
+    <div class="card"><p><b>1. 대기·혼잡 (근거 13건, 지도+블로그)</b><br>주말·축제 방문객이 인기 먹거리·기구·포토존을 이용하려 할 때, 줄이 길어 1시간 안팎을 기다리거나 자리가 없어 서서 먹게 된다.</p></div>
+    <div class="card"><p><b>2. 휴관·공사·운영 변경 (근거 10건, 지도+블로그)</b><br>특정 시간에 맞춰 가려는 방문객이 방문 직전 운영 정보를 확인하기 어려워 헛걸음한다.</p></div>
+    <div class="card"><p><b>3. 날씨·온도 (근거 4건, 지도+블로그)</b><br>야외 산책이나 실내 시설을 찾은 방문객이 한여름 낮이나 바람·냉기 때문에 오래 머물기 어렵다.</p></div>
+  </div>
+  <p class="foot">근거: painpoint/candidates.md 진술문 후보. 팀 확정 전.</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">09 · 결정 필요 · 한계</div>
+  <h2>팀과 함께 정할 것</h2>
+  <div class="grid g2">
+    <div class="card">
+      <p><b>결정 필요</b></p>
+      <ul>
+        <li>강도 기준 1·2·3 확정</li>
+        <li>축제 글을 장소 평가에서 분리할지</li>
+        <li>감정 점수 환산식</li>
+        <li>캐릭터 이름 (홍이 · 옥이 · 홍옥이 · 평광이 중 선택)</li>
+        <li>금칙어 확정 (유일 · 최초 · 최고 · 가장 · 최대 후보)</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p><b class="warn">한계</b></p>
+      <ul>
+        <li>요약문 기준 분석, 원문 대조는 표본 10건</li>
+        <li>축제 기간 글 (치맥, 막창, 할로윈)이 많음</li>
+        <li>교동 핵심 자료 부족 (지도 1건, 블로그·기사 위주)</li>
+        <li>2014·2023년 자료 포함 (오래된 정보)</li>
+        <li>원인 묶음은 제가 정한 초안</li>
+      </ul>
+    </div>
+  </div>
+  <p class="foot">근거: research/reviews/review_log.md, painpoint/candidates.md</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">10 · 다음 단계</div>
+  <h2>제안</h2>
+  <div class="grid g3">
+    <div class="card"><p><b>교동 리뷰 확보</b><br>핵심 장소 자료를 우선 채우기</p></div>
+    <div class="card"><p><b>여름 후기 보강</b><br>6~8월 후기는 장소별로 소수</p></div>
+    <div class="card"><p><b>팀 결정 회의</b><br>강도 기준, 해결 가능성, 진술문 확정</p></div>
+  </div>
+  <div class="card" style="margin-top:2vh"><p>확정되면 여정 지도 v1과 우선순위 v2를 만들고, 브랜드 캐릭터·스토리보드를 이어서 맞춥니다.</p></div>
+  <p class="foot">근거: research/reviews/README.md 7장</p>
+</section>
+
+<div class="nav" id="nav">← → 키로 이동</div>
+</div>
+<script>
+(function(){
+  var s=document.querySelectorAll('.slide'),i=0;
+  function show(n){s[i].classList.remove('on');i=(n+s.length)%s.length;s[i].classList.add('on');document.getElementById('nav').textContent=(i+1)+' / '+s.length+' · ← → 키로 이동';}
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key===' ')show(i+1);if(e.key==='ArrowLeft')show(i-1);});
+  document.addEventListener('click',function(e){if(e.clientX>window.innerWidth/2)show(i+1);else show(i-1);});
+  show(0);
+})();
+</script>
+</body>
+</html>

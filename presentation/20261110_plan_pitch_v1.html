@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>대프리카 히든 퀘스트 기획안</title>
+<style>
+:root{--ink:#1d2a2a;--sub:#5b6b6b;--line:#d9e3e2;--bg:#f6f9f8;--brand:#2a7f78;--warn:#b5651d;--card:#ffffff}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--ink:#e8f0ef;--sub:#a6b8b6;--line:#2c3d3d;--bg:#0f1b1b;--card:#162626;--brand:#4fb3aa;--warn:#e3a25f}}
+:root[data-theme="dark"]{--ink:#e8f0ef;--sub:#a6b8b6;--line:#2c3d3d;--bg:#0f1b1b;--card:#162626;--brand:#4fb3aa;--warn:#e3a25f}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Malgun Gothic","Apple SD Gothic Neo",sans-serif}
+.deck{position:relative;width:100vw;height:100vh;overflow:hidden}
+.slide{position:absolute;inset:0;padding:6vh 7vw;display:none;flex-direction:column;gap:2.4vh;background:var(--bg)}
+.slide.on{display:flex}
+.kicker{font-size:14px;color:var(--brand);letter-spacing:.08em}
+h1{font-size:38px;margin:0;line-height:1.3}
+h2{font-size:28px;margin:0;line-height:1.35}
+p,li{font-size:19px;line-height:1.6;margin:0}
+.sub{color:var(--sub);font-size:16px}
+.quote{font-size:26px;line-height:1.5;border-left:4px solid var(--brand);padding-left:2vw}
+.grid{display:grid;gap:2vw}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:1fr 1fr 1fr 1fr}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:2.2vh 2vw}
+.big{font-size:30px;font-weight:700;color:var(--brand);margin-bottom:.5em}
+.warn{color:var(--warn)}
+table{border-collapse:collapse;width:100%;font-size:17px}
+th,td{border-bottom:1px solid var(--line);padding:1vh .6vw;text-align:left;vertical-align:top}
+th{color:var(--sub);font-weight:600}
+ul{padding-left:1.2em;margin:0}li{margin:.5em 0}
+.foot{margin-top:auto;font-size:13px;color:var(--sub)}
+.tag{display:inline-block;font-size:12px;padding:.1em .5em;border-radius:4px;border:1px solid var(--line);color:var(--sub);margin-left:.3em}
+.nav{position:fixed;bottom:2vh;right:2vw;font-size:14px;color:var(--sub)}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<section class="slide on">
+  <div class="kicker">TREAGENT · AX 크리에이티브 트랙 (콘텐츠 & 뷰티)</div>
+  <h1>대구 히든 퀘스트</h1>
+  <p class="sub">날씨가 길을 정하는 대구 도시 탐험 기획안 · 여름 시즌 부제 "대프리카 서바이벌" (초안, 2026-11-09 기준)</p>
+  <div class="quote" style="margin-top:5vh">대구의 날씨가 곧 퀘스트다.<br>여름엔 그늘과 실내로, 가을엔 산과 전망으로, 겨울엔 빛과 실내로.</div>
+  <p class="foot">근거: plan/daeprica_hidden_quest_plan.md 1장</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">01 · 배경</div>
+  <h2>대구는 가을에만 붐비고, 여름과 겨울엔 나갈 이유가 적다</h2>
+  <div class="grid g2">
+    <div class="card"><p><b>관광 구조</b><br>대구·경북 관광은 가을 축제와 일부 관광지에 기대는 구조라는 보도가 있습니다. <span class="tag">검증됨: 2026 보도</span></p></div>
+    <div class="card"><p><b>체류 시간</b><br>방문객은 늘었지만 체류 시간은 줄고 있다는 보도가 있습니다. <span class="tag">검증됨: 2026 보도</span></p></div>
+    <div class="card"><p><b>여름 체감</b><br>2026년 7월 현장 취재에서 수성구 범어네거리는 기온 36℃, 체감 40℃였습니다. <span class="tag">검증됨: 영남일보 (단일 출처)</span></p></div>
+    <div class="card"><p><b>결론</b><br>여름과 겨울에 나갈 이유를 만들면, 도시의 비수기 방문을 나눌 수 있습니다.</p></div>
+  </div>
+  <p class="foot">근거: plan/daeprica_hidden_quest_plan.md 0-1</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">02 · 왜 이 주제인가</div>
+  <h2>자산을 고르는 기준을 먼저 정했습니다</h2>
+  <div class="grid g2">
+    <div class="card">
+      <p><b>평가 항목 (A안 가중치)</b></p>
+      <table>
+        <tr><th>항목</th><th>가중치</th></tr>
+        <tr><td>스토리성</td><td>30</td></tr>
+        <tr><td>K-웰니스/뷰티 (휴식·더위 해소)</td><td>20</td></tr>
+        <tr><td>데이터 가용성</td><td>20</td></tr>
+        <tr><td>캐릭터 확장성</td><td>15</td></tr>
+        <tr><td>시장성</td><td>15</td></tr>
+      </table>
+    </div>
+    <div class="card">
+      <p><b>선정된 자산 (Top 3)</b></p>
+      <ul>
+        <li>대구약령시: 1658년 개설, 2001년 인증 <span class="tag">research/keyword_map.md:252</span></li>
+        <li>대프리카 (더위 해소 공간): 실내 쿨링과 그늘 <span class="tag">plan/daeprica_hidden_quest_plan.md:19</span></li>
+        <li>이월드·83타워: 2024 입장객 1위 약 315만 (원자료 확인 필요), 2026년 5월 실내 미디어 파크 <span class="tag">research/keyword_map.md:214</span></li>
+      </ul>
+      <p class="sub" style="margin-top:1.5vh">20개 인벤토리에서 점수로 고른 결과입니다. 트랙 총점 1위는 대구약령시 (81.0).</p>
+    </div>
+  </div>
+  <p class="foot">근거: archive/inventory/, brand/persona_sheet.md 2장</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">03 · 무엇을 만드는가</div>
+  <h2>대구 도시를 무대로 한 계절형 탐험 퀘스트</h2>
+  <div class="grid g3">
+    <div class="card"><p class="big">여름 · 먼저 출시</p><p>'대프리카' 컨셉 퀘스트. 그늘과 실내 중심으로 쿨링 공간, 박물관, 카페를 잇습니다. 준비 기간이 짧아 여름에 집중합니다.</p></div>
+    <div class="card"><p class="big">가을 · 여름 성과에 따라</p><p>여름이 잘 되면 가을부터 출시합니다. 봄은 가을과 묶어 산·꽃·전망 중심으로 구성합니다.</p></div>
+    <div class="card"><p class="big">겨울</p><p>빛과 실내 중심. 축제 조명, 실내 체험, 따뜻한 간식 코스.</p></div>
+  </div>
+  <div class="card"><p><b>플레이 방식</b> 팀 단위 (2~4명)가 같은 단서를 나눠 찾고, 장소에서 스탬프를 모읍니다. 30~90분에 끝나는 짧은 퀘스트가 기본입니다.</p></div>
+  <p class="foot">근거: plan/daeprica_hidden_quest_plan.md 2·4·5·6장 (서비스 명칭은 "대구 히든 퀘스트"로 통일 제안)</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">04 · 타깃과 가치</div>
+  <h2>누구에게, 무엇을 주는가</h2>
+  <div class="grid g2">
+    <div class="card"><p><b>주 타깃</b><br>대구 거주 2030 + 대구 방문 2030 (혼행·친구 모임). 계절마다 할 일을 찾는 사람, 30~90분짜리 활동을 좋아하는 사람.</p></div>
+    <table>
+      <tr><th>대상</th><th>얻는 것</th></tr>
+      <tr><td>방문객</td><td>날씨와 상관없이 할 일이 있음</td></tr>
+      <tr><td>2030 이용자</td><td>"너무 더워서 못 나가" → "오늘은 실내 퀘스트 날"</td></tr>
+      <tr><td>대구시·구청</td><td>비수기 방문 분산, 쉼터·실내 시설 활용도 향상</td></tr>
+      <tr><td>지역 상권</td><td>실내 경로의 카페·식당·박물관 방문 (보조 효과)</td></tr>
+    </table>
+  </div>
+  <p class="foot">근거: plan/daeprica_hidden_quest_plan.md 0-2, 2장</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">05 · 현장 조사가 준 설계 조건</div>
+  <h2>조사에서 나온 불편 3가지가 퀘스트 설계 조건이 됩니다</h2>
+  <div class="grid g3">
+    <div class="card"><p class="big warn">대기·혼잡</p><p>인기 장소는 1시간 안팎 줄이 생깁니다. 줄 대신 시간대를 나눠 가는 퀘스트 순서가 필요합니다.</p><p class="sub">근거: painpoint/voc_classified.csv, 13건</p></div>
+    <div class="card"><p class="big warn">운영 정보 불일치</p><p>운영 요일과 휴관이 안내와 달라 헛걸음하는 사례가 있습니다. 퀘스트 전에 운영 상태를 확인하는 단계가 필요합니다.</p><p class="sub">근거: 같은 파일, 10건 중 헛걸음 3건</p></div>
+    <div class="card"><p class="big warn">날씨·온도</p><p>한여름 낮과 강바람, 실내 냉기가 불편으로 나옵니다. 날씨에 따라 경로를 바꾸는 방식이 맞습니다.</p><p class="sub">근거: 같은 파일, 4건</p></div>
+  </div>
+  <p class="foot">근거: painpoint/candidates.md (요약문 기준, 원문 대조는 표본 10건)</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">06 · 캐릭터</div>
+  <h2>홍옥 다람쥐: 골목의 단서를 모아 주는 안내자</h2>
+  <div class="grid g2">
+    <div class="card">
+      <p><b>대구와의 연결 (사실)</b></p>
+      <ul>
+        <li>평광동에 1935년 심은 홍옥나무가 남아 있습니다 <span class="tag">research/keyword_map.md:200</span></li>
+        <li>사과 도입 시기와 도입자는 자료마다 다릅니다. <span class="tag">미검증</span></li>
+      </ul>
+    </div>
+    <div class="card">
+      <p><b>이름 후보 (창작, 팀 결정)</b></p>
+      <ul>
+        <li>홍이: 짧고 부르기 쉬움</li>
+        <li>옥이: 품종 '홍옥'의 '옥'</li>
+        <li>홍옥이: 품종명을 그대로 씀</li>
+        <li>평광이: 지명(평광동)에서 가져옴</li>
+      </ul>
+      <p class="sub" style="margin-top:1.5vh">추천 방향: 짧은 이름(홍이, 옥이). 최종은 팀이 정합니다.</p>
+    </div>
+  </div>
+  <p class="foot">근거: brand/character/hongok_squirrel.md · 성격·말버릇은 창작 후보 2세트씩</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">07 · 유치 방법</div>
+  <h2>사람을 어떻게 끌어들이나</h2>
+  <div class="grid g2">
+    <div class="card"><p><b>날씨 알림 연동</b><br>폭염·한파 알림과 함께 "오늘의 퀘스트"를 보냅니다.</p></div>
+    <div class="card"><p><b>SNS 챌린지</b><br>시즌 해시태그 인증. 공식 SNS와 협업 제안.</p></div>
+    <div class="card"><p><b>숙박 연계 (나중 검토)</b><br>지금은 하지 않고, 이용자가 늘면 제휴를 검토합니다.</p></div>
+    <div class="card"><p><b>팀 모드·시즌 배지</b><br>2~4명 팀 플레이, 시즌마다 한정 배지.</p></div>
+    <div class="card"><p><b>지자체 캠페인 연계</b><br>폭염·한파 안전 메시지와 함께 묶기. <span class="tag">추정</span></p></div>
+    <div class="card"><p><b>대학 캠퍼스 (나중 검토)</b><br>지금은 하지 않고, 이용자가 늘면 연계를 검토합니다.</p></div>
+  </div>
+  <p class="foot">근거: plan/daeprica_hidden_quest_plan.md 0-3</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">08 · 성과를 어떻게 볼까</div>
+  <h2>성과 지표 (기획 단계, 목표 수치는 정하지 않음)</h2>
+  <div class="grid g2">
+    <div class="card"><p><b>비수기 방문</b><br>7~8월, 12~2월 방문 건수와 체류 시간</p></div>
+    <div class="card"><p><b>퀘스트 완료율</b><br>실내 퀘스트 완료 비율</p></div>
+    <div class="card"><p><b>쉼터 방문 기록</b><br>폭염·한파 안전 지표</p></div>
+    <div class="card"><p><b>재방문과 해시태그</b><br>2주 내 재방문율, 시즌 해시태그 게시물 수</p></div>
+  </div>
+  <p class="foot">근거: plan/daeprica_hidden_quest_plan.md 0-4. 목표치는 팀 합의 후 정합니다.</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">09 · 지금까지 한 일</div>
+  <h2>기획의 뼈대는 세웠고, 현장 근거를 쌓는 중입니다</h2>
+  <div class="grid g4">
+    <div class="card"><p class="big">완료</p><p>주제·자산 선정, 평가 기준 확정</p></div>
+    <div class="card"><p class="big">완료</p><p>페르소나 (혼행객 후보 2 선택)</p></div>
+    <div class="card"><p class="big">진행</p><p>현장 리뷰 수집 (지도·블로그). 교동 자료 부족</p></div>
+    <div class="card"><p class="big">초안</p><p>여정 지도, 불편 분류, 캐릭터, 훅 후보</p></div>
+  </div>
+  <p class="foot">근거: research/reviews/README.md, painpoint/journey_map.md, storyboard/hooks_v2_diverse.md</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">10 · 다음 단계와 결정</div>
+  <h2>팀과 정할 것</h2>
+  <div class="grid g2">
+    <div class="card">
+      <p><b>다음 단계</b></p>
+      <ul>
+        <li>여름 '대프리카' 컨셉 퀘스트 제작 (준비 기간 고려해 범위 한정)</li>
+        <li>교동 핵심 장소 리뷰 보강</li>
+        <li>여름 운영 결과로 가을 출시 판단</li>
+        <li>캐릭터 이름과 말버릇 확정</li>
+      </ul>
+    </div>
+    <div class="card">
+      <p><b class="warn">결정 필요</b></p>
+      <ul>
+        <li>여름 퀘스트 범위 (장소 수, 퀘스트 개수)</li>
+        <li>가을 출시 기준 (여름 성과 지표 중 무엇을 볼지)</li>
+        <li>유료·무료 구조 (퀘스트 이용 요금)</li>
+        <li>금칙어 확정 (유일·최초·최고·가장·최대 후보)</li>
+      </ul>
+    </div>
+  </div>
+  <p class="foot">근거: plan/daeprica_hidden_quest_plan.md, brand/persona_sheet.md 7장</p>
+</section>
+
+<section class="slide">
+  <div class="kicker">마무리</div>
+  <h2>요청</h2>
+  <div class="quote">이 기획의 방향(계절형 날씨 퀘스트, 여름 우선, 홍옥 다람쥐 안내자)에 동의하는지 확인하고, 결정 필요 항목 네 가지를 정해 주세요.</div>
+  <p class="sub">질문과 반론 환영</p>
+</section>
+
+<div class="nav" id="nav">← → 키로 이동</div>
+</div>
+<script>
+(function(){
+  var s=document.querySelectorAll('.slide'),i=0;
+  function show(n){s[i].classList.remove('on');i=(n+s.length)%s.length;s[i].classList.add('on');document.getElementById('nav').textContent=(i+1)+' / '+s.length+' · ← → 키로 이동';}
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key===' ')show(i+1);if(e.key==='ArrowLeft')show(i-1);});
+  document.addEventListener('click',function(e){if(e.clientX>window.innerWidth/2)show(i+1);else show(i-1);});
+  show(0);
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>대구 히든 퀘스트 기획안 v2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2b1d1d;--bg:#fbf3e4;--panel:#fffaf0;--red:#c8323a;--red2:#8e1f28;--mint:#3f9c8f;--gold:#e7b04b;--sky:#8fd0e0;--line:#2b1d1d}
+*{box-sizing:border-box}
+body{margin:0;background:#1f2a2c;font-family:"Noto Sans KR",sans-serif;color:var(--ink)}
+.deck{position:relative;width:100vw;height:100vh;overflow:hidden;
+  background:radial-gradient(circle at 20px 20px,#f1e2c6 2px,transparent 3px) 0 0/40px 40px,var(--bg)}
+.slide{position:absolute;inset:0;padding:5vh 6vw;display:none;flex-direction:column;gap:2vh}
+.slide.on{display:flex}
+.pixel{font-family:"Press Start 2P",monospace;letter-spacing:.02em}
+.tag{font-family:"Press Start 2P",monospace;font-size:11px;color:#fff;background:var(--mint);padding:6px 10px;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);align-self:flex-start}
+h1{font-family:"Press Start 2P",monospace;font-size:34px;margin:0;line-height:1.5;color:var(--red2);text-shadow:4px 4px 0 var(--gold)}
+h2{font-family:"Press Start 2P",monospace;font-size:20px;margin:0;line-height:1.6;color:var(--red2)}
+p,li{font-size:18px;line-height:1.6;margin:0}
+.box{background:var(--panel);border:4px solid var(--line);box-shadow:6px 6px 0 var(--line);padding:2vh 2vw;border-radius:6px}
+.box h3{font-family:"Press Start 2P",monospace;font-size:13px;margin:0 0 1vh;color:var(--mint)}
+.dialog{background:var(--panel);border:4px solid var(--line);box-shadow:6px 6px 0 var(--line);padding:2.4vh 2.4vw;position:relative;font-size:19px;line-height:1.7}
+.dialog:after{content:"▼";position:absolute;right:16px;bottom:8px;font-size:14px;color:var(--red)}
+.grid{display:grid;gap:2vw}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:1fr 1fr 1fr 1fr}
+.step{display:flex;align-items:center;gap:1.2vw}
+.step .n{font-family:"Press Start 2P",monospace;font-size:14px;background:var(--red);color:#fff;border:3px solid var(--line);box-shadow:3px 3px 0 var(--line);min-width:44px;height:44px;display:flex;align-items:center;justify-content:center}
+.arrow{font-family:"Press Start 2P",monospace;font-size:18px;color:var(--red2);text-align:center}
+.hp{height:18px;background:#e9dcc2;border:3px solid var(--line);position:relative}
+.hp i{position:absolute;left:0;top:0;bottom:0;background:var(--mint)}
+.slot{width:72px;height:72px;border:4px solid var(--line);background:#fff;display:flex;align-items:center;justify-content:center;font-size:30px;box-shadow:3px 3px 0 var(--line)}
+.chip{display:inline-block;font-size:13px;padding:3px 8px;border:2px solid var(--line);background:#fff;margin:2px}
+.warn{color:var(--red2);font-weight:700}
+table{border-collapse:collapse;width:100%;font-size:16px}
+th,td{border:2px solid var(--line);padding:.8vh .6vw;text-align:left;vertical-align:top}
+th{background:#f0e0bd}
+.foot{margin-top:auto;font-size:13px;color:#6b5858}
+.sheet{width:100%;border:4px solid var(--line);box-shadow:6px 6px 0 var(--line);background:#fff}
+.nav{position:fixed;bottom:1.5vh;right:2vw;font-family:"Press Start 2P",monospace;font-size:10px;color:#fff}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<section class="slide on" style="justify-content:center;align-items:flex-start">
+  <div class="tag">PROJECT · 기획안 v2</div>
+  <h1>대구 히든 퀘스트</h1>
+  <p style="font-size:20px">날씨가 길을 정하는 도시 탐험 RPG</p>
+  <div class="dialog" style="margin-top:3vh;max-width:70vw">
+    여름의 대구는 너무 뜨겁습니다. 그래서 오늘은 <b>그늘과 실내</b>가 길이 됩니다.<br>
+    이번 발표는 <b>여름 '대프리카' 퀘스트</b>를 먼저 만들고, 잘 되면 가을부터 출시하는 계획입니다.
+  </div>
+  <p class="foot">TREAGENT · AX 크리에이티브 트랙 (콘텐츠 & 뷰티) · 2026-11-10 기준 초안</p>
+</section>
+
+<section class="slide">
+  <div class="tag">STAGE 1 · 문제의식</div>
+  <h2>대구는 '대프리카'라 불린다</h2>
+  <div class="grid g2">
+    <div class="box"><h3>떠오르는 이미지</h3><p>여름 대구 하면 먼저 떠오르는 '대프리카'. 2026년 7월 현장 취재에서 수성구 범어네거리는 체감 40℃로 측정됐습니다. <span class="chip">영남일보 · 단일 출처</span></p></div>
+    <div class="box"><h3>그래서 생기는 일</h3><p>날씨가 나갈 이유를 막습니다. 여름과 겨울에는 도시에 나갈 동기가 줄어듭니다. 가을 축제에 방문이 몰리는 구조와도 맞닿아 있습니다. <span class="chip">2026 보도 · 기획안 0-1</span></p></div>
+  </div>
+  <div class="dialog">질문: 더워서 나가기 싫은 날, 도시가 <b>놀이 공간</b>이 될 수 있을까?</div>
+  <p class="foot">근거: plan/daeprica_hidden_quest_plan.md 0-1</p>
+</section>
+
+<section class="slide">
+  <div class="tag">STAGE 2 · 컨셉</div>
+  <h2>더위를 피해 골목을 탐험하라</h2>
+  <div class="grid g2">
+    <div class="box"><h3>게이미피케이션</h3><p>날씨를 <b>장애물</b>이 아니라 <b>퀘스트 조건</b>으로 바꿉니다. 더운 날엔 실내 던전이 열리고, 선선한 날엔 야외 퀘스트가 열립니다.</p></div>
+    <div class="box"><h3>대프리카 감성</h3><p>쿨링포그, 그늘, 실내 카페와 박물관이 곧 '안전지대'이자 아이템 창고가 됩니다. 여름 시즌 부제는 <b>"대프리카 서바이벌"</b>.</p></div>
+  </div>
+  <div class="dialog">한 줄 컨셉: <b>"대구의 날씨가 곧 퀘스트다."</b><br>맵은 도시, 조건은 날씨, 가이드는 <b>홍옥이</b>.</div>
+  <p class="foot">근거: plan/daeprica_hidden_quest_plan.md 1장 · 세계관 표현은 창작 초안</p>
+</section>
+
+<section class="slide">
+  <div class="tag">STAGE 3 · 플레이 루프</div>
+  <h2>하루는 이렇게 흐릅니다</h2>
+  <div class="grid g4">
+    <div class="box"><div class="step"><div class="n">1</div><p>날씨 확인<br><small>기온·체감·강수</small></p></div></div>
+    <div class="box"><div class="step"><div class="n">2</div><p>오늘의 퀘스트 열림<br><small>날씨에 맞는 목록</small></p></div></div>
+    <div class="box"><div class="step"><div class="n">3</div><p>장소 이동·미션<br><small>실내·그늘 우선</small></p></div></div>
+    <div class="box"><div class="step"><div class="n">4</div><p>보상·도감 기록<br><small>스탬프, 아이템</small></p></div></div>
+  </div>
+  <div class="dialog">다음 날 날씨가 바뀌면 열리는 퀘스트도 바뀝니다. <b>같은 장소도 날씨에 따라 다른 길</b>이 됩니다.</div>
+  <p class="foot">창작 설계 초안. 팀 결정 전.</p>
+</section>
+
+<section class="slide">
+  <div class="tag">STAGE 4 · 핵심 기능</div>
+  <h2>플레이에서 쓰는 6가지 기능</h2>
+  <div class="grid g3">
+    <div class="box"><h3>날씨 맵</h3><p>기온과 체감에 따라 야외 퀘스트는 잠기고 실내·그늘 퀘스트가 열립니다.</p></div>
+    <div class="box"><h3>쉼터 체크인</h3><p>쿨링 쉼터에 들르면 체력이 회복됩니다. 폭염 중 쉼터 이용 기록이 남습니다 (안전 지표).</p></div>
+    <div class="box"><h3>스탬프 도감</h3><p>장소마다 스탬프를 모읍니다. 모은 스탬프는 도감이 되고, 시즌 배지로 바뀝니다.</p></div>
+    <div class="box"><h3>팀 모드</h3><p>2~4명이 단서를 나눠 찾습니다. 한 명이 쉬는 동안 다른 명이 탐색하는 식입니다.</p></div>
+    <div class="box"><h3>홍옥이 가이드</h3><p>단서를 모으고 힌트를 줍니다. 퀘스트 완료 때 표정이 바뀌어 상태를 알려 줍니다.</p></div>
+    <div class="box"><h3>아이템 가방</h3><p>부채, 돋보기, 쿨링 패치 같은 아이템을 씁니다. 무료로 얻는 아이템이 기본입니다.</p></div>
+  </div>
+  <p class="foot">기능 이름과 역할은 창작 초안. 아이템 예시 근거: brand/game_items_v1.md (돋보기, 손선풍기, 쉼터 스탬프 등)</p>
+</section>
+
+<section class="slide">
+  <div class="tag">STAGE 5 · 진행 예시</div>
+  <h2>폭염 경보 날의 하루 (예시)</h2>
+  <div class="grid g4">
+    <div class="box"><h3>09:00 날씨</h3><p>체감 38℃. 야외 퀘스트 잠김, 실내 3개 열림</p></div>
+    <div class="box"><h3>11:00 쉼터</h3><p>쿨링 쉼터 체크인. 체력 회복, 첫 단서 획득</p></div>
+    <div class="box"><h3>14:00 실내</h3><p>박물관 미션 수행. 도감 스탬프 1개</p></div>
+    <div class="box"><h3>18:00 보상</h3><p>저녁 바람 불 때 야외 퀘스트 1개 추가 개방</p></div>
+  </div>
+  <div class="dialog">홍옥이: "오늘은 그늘 길로 가 볼까요? 새 단서가 숨어 있을지도 몰라요."</div>
+  <p class="foot">예시 시나리오(창작). 실제 장소와 시간은 장소 운영 정보 확인 후 확정.</p>
+</section>
+
+<section class="slide">
+  <div class="tag">STAGE 6 · 퀘스트 설계 논리</div>
+  <h2>날씨와 계절이 퀘스트를 고르는 규칙</h2>
+  <div class="grid g3">
+    <div class="box"><h3>입력 ①  날씨</h3><p>기온, 체감온도, 강수, 계절</p></div>
+    <div class="box"><h3>입력 ②  장소 특성</h3><p>실내 / 그늘 / 야외, 운영 여부, 혼잡도</p></div>
+    <div class="box"><h3>입력 ③  사용자 상태</h3><p>체력, 팀 인원, 최근 쉼터 방문</p></div>
+  </div>
+  <div class="arrow">▼ 규칙 엔진 ▼</div>
+  <div class="box">
+    <table>
+      <tr><th>규칙</th><th>조건</th><th>결과</th></tr>
+      <tr><td>R1 폭염 잠금</td><td>체감 임계치 이상 (값은 결정 필요)</td><td>야외 퀘스트 잠금, 실내·그늘 퀘스트 개방</td></tr>
+      <tr><td>R2 운영 확인</td><td>휴관·영업 종료 장소</td><td>퀘스트 자동 제외, 대체 장소 제시</td></tr>
+      <tr><td>R3 혼잡 분산</td><td>대기가 긴 장소 (시간대 혼잡)</td><td>시간대를 나눠 배치, 이른 시간·늦은 시간 추천</td></tr>
+      <tr><td>R4 계절 전환</td><td>계절이 바뀔 때</td><td>퀘스트 세트 교체 (여름 → 가을 등)</td></tr>
+    </table>
+  </div>
+  <p class="foot">근거: painpoint/voc_classified.csv (대기·혼잡 13건, 운영 변경 10건, 날씨 4건). 임계치와 기상 데이터 연동 가능성은 [확인 필요].</p>
+</section>
+
+<section class="slide">
+  <div class="tag">STAGE 7 · 효과와 확인</div>
+  <h2>이 설계가 주는 효과</h2>
+  <div class="grid g2">
+    <div class="box"><h3>방문자에게</h3><p>더워도 할 일이 있습니다. 불편(대기·운영 불일치)을 퀘스트 순서로 피합니다.</p></div>
+    <div class="box"><h3>도시에게</h3><p>쉼터 이용 기록(안전), 비수기 방문 분산을 함께 봅니다.</p></div>
+  </div>
+  <div class="box"><h3>확인할 지표 (목표치는 정하지 않음)</h3><p>비수기 방문 건수 · 쉼터 체크인 수 · 퀘스트 완료율 · 2주 내 재방문율 · 시즌 해시태그 수</p></div>
+  <p class="foot">근거: plan/daeprica_hidden_quest_plan.md 0-4</p>
+</section>
+
+<section class="slide">
+  <div class="tag">STAGE 8 · 과금 구조 (안)</div>
+  <h2>퀘스트는 무료, 아이템은 선택 구매</h2>
+  <div class="grid g2">
+    <div class="box"><h3>기본 원칙</h3><ul><li>퀘스트 이용은 무료</li><li>진행에 꼭 필요한 아이템은 판매하지 않음 (공정성)</li><li>확률형 아이템 표시 등 관련 규정은 확인 필요</li></ul></div>
+    <div class="box"><h3>판매 후보 (팀 결정)</h3><ul><li><b>A안 · 외형 치장</b>: 홍옥이 의상, 부채 디자인, 도감 테마</li><li><b>B안 · 편의 아이템</b>: 대기 시간 단축권 (진행 필수 아님)</li></ul></div>
+  </div>
+  <div class="dialog">추천: A안(외형)부터 시작. B안은 대기 불편을 해결하는 편의라서 반감이 적을 수 있지만, 공정성 검토 후 결정.</div>
+  <p class="foot">근거: 과금 구조는 팀 제안 초안. 규제 확인은 [확인 필요].</p>
+</section>
+
+<section class="slide">
+  <div class="tag">STAGE 9 · 캐릭터 · 홍옥이</div>
+  <h2>가이드이자 얼굴 캐릭터</h2>
+  <div class="grid g2" style="align-items:start">
+    <img class="sheet" src="assets/hongoki_sheet.webp" alt="홍옥이 캐릭터 시트">
+    <div>
+      <div class="dialog" style="font-size:17px">대프리카의 뜨거운 골목에 시원한 바람을 전하는 <b>바람 도사 견습생</b>. 차분하고 다정하지만, 새로운 길과 이야기를 만나면 호기심이 반짝입니다.</div>
+      <div class="box" style="margin-top:2vh"><h3>시트 속 상징</h3><p>머리 사과 이파리 · 부채(바람) · 납작만두 모양 가방 · 홍옥빛 몸 · 크림색 꼬리</p></div>
+    </div>
+  </div>
+  <p class="foot">근거: brand/character/hongok_squirrel.md, 캐릭터 시트 (이름 '홍옥이'는 가칭)</p>
+</section>
+
+<section class="slide">
+  <div class="tag">STAGE 9-2 · 캐릭터 활용</div>
+  <h2>홍옥이를 어디에 쓸까</h2>
+  <div class="grid g2">
+    <div class="box"><h3>① 퀘스트 가이드</h3><p>단서와 힌트를 전하는 말 상자 주인공. 캐릭터의 호기심이 '새 길'을 열어 줍니다.</p></div>
+    <div class="box"><h3>② 상태 알림</h3><p>표정 3종으로 상태를 알립니다. 행복 = 완료, 차분 = 쉼터 안내, 놀람 = 새 퀘스트.</p></div>
+    <div class="box"><h3>③ 폭염·안전 메시지</h3><p>"물 한 모금 하고 가요" 같은 쉼터·안전 문구의 얼굴. 지자체 캠페인과 연결하기 좋습니다 <span class="chip">추정</span></p></div>
+    <div class="box"><h3>④ 스탬프·배지 디자인</h3><p>사과 이파리 모티브를 스탬프 아이콘으로 씁니다. 시즌마다 배지 색을 바꿉니다.</p></div>
+    <div class="box"><h3>⑤ SNS 스티커</h3><p>인증 사진에 붙이는 스티커와 이모지 세트. 챌린지 해시태그와 함께 씁니다.</p></div>
+    <div class="box"><h3>⑥ 굿즈·현질 연결</h3><p>의상·부채 같은 치장 아이템과 굿즈를 같은 디자인으로 묶습니다 (과금 A안과 연결).</p></div>
+  </div>
+  <div class="dialog">결정 필요: 이름(홍옥이 vs 홍이·옥이 등), 말투 3문장, 의상 교체 방식.</div>
+  <p class="foot">활용안은 창작 제안. 이름과 말버릇 확정은 팀 결정.</p>
+</section>
+
+<section class="slide">
+  <div class="tag">STAGE 10 · 나중 검토 · 로드맵</div>
+  <h2>지금은 여름에 집중합니다</h2>
+  <div class="grid g2">
+    <div class="box"><h3>나중 검토 (묶음)</h3><p>숙박 연계 · 대학 캠퍼스 연계는 지금 하지 않습니다. 이용자가 늘면 제휴를 검토합니다.</p></div>
+    <div class="box"><h3>로드맵</h3><ul><li><b>지금</b>: 여름 '대프리카' 퀘스트 제작 (범위 한정)</li><li><b>여름 운영</b>: 결과 확인</li><li><b>가을</b>: 성과에 따라 출시 판단</li></ul></div>
+  </div>
+  <p class="foot">근거: 2026-11-10 팀 결정 (여름 우선, 가을 성과 판단)</p>
+</section>
+
+<section class="slide">
+  <div class="tag">STAGE 11 · 결정 필요</div>
+  <h2>팀과 정할 것</h2>
+  <div class="grid g2">
+    <div class="box"><h3>게임 설계</h3><ul><li>체감온도 임계치 (R1)</li><li>여름 퀘스트 장소 수와 개수</li><li>가을 출시 판단 지표</li></ul></div>
+    <div class="box"><h3>과금·캐릭터</h3><ul><li>아이템 판매 범위 (A안 / B안)</li><li>캐릭터 이름과 말투</li><li>금칙어 확정</li></ul></div>
+  </div>
+  <div class="dialog">요청: 여름 '대프리카' 퀘스트의 장소 범위와 규칙 R1 임계치를 정해 주세요.</div>
+</section>
+
+<div class="nav" id="nav">← → 키로 이동</div>
+</div>
+<script>
+(function(){
+  var s=document.querySelectorAll('.slide'),i=0;
+  function show(n){s[i].classList.remove('on');i=(n+s.length)%s.length;s[i].classList.add('on');document.getElementById('nav').textContent=(i+1)+' / '+s.length+' · ← → 키로 이동';}
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key===' ')show(i+1);if(e.key==='ArrowLeft')show(i-1);});
+  document.addEventListener('click',function(e){if(e.clientX>window.innerWidth/2)show(i+1);else show(i-1);});
+  show(0);
+})();
+</script>
+</body>
+</html>

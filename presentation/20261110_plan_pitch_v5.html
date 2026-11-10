@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>대구 히든 퀘스트 기획안 v5</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2a1f2d;--bg:#fff4dc;--paper:#fffdf6;--red:#e0474c;--red2:#a3232a;--mint:#2fa68f;--gold:#f2b632;--sky:#6cc7e0;--purple:#8b6fd1;--line:#2a1f2d;--navy:#1d2340}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:#22181f;font-family:"Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink)}
+.deck{position:relative;width:100vw;height:100vh;overflow:hidden;
+  background:linear-gradient(45deg,rgba(242,182,50,.13) 25%,transparent 25%) 0 0/36px 36px,
+             linear-gradient(-45deg,rgba(108,199,224,.13) 25%,transparent 25%) 0 0/36px 36px, var(--bg)}
+.slide{position:absolute;inset:0;padding:4vh 4vw;display:none;flex-direction:column;gap:2.4vh}
+.slide.on{display:flex}
+.tag{align-self:flex-start;font-size:clamp(15px,1.3vw,19px);font-family:"Do Hyeon",sans-serif;color:#fff;background:var(--mint);border:3px solid var(--line);box-shadow:4px 4px 0 var(--line);padding:.4vh 1.2vw}
+h1{font-family:"Do Hyeon",sans-serif;font-size:clamp(60px,7vw,110px);font-weight:400;margin:0;line-height:1.2;color:var(--red2);text-shadow:5px 5px 0 var(--gold)}
+h2{font-family:"Do Hyeon",sans-serif;font-size:clamp(38px,4vw,62px);font-weight:400;margin:0;line-height:1.25;color:var(--red2)}
+h3{font-family:"Do Hyeon",sans-serif;font-size:clamp(26px,2.4vw,36px);font-weight:400;margin:0 0 1vh;color:var(--ink)}
+p,li{font-size:clamp(18px,1.65vw,25px);line-height:1.75;margin:0}
+.lead{font-size:clamp(24px,2.5vw,36px);line-height:1.55;font-family:"Do Hyeon",sans-serif}
+.card{background:var(--paper);border:3px solid var(--line);box-shadow:6px 6px 0 var(--line);padding:2.4vh 2vw;position:relative}
+.card.mint{background:#dff5ef}.card.gold{background:#fff0c4}.card.red{background:#ffe0de}.card.sky{background:#dff1fa}.card.purple{background:#ece5fb}
+.ico{font-size:clamp(48px,4.6vw,76px);line-height:1;display:block;margin-bottom:1vh}
+.grid{display:grid;gap:2vw;flex:1}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}.g4{grid-template-columns:1fr 1fr 1fr 1fr}
+.strip{display:flex;align-items:stretch;gap:1vw}
+.strip .card{flex:1}
+.arrow{font-family:"Do Hyeon",sans-serif;font-size:clamp(30px,3vw,46px);align-self:center;color:var(--red2)}
+.hl{background:var(--paper);border:3px dashed var(--red);padding:2.2vh 2vw;box-shadow:6px 6px 0 var(--red)}
+.bar{font-family:"Do Hyeon",sans-serif;background:var(--line);color:#fff;padding:.5vh 1.2vw;font-size:clamp(20px,1.8vw,28px);align-self:flex-start;box-shadow:3px 3px 0 var(--gold)}
+.num{width:clamp(44px,3.6vw,58px);height:clamp(44px,3.6vw,58px);border:3px solid var(--line);background:var(--gold);font-family:"Do Hyeon",sans-serif;font-size:clamp(24px,2vw,32px);display:flex;align-items:center;justify-content:center;flex:none;box-shadow:3px 3px 0 var(--line)}
+.chip{display:inline-block;font-size:15px;font-weight:700;padding:1px 10px;border:2px solid var(--line);background:#fff;margin-left:4px}
+.muted{color:#6b5a68;font-size:clamp(14px,1.2vw,18px)}
+ul.b{padding-left:1.3em;margin:0}ul.b li{margin:.5vh 0;font-size:clamp(18px,1.6vw,24px)}
+table{border-collapse:collapse;width:100%;font-size:clamp(16px,1.45vw,22px)}
+th,td{border:2px solid var(--line);padding:1vh .8vw;text-align:left;vertical-align:top}
+th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400}
+.foot{margin-top:auto;font-size:clamp(13px,1.1vw,16px);color:#6b5a68}
+/* 대사창 (게임 화면 모형) */
+.screen{background:#3b5b7a;border:4px solid var(--line);box-shadow:8px 8px 0 var(--line);padding:3vh 2vw;position:relative;display:flex;flex-direction:column;justify-content:flex-end;min-height:0;flex:1;overflow:hidden}
+.screen .sprite{position:absolute;left:4vw;bottom:24vh;height:52vh;width:auto;max-width:44%;object-fit:contain;object-position:left bottom;background:transparent}
+.dlg{background:var(--navy);color:#fff;border:4px solid #fff;box-shadow:0 0 0 3px var(--line);padding:2.4vh 2.2vw;margin-left:40%;position:relative}
+.dlg .who{font-family:"Do Hyeon",sans-serif;font-size:clamp(22px,2vw,30px);color:var(--gold);margin-bottom:.8vh}
+.dlg p{color:#fff;font-size:clamp(20px,1.9vw,28px);line-height:1.7}
+.dlg:after{content:"▼";position:absolute;right:1.5vw;bottom:1vh;color:var(--gold);font-size:clamp(16px,1.4vw,22px)}
+.sheet{width:100%;height:100%;object-fit:contain;background:#fff;border:3px solid var(--line);box-shadow:6px 6px 0 var(--line)}
+.nav{position:fixed;bottom:1.5vh;right:2vw;font-size:15px;color:#fff;font-family:"Noto Sans KR",sans-serif}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<section class="slide on" style="justify-content:center">
+  <div class="tag">TREAGENT · AX 크리에이티브 트랙</div>
+  <h1>대구 히든 퀘스트</h1>
+  <p class="lead">날씨가 길을 정하는 도시 탐험 게임</p>
+  <div class="hl" style="margin-top:4vh;max-width:72vw">
+    <p class="lead">여름의 대구는 너무 뜨겁습니다.</p>
+    <p class="lead">그래서 오늘은 그늘과 실내가 길이 됩니다.</p>
+  </div>
+  <div class="foot" style="margin-top:auto">1차 목표: 여름 '대프리카' 퀘스트 · 잘 되면 가을부터 출시</div>
+</section>
+
+<section class="slide">
+  <div class="tag">01 · 문제의식과 컨셉</div>
+  <h2>대구는 여름에 '대프리카'라 불린다</h2>
+  <div class="grid g2">
+    <div class="card red"><span class="ico">🔥</span>
+      <h3>여름의 대구</h3>
+      <p>2026년 7월 취재에서 수성구 범어네거리는 체감 40℃였습니다.</p>
+      <p>더워서 나가기 싫은 날이 많습니다.</p>
+      <p class="muted" style="margin-top:1vh">근거: plan/daeprica_hidden_quest_plan.md:19 (단일 출처)</p>
+    </div>
+    <div class="card sky"><span class="ico">🏖️</span>
+      <h3>그래서 생기는 일</h3>
+      <p>여름과 겨울에는 나갈 이유가 줄어듭니다.</p>
+      <p>가을 축제에만 방문이 몰립니다.</p>
+    </div>
+  </div>
+  <div class="grid g2" style="flex:0 0 auto">
+    <div class="card mint"><span class="ico">🧭</span>
+      <h3>컨셉: 더위를 피해 골목을 탐험하라</h3>
+      <p>더운 날엔 실내 퀘스트가 열리고, 선선한 날엔 야외 퀘스트가 열립니다.</p>
+    </div>
+    <div class="card gold"><span class="ico">🧊</span>
+      <h3>대프리카 감성</h3>
+      <p>쿨링 쉼터, 그늘, 실내 카페와 박물관이 안전지대가 됩니다.</p>
+      <p>여름 부제는 "대프리카 서바이벌"입니다.</p>
+    </div>
+  </div>
+  <div class="hl"><p class="lead">한 줄 컨셉: 대구의 날씨가 곧 퀘스트다.</p></div>
+</section>
+
+<section class="slide">
+  <div class="tag">02 · 플레이 흐름과 핵심 기능</div>
+  <h2>하루는 이렇게 흐르고, 이렇게 플레이합니다</h2>
+  <div class="strip">
+    <div class="card sky"><h3>① 날씨 확인</h3><p>기온, 체감, 강수</p></div>
+    <span class="arrow">▶</span>
+    <div class="card mint"><h3>② 퀘스트 열림</h3><p>날씨에 맞는 목록</p></div>
+    <span class="arrow">▶</span>
+    <div class="card gold"><h3>③ 이동·미션</h3><p>실내와 그늘 우선</p></div>
+    <span class="arrow">▶</span>
+    <div class="card red"><h3>④ 보상 기록</h3><p>스탬프와 도감</p></div>
+  </div>
+  <div class="grid g3">
+    <div class="card sky"><span class="ico">🌡️</span><h3>날씨 맵</h3><p>체감이 높으면 야외 퀘스트가 잠깁니다.</p></div>
+    <div class="card mint"><span class="ico">⛺</span><h3>쉼터 체크인</h3><p>쿨링 쉼터에서 체력을 채웁니다.</p></div>
+    <div class="card red"><span class="ico">🍎</span><h3>사과 스탬프</h3><p>장소마다 사과 스탬프를 모읍니다.</p></div>
+    <div class="card gold"><span class="ico">👥</span><h3>팀 모드</h3><p>2~4명이 단서를 나눠 찾습니다.</p></div>
+    <div class="card purple"><span class="ico">🐿️</span><h3>홍옥이 가이드</h3><p>단서를 주고 힌트를 줍니다.</p></div>
+    <div class="card sky"><span class="ico">🎒</span><h3>아이템 가방</h3><p>부채, 돋보기, 쿨링 패치를 씁니다.</p></div>
+  </div>
+  <div class="foot">아이템 예시 근거: brand/game_items_v1.md · 기능 이름은 창작 초안</div>
+</section>
+
+<section class="slide">
+  <div class="tag">03 · 보상 기록</div>
+  <h2>퀘스트를 끝내면 무엇이 쌓이나</h2>
+  <div class="grid g2">
+    <div class="card red"><h3>🍎 사과 스탬프</h3>
+      <ul class="b"><li>장소를 방문하면 해당 장소의 사과 스탬프 1개</li><li>장소 미션을 끝내면 추가 스탬프 1개</li><li>날씨가 맞는 장소만 스탬프를 줌</li></ul></div>
+    <div class="card gold"><h3>📖 도감</h3>
+      <ul class="b"><li>방문한 장소의 이름, 날짜, 날씨</li><li>장소마다 발견한 단서 한 줄</li><li>장소를 여러 번 가면 방문 횟수 누적</li></ul></div>
+    <div class="card mint"><h3>🗺️ 방문 장소 기록</h3>
+      <ul class="b"><li>가 본 장소를 지도에 색칠</li><li>동네별로 완성률 표시</li><li>쉼터 체크인 시간대 기록</li></ul></div>
+    <div class="card sky"><h3>🏅 시즌 배지</h3>
+      <ul class="b"><li>여름 시즌 배지: 사과 스탬프 일정 개수 달성</li><li>팀 배지: 팀원 전원이 같은 퀘스트 완료</li><li>시즌마다 배지 디자인을 바꿈</li></ul></div>
+  </div>
+  <div class="hl"><p class="lead">모든 기록은 "오늘 어디를 걸었고 무엇을 봤는지"를 남기는 일입니다.</p></div>
+  <div class="foot">창작 기능 초안. 스탬프 개수와 배지 조건은 팀이 정합니다.</div>
+</section>
+
+<section class="slide">
+  <div class="tag">04 · 체력 규칙</div>
+  <h2>체력은 오늘 걸을 수 있는 양을 보여 줍니다</h2>
+  <div class="strip">
+    <div class="card sky"><h3>① 입력</h3><p>체감온도, 야외 이동 시간, 미션 강도</p></div>
+    <span class="arrow">▶</span>
+    <div class="card red"><h3>② 소모</h3><p>체감이 높을수록 1분당 소모가 커집니다.</p></div>
+    <span class="arrow">▶</span>
+    <div class="card mint"><h3>③ 회복</h3><p>쉼터·실내에서 쉬면 채워집니다.</p></div>
+    <span class="arrow">▶</span>
+    <div class="card gold"><h3>④ 0이 되면</h3><p>야외 퀘스트를 멈추고 쉼터로 안내합니다.</p></div>
+  </div>
+  <div class="grid g2">
+    <div class="card"><h3>예시 계산 (창작 수치)</h3>
+      <ul class="b"><li>체감 30℃ 미만: 야외 1분당 소모 1</li><li>체감 30~35℃: 1분당 소모 2</li><li>체감 35℃ 이상: 1분당 소모 3</li><li>쉼터에서 10분 쉬면 체력 20 회복</li></ul></div>
+    <div class="card purple"><h3>왜 이렇게 설계하나</h3>
+      <ul class="b"><li><b>더위 안전:</b> 폭염에 무리하게 걷는 것을 막습니다.</li><li><b>쉼터 이용 유도:</b> 쉼터가 실제 자원이 됩니다.</li><li><b>긴장감:</b> 더운 날에는 경로 선택이 전략이 됩니다.</li></ul></div>
+  </div>
+  <div class="foot">수치는 예시이며 팀이 정합니다 (체감 기준은 R1과 같은 기준으로 맞춤).</div>
+</section>
+
+<section class="slide">
+  <div class="tag">05 · 홍옥이와 대화</div>
+  <h2>게임 화면에서 홍옥이는 이렇게 말합니다</h2>
+  <div class="screen">
+    <img class="sprite" src="assets/hongoki_sheet.webp" alt="홍옥이 캐릭터 시트">
+    <div class="dlg">
+      <div class="who">홍옥이</div>
+      <p>"오늘은 그늘 길로 가 볼까요? 새 단서가 숨어 있을지도 몰라요."</p>
+    </div>
+  </div>
+  <div class="grid g3" style="flex:0 0 auto">
+    <div class="card mint"><h3>퀘스트 가이드</h3><p>단서와 힌트를 대사로 전합니다.</p></div>
+    <div class="card gold"><h3>상태 알림</h3><p>행복 = 완료, 차분 = 쉼터, 놀람 = 새 퀘스트</p></div>
+    <div class="card red"><h3>폭염 안전 메시지</h3><p>"물 한 모금 하고 가요" (추정)</p></div>
+  </div>
+  <div class="foot">캐릭터 시트 원본: presentation/assets/hongoki_sheet.webp · 대사 화면은 모형이며 실제 UI는 설계 전</div>
+</section>
+
+<section class="slide">
+  <div class="tag">06 · 퀘스트 설계 논리</div>
+  <h2>날씨와 장소가 퀘스트 목록을 고릅니다</h2>
+  <div class="strip">
+    <div class="card sky"><h3>날씨</h3><p>기온, 체감, 강수, 계절</p></div>
+    <span class="arrow">+</span>
+    <div class="card mint"><h3>장소</h3><p>실내·그늘·야외, 운영 여부, 혼잡</p></div>
+    <span class="arrow">+</span>
+    <div class="card gold"><h3>플레이어</h3><p>체력, 팀 인원, 최근 쉼터</p></div>
+    <span class="arrow">▶</span>
+    <div class="card red"><h3>퀘스트 목록</h3><p>열리는 것과 잠기는 것</p></div>
+  </div>
+  <div class="card" style="padding:0">
+    <table>
+      <tr><th>규칙</th><th>조건</th><th>결과</th></tr>
+      <tr><td>R1 폭염 잠금</td><td>체감이 기준 이상 (기준은 팀 결정)</td><td>야외 퀘스트 잠금, 실내·그늘 개방</td></tr>
+      <tr><td>R2 운영 확인</td><td>휴관 또는 영업 종료</td><td>자동 제외, 대체 장소 제시</td></tr>
+      <tr><td>R3 혼잡 분산</td><td>대기가 긴 장소</td><td>순서를 뒤로 미루고 이른·늦은 시간 추천</td></tr>
+      <tr><td>R4 계절 전환</td><td>계절이 바뀔 때</td><td>퀘스트 세트 교체</td></tr>
+    </table>
+  </div>
+  <div class="hl"><p class="lead">운영 불편(줄, 휴관)을 플레이어가 피하는 대신, 게임이 순서를 짜 줍니다.</p></div>
+  <div class="foot">근거: painpoint/voc_classified.csv (대기·혼잡 13건, 운영 변경 10건, 날씨 4건)</div>
+</section>
+
+<section class="slide">
+  <div class="tag">07 · 효과</div>
+  <h2>방문자와 도시에게 무엇이 달라지나</h2>
+  <div class="grid g2">
+    <div class="card sky"><span class="ico">🙋</span>
+      <h3>방문자에게</h3>
+      <ul class="b">
+        <li>더운 날에도 나갈 이유가 생깁니다.</li>
+        <li>운영 중인 곳만 골라 가니 헛걸음이 줄어듭니다.</li>
+        <li>줄이 긴 곳을 피해 시간을 아낍니다.</li>
+        <li>혼자 여행해도 퀘스트가 길잡이가 됩니다.</li>
+        <li>가 본 곳이 기록으로 남습니다.</li>
+      </ul></div>
+    <div class="card gold"><span class="ico">🏙️</span>
+      <h3>도시에게 (추정)</h3>
+      <ul class="b">
+        <li>쉼터 이용 기록으로 폭염 때 사람들이 어디서 쉬는지 파악합니다.</li>
+        <li>쉼터 위치와 운영 시간을 정하는 근거가 됩니다.</li>
+        <li>가을 축제에 쏠린 방문이 여름·겨울로 나뉩니다.</li>
+        <li>한산한 시간대의 실내 상권과 박물관을 살립니다.</li>
+      </ul></div>
+  </div>
+  <div class="foot">확인할 지표 (목표치는 정하지 않음): 비수기 방문, 쉼터 체크인 수, 퀘스트 완료율, 2주 내 재방문율</div>
+</section>
+
+<section class="slide">
+  <div class="tag">08 · 비교와 차별점</div>
+  <h2>비슷한 서비스와 무엇이 다른가</h2>
+  <div class="card" style="padding:0">
+    <table>
+      <tr><th>유형</th><th>예시</th><th>하는 일</th><th>이 게임과 다른 점</th></tr>
+      <tr><td>지도·리뷰 앱</td><td>네이버 지도 등</td><td>장소 정보와 리뷰를 보여 줌</td><td>장소를 "퀘스트 순서"로 엮고, 날씨에 따라 경로를 바꿈</td></tr>
+      <tr><td>관광 스탬프 투어</td><td>2026 현충시설 스탬프투어 (근거: map_gukchae.csv 1번)</td><td>장소를 돌며 스탬프를 모음</td><td>날씨와 체력 규칙이 있고, 여름에는 실내 중심으로 짬</td></tr>
+      <tr><td>위치 기반 게임</td><td>해외 위치 기반 수집 게임 [확인 필요]</td><td>밖을 돌아다니며 캐릭터를 모음</td><td>더위를 피하는 것이 목표이고, 쉼터가 안전 장치</td></tr>
+      <tr><td>날씨 앱</td><td>기상 정보 앱</td><td>날씨만 알려 줌</td><td>날씨가 곧 할 일의 목록이 됨</td></tr>
+    </table>
+  </div>
+  <div class="hl"><p class="lead">차별점: 날씨가 퀘스트 조건이고, 더위 안전이 게임 규칙에 들어 있습니다.</p></div>
+  <div class="foot">서비스별 기능은 공개 정보 확인이 필요합니다 [확인 필요]. 현충시설 스탬프투어는 리뷰 기록으로 확인됨.</div>
+</section>
+
+<section class="slide">
+  <div class="tag">09 · 과금 구조 (안)</div>
+  <h2>퀘스트는 무료, 꾸미기만 선택 구매</h2>
+  <div class="grid g2" style="flex:0 0 auto">
+    <div class="card mint"><span class="ico">🆓</span>
+      <h3>기본 원칙</h3>
+      <ul class="b"><li>퀘스트 이용은 무료</li><li>진행에 꼭 필요한 아이템은 팔지 않음</li><li>확률형 아이템 관련 규정은 확인 필요</li></ul></div>
+    <div class="card purple"><span class="ico">🔄</span>
+      <h3>계절 의상은 자동 교체</h3>
+      <ul class="b"><li>계절이 바뀌면 홍옥이 의상이 무료로 바뀜</li><li>꾸미기는 추가 색과 디자인만 더함</li></ul></div>
+  </div>
+  <div class="bar">선택 구매 후보</div>
+  <div class="grid g2">
+    <div class="card gold"><span class="ico">🎨</span>
+      <h3>A안 · 꾸미기 아이템 <span class="chip">추천</span></h3>
+      <p>홍옥이 의상 디자인, 부채 디자인, 도감 테마</p></div>
+    <div class="card red"><span class="ico">⏱️</span>
+      <h3>B안 · 편의 아이템</h3>
+      <p>대기 시간을 줄이는 이용권 (진행에 필수 아님)</p></div>
+  </div>
+  <div class="foot">과금 구조는 팀 제안 초안입니다. 규제 확인은 필요합니다.</div>
+</section>
+
+<section class="slide">
+  <div class="tag">10 · 플레이어와 홍옥이</div>
+  <h2>둘은 어떤 관계로 함께 다니나</h2>
+  <div class="grid g2">
+    <div class="card sky"><span class="ico">🧳</span>
+      <h3>후보 1 · 여행 온 친구</h3>
+      <p>플레이어는 대구를 처음 찾은 여행자입니다.</p>
+      <p>홍옥이는 더위를 잘 피하는 바람 도사 견습생입니다.</p></div>
+    <div class="card mint"><span class="ico">🏡</span>
+      <h3>후보 2 · 골목의 수호자</h3>
+      <p>홍옥이는 대프리카 골목을 지키는 수호자입니다.</p>
+      <p>플레이어는 골목에 놀러 온 시민입니다.</p></div>
+  </div>
+  <div class="bar">같이 다니는 이유 (추정)</div>
+  <div class="grid g3">
+    <div class="card gold"><h3>① 체력 규칙</h3><p>체력이 0이 되면 쉼터로 안내할 동행이 필요합니다.</p></div>
+    <div class="card red"><h3>② 단서 구조</h3><p>골목 정보가 흩어져 있어, 한 명이 길을 잡아 주는 편이 자연스럽습니다.</p></div>
+    <div class="card purple"><h3>③ 팀 모드</h3><p>2~4명이 단서를 나눌 때 가이드가 중심을 잡습니다.</p></div>
+  </div>
+  <div class="foot">두 후보 모두 창작입니다. 팀이 하나를 고릅니다.</div>
+</section>
+
+<section class="slide">
+  <div class="tag">11 · 사과와 능금</div>
+  <h2>이름과 스탬프에는 무엇을 쓸까</h2>
+  <div class="grid g2">
+    <div class="card gold"><span class="ico">🍏</span>
+      <h3>홍옥 사과 <span class="chip">추천</span></h3>
+      <p>캐릭터 이름과 설정이 바로 이어집니다.</p>
+      <p>대구에는 사과 시배지가 있습니다 (map_cheongla.csv 후기).</p></div>
+    <div class="card red"><span class="ico">🥐</span>
+      <h3>능금</h3>
+      <p>사과를 가리키는 옛말입니다.</p>
+      <p>동네 빵집에 "능금빵"이 있습니다 (blog.csv 18번).</p>
+      <p>대구가 능금으로 유명하다는 자료는 없습니다 [미검증].</p></div>
+  </div>
+  <div class="hl"><p class="lead">제안: 이름과 스탬프는 홍옥 사과, 지역 감성 문구는 능금.</p></div>
+  <div class="foot">근거: research/keyword_map.md (홍옥 관련), brand/character/hongok_squirrel.md</div>
+</section>
+
+<section class="slide">
+  <div class="tag">12 · 로드맵과 팀 결정</div>
+  <h2>지금은 여름에 집중합니다</h2>
+  <div class="grid g2">
+    <div class="card sky"><span class="ico">🗺️</span>
+      <h3>로드맵</h3>
+      <ul class="b"><li>지금: 여름 '대프리카' 퀘스트 제작 (범위 한정)</li><li>여름 운영: 결과 확인</li><li>가을: 성과에 따라 출시 판단</li><li>숙박·대학 연계: 이용자가 늘면 검토</li></ul></div>
+    <div class="card gold"><span class="ico">✅</span>
+      <h3>팀이 정할 것</h3>
+      <ul class="b"><li>체감온도 기준 (R1)</li><li>체력 소모·회복 수치</li><li>꾸미기 판매 범위 (A안, B안)</li><li>플레이어와 홍옥이 관계 (후보 1, 2)</li><li>이름과 말투, 금칙어</li></ul></div>
+  </div>
+  <div class="hl"><p class="lead">발표 자리에서 팀이 이 다섯 가지를 결정합니다.</p></div>
+</section>
+
+<div class="nav" id="nav">← → 키로 이동</div>
+</div>
+<script>
+(function(){
+  var s=document.querySelectorAll('.slide'),i=0;
+  function show(n){s[i].classList.remove('on');i=(n+s.length)%s.length;s[i].classList.add('on');document.getElementById('nav').textContent=(i+1)+' / '+s.length+' · ← → 키로 이동';}
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key===' ')show(i+1);if(e.key==='ArrowLeft')show(i-1);});
+  document.addEventListener('click',function(e){if(e.clientX>window.innerWidth/2)show(i+1);else show(i-1);});
+  show(0);
+})();
+</script>
+</body>
+</html>

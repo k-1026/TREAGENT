@@ -149,4 +149,4 @@
 - `plan/daeprica_hidden_quest_plan.md` (기획안)
 - `painpoint/voc_classified.csv`, `painpoint/candidates.md` (불편 근거)
 - `research/daegu_history_tour_cases.md` 3-3 (AI 투어 사례)
-- `presentation/20261111_plan_pitch_v6.html` (발표 자료 장면과 규칙)
+- `presentation/20261110_plan_pitch_v6.html` (발표 자료 장면과 규칙)
