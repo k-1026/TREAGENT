@@ -1,0 +1,176 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280">
+<title>스탬프 투어 밸류체인</title>
+<style>
+  :root{
+    --bg:#FAFAF7; --ink:#1F2328; --muted:#5B636B; --line:#D8DBD6;
+    --band1:#FFFFFF; --band2:#F3F4F0;
+    --money:#E07A1F; --data:#2F6FD6;
+    --bn-fill:#FEF3DC; --bn-stroke:#E89B00;
+    --cost-fill:#FCEBE5; --cost-stroke:#E8603C;
+    --opp-fill:#EEF7E2; --opp-stroke:#9BD24B;
+    --team-fill:#D9F2EF; --team-stroke:#2A9D8F;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:"Pretendard","Apple SD Gothic Neo","Malgun Gothic",sans-serif;}
+  .page{width:1280px;height:720px;padding:18px 24px 14px;display:flex;flex-direction:column;gap:8px}
+  header{display:flex;align-items:baseline;justify-content:space-between}
+  h1{font-size:21px;margin:0;letter-spacing:-.3px}
+  .sub{font-size:12px;color:var(--muted)}
+  .grid{display:grid;grid-template-columns:92px repeat(5,1fr);column-gap:10px;row-gap:6px;flex:1;align-content:space-evenly}
+  .lab{font-size:12px;font-weight:700;color:var(--muted);display:flex;align-items:center;
+    border-right:2px solid var(--line);padding-right:6px;line-height:1.3}
+  .row{display:contents}
+  .cell{font-size:12px;line-height:1.4;padding:7px 8px;border-radius:6px;position:relative}
+  .b1 .cell{background:var(--band1)} .b2 .cell{background:var(--band2)}
+  .stage{background:var(--ink)!important;color:#fff;font-weight:700;font-size:13.5px;
+    text-align:center;border-radius:6px;position:relative}
+  .stage:not(.last)::after{content:"";position:absolute;right:-11px;top:50%;transform:translateY(-50%);
+    border-left:9px solid var(--ink);border-top:7px solid transparent;border-bottom:7px solid transparent;z-index:2}
+  .gap{height:6px;grid-column:1/-1}
+  b{font-weight:700}
+  .inf{color:var(--muted)}
+  .tag{display:inline-block;font-size:10.5px;padding:0 5px;border-radius:9px;border:1px solid var(--line);
+    color:var(--muted);margin-left:2px}
+  .team{background:var(--team-fill)!important;outline:2px solid var(--team-stroke);outline-offset:-2px}
+  /* money band */
+  .money .cell{border-top:3px solid var(--money)}
+  .money .cell::before{content:"◀";position:absolute;left:-12px;top:-10px;color:var(--money);font-size:12px}
+  .money .cell.first::before{content:""}
+  .money .start{color:var(--money);font-weight:700}
+  /* data band */
+  .data .cell{border-top:2px dashed var(--data)}
+  .data .who{color:var(--data);font-weight:700}
+  .fb{grid-column:2/7;height:30px;position:relative}
+  .fb svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+  .marker{font-size:11.5px;border-radius:6px;padding:4px 6px;margin-top:4px;line-height:1.35}
+  .m-bn{background:var(--bn-fill);border:2px solid var(--bn-stroke)}
+  .m-cost{background:var(--cost-fill);border:2px solid var(--cost-stroke)}
+  .m-opp{background:var(--opp-fill);border:1px solid var(--opp-stroke)}
+  .m-opp.pri{box-shadow:0 0 0 2px var(--opp-stroke)}
+  footer{display:flex;justify-content:space-between;align-items:flex-end;gap:16px}
+  .note{font-size:11px;color:var(--muted);line-height:1.45;max-width:720px}
+  .legend{display:grid;grid-template-columns:repeat(4,auto);gap:4px 12px;font-size:11px;
+    background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+  .sw{display:inline-block;width:14px;height:10px;border-radius:2px;vertical-align:-1px;margin-right:4px}
+  .ln{display:inline-block;width:22px;vertical-align:3px;margin-right:4px}
+</style>
+</head>
+<body>
+<div class="page">
+  <header>
+    <h1>지자체 스탬프 투어 밸류체인 맵 v1</h1>
+    <span class="sub">2026-11-11 · 기준 사례: 국가유산 방문자 여권 · 대구 스탬프 로드 20 · 도봉꾹꾹 · 팀 검토 전</span>
+  </header>
+
+  <div class="grid">
+    <!-- stage header -->
+    <div class="row">
+      <div class="lab"></div>
+      <div class="cell stage">① 기획·거점 선정</div>
+      <div class="cell stage">② 인증 도구 제작</div>
+      <div class="cell stage">③ 신청·배포</div>
+      <div class="cell stage">④ 방문·인증</div>
+      <div class="cell stage last">⑤ 완주·보상·기록</div>
+    </div>
+    <div class="gap"></div>
+
+    <!-- activity -->
+    <div class="row b1">
+      <div class="lab">① 활동</div>
+      <div class="cell">거점 고르기(20·10·76곳) · 완주 조건·보상 정하기</div>
+      <div class="cell">앱 QR·위치 인증 · 실물 여권·도장 용지 제작</div>
+      <div class="cell">선착순 신청·배포 · 언론·SNS 홍보</div>
+      <div class="cell">거점 방문 · 도장 날인 / QR 인증</div>
+      <div class="cell">기념품·완주 기록장 지급 · 탐방록·후기</div>
+    </div>
+
+    <!-- stakeholders -->
+    <div class="row b2">
+      <div class="lab">② 이해관계자</div>
+      <div class="cell"><b>국가유산청·진흥원</b><br><b>대구문화예술진흥원</b> · <b>도봉구청</b><br><span class="inf">(거점 관리 주체 [U])</span></div>
+      <div class="cell team"><b>캐시워크 · 해설사 앱</b><br><span class="inf">(제작 업체 [U])</span><br>팀 자산: 하랑이·능금 스탬프</div>
+      <div class="cell"><b>신청 페이지 · 캐시워크 탭</b><br><span class="inf">(언론 · 인스타그램 · 카카오 채널)</span></div>
+      <div class="cell team"><b>참여자</b> (2030 혼행객) · <b>거점 운영자</b><br><span class="inf">(주변 상권 [I])</span><br>팀 자산: 쉼터 스탬프</div>
+      <div class="cell"><b>운영 기관 · 참여자</b><br><span class="inf">(블로그·SNS)</span></div>
+    </div>
+
+    <!-- money -->
+    <div class="row b1 money">
+      <div class="lab">③ 돈 흐름<br>⇐ 예산→보상</div>
+      <div class="cell first"><span class="start">시작점</span> 공공 예산 [U]</div>
+      <div class="cell">앱 연동·운영 용역비 [U] · 인쇄·제작비 [U]</div>
+      <div class="cell">— (참여비 유무 [U])</div>
+      <div class="cell">현장 소비 → 주변 상권<br><b>미집계</b></div>
+      <div class="cell"><span class="start">끝점</span> 캐시·기념품 보상</div>
+    </div>
+
+    <!-- data -->
+    <div class="row b2 data">
+      <div class="lab">④ 데이터 흐름<br>⇢ 이름·보유자</div>
+      <div class="cell">성과 받는 곳 · <span class="who">관광 효과 미집계</span></div>
+      <div class="cell">인증 로그 · <span class="who">앱사/운영 기관</span></div>
+      <div class="cell">발급 수 · <span class="who">진흥원</span><br><span class="inf">2023 6만1912권 → 2025 20만7370권</span></div>
+      <div class="cell">방문 인증 로그 · <span class="who">운영 기관</span></div>
+      <div class="cell">후기·SNS · <span class="who">외부 플랫폼</span><br><span class="inf">완주 1,146명 (2026.8 누적)</span></div>
+    </div>
+    <div class="row">
+      <div class="lab" style="border-right-color:transparent;font-weight:400;font-size:10.5px">피드백</div>
+      <div class="fb">
+        <svg viewBox="0 0 1000 30" preserveAspectRatio="none" aria-label="후기에서 기획으로 돌아가는 피드백이 끊김">
+          <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M8,0 L0,4 L8,8 z" fill="#2F6FD6"/></marker></defs>
+          <path d="M900,2 C900,26 600,26 520,26" stroke="#2F6FD6" stroke-width="1.6" stroke-dasharray="5 4" fill="none"/>
+          <path d="M440,26 C300,26 100,26 100,4" stroke="#2F6FD6" stroke-width="1.6" stroke-dasharray="5 4" fill="none" marker-end="url(#ah)"/>
+          <text x="480" y="30" text-anchor="middle" font-size="15" fill="#E8603C" font-weight="700">✕</text>
+        </svg>
+        <span style="position:absolute;left:52%;top:-2px;font-size:10.5px;color:var(--data)">후기·관광 효과 → 기획 : 회수 경로 없음 (데이터 단절)</span>
+      </div>
+    </div>
+
+    <!-- markers -->
+    <div class="row">
+      <div class="lab">마커</div>
+      <div class="cell" style="padding:0">
+        <div class="marker m-cost"><b>비용 C2</b> 같은 근대골목 무대에 스탬프 사업 여러 겹 [I]</div>
+        <div class="marker m-opp"><b>기회 O2</b> 인증 로그 → 성과 리포트 자동 집계 (보류)</div>
+      </div>
+      <div class="cell" style="padding:0">
+        <div class="marker m-cost"><b>비용 C1</b> 실물 여권·도장 용지 인쇄, 직접 날인 관리 [I]</div>
+      </div>
+      <div class="cell" style="padding:0">
+        <div class="marker m-bn"><b>병목 B1</b> 특별여권 8만 부 하루 만에 소진 · 여권1·2 소진 후 대기</div>
+      </div>
+      <div class="cell" style="padding:0">
+        <div class="marker m-bn"><b>병목 B2</b> 휴관·운영 변경·폭염으로 헛걸음</div>
+        <div class="marker m-opp pri"><b>기회 O1 · 우선 후보</b> 운영 시간·날씨 확인 후 다음 거점(쉼터 포함) 안내</div>
+      </div>
+      <div class="cell" style="padding:0">
+        <div class="marker m-opp"><b>기회 O3</b> 도장 대신 이야기가 쌓이는 개인 기록</div>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="note">
+      돈은 소비자가 아니라 공공 예산에서 시작해 참여자 보상으로 끝남 [I]. 금액은 자료에 없어 쓰지 않음 [U].
+      수치 출처: research/daegu_history_tour_cases.md 150·151·155행 (2차 보도 포함, 기준 시점 다름 주의).
+      근거 표: valuechain/analysis.md · signals.md
+    </div>
+    <div class="legend" role="list" aria-label="범례">
+      <span><span class="ln" style="border-top:3px solid var(--money)"></span>돈 (오른쪽→왼쪽)</span>
+      <span><span class="ln" style="border-top:2px dashed var(--data)"></span>데이터</span>
+      <span><span class="sw" style="background:var(--team-fill);outline:2px solid var(--team-stroke)"></span>팀 자산</span>
+      <span></span>
+      <span><span class="sw" style="background:var(--bn-fill);border:2px solid var(--bn-stroke)"></span>병목</span>
+      <span><span class="sw" style="background:var(--cost-fill);border:2px solid var(--cost-stroke)"></span>비용</span>
+      <span><span class="sw" style="background:var(--opp-fill);border:1px solid var(--opp-stroke)"></span>기회</span>
+      <span></span>
+    </div>
+  </footer>
+</div>
+</body>
+</html>
