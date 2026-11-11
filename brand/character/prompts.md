@@ -35,7 +35,8 @@ Pixel-art RPG stamp icon of a red apple with a small green leaf, round stamp bor
 Same chibi squirrel mascot Hongoki wearing a seasonal outfit: summer light hanbok-style jacket with a short hood (summer), autumn knit scarf with a golden leaf accent (autumn), winter padded jacket with a red scarf (winter). Pixel-art RPG style, three poses in a row, plain background.
 
 ### P4 · SNS 스티커 세트
-Set of 6 pixel-art sticker emoji of Hongoki: waving, holding a fan, eating a red apple, thumbs up, sleeping under a tree, sitting with a small bag. Each sticker has a white outline. Plain background.
+Set of 6 pixel-art sticker emoji of the same character as the reference sheet (Hongoki): apple-red fur, cream face and belly, green apple leaf on top of the head. Outfit: a short cream hood vest with a red strap across the chest, NOT a hanbok jacket. Carry a small cream-colored Daegu nakjakmandu-shaped crossbody pouch with a red stitch on the strap. Poses: waving, holding a fan, eating a red apple, thumbs up, sleeping under a tree, sitting with the pouch beside it. Keep the vest and pouch in all six stickers. Each sticker has a white outline. Plain background.
 
+- 수정 기록 (2026-11-11): 의상을 조끼와 납작만두 포쉐트 기준으로 고쳤습니다. 6종 중 저고리로 바뀐 결과물은 기준과 다르므로 폐기하고 다시 생성합니다.
 - 생성 도구: GPT 이미지 생성 등. 결과물은 팀 검토 후 채택합니다.
 - 주의: 캐릭터 이름은 가칭이므로 이미지에 글자를 넣지 않습니다. 이름 확정 후 다시 생성합니다.
