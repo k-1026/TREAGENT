@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>대프리카 히든 퀘스트 기획안 v10 (5분)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2a1f2d;--bg:#fff4dc;--paper:#fffdf6;--red:#e0474c;--red2:#a3232a;--mint:#2fa68f;--gold:#f2b632;--sky:#6cc7e0;--purple:#8b6fd1;--line:#2a1f2d;--navy:#1d2340}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:#22181f;font-family:"Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink)}
+.deck{position:relative;width:100vw;height:100vh;overflow:hidden;
+  background:linear-gradient(45deg,rgba(242,182,50,.13) 25%,transparent 25%) 0 0/36px 36px,
+             linear-gradient(-45deg,rgba(108,199,224,.13) 25%,transparent 25%) 0 0/36px 36px, var(--bg)}
+.slide{position:absolute;inset:0;padding:4vh 4vw;display:none;flex-direction:column;gap:2vh}
+.slide.on{display:flex}
+.tag{align-self:flex-start;font-family:"Do Hyeon",sans-serif;font-size:clamp(15px,1.3vw,19px);color:#fff;background:var(--mint);border:3px solid var(--line);box-shadow:4px 4px 0 var(--line);padding:.4vh 1.2vw}
+h1{font-family:"Do Hyeon",sans-serif;font-size:clamp(60px,7vw,110px);font-weight:400;margin:0;line-height:1.2;color:var(--red2);text-shadow:5px 5px 0 var(--gold)}
+h2{font-family:"Do Hyeon",sans-serif;font-size:clamp(34px,3.6vw,54px);font-weight:400;margin:0;line-height:1.25;color:var(--red2)}
+h3{font-family:"Do Hyeon",sans-serif;font-size:clamp(22px,2vw,30px);font-weight:400;margin:0 0 .6vh}
+p,li{font-size:clamp(16px,1.45vw,21px);line-height:1.55;margin:0}
+.lead{font-size:clamp(22px,2.2vw,32px);line-height:1.5;font-family:"Do Hyeon",sans-serif}
+.card{background:var(--paper);border:3px solid var(--line);box-shadow:6px 6px 0 var(--line);padding:1.6vh 1.5vw;position:relative}
+.card.mint{background:#dff5ef}.card.gold{background:#fff0c4}.card.red{background:#ffe0de}.card.sky{background:#dff1fa}.card.purple{background:#ece5fb}
+.ico{font-size:clamp(34px,3vw,50px);line-height:1;display:block;margin-bottom:.6vh}
+.grid{display:grid;gap:1.4vw;flex:1}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}
+.strip{display:flex;align-items:stretch;gap:.7vw}
+.strip .card{flex:1}
+.arrow{font-family:"Do Hyeon",sans-serif;font-size:clamp(26px,2.5vw,38px);align-self:center;color:var(--red2)}
+.hl{background:var(--paper);border:3px dashed var(--red);padding:1.4vh 1.6vw;box-shadow:6px 6px 0 var(--red)}
+ul.b{padding-left:1.3em;margin:0}ul.b li{margin:.4vh 0;font-size:clamp(15px,1.3vw,19px)}
+table{border-collapse:collapse;width:100%;font-size:clamp(14px,1.2vw,18px)}
+th,td{border:2px solid var(--line);padding:.7vh .6vw;text-align:left;vertical-align:top}
+th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:clamp(22px,2vw,30px)}
+.foot{margin-top:auto;font-size:clamp(12px,1vw,14px);color:#6b5a68}
+.full{background:#fff;border:4px solid var(--line);box-shadow:8px 8px 0 var(--line);display:flex;align-items:center;justify-content:center;padding:1vh;min-height:0}
+.full img{max-width:100%;max-height:100%;width:auto;height:auto;object-fit:contain;display:block}
+.full.sticker{background:#fdf2e3}
+.dlgbox{background:var(--navy);color:#fff;border:4px solid #fff;box-shadow:0 0 0 3px var(--line);padding:1.2vh 1.2vw}
+.dlgbox .who{font-family:"Do Hyeon",sans-serif;font-size:clamp(18px,1.6vw,24px);color:var(--gold);margin-bottom:.4vh}
+.dlgbox p{color:#fff;font-size:clamp(14px,1.2vw,18px);line-height:1.5}
+.legend{font-size:clamp(12px,1vw,14px);color:#6b5a68}
+.stamp-mini{height:1.3em;width:auto;vertical-align:-0.25em;margin-right:.35em}
+.bm{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.2vw;flex:1}
+.bm .card{display:flex;flex-direction:column;gap:.7vh}
+.bm .card h3{font-size:clamp(22px,2vw,28px)}
+.bm .row{font-size:clamp(15px,1.3vw,19px);line-height:1.45}
+.bm .row b{display:inline-block;min-width:3.6em;font-family:"Do Hyeon",sans-serif;font-weight:400;color:var(--red2)}
+.flow{display:flex;align-items:stretch;gap:.6vw}
+.flow .card{flex:1;padding:1.1vh .9vw}
+.flow .card p{font-size:clamp(13px,1.1vw,16px)}
+.nav{position:fixed;bottom:1.5vh;right:2vw;font-size:15px;color:#fff}
+/* v10 추가: 표 슬라이드용 (기존 th/td 규칙은 그대로 두고 크기만 조정) */
+.card.tbl{padding:0;display:flex;align-items:stretch;overflow:hidden}
+.tbl table th{font-size:clamp(18px,1.6vw,24px);padding:.8vh .7vw}
+.tbl table td{font-size:clamp(14px,1.25vw,18px);line-height:1.4;padding:.8vh .7vw}
+.tbl table td:first-child{font-family:"Do Hyeon",sans-serif;font-size:clamp(17px,1.5vw,22px);white-space:nowrap;background:#fff8e1}
+.tbl.sm table th{font-size:clamp(16px,1.4vw,21px);padding:.6vh .6vw}
+.tbl.sm table td{font-size:clamp(13px,1.1vw,16px);line-height:1.35;padding:.55vh .6vw}
+.tbl.sm table td:first-child{font-size:clamp(15px,1.3vw,19px)}
+/* 표·카드 확대용 (4, 10, 11, 12, 13장) */
+.tbl.md table th{font-size:clamp(19px,1.8vw,27px);padding:.8vh .7vw}
+.tbl.md table td{font-size:clamp(15px,1.45vw,22px);line-height:1.38;padding:.55vh .7vw}
+.tbl.md table td:first-child{font-size:clamp(17px,1.6vw,24px)}
+.tbl.xl table th{font-size:clamp(21px,2vw,30px);padding:1vh .8vw}
+.tbl.xl table td{font-size:clamp(17px,1.65vw,25px);line-height:1.42;padding:1vh .8vw}
+.tbl.xl table td:first-child{font-size:clamp(19px,1.8vw,27px)}
+.lg h3{font-size:clamp(26px,2.4vw,36px)}
+.lg ul.b li{font-size:clamp(17px,1.6vw,24px)}
+.card.s{padding:1.2vh 1.1vw}
+.card.s p,.card.s li{font-size:clamp(13px,1.15vw,17px);line-height:1.45}
+.card.s h3{font-size:clamp(19px,1.7vw,25px)}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- 발표 흐름: 문제(2) → 컨셉(3) → 기존 사례와의 차이(4) → 서비스 구조: 날씨·길·트랙·기록(5~8) → 안내자 하랑이(9~11) → 산업·기업 조사(12~13) → 사업 모델(14) → 정리(15)
+     시간 배분 (약 5분 이내): 1표지 10초 · 2문제 20 · 3컨셉 20 · 4유사사례 20 · 5날씨 25 · 6길 15 · 7트랙 20 · 8스탬프 20 · 9시트 20 · 10표정 10 · 11스티커 10 · 12산업① 20 · 13산업② 25 · 14사업 20 · 15정리 25 -->
+
+<!-- 1. 표지 -->
+<section class="slide on" style="justify-content:center">
+  <div class="tag">TREAGENT · AX 크리에이티브 트랙 · 발표 2026.11.13</div>
+  <h1>대프리카 히든 퀘스트</h1>
+  <p class="lead">🌤️ 하랑이와 함께 오늘 날씨에 맞는 길을 찾아 걸어요</p>
+  <div class="hl" style="margin-top:4vh;max-width:72vw">
+    <p class="lead">🥵 여름의 대프리카는 너무 뜨겁습니다.</p>
+    <p class="lead">🌳 그래서 날씨에 맞는 길을 대신 짜 드립니다.</p>
+  </div>
+  <div class="foot" style="margin-top:auto">이번 범위: 여름 '대프리카' 길(코스) 제작과 파일럿</div>
+</section>
+
+<!-- 2. 문제의식 -->
+<section class="slide">
+  <div class="tag">01 · 문제의식</div>
+  <h2>🔥 여름 대구는 나갈 이유도, 머물 곳도 약합니다</h2>
+  <div class="grid g2">
+    <div class="card red"><span class="ico">🔥</span>
+      <h3>더위가 깁니다</h3>
+      <ul class="b"><li>6~8월 평균기온 25.5℃ (전국 평년 23.7℃, 1991~2020)</li><li>2026년 7월 낮 최고 36℃ 예보 (YTN)</li></ul>
+      <p class="legend" style="margin-top:.6vh">근거: 대구지방기상청 분석, ytn.co.kr/_ln/0115_202607131021006792</p></div>
+    <div class="card gold"><span class="ico">🍂</span>
+      <h3>관광이 가을에 몰립니다</h3>
+      <ul class="b"><li>축제와 단풍철에 늘고 성수기 뒤에 줄어듦</li><li>여름에는 나갈 이유가 줄어듦</li></ul>
+      <p class="legend" style="margin-top:.6vh">근거: kbmaeil.com/article/20260709500236 (원자료 수치 확인 필요)</p></div>
+    <div class="card sky"><span class="ico">🏠</span>
+      <h3>쉼터 정보가 짧습니다</h3>
+      <ul class="b"><li>무더위쉼터 1,196곳 중 18시 이후 운영 235곳 (19.6%)</li><li>24시간 운영은 5곳 (2026.8 기준)</li></ul>
+      <p class="legend" style="margin-top:.6vh">근거: 매일신문, plan/daeprica_hidden_quest_plan.md 9장</p></div>
+    <div class="card mint"><span class="ico">📊</span>
+      <h3>후기에서 불편이 보입니다</h3>
+      <ul class="b"><li>후기 52건 중 대기·혼잡 13건</li><li>휴관·운영 변경 10건</li></ul>
+      <p class="legend" style="margin-top:.6vh">근거: painpoint/voc_classified.csv (요약문 기준, 전체 불편률 아님)</p></div>
+  </div>
+  <div class="hl" style="padding:1.2vh 1.5vw"><p class="lead" style="font-size:clamp(19px,1.8vw,26px)">🎯 기존 스탬프 투어는 정해진 장소 목록을 따라갑니다. 오늘 날씨에 맞는 순서는 이용자가 직접 고민합니다.</p></div>
+</section>
+
+<!-- 3. 컨셉 -->
+<section class="slide">
+  <div class="tag">02 · 컨셉</div>
+  <h2>🧭 그래서 스탬프 투어를 날씨에 맞춰 안내하는 프로그램을 만듭니다</h2>
+  <div class="card tbl" style="flex:0 0 auto">
+    <table>
+      <tr><th style="width:16%">구분</th><th>기존 스탬프 투어</th><th>대프리카 히든 퀘스트</th></tr>
+      <tr><td>🗺️ 순서</td><td>정해진 장소 목록</td><td>하랑이가 날씨·시간대·요일에 맞춰 짠 길(코스)</td></tr>
+      <tr><td>🌡️ 날씨</td><td>이용자가 직접 확인</td><td>폭염이면 실내·그늘 먼저, 특보 시 야외 안내 중단</td></tr>
+      <tr><td>✅ 인증</td><td>도장 또는 앱 인증</td><td>방문 인증 (위치 또는 QR), 방탈출 느낌은 가볍게</td></tr>
+      <tr><td>📒 기록</td><td>스탬프 수집</td><td>날짜·장소·날씨가 자동으로 쌓이는 장부</td></tr>
+    </table>
+  </div>
+  <div class="grid g3" style="flex:0 0 auto">
+    <div class="card gold"><h3>🎮 게임 요소는 최소</h3><p>퍼즐 풀이가 중심이 아닙니다.</p></div>
+    <div class="card mint"><h3>✍️ 직접 쓰지 않음</h3><p>방문하면 기록이 자동으로 쌓입니다.</p></div>
+    <div class="card sky"><h3>🌍 현실과 연결</h3><p>실제 장소, 실시간 날씨, 굿즈로 잇습니다.</p></div>
+  </div>
+  <div class="hl"><p class="lead">🐿️ "하랑이와 함께 오늘 날씨에 맞는 길을 찾아 걸어요."</p></div>
+  <div class="foot">근거: brand/game_concept.md 1절·11절, plan/daeprica_hidden_quest_plan.md 방향 변경 (2026-11-12)</div>
+</section>
+
+<!-- 4. 벤치마크 ① 유사 서비스 -->
+<section class="slide">
+  <div class="tag">03 · 벤치마크 ① 유사 서비스</div>
+  <h2>🔍 기존 사례에서 기록·인증·보상을 가져오고, 고정 목록을 바꿉니다</h2>
+  <div class="card tbl xl" style="flex:0 0 auto">
+    <table>
+      <tr><th style="width:21%">사례</th><th>가져올 것</th><th>바꿀 것</th></tr>
+      <tr><td>📰 카카오 곳곳</td><td>매거진 번호 카드(도감), 산책빙고 12곳(단계형 보상), 혼잡 3단계 표시</td><td>대구 제휴를 먼저 확보 (현재 1곳)</td></tr>
+      <tr><td>🛂 국가유산 방문자 여권</td><td>상시 참여, 완주 기념품 신청</td><td>도장 날인 → 디지털 인증</td></tr>
+      <tr><td>🎫 대구 스탬프로드 20</td><td>기존 앱(캐시워크) 인증 재사용</td><td>고정 목록 → 날씨·시간대 맞춤 순서</td></tr>
+      <tr><td>🌿 트랭글 착한탐방</td><td>안전·환경 행동에 주는 인증 보상</td><td>쉼터 체크인과 연결 (날씨 연동 사례는 찾지 못함)</td></tr>
+      <tr><td>⛰️ 우오봉</td><td>배지 수집</td><td>경쟁·랭킹 → 협력과 안전 우선</td></tr>
+      <tr><td>🌍 몽촌토성·Escape the City</td><td>도시를 무대로 한 미션형 게임 (AR+GPS 학습 / 팀당 약 29유로, 사업자 자료)</td><td>장소 고정 → 날씨에 따라 바뀌는 길</td></tr>
+    </table>
+  </div>
+  <div class="foot">출처: 카카오 보도자료 2026.10.06·10.16·11.06 (곳곳 참여자·매출 효과 비공개), 국가유산청 보도자료 2026.4.14, 대구MBC 2026.09.22, 앱스토어 트랭글·우오봉 (2026.11.11 열람), research/daegu_history_tour_cases.md 58행, research/overseas_benchmark_cases.md 38행 [2차]</div>
+</section>
+
+<!-- 5. 날씨 → 길 -->
+<section class="slide">
+  <div class="tag">04 · 날씨에 따라 길이 바뀝니다</div>
+  <h2>🌡️ 규칙 엔진이 날씨를 판정하고, 하랑이가 길을 안내합니다</h2>
+  <div class="strip">
+    <div class="card sky"><h3>① 📥 입력</h3><p>기온·체감, 시간대, 요일, 위치</p></div>
+    <span class="arrow">▶</span>
+    <div class="card mint"><h3>② ⚙️ 규칙 판정</h3><p>날씨 모드 결정</p></div>
+    <span class="arrow">▶</span>
+    <div class="card gold"><h3>③ 🗺️ 길 생성</h3><p>검수된 장소 DB에서 선택</p></div>
+    <span class="arrow">▶</span>
+    <div class="card red"><h3>④ 🐿️ 안내</h3><p>하랑이가 문장으로 안내</p></div>
+  </div>
+  <div class="grid" style="grid-template-columns:1.5fr 1fr;flex:1;min-height:0">
+    <div class="card tbl xl">
+      <table>
+        <tr><th style="width:30%">날씨</th><th>길 구성</th></tr>
+        <tr><td>🌳 28℃ 미만</td><td>탐험: 골목·공원 야외, 최대 60분</td></tr>
+        <tr><td>🌿 28~33℃</td><td>그늘: 그늘 경로와 실내 구간 함께</td></tr>
+        <tr><td>❄️ 33℃ 이상</td><td>실내: 쉼터·박물관·카페·3호선 중심</td></tr>
+        <tr><td>🛑 폭염특보</td><td>안전: 야외 안내 중단, 쉼터·물 안내</td></tr>
+        <tr><td>☔ 호우·낙뢰</td><td>이동 보류: 실내·일정 변경 안내</td></tr>
+      </table>
+    </div>
+    <div class="card purple"><h3>🛡️ 안전 원칙</h3>
+      <ul class="b"><li>안전 규칙은 AI가 바꿀 수 없음</li><li>AI는 문장만, 장소·쉼터는 검수 DB</li><li>위치는 사용 중에만, 좌표는 저장하지 않음</li><li>쉼터 정보에 기준 시각·운영 시간 표기</li></ul></div>
+  </div>
+  <div class="foot">근거: plan/daeprica_hidden_quest_plan.md 6-1·8장, plan/treagent_customer_strategy_v1.md 추천 규칙. 기준 수치(28℃·33℃)는 기상청·보건 기준으로 확정 전 [확인 필요]</div>
+</section>
+
+<!-- 6. 길(코스) -->
+<section class="slide">
+  <div class="tag">05 · 길(코스) 설계</div>
+  <h2>🚶 길 하나는 허브에서 시작해 실내 대안을 품고 끝납니다</h2>
+  <div class="card tbl" style="flex:0 0 auto">
+    <table>
+      <tr><th style="width:17%">길</th><th style="width:10%">시간</th><th>흐름</th><th style="width:28%">날씨 대응</th></tr>
+      <tr><td>🏮 코스 A (중구)</td><td>30분</td><td>동성로 → 근대골목 → 약령시 박물관 → 서문시장 → 종점</td><td>폭염·한파 시 약령시 실내를 먼저</td></tr>
+      <tr><td>🚇 코스 B</td><td>60분</td><td>반월당·동대구 → 3호선 탑승 → 청라언덕역·서문시장역 하차 → 종점</td><td>이동 대부분이 열차라 더위에 강함</td></tr>
+    </table>
+  </div>
+  <div class="grid g3" style="flex:0 0 auto">
+    <div class="card red"><span class="ico">🚶</span><h3>야외는 연속 15분 이하</h3><p>더위와 한파에 무리가 없도록 끊어 줍니다.</p></div>
+    <div class="card sky"><span class="ico">🏠</span><h3>실내 대안 1곳 이상</h3><p>모든 스테이션에 대체 장소를 둡니다.</p></div>
+    <div class="card gold"><span class="ico">⏱️</span><h3>30·60·90분 중 하나</h3><p>짧은 일정에 맞춰 완결됩니다.</p></div>
+  </div>
+  <div class="hl"><p class="lead" style="font-size:clamp(18px,1.7vw,24px)">🔀 순서는 권장이고, 날씨와 혼잡에 따라 바꿔도 인증됩니다. (추천안, 팀 결정 전)</p></div>
+  <div class="foot">근거: plan/daeprica_hidden_quest_plan.md 4-2·5-1장, brand/game_concept.md 2절. 거리·운영 시간은 현장 확인 전 추정치</div>
+</section>
+
+<!-- 7. 트랙 2종 + 인증 -->
+<section class="slide">
+  <div class="tag">06 · 트랙 2종과 방문 인증</div>
+  <h2>🎟️ 가볍게 도는 길과, 방탈출처럼 푸는 길을 나눕니다</h2>
+  <div class="card tbl" style="flex:0 0 auto">
+    <table>
+      <tr><th style="width:16%">구분</th><th>기본 트랙 (스탬프 코스)</th><th>미스터리 트랙 (가칭)</th></tr>
+      <tr><td>🚶 내용</td><td>하랑이가 짠 길을 따라 장소를 방문</td><td>야외 방탈출 형식으로 장소마다 단서를 찾아 이동</td></tr>
+      <tr><td>✅ 인증</td><td>위치 또는 QR</td><td>단서 풀이 (선택형 위주)</td></tr>
+      <tr><td>👤 대상</td><td>가볍게 참여하는 이용자</td><td>더 몰입하려는 이용자</td></tr>
+      <tr><td>🛡️ 안전</td><td colspan="2">야외 연속 15분 이하, 폭염특보 시 야외 단서 잠금, 풀이는 쉼터·실내에서 이어서 가능</td></tr>
+    </table>
+  </div>
+  <div class="grid g2">
+    <div class="card sky"><h3>📍 방문 인증 후보 A: 위치 인증</h3>
+      <ul class="b"><li>스팟 근처에서 앱이 위치로 확인</li><li>설치물이 필요 없음</li></ul></div>
+    <div class="card gold"><h3>📷 방문 인증 후보 B: QR + 단서 고르기</h3>
+      <ul class="b"><li>QR을 찍고 하랑이의 문제를 선택지에서 고름</li><li>위치 권한이 필요 없음, 현장 QR 설치 비용 있음</li></ul></div>
+  </div>
+  <div class="foot">인증 방식과 미스터리 트랙 도입 범위·과금은 팀 결정 전 (보류). 야외 방탈출 수익모델 근거는 출처 확인 필요. 근거: brand/game_concept.md 2-5절, 5-3절</div>
+</section>
+
+<!-- 8. 스탬프·기록 -->
+<section class="slide">
+  <div class="tag">07 · 스탬프와 방문 기록</div>
+  <h2>🏅 방문하면 스탬프가 찍히고, 기록은 자동으로 쌓입니다</h2>
+  <div class="grid g3" style="flex:1">
+    <div class="card red"><h3><img class="stamp-mini" src="assets/stamp_nungeum.webp" alt="">능금 스탬프</h3>
+      <ul class="b"><li>스팟 방문 인증으로 받음</li><li>방문 증거이며 장부 한 줄로 연결</li><li>날씨 보너스 스탬프는 없음</li></ul></div>
+    <div class="card gold"><h3>📒 장부와 개인 기록</h3>
+      <ul class="b"><li>날짜, 스팟, 날씨가 자동 기록</li><li>이용자가 글을 쓰지 않음</li><li>좌표는 저장하지 않음</li></ul></div>
+    <div class="card purple"><h3>🎖️ 권역 완주 배지</h3>
+      <ul class="b"><li>3~4개 권역 단위</li><li>예시: 3곳 이상 인증, 그중 1곳은 실내</li><li>실내 스팟으로도 채울 수 있음</li></ul></div>
+    <div class="card mint"><h3>⚖️ 왜 권역인가</h3>
+      <ul class="b"><li>멀리 떨어진 구·군에 걸리면 야외 이동이 늘어남</li><li>권역으로 묶어 안전과 지역 분산을 함께 잡음</li></ul></div>
+    <div class="card sky"><h3>🎁 보상 방향</h3>
+      <ul class="b"><li>기본은 디지털 (배지, 장부 한 줄)</li><li>제휴 혜택과 기념품은 협의 후 [확인 필요]</li></ul></div>
+    <div class="card" style="background:#fff8e1"><h3>🧸 현실과 잇기 (1차)</h3>
+      <ul class="b"><li>설치물 없이 실시간 날씨 대사와 굿즈로 연결</li><li>현장 표지는 지자체 협의 후 확장</li></ul></div>
+  </div>
+  <div class="foot">수치와 조건은 예시이며 팀이 정합니다. 근거: brand/game_concept.md 5·6·7·11절</div>
+</section>
+
+<!-- 9. 하랑이 캐릭터 시트 (유지) -->
+<section class="slide">
+  <div class="tag">08 · 안내자 하랑이</div>
+  <h2>🐿️ 이 길을 안내하는 건 바람 도사 견습생 하랑이입니다</h2>
+  <div class="grid" style="grid-template-columns:1.5fr 1fr;flex:1;min-height:0">
+    <div class="full"><img src="assets/harangi_sheet.webp" alt="하랑이 캐릭터 시트 전체"></div>
+    <div style="display:flex;flex-direction:column;gap:1.4vh;min-height:0">
+      <div class="card gold"><h3>😊 상태 알림 (표정)</h3>
+        <ul class="b"><li>행복 → 스탬프 · 차분 → 쉼터 안내 · 놀람 → 길 변경</li></ul></div>
+      <div class="card purple"><h3>🤝 이용자는 '길동무'</h3>
+        <ul class="b"><li>하랑이가 길을 짜고, 길동무는 함께 걷습니다</li><li>대사에 이름을 넣고, 없으면 '길동무'</li></ul></div>
+      <div class="card mint"><h3>🌬️ 설정</h3>
+        <ul class="b"><li>능금 이파리, 짧은 조끼, 납작만두 포쉐트</li><li>이름 하랑이 확정</li></ul></div>
+      <div class="card" style="background:#fff3e0"><h3>🍎 왜 '능금'인가</h3>
+        <ul class="b"><li>사과와 다른 토종 과일, 열매는 더 작음</li><li>1905년 칠성동 과수원 이후 '능금의 도시'로 불렸다는 보도 (2차)</li><li>지역 명물 느낌의 모티프이며 공식 상징은 아님</li></ul></div>
+    </div>
+  </div>
+  <div class="foot">캐릭터 시트 원본 (assets/harangi_sheet.webp). 근거: research/daegu_nunggeum_research_v1.md 6-2절, 6-5절, brand/character/harangi_character.md 8절</div>
+</section>
+
+<!-- 10. 표정·대사 (스마트폰 3분할) -->
+<section class="slide">
+  <style>
+    .phones{display:flex;justify-content:center;gap:3.5vw;flex:1;align-items:center;min-height:0}
+    .phone{--w:calc(min(25vw,420px) - 32px);width:min(25vw,420px);background:#1b1b22;border-radius:40px;padding:26px 16px;box-shadow:10px 10px 0 var(--line)}
+    /* 얼굴을 화면 위쪽에 붙이고 대사창을 그 바로 아래에 둬서 대사가 잘리지 않게 함 */
+    .scr{position:relative;height:calc(var(--w) + 262px);background:#fffdf6;border-radius:24px;overflow:hidden}
+    .face{position:absolute;left:0;top:8px;width:100%;aspect-ratio:1/1;background-image:url(assets/harangi_expressions.webp);background-size:300% auto;background-repeat:no-repeat}
+    /* 원본(2000px) 기준 각 하랑이 몸체 중심(368 / 1005 / 1626)이 정사각 창 가운데 오도록 오프셋을 폭(--w)에 비례해 계산 */
+    .f1{background-position:calc(var(--w) * -0.0525) 0} .f2{background-position:calc(var(--w) * -1.008) 0} .f3{background-position:calc(var(--w) * -1.9395) 0}
+    .dlg{position:absolute;left:12px;right:12px;top:calc(var(--w) + 4px);background:var(--navy);color:#fff;border:3px solid #fff;border-radius:16px;padding:14px}
+    .dlg .who{font-family:"Do Hyeon",sans-serif;font-size:clamp(21px,1.8vw,28px);color:var(--gold);margin-bottom:.6vh}
+    .dlg p{color:#fff;font-size:clamp(17px,1.55vw,24px);line-height:1.55}
+  </style>
+  <div class="tag">08 · 안내자 하랑이: 표정과 대사</div>
+  <h2>💬 앱 화면에서 하랑이는 이렇게 말합니다</h2>
+  <div class="phones">
+    <div class="phone"><div class="scr"><div class="face f1"></div><div class="dlg"><div class="who">😊 행복 · 스탬프</div><p>"찍었어요!<br>이 시간대 이 자리는<br>장부에 처음이에요.<br>한 칸 채웠네요~!"</p></div></div></div>
+    <div class="phone"><div class="scr"><div class="face f2"></div><div class="dlg"><div class="who">😌 차분 · 쉼터</div><p>"여기서 좀 쉴까요?<br>땀 닦고, 물 마시고요.<br>서두를 건 없어요!"</p></div></div></div>
+    <div class="phone"><div class="scr"><div class="face f3"></div><div class="dlg"><div class="who">😲 놀람 · 길 변경</div><p>"오늘은 체감이 높아요.<br>실내 길로 바꿨어요.<br>무리하는 건 안 시킬 거예요!!"</p></div></div></div>
+  </div>
+  <div class="foot">대사는 사용자 수정본(brand/character/harangi_character.md 8절 예문 6·5·3)에서 줄여 옮김. 수치·기준 시각 자리는 실제 데이터로 채움. 표정 원본 assets/harangi_expressions.webp</div>
+</section>
+
+<!-- 11. 스티커 -->
+<section class="slide">
+  <div class="tag">08 · 안내자 하랑이: SNS 스티커</div>
+  <h2>📱 인증 사진에 붙이는 하랑이 스티커</h2>
+  <div class="grid" style="grid-template-columns:1.5fr 1fr;flex:1;min-height:0">
+    <div class="full sticker"><img src="assets/sticker_set_final_v4.webp" alt="하랑이 SNS 스티커 세트 최종본 전체"></div>
+    <div class="lg" style="display:flex;flex-direction:column;gap:1.4vh;justify-content:space-between">
+      <div class="card mint"><h3>📸 이렇게 씁니다</h3>
+        <ul class="b"><li>방문 인증 사진에 붙여 공유</li><li>챌린지 해시태그와 함께 노출</li></ul></div>
+      <div class="card gold"><h3>🙌 6종</h3>
+        <ul class="b"><li>손 흔들기, 부채 들기</li><li>사과 먹기, 엄지 척</li><li>나무 아래 낮잠, 조끼 차림으로 앉아 쉬기</li></ul></div>
+      <div class="card" style="background:#ffd9e4"><h3>✨ 기대효과 (추정)</h3>
+        <ul class="b"><li>인증 공유로 캐릭터 노출</li><li>챌린지 참여의 계기</li></ul></div>
+    </div>
+  </div>
+  <div class="foot">팀 제작 예시 이미지. 사용 허가 범위 확인 필요. 원본 assets/sticker_set_final_v4.webp.</div>
+</section>
+
+<!-- 12. 산업·기업 조사 ① 공공 운영 구조 -->
+<section class="slide">
+  <div class="tag">09 · 벤치마크 ② 산업·기업 조사 (운영 구조)</div>
+  <h2>🏛️ 스탬프 투어는 공공 예산으로 돌아가고, 성과는 거의 공개되지 않습니다</h2>
+  <div class="card tbl md" style="flex:0 0 auto">
+    <table>
+      <tr><th style="width:21%">운영 주체</th><th style="width:19%">인증 도구</th><th>거점과 보상</th><th style="width:24%">공개 수치</th></tr>
+      <tr><td>🛂 국가유산청</td><td>실물 여권 + 앱</td><td>76곳 (+특별 30곳), 기념품·키링</td><td>발급 63만 28권, 완주 1,146명 (2026.8 누적)</td></tr>
+      <tr><td>🎫 대구문화예술진흥원</td><td>캐시워크 앱</td><td>20곳, 보상 방식 미확인</td><td>없음</td></tr>
+      <tr><td>🏘️ 대구 북구청</td><td>모바일</td><td>20곳, 6곳 이상이면 2만 원 상품권 (월 50명 추첨), 주민 제외</td><td>없음</td></tr>
+      <tr><td>🏙️ 구미시</td><td>전용 앱</td><td>23곳, 8곳+영수증 1만 원 이상이면 지역상품권</td><td>상반기 138명</td></tr>
+      <tr><td>🚉 국토교통부</td><td>자동 인증 앱</td><td>52곳, 4~32개 단계 보상, 영수증 이벤트</td><td>작년 1,526명</td></tr>
+    </table>
+  </div>
+  <div class="grid g3" style="flex:0 0 auto">
+    <div class="card gold s"><h3>💰 조달 규모 (공고)</h3>
+      <ul class="b"><li>관광공사 100선 운영 추정가 1억 8,085만 원</li><li>국립공원공단 여권·홍보물 제작 낙찰 1억 505만 원</li></ul></div>
+    <div class="card sky s"><h3>🏢 카카오 (곳곳)</h3>
+      <ul class="b"><li>2025 연결 매출 8조 990억 원, 플랫폼 53.3%</li><li>2026 말 인적분할 예정, 곳곳 성과는 비공개</li></ul></div>
+    <div class="card mint s"><h3>🏢 국가유산진흥원</h3>
+      <ul class="b"><li>2025 결산 수입 1,475억 원 중 위탁수입 약 70.5%</li><li>지역관광 효과 미집계 지적 (국회 자료)</li></ul></div>
+  </div>
+  <div class="hl" style="padding:1.1vh 1.5vw"><p class="lead" style="font-size:clamp(17px,1.5vw,22px)">👉 지역 소비를 확인하는 곳은 구미와 국토부 둘뿐입니다. 방문 기록을 자동으로 집계하는 일이 빈칸입니다.</p></div>
+  <div class="foot">출처: research/valuechain/operators/comparison.md (R1~R8), research/company/kakao_gotgot/onepager.md, research/company/kh_promotion/onepager.md. 위탁수입 비중은 해석, 지역관광 효과 미집계는 단일 출처, 운영 주체 사업비는 [미확인]</div>
+</section>
+
+<!-- 13. 산업·기업 조사 ② 제작·솔루션 업체 -->
+<section class="slide">
+  <div class="tag">09 · 벤치마크 ② 산업·기업 조사 (제작·솔루션 업체)</div>
+  <h2>🧩 업체들은 인증 도구를 팔고, 캐릭터와 이야기는 고객 몫입니다</h2>
+  <div class="card tbl md" style="flex:0 0 auto">
+    <table>
+      <tr><th style="width:21%">업체</th><th>제공 범위</th><th style="width:34%">가격·규모</th></tr>
+      <tr><td>🔲 큐알스탬프 (엠카)</td><td>QR·NFC·GPS·AR·퀴즈 인증, 리워드 게임 6종</td><td>정액 플랜 100만 원~, 직원 3명, 매출 약 5.4억 원 (2024)</td></tr>
+      <tr><td>🎪 이벤터스</td><td>행사 플랫폼 안의 QR 스탬프, 모집·결과 리포트</td><td>베이직 무료, 직원 14명, 매출 비공개</td></tr>
+      <tr><td>🗺️ 퀘스투어 (메타비)</td><td>셀프+맞춤 미션, QR/GPS, 상권 리포트</td><td>30만·200만·600만 원~ (인원 단계), 직원 4명, 매출 약 2.5억 원 (2022)</td></tr>
+      <tr><td>🌐 리얼월드</td><td>AI 스토리 분기, 대화형 NPC, 콘텐츠 실시간 변경</td><td>부산 티켓 정가 35,900원 (얼리버드 14,900원)</td></tr>
+      <tr><td>🎮 플레이더월드</td><td>대구 동성로 야외 방탈출 〈멸망한 세계에서 방탈출〉</td><td>2022 텀블벅 120명 후원, 432만 6천 원</td></tr>
+    </table>
+  </div>
+  <div class="grid g2" style="flex:0 0 auto">
+    <div class="card sky s"><h3>🕳️ 비어 있는 자리</h3>
+      <ul class="b"><li>3개 업체 모두 인증·리워드·게임 도구를 팔고, 캐릭터·스토리 제작은 상품 목록에 없음</li><li>업체 규모는 작음 (직원 3~14명)</li></ul></div>
+    <div class="card red s"><h3>⚠️ 이미 있는 것</h3>
+      <ul class="b"><li>지역 소비·상권 리포트는 퀘스투어가 판매</li><li>AI NPC·분기·실시간 변경은 리얼월드가 제안</li></ul></div>
+  </div>
+  <div class="hl" style="padding:1.1vh 1.5vw"><p class="lead" style="font-size:clamp(17px,1.5vw,22px)">👉 차별점은 '날씨·운영 변경 → 대체 길 → 진행 유지'에 하랑이 이야기를 얹는 것이고, 파일럿으로 검증합니다.</p></div>
+  <div class="foot">출처: research/valuechain/competitors/comparison.md (가격은 회사 공개 시작가 VAT 별도, 2026-11-12 확인. 직원·매출은 NICE·국민연금 2차 집계), plan/treagent_customer_strategy_v1.md 3·6장 (tumblbug.com/daegu_escape/story). 리얼월드·플레이더월드 구매 실적은 [미확인]</div>
+</section>
+
+<!-- 14. 사업 모델 -->
+<section class="slide">
+  <div class="tag">10 · 사업 모델</div>
+  <h2>💼 그래서 소비자에게 팔고, 지자체와 대행사에 제작·운영을 제안합니다</h2>
+  <div class="card tbl" style="flex:0 0 auto">
+    <table>
+      <tr><th style="width:19%">판매 경로</th><th>고객</th><th>방식</th></tr>
+      <tr><td>🙋 민간 직접 판매</td><td>대구 시민·커플·친구·방탈출 이용자</td><td>디지털 팀권 (첫 가격 실험값 14,900원, 가설), 기간 한정 회차부터</td></tr>
+      <tr><td>🏛️ 지자체·재단 수주</td><td>구·군 관광·문화 사업, 관광기관</td><td>한 코스 단위로 기획·답사·제작·운영·리포트 견적</td></tr>
+      <tr><td>🎪 행사 대행사 납품</td><td>공공 행사를 수탁한 대행사</td><td>코스·미션 제작과 현장 운영 지원을 과업으로 견적</td></tr>
+    </table>
+  </div>
+  <div class="grid g3" style="flex:0 0 auto">
+    <div class="card gold s"><h3>🎫 소비자 가격 참고</h3><ul class="b"><li>퀘스투어 북촌 1인 10,000원</li><li>수원화성의 비밀 테마당 7,500원</li></ul></div>
+    <div class="card sky s"><h3>🏗️ 제작비 참고</h3><ul class="b"><li>퀘스투어 개발 라이트 1,500만 원부터</li><li>프리미엄 3,000만 원부터</li></ul></div>
+    <div class="card mint s"><h3>🏙️ 대구 공공 수요 사례</h3><ul class="b"><li>국채보상운동기념공원 독립추리게임 (2024, 대학생 약 400명)</li><li>낙찰가·참가비는 미확인</li></ul></div>
+  </div>
+  <div class="hl"><p class="lead" style="font-size:clamp(18px,1.6vw,23px)">⚠️ 사례는 "있다"까지만 말합니다. 판매량·마진·구매 의사는 파일럿에서 검증합니다.</p></div>
+  <div class="foot">출처: plan/treagent_customer_strategy_v1.md 6장 (questour.kr, swcf.or.kr, 뉴시스 2024.3.24). 가격 단위가 인원·테마·키트로 달라 동일 시장가가 아님. 과금 방식은 팀 결정 전</div>
+</section>
+
+<!-- 15. 정리: 문제 → 대응, 시즌, 다음 단계 -->
+<section class="slide">
+  <div class="tag">11 · 정리와 다음 단계</div>
+  <h2>🛠️ 처음 짚은 문제마다 대응이 있고, 여름 하나에 집중합니다</h2>
+  <div class="card tbl xl" style="flex:0 0 auto">
+    <table>
+      <tr><th style="width:30%">문제</th><th>대응</th><th style="width:12%">장</th></tr>
+      <tr><td>🔥 더위·쉼터 운영 시간</td><td>날씨 모드별 길, 쉼터 기준 시각·운영 시간 표기</td><td>5·6</td></tr>
+      <tr><td>🍂 가을 쏠림</td><td>6/21~9/23 여름 시즌 길</td><td>15</td></tr>
+      <tr><td>📊 대기·혼잡·운영 변경</td><td>운영 상태 반영, 대체 길 안내</td><td>5</td></tr>
+      <tr><td>🗺️ 고정 장소 목록</td><td>날씨·시간대·요일 맞춤 길, 자동 장부</td><td>3·4·8</td></tr>
+      <tr><td>🏢 도구 위주 시장, 성과 미공개</td><td>하랑이 이야기와 방문 기록 집계</td><td>9·12·13</td></tr>
+    </table>
+  </div>
+  <div class="grid g3" style="flex:0 0 auto">
+    <div class="card sky s"><h3>📅 시즌 3막</h3>
+      <ul class="b"><li>1막 6/21~7/22 하랑이 소개</li><li>2막 7/23~8/22 폭염 정점</li><li>3막 8/23~9/23 마무리</li></ul></div>
+    <div class="card red s"><h3>⚠️ 아직 정할 것</h3>
+      <ul class="b"><li>날씨 기준 수치, 방문 인증 방식</li><li>미스터리 트랙 범위·과금</li><li>완주 보상 (디지털 / 실물)</li></ul></div>
+    <div class="card mint s"><h3>🧪 파일럿에서 볼 것</h3>
+      <ul class="b"><li>시작률·완주율, 첫 인증률</li><li>변경 안내 후 대체 길 시작률</li><li>실제 결제와 견적 요청</li></ul></div>
+  </div>
+  <div class="hl" style="padding:1.2vh 1.5vw"><p class="lead" style="font-size:clamp(19px,1.8vw,26px)">🍎 하랑이와 함께 오늘 날씨에 맞는 길을 걷고, 능금 스탬프로 대프리카의 여름을 기록합니다.</p></div>
+  <div class="foot">장 번호는 발표 순서 기준. 하지 6/21 시작은 대학 방학 일정 확인 필요, 내부는 절기 6파트. 지표 정의는 목표 숫자 없이 정함. 근거: brand/game_concept.md 3·12절, plan/treagent_customer_strategy_v1.md 7장</div>
+</section>
+
+<div class="nav" id="nav">← → 키로 이동</div>
+</div>
+<script>
+(function(){
+  var s=document.querySelectorAll('.slide'),i=0;
+  function show(n){s[i].classList.remove('on');i=(n+s.length)%s.length;s[i].classList.add('on');document.getElementById('nav').textContent=(i+1)+' / '+s.length+' · ← → 키로 이동';}
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key===' ')show(i+1);if(e.key==='ArrowLeft')show(i-1);});
+  document.addEventListener('click',function(e){if(e.clientX>window.innerWidth/2)show(i+1);else show(i-1);});
+  show(0);
+})();
+</script>
+</body>
+</html>
