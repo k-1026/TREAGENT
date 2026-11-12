@@ -24,5 +24,5 @@
 - 혼합 = 중립 규칙은 팀 결정으로 정함. 다른 리뷰 중 혼합 글이 있으면 같은 규칙으로 다시 봐야 함.
 
 ## 출처
-- `research/reviews/analysis/reviews.csv`
-- `research/reviews/analysis/reviews_tagged.csv`
+- `research/data/reviews/analysis/reviews.csv`
+- `research/data/reviews/analysis/reviews_tagged.csv`

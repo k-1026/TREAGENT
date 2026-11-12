@@ -26,6 +26,6 @@
 - 19번은 부정(−)에서 중립(0)으로 재분류 — 팀 결정 (요약문에 불만 표현 없음).
 
 ## 출처
-- `research/reviews/README.md` 7장 (다음 단계 기준)
-- `research/reviews/analysis/reviews_tagged.csv` (적용 결과)
-- `research/reviews/review_log.md` (표본 검사 결과)
+- `research/data/reviews/README.md` 7장 (다음 단계 기준)
+- `research/data/reviews/analysis/reviews_tagged.csv` (적용 결과)
+- `research/data/reviews/review_log.md` (표본 검사 결과)

@@ -26,6 +26,6 @@
 - 주제가 "산책"과 "산책·공원"으로 나뉘어 있어 주제별 집계는 참고용.
 
 ## 출처
-- `research/reviews/analysis/reviews.csv` (원문 요약 20건, `raw/blog.csv` 기반)
-- `research/reviews/analysis/reviews_tagged.csv` (분류 20건)
-- `research/reviews/raw/blog.csv` (수집 원자료)
+- `research/data/reviews/analysis/reviews.csv` (원문 요약 20건, `raw/blog.csv` 기반)
+- `research/data/reviews/analysis/reviews_tagged.csv` (분류 20건)
+- `research/data/reviews/raw/blog.csv` (수집 원자료)

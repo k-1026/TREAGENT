@@ -2,7 +2,7 @@
 
 - 작성일: 2026-11-10
 - 행위자: `brand/customer_persona.md`의 후보 2 (1박 2일 대구 방문 2030 혼행객). 팀 결정 2026-11-10.
-- 근거 원천: `research/reviews/raw/blog.csv` 리뷰 요약 20건 (archive/metadata.csv 등록). 표기는 `raw/blog.csv 번호`.
+- 근거 원천: `research/data/reviews/raw/blog.csv` 리뷰 요약 20건 (archive/metadata.csv 등록). 표기는 `raw/blog.csv 번호`.
 - 원칙
   - 근거가 3건 미만이면 "근거 부족", 근거가 없으면 "수집 필요". 내용을 지어내지 않음.
   - 비율은 건수 10 미만이면 쓰지 않고 건수만 씀.
@@ -40,7 +40,7 @@
 - [ ] 단계별 3건 이상 확보 (이동·결제 현재 1건)
 
 ## 출처
-- `research/reviews/raw/blog.csv` (리뷰 요약 20건, 번호는 id)
-- `research/reviews/analysis/reviews_tagged.csv` (단계·감정 분류)
-- `research/reviews/review_log.md` (표본 검사)
+- `research/data/reviews/raw/blog.csv` (리뷰 요약 20건, 번호는 id)
+- `research/data/reviews/analysis/reviews_tagged.csv` (단계·감정 분류)
+- `research/data/reviews/review_log.md` (표본 검사)
 - `brand/customer_persona.md` (행위자 후보)

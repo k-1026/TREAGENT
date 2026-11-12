@@ -6,7 +6,7 @@
   - 근거: 같은 원인 3건 이상, 출처 2종 이상이면 "진술문 후보". 출처 1종이면 "보류".
   - 강도: 1 = 짧은 불편, 2 = 반복 불편·시간 손해, 3 = 포기·헛걸음·돈 손해.
   - 우선순위 점수 = 강도 합 (빈도 × 평균 강도와 같은 값).
-- 한계: 요약문 기준이며 원문 대조는 표본 10건에만 수행(`research/reviews/review_log.md`). 축제 기간 글(치맥페스티벌, 막창축제, 할로윈)이 많아 대기 관련 건수가 과대할 수 있음.
+- 한계: 요약문 기준이며 원문 대조는 표본 10건에만 수행(`research/data/reviews/review_log.md`). 축제 기간 글(치맥페스티벌, 막창축제, 할로윈)이 많아 대기 관련 건수가 과대할 수 있음.
 
 ## 원인별 집계
 
@@ -74,5 +74,5 @@
 
 ## 출처
 - `painpoint/voc_classified.csv` (원자료 행 번호)
-- `research/reviews/raw/*.csv` (지도·블로그 요약)
-- `research/reviews/review_log.md` (표본 검사)
+- `research/data/reviews/raw/*.csv` (지도·블로그 요약)
+- `research/data/reviews/review_log.md` (표본 검사)
