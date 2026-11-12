@@ -1,0 +1,49 @@
+name: Slack 알림 (PR 리뷰 요청·main 반영)
+
+# PR이 열리면 리뷰 요청을, main에 병합되면 "main을 받아 가세요" 안내를 Slack에 보냅니다.
+# 설정: 저장소 시크릿 SLACK_WEBHOOK_URL (Slack Incoming Webhook 주소). 없으면 아무것도 보내지 않습니다.
+on:
+  pull_request:
+    types: [opened, ready_for_review, closed]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+      ACTION: ${{ github.event.action }}
+      MERGED: ${{ github.event.pull_request.merged }}
+      DRAFT: ${{ github.event.pull_request.draft }}
+      BASE: ${{ github.event.pull_request.base.ref }}
+      HEAD: ${{ github.event.pull_request.head.ref }}
+      TITLE: ${{ github.event.pull_request.title }}
+      URL: ${{ github.event.pull_request.html_url }}
+      AUTHOR: ${{ github.event.pull_request.user.login }}
+      MERGER: ${{ github.event.pull_request.merged_by.login }}
+    steps:
+      - name: 메시지 만들기
+        run: |
+          MSG=""
+          if [ "$ACTION" = "opened" ] || [ "$ACTION" = "ready_for_review" ]; then
+            if [ "$DRAFT" != "true" ]; then
+              MSG=":eyes: *리뷰 요청* — ${AUTHOR}님이 PR을 올렸어요.
+          *${TITLE}*
+          \`${HEAD}\` → \`${BASE}\`
+          확인 부탁해요: ${URL}"
+            fi
+          elif [ "$ACTION" = "closed" ] && [ "$MERGED" = "true" ] && [ "$BASE" = "main" ]; then
+            MSG=":white_check_mark: *main 반영* — ${TITLE}
+          ${MERGER}님이 main에 병합했어요. 작업 시작 전에 main을 받아 가세요.
+          \`git switch main && git pull\`
+          ${URL}"
+          fi
+          {
+            echo "MSG<<EOF"
+            echo "$MSG"
+            echo "EOF"
+          } >> "$GITHUB_ENV"
+
+      - name: Slack으로 보내기
+        if: env.MSG != '' && env.SLACK_WEBHOOK_URL != ''
+        run: |
+          jq -n --arg text "$MSG" '{text: $text}' | curl -sS -X POST -H 'Content-type: application/json' --data @- "$SLACK_WEBHOOK_URL"
