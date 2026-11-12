@@ -55,7 +55,14 @@
 - 이슈 연결: 이 PR로 이슈의 수용 기준이 모두 끝나면 `Closes #번호`, 일부만 끝나면 `관련 이슈 #번호`를 씁니다.
 - 리뷰어는 팀원 1명 이상 지정합니다. 승인 후 사람이 병합합니다.
 - 병합 방식은 `Squash and merge`를 기본으로 합니다. 제목은 PR 제목을 그대로 씁니다.
-- 병합 후 브랜치를 삭제하고, 팀 Slack에 PR 링크와 후속 조치를 공유합니다.
+- 병합 후 브랜치를 삭제합니다.
+
+## Slack 알림
+
+- PR을 열면 Slack에 리뷰 요청이, `main`에 병합되면 "main을 받아 가세요" 안내가 자동으로 갑니다 ([.github/workflows/slack-notify.yml](.github/workflows/slack-notify.yml)).
+- Draft PR은 알리지 않고, Ready for review로 바꿀 때 알립니다.
+- 설정: 저장소 시크릿 `SLACK_WEBHOOK_URL` (Slack Incoming Webhook 주소). 없으면 알림을 보내지 않습니다.
+- 안내를 받으면 작업 전에 `git switch main && git pull`로 최신 `main`을 받습니다.
 
 ## 이슈와 프로젝트
 
