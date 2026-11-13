@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>카카오 정리 · 병목 · 보완점 · 실제 작동 (v2)</title>
+<style>
+  :root{--ink:#1f2328;--muted:#6b7280;--paper:#fbfaf6;--card:#fff;--rule:#e5e2da;
+    --bottle:#d98a00;--bottle-bg:#fff4dc;--cost:#d9573a;--cost-bg:#fdeae4;--opp:#7fb12e;--opp-bg:#f0f8e3;--team:#1f8a8a;--team-bg:#e3f4f2;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--paper);color:var(--ink);font-family:"Malgun Gothic","Noto Sans KR",sans-serif;line-height:1.55}
+  main{max-width:960px;margin:0 auto;padding:36px 24px 60px}
+  h1{font-size:26px;margin:0 0 4px}
+  .lead{color:#3d434b;font-size:14.5px;margin:0 0 18px}
+  h2{font-size:18px;margin:30px 0 10px;padding-bottom:6px;border-bottom:2px solid var(--ink)}
+  h3{font-size:14.5px;margin:0 0 6px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .card{background:var(--card);border:1px solid var(--rule);border-radius:10px;padding:12px 14px}
+  .card.bottle{background:var(--bottle-bg);border-color:var(--bottle)}
+  .card.cost{background:var(--cost-bg);border-color:var(--cost)}
+  .card.opp{background:var(--opp-bg);border-color:var(--opp)}
+  .card.team{background:var(--team-bg);border-color:var(--team)}
+  .tag{display:inline-block;font-size:11px;font-weight:700;color:#fff;padding:1px 6px;border-radius:4px;margin-bottom:4px}
+  .t-b{background:var(--bottle)} .t-c{background:var(--cost)} .t-o{background:var(--opp)} .t-t{background:var(--team)}
+  ul{margin:2px 0 0 18px;padding:0}
+  li{margin:3px 0;font-size:13.5px}
+  .src{font-size:11.5px;color:var(--muted);margin-top:4px}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:6px}
+  th,td{border:1px solid var(--rule);padding:7px 8px;text-align:left;vertical-align:top}
+  th{background:#f0eee7}
+  .flow{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin:6px 0}
+  .step{background:#fff;border:1px solid var(--rule);border-radius:8px;padding:6px 10px;font-size:12.5px}
+  .arr{color:var(--muted);font-weight:700}
+  .note{font-size:12px;color:#4a4f57;background:#f4f2ec;border-radius:8px;padding:8px 10px;margin-top:10px}
+  @media (max-width:720px){.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<main>
+  <h1>카카오 · 병목 · 보완점 · 실제 작동</h1>
+  <p class="lead">카카오(㈜카카오)와 카카오 곳곳에 대해 우리가 직접 확인한 자료만 정리했습니다. 출처 번호는 valuechain/analysis.md 기준입니다. [U] 미확인, [I] 추정.</p>
+
+  <!-- 1. 병목 -->
+  <h2>1. 병목: 흐름이 막히는 곳</h2>
+  <div class="grid2">
+    <div class="card bottle">
+      <span class="tag t-b">곳곳 · 원천</span>
+      <ul>
+        <li>제휴 22곳 중 대구는 1곳 [13]</li>
+        <li>참여자 수·완주 수·효과가 공개되지 않아 성과를 확인할 수 없음 [13]</li>
+      </ul>
+    </div>
+    <div class="card bottle">
+      <span class="tag t-b">카카오 · 지배구조</span>
+      <ul>
+        <li>인적분할 기일이 2027.01.01에서 2027.02.01로 연기 [10]</li>
+        <li>카카오맵·곳곳이 분할 후 어느 법인에 속하는지 공시에 없음 [10]</li>
+      </ul>
+    </div>
+    <div class="card bottle">
+      <span class="tag t-b">카카오 · 실적</span>
+      <ul>
+        <li>콘텐츠 부진: 스토리 -17%, 뮤직 -10% (3분기 YoY) [3]</li>
+        <li>게임 사업 매각 절차로 2026년 실적이 계속사업 기준 [3][11]</li>
+      </ul>
+    </div>
+    <div class="card bottle">
+      <span class="tag t-b">자료 정합성</span>
+      <ul>
+        <li>3분기 전년 동기 매출이 DART 2조 866억 원, IR 1조 9,620억 원으로 다름 (재분류 추정) [3]</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 2. 비용 -->
+  <h2>2. 비용: 돈이 새는 곳</h2>
+  <div class="grid2">
+    <div class="card cost">
+      <span class="tag t-c">플랫폼 수수료</span>
+      <p style="margin:2px 0;font-size:13.5px">3분기 매출연동비 7,900억 원, 전년 대비 +13%. 매출 증가(+6%)보다 빠름 [3]</p>
+    </div>
+    <div class="card cost">
+      <span class="tag t-c">영업비용</span>
+      <p style="margin:2px 0;font-size:13.5px">3분기 영업비용 1조 8,460억 원 (+6% YoY) [3]</p>
+    </div>
+    <div class="card cost">
+      <span class="tag t-c">연구개발</span>
+      <p style="margin:2px 0;font-size:13.5px">2025년 연구개발비 1조 2,992억 원, 매출의 16.0% [1]</p>
+    </div>
+    <div class="card cost">
+      <span class="tag t-c">곳곳 제작·정산</span>
+      <p style="margin:2px 0;font-size:13.5px">제작비와 매장 정산 구조는 공개되지 않음 [U]</p>
+    </div>
+  </div>
+
+  <!-- 3. 보완점 -->
+  <h2>3. 보완점: 카카오 기준으로 채울 것</h2>
+  <div class="grid2">
+    <div class="card opp">
+      <span class="tag t-o">참여 데이터 공개</span>
+      <p style="margin:2px 0;font-size:13.5px">곳곳 참여·완주 수치를 보도자료나 IR로 공개하는지 확인. 없으면 효과는 추정으로만 말함 [13]</p>
+    </div>
+    <div class="card opp">
+      <span class="tag t-o">대구 제휴 확대</span>
+      <p style="margin:2px 0;font-size:13.5px">대구 매장 확보가 병목. 제휴 매장 후보를 분류·추천하는 방식이 가능 (카카오 Kanana-2-v-decide, 상업 라이선스) [7][13]</p>
+    </div>
+    <div class="card opp">
+      <span class="tag t-o">혼잡 예측·알림</span>
+      <p style="margin:2px 0;font-size:13.5px">카카오맵이 이미 구역별 혼잡도 3단계를 표시 중. 과거 데이터를 더해 예측·알림으로 확장 가능 [5]</p>
+    </div>
+    <div class="card opp">
+      <span class="tag t-o">법인 귀속 확인</span>
+      <p style="margin:2px 0;font-size:13.5px">재상장 증권신고서(정정 후 제출 예정 2026.11.27)에서 카카오맵·곳곳의 소속 법인 확인 [10]</p>
+    </div>
+  </div>
+
+  <!-- 4. 실제 작동 -->
+  <h2>4. 실제 작동: 카카오가 이미 하는 것</h2>
+
+  <h3>카카오 곳곳 (지역 상권 상생, 2026.10)</h3>
+  <div class="flow">
+    <div class="step">제휴 매장 22곳 (대구 1곳)</div><span class="arr">→</span>
+    <div class="step">한정 매거진 2,260부 제작·무료 배포</div><span class="arr">→</span>
+    <div class="step">산책빙고 12곳, 디지털 카드 수집</div><span class="arr">→</span>
+    <div class="step">행사 후 자산을 지자체·창작자에게 무료 제공</div>
+  </div>
+  <div class="src">출처: 카카오 보도자료 2026.10.06 [13]. 참여 수치는 공개되지 않음.</div>
+
+  <h3>카카오맵 축제 전용 지도 (2026.11.06, 부산불꽃축제)</h3>
+  <div class="flow">
+    <div class="step">축제 구역·부스·편의시설 지도</div><span class="arr">→</span>
+    <div class="step">구역별 혼잡도 3단계 (원활·혼잡·매우 혼잡)</div><span class="arr">→</span>
+    <div class="step">친구위치로 일행 위치 공유</div>
+  </div>
+  <div class="src">출처: 카카오 보도자료 2026.11.06 [5].</div>
+
+  <h3>카카오 디지털 카드 기반 (사업보고서 R&amp;D)</h3>
+  <div class="flow">
+    <div class="step">파트너가 직접 ID 카드 제작·발급</div><span class="arr">→</span>
+    <div class="step">자격증·멤버십·출입카드를 디지털화</div><span class="arr">→</span>
+    <div class="step">카카오톡 지갑에 저장·사용</div>
+  </div>
+  <div class="src">출처: 사업보고서 II·연구개발 과제 [1]. 서비스 출시 여부는 [U].</div>
+
+  <h3>카카오메이커스 춘식이 기부 배지 (2026.10)</h3>
+  <div class="flow">
+    <div class="step">이용자 디자인 투표 (5년간 58만 7,994명)</div><span class="arr">→</span>
+    <div class="step">매년 완판</div><span class="arr">→</span>
+    <div class="step">수익금 전액 기부 (독거어르신·한부모가정)</div>
+  </div>
+  <div class="src">출처: 카카오 보도자료 2026.10.28 [8].</div>
+
+  <h3>카카오 인적분할 후 구조 (2027년 초 예정)</h3>
+  <div class="flow">
+    <div class="step">카카오AI (신설): 카카오톡 기반 AI·광고·커머스</div><span class="arr">|</span>
+    <div class="step">카카오X (존속): 테크핀·콘텐츠·모빌리티 투자</div>
+  </div>
+  <div class="src">출처: 주요사항보고서 정정 2026.11.05 [10]. 분할비율 0.3648537 : 0.6351463.</div>
+
+  <!-- 5. 요약 -->
+  <h2>5. 한눈에 보는 결론</h2>
+  <table>
+    <tr><th>구분</th><th>카카오 기준 한 줄</th></tr>
+    <tr><td>병목</td><td>곳곳은 대구 제휴 1곳과 효과 비공개, 카카오는 분할 일정 연기와 실적 기준 변경</td></tr>
+    <tr><td>비용</td><td>플랫폼 매출연동비 증가(+13%)가 매출 증가보다 빠름</td></tr>
+    <tr><td>보완</td><td>참여 데이터 공개 확인, 대구 제휴 확대, 혼잡 예측, 법인 귀속 확인</td></tr>
+    <tr><td>작동</td><td>곳곳은 매거진과 디지털 카드로 기록을 남기고, 카카오맵은 혼잡 정보를 이미 제공</td></tr>
+  </table>
+  <div class="note">이 페이지는 카카오 자료만 근거로 합니다. 다른 사례와 우리 프로젝트 수치는 제외했습니다. 확인되지 않은 항목은 [U] 또는 [I]로 표시했습니다.</div>
+</main>
+</body>
+</html>

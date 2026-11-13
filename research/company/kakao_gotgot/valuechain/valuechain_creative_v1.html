@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1280">
+<title>크리에이티브 밸류체인 맵 v1</title>
+<style>
+:root{--bg:#fafaf7;--ink:#222;--muted:#666;--line:#bbb;--bottle:#E89B00;--bottleBg:#FEF3DC;--cost:#E8603C;--costBg:#FCEBE5;--opp:#9BD24B;--oppBg:#EEF7E2;--team:#1F8A8A;--teamBg:#D8F0EE;--money:#E89B00;--data:#3478C8;}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:"Malgun Gothic","Noto Sans KR",sans-serif}
+.wrap{width:1280px;height:720px;padding:12px 18px;position:relative;overflow:hidden}
+h1{font-size:21px;margin:0 0 1px}
+.sub{font-size:12px;color:var(--muted);margin-bottom:6px}
+.layer{display:grid;grid-template-columns:86px repeat(5,1fr);gap:6px;align-items:stretch;margin-bottom:6px}
+.label{font-size:13px;font-weight:700;color:#444;display:flex;align-items:center;justify-content:center;background:#ececE6;border-radius:6px;padding:4px}
+.step{background:#fff;border:2px solid var(--line);border-radius:8px;padding:8px 10px;font-size:12.5px;min-height:88px;position:relative}
+.step b{display:block;font-size:14px;margin-bottom:3px}
+.step.team{background:var(--teamBg);border-color:var(--team)}
+.step.bottle{border-color:var(--bottle);background:var(--bottleBg)}
+.step.cost{border-color:var(--cost);background:var(--costBg)}
+.step.opp{border-color:var(--opp);background:var(--oppBg)}
+.tag{display:inline-block;font-size:10px;padding:1px 5px;border-radius:4px;margin-right:3px;color:#fff}
+.t-team{background:var(--team)} .t-b{background:var(--bottle)} .t-c{background:var(--cost)} .t-o{background:var(--opp);color:#222}
+.who{font-size:12px;color:#333;line-height:1.4}
+.who .r{color:#000;font-weight:700}
+.who .p{color:#777}
+.money{display:grid;grid-template-columns:86px repeat(5,1fr);gap:6px;margin-bottom:6px}
+.money .lbl{font-size:13px;font-weight:700;background:#fdf1d3;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.flow{font-size:11.5px;text-align:center;background:#fff8e6;border:1px dashed var(--money);border-radius:6px;padding:8px 6px;color:#5a4300}
+.dat{display:grid;grid-template-columns:86px repeat(5,1fr);gap:6px;margin-bottom:6px}
+.dat .lbl{font-size:13px;font-weight:700;background:#e4eefb;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.dato{font-size:11.5px;text-align:center;background:#f2f7fd;border:1px dashed var(--data);border-radius:6px;padding:8px 6px;color:#1d3f6e}
+.arrow{position:absolute;font-size:16px;color:#777}
+.fb{font-size:11.5px;color:#1d3f6e;text-align:right;margin-top:0}
+.legend{position:absolute;right:18px;bottom:8px;width:340px;font-size:11px;background:#fff;border:1px solid #ddd;border-radius:6px;padding:6px 8px;line-height:1.5}
+.legend .sw{display:inline-block;width:12px;height:12px;border-radius:3px;vertical-align:middle;margin-right:4px;border:2px solid}
+.note{position:absolute;left:18px;bottom:8px;width:820px;font-size:10.5px;color:#555;line-height:1.45}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>크리에이티브 밸류체인 맵 v1 — 로컬 IP → 콘텐츠 → 캠페인 → 뷰티·커머스 기획전 → 구매</h1>
+  <div class="sub">기업 기준: 카카오 (IP는 팀 자산 하랑이, 기획전 단계는 카카오 계열 커머스) · 출처 번호는 valuechain/analysis.md 참조</div>
+
+  <!-- ① 활동 -->
+  <div class="layer">
+    <div class="label">① 활동</div>
+    <div class="step team"><b>로컬 IP</b><span class="tag t-team">팀 자산</span><br>하랑이 캐릭터·세계관 · 대구약령시 골목 자산 [팀 기획]</div>
+    <div class="step"><b>콘텐츠 제작</b>숏폼·애니·웹툰 제작 · 원작 IP 2차 제작<br><span style="color:#555">예: 라이언 AI 단편 애니 [06]</span></div>
+    <div class="step bottle"><b>캠페인 배포</b><span class="tag t-b">B</span>채널 배포·톡비즈 광고·협업 마케팅 [1][3]<br><span style="color:#555">병목: 시안 승인·채널별 재가공 [I]</span></div>
+    <div class="step"><b>뷰티·커머스 기획전</b>콜라보 상품·기획전 페이지 · 선물하기·톡스토어 [1]</div>
+    <div class="step opp"><b>구매·재구매</b><span class="tag t-o">O</span>결제·리뷰·재구매 · 캐릭터 상품 추천 [8]</div>
+  </div>
+
+  <!-- ② 이해관계자 -->
+  <div class="layer">
+    <div class="label">② 이해관계자</div>
+    <div class="step team who"><span class="r">팀</span> (IP 보유) <span class="p">· 지자체·저작권 [U]</span></div>
+    <div class="step who"><span class="r">카카오엔터테인먼트</span> [2] · 픽코마 [2]<br><span class="p">(제작사·AI 툴 [U])</span></div>
+    <div class="step who"><span class="r">카카오톡 톡비즈</span> [1] · 카카오맵 [5]<br><span class="p">(대행사·인플루언서 [U])</span></div>
+    <div class="step who"><span class="r">선물하기·톡스토어</span> [1] · 카카오메이커스 [8]<br><span class="p">(뷰티 브랜드·ODM [U])</span></div>
+    <div class="step who"><span class="r">이용자·팬</span> [U]<br><span class="p">(카카오페이 [2] · 물류 [U])</span></div>
+  </div>
+
+  <!-- ③ 돈 흐름 -->
+  <div class="money">
+    <div class="lbl">③ 돈 ⇠</div>
+    <div class="flow">구매 결제 시작점 ⇠ 플랫폼 수수료 (C1)</div>
+    <div class="flow">커머스 수수료·상품 마진 ⇠</div>
+    <div class="flow">광고비·대행 수수료 ⇠</div>
+    <div class="flow">제작비·툴 크레딧·외주 ⇠</div>
+    <div class="flow">라이선스료·콜라보 수익 배분 ⇠ <b>IP 보유자 몫 (C2)</b></div>
+  </div>
+
+  <!-- ④ 데이터 흐름 -->
+  <div class="dat">
+    <div class="lbl">④ 데이터 ⇢</div>
+    <div class="dato">세계관 바이블·브랜드 스킬 (팀)</div>
+    <div class="dato">조회·완주율·저장 (플랫폼 보유)</div>
+    <div class="dato">클릭·유입 경로 (톡비즈·대행사)</div>
+    <div class="dato">장바구니·전환 (커머스 앱)</div>
+    <div class="dato">리뷰·재구매 → 기획으로 피드백 (B3)</div>
+  </div>
+  <div class="fb">⟲ 피드백 화살표: 구매 데이터 → 콘텐츠 제작·IP 기획 (현재 미확인, 기회 O3)</div>
+
+  <!-- 마커 설명 -->
+  <div style="margin-top:8px;font-size:11.5px;color:#444;line-height:1.5">
+    <b>마커</b> · <span class="tag t-b">B1</span> 캠페인 시안 승인 대기 · <span class="tag t-b">B2</span> 팬 반응이 기획에 미반영 · <span class="tag t-c">C1</span> 플랫폼 수수료 중첩 (매출연동비 7,900억 원, +13%) [3] · <span class="tag t-c">C2</span> IP 보유자 수익 배분 구조 불투명 [I] · <span class="tag t-o">O1</span> 브랜드 스킬 기반 콘텐츠 생성 · <span class="tag t-o">O2</span> 캐릭터 상품 추천 (춘식이 배지 58만 명 투표 [8]) · <span class="tag t-o">O3</span> 구매 데이터 피드백
+  </div>
+
+  <div class="note">
+    · 구조 설명 기준: 팀 IP(하랑이)가 카카오 계열 채널과 커머스로 흐르는 체인. 카카오 IP(라이언·춘식이)와 하랑이는 혼동되지 않게 표기 · 실명은 원페이지·공시·보도에 있는 것만 · [U] = 미확인, [I] = 추정 · 수치는 출처 있는 것만.
+    · 금칙: 카카오 상표·로고 사용 금지 (하랑이 금기, harangi_squirrel.md).
+  </div>
+
+  <div class="legend">
+    <div><span class="sw" style="background:var(--teamBg);border-color:var(--team)"></span>팀 자산 (틸)</div>
+    <div><span class="sw" style="background:var(--bottleBg);border-color:var(--bottle)"></span>병목 (주황)</div>
+    <div><span class="sw" style="background:var(--costBg);border-color:var(--cost)"></span>비용 (코랄)</div>
+    <div><span class="sw" style="background:var(--oppBg);border-color:var(--opp)"></span>기회 (라임)</div>
+    <div><span style="color:var(--money)">■</span> 돈 흐름 (소비자 → 원천, 역방향) · <span style="color:var(--data)">┅</span> 데이터 흐름</div>
+    <div>우선 기회: <b>O2 캐릭터 상품 추천</b> (영향 3 · 실현 2)</div>
+  </div>
+</div>
+</body>
+</html>
