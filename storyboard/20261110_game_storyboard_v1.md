@@ -1,5 +1,7 @@
 # 게임 스토리보드 v1 (대구 히든 퀘스트)
 
+> **주의 (2026-11-13)**: 퀘스트·단서·미션·체력·팀 모드·사과 스탬프는 구컨셉. 현재는 길(코스)·장부·능금 스탬프이며 게임 요소는 최소. 현재 기준은 [brand/game_concept.md](../brand/game_concept.md), [plan/daeprica_hidden_quest_plan.md](../plan/daeprica_hidden_quest_plan.md).
+
 - 작성일: 2026-11-10
 - 목적: 퀘스트 생성·작동 흐름과 하랑이 행동·대사 구조를 장면 단위로 정리. 구현과 에이전트 설계의 기준 문서.
 - 주의: 이 문서는 게임용입니다. 영상용 훅·전환은 `storyboard/hooks_v2_diverse.md`, `storyboard/transitions_v2.md`를 봅니다.

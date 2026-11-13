@@ -1,5 +1,7 @@
 # 채점 기준 초안 (크리에이티브 소재)
 
+> **주의 (2026-11-13)**: 가중치(40/30/30)는 확정된 트랙 기준(brand/track_creative_draft 등)과 다를 수 있음. 평가 전 확인 필요. 현재 기준은 [brand/game_concept.md](../../brand/game_concept.md), [brand/worldview.md](../../brand/worldview.md), [plan/daeprica_hidden_quest_plan.md](../../plan/daeprica_hidden_quest_plan.md).
+
 - 상태: **초안 · 팀 검토 전**. 1·3·5점 문장을 팀이 확정해야 합니다.
 - 근거 규칙: 점수마다 근거 id 1개 이상 (`archive/inventory/top3_rationale.md`의 채점 방식).
 
