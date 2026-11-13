@@ -1,5 +1,7 @@
 # 캠페인 기획서 초안 (크리에이티브 트랙)
 
+> **주의 (2026-11-13)**: 이름 후보 '땡볕 탐정단'과 '실내·그늘 중심' 목표는 구버전. 현재 기준은 [brand/game_concept.md](../../brand/game_concept.md), [brand/worldview.md](../../brand/worldview.md), [plan/daeprica_hidden_quest_plan.md](../../plan/daeprica_hidden_quest_plan.md).
+
 - 상태: **초안 · 팀 검토 전**. 숫자 목표는 쓰지 않음 (CLAUDE.md 기준).
 - 기준 문서: `plan/daeprica_hidden_quest_plan.md` (2026-11-12 방향 변경, 스탬프 투어 맞춤화)
 - 표기: `[사실]` 근거 파일 있음 · `[창작]` 팀 결정 필요 (후보 2개)

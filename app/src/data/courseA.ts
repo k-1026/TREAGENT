@@ -33,7 +33,7 @@ export const stations: Record<string, Station> = {
     name: '근대골목',
     indoor: false,
     clue: '오래된 골목은 이야기를 조용히 들고 있어요.',
-    mission: '골목에서 가장 오래돼 보이는 벽이나 문을 하나 골라 보세요.',
+    mission: '골목에서 제일 오래돼 보이는 벽이나 문을 하나 골라 보세요.',
     note: '[확인 필요] 야외 구간 길이',
   },
   yangnyeongsi: {

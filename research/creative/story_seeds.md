@@ -1,5 +1,7 @@
 # 스토리 소재 초안 (5개, 창작 표시)
 
+> **주의 (2026-11-13)**: #4의 상인 등장은 인물 추가(능금 정령·도사 외 인물 최소화 원칙)와 충돌할 수 있음. 후보 검토용으로만 사용. 현재 기준은 [brand/game_concept.md](../../brand/game_concept.md), [brand/worldview.md](../../brand/worldview.md), [plan/daeprica_hidden_quest_plan.md](../../plan/daeprica_hidden_quest_plan.md).
+
 - 상태: **초안**. 사실 항목은 근거 파일 확인 후 확정합니다.
 
 1. **골목 그늘 (창작)** — 후보 A: 더운 날 골목 그늘에서 쉬는 하랑이 / 후보 B: 그늘이 길을 안내하는 장면
