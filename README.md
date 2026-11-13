@@ -25,6 +25,7 @@
 
 | 보고 싶은 것 | 먼저 볼 곳 |
 |---|---|
+| html 자료를 바로 열어 보기 (발표, 고객 전략, 리서치 등) | 배포 사이트 [k-1026.github.io/TREAGENT](https://k-1026.github.io/TREAGENT/) 의 목차 (`main`에 병합되면 자동 갱신) |
 | 5분 안에 전체 흐름 | 발표 최종본 [`presentation/20261113/20261112_plan_pitch_v10.html`](presentation/20261113/20261112_plan_pitch_v10.html) (PDF도 같은 폴더) |
 | 왜 하는지, 사업 검증 | [고객 전략](plan/treagent_customer_strategy_v1.md), [시각화 html](plan/treagent_customer_strategy_visualization_v1.html) |
 | 서비스 컨셉, 길, 트랙 | [게임·서비스 컨셉](brand/game_concept.md), [기획안](plan/daeprica_hidden_quest_plan.md)의 "방향 변경"과 0장 |
@@ -33,6 +34,11 @@
 | 근거 자료 (사용자 문제, 사례, 경쟁·운영 사례) | [리서치 안내](research/README.md), [페인포인트 후보](research/painpoint/candidates.md) |
 | 발표에서 받은 피드백 | [통합 정리](plan/feedback/20261113_presentation_feedback_v1.md) |
 | 이 저장소 작업 방법 | [CLAUDE.md](CLAUDE.md), [git-convention.md](git-convention.md) |
+
+**배포 사이트**
+- 저장소의 `.html` 전체를 GitHub Pages로 배포합니다. 새 html을 만드는 규칙은 [CLAUDE.md](CLAUDE.md)의 "HTML 산출물과 배포 기준"을 따릅니다.
+- 사이트 주소의 접속 여부는 작성자가 확인하지 못했습니다 `[확인 필요]`. 열리지 않으면 Actions 탭의 "HTML 배포" 실행 결과를 확인합니다.
+- 배포 사이트는 외부에 공개됩니다. 공개하지 않을 html은 `.github/site/exclude.txt`에 경로를 적습니다.
 
 **읽을 때 주의**
 - 표기: `[검증됨]` 공공 자료·보도 확인, `[확인 필요]` 추가 조사나 협의 필요, `[미검증]` 근거 미확보, `[추정]` 기획상 가정, "창작"은 팀이 정하기 전의 후보입니다.
