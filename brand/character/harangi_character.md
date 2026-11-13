@@ -55,7 +55,7 @@
 
 ## 5. 능금 정령과 하랑이
 
-- 하랑이는 능금 정령입니다 (사실: presentation/20261113/assets/harangi_sheet.webp, 머리 이파리 설명).
+- 하랑이는 능금 정령입니다 (사실: brand/character/images/harangi_sheet.webp, 머리 이파리 설명).
 - 정령의 설정상 수, 지역, 다른 정령의 범위는 brand/worldview.md에서 정합니다.
 - 정령의 수는 설정상으로만 둡니다. 앱 문구와 하랑이 대사에서 먼저 언급하지 않습니다 (사용자 제공).
 - 하랑이가 사는 도시는 대프리카입니다 (worldview.md 0절). 대사에서 도시를 부를 때는 "대프리카"를 씁니다.
@@ -64,7 +64,7 @@
 
 ## 6. 외형
 
-- 다람쥐 SD, 능금 빨강 몸, 크림색 얼굴·배·꼬리 끝, 파란 눈, 머리의 능금 이파리, 부채, 짧은 후드 조끼, 납작만두 포쉐트 (사실: presentation/20261113/assets/harangi_sheet.webp).
+- 다람쥐 SD, 능금 빨강 몸, 크림색 얼굴·배·꼬리 끝, 파란 눈, 머리의 능금 이파리, 부채, 짧은 후드 조끼, 납작만두 포쉐트 (사실: brand/character/images/harangi_sheet.webp).
 - 다람쥐 종으로 확정합니다. 청설모는 습성에만 섞습니다 `[사용자 확인]`.
 - 가방 속 물건은 캐릭터 소품입니다. 플레이어 주머니와 별개입니다 (brand/game_concept.md 참고).
 
@@ -146,7 +146,7 @@
 
 ## 출처
 
-- presentation/20261113/assets/harangi_sheet.webp (외형, 머리 이파리 설명)
+- brand/character/images/harangi_sheet.webp (외형, 머리 이파리 설명)
 - brand/character/harangi_personality_v1.md (18-28행 성격 축)
 - brand/character/harangi_squirrel.md (21-23행 상표·로고 금지)
 - 사용자 제공 (대화, 2026-11-12): 마스코트 가이드 역할, 시작 전 달성 설정, 정령 지적
