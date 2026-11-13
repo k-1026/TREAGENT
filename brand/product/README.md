@@ -5,8 +5,8 @@
 
 | 파일 | 구분 | 설명 |
 |---|---|---|
-| `nungeum_ade_mockup.webp` | 가상 수익상품 1 (시안) | 능금에이드. 지역 소상공인 카페와 콜라보해 공식 '쉼터'로 지정하고, 해당 카페에서만 파는 콜라보 메뉴안 (창작) |
-| `harangi_dojima_roll_mockup.webp` | 가상 수익상품 2 (시안) | 하랑이 도지마롤. 지역 소상공인 카페·베이커리 콜라보안 (창작) |
+| `nungeum_ade_mockup.webp` | 가상 굿즈 1 (시안) | 능금에이드. 쉼터 연계 음료 시안 (창작, 상세는 `virtual_goods_v1.md`) |
+| `harangi_dojima_roll_mockup.webp` | 가상 굿즈 2 (시안) | 하랑이 도지마롤. 하랑이 얼굴을 살린 롤케이크 시안 (창작, 상세는 `virtual_goods_v1.md`) |
 | `harangi_crossbody_bag_mockup.webp` | 가상 굿즈 3 (시안) | 크림색 반달형 크로스백. 붉은 어깨끈, 전면 살구색 자수 3개 (창작, 상세는 `virtual_goods_v1.md`) |
 | `harangi_plush_mockup.webp` | 가상 굿즈 4 (시안) | 하랑이 인형 시안. 크로스백을 멘 모습 (창작, 상세는 `virtual_goods_v1.md`) |
 | `woori_nungeum_juice_reference.jpg` | 기존 상품 (참고) | 농협 우리능금쥬스. 기존 능금 활용 상품 사례 |
