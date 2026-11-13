@@ -213,7 +213,7 @@
 
 - 팀 자료 · `research/painpoint/voc_classified.csv`, `research/painpoint/candidates.md`, `research/painpoint/journey_map.md`
 - 팀 자료 · `research/data/reviews/analysis/report.md`, `research/data/reviews/review_log.md`, `brand/customer_persona.md`
-- 팀 자료 · `research/valuechain/analysis.md`, `research/valuechain/competitors/comparison.md`, `app/src/data/courseA.ts`
+- 팀 자료 · `research/valuechain/analysis.md`, `research/valuechain/competitors/comparison.md`, `dev/app/src/data/courseA.ts`
 - [대구문화예술진흥원 스탬프 로드 20](https://dgfca.or.kr/article/REPORT_NEWS/detail/19682)
 - [국가유산진흥원 방문자 여권 캠페인](https://www.kh.or.kr/brd/board/715/L/menu/373?bbIdx=117849&brdType=R) · [운영 대행 공고 재게시](https://www.bidpro.co.kr/n0_ipchal/konggo/svc/konggo_view.asp?num=2978910)
 - [큐알스탬프](https://www.qrstp.com/about) · [이벤터스](https://blog.event-us.kr/eventus-solution) · [퀘스투어](https://questour.net/stamp-tour)
