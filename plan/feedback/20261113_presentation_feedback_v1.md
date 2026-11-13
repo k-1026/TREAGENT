@@ -114,4 +114,4 @@
 
 - 팀원 3명의 11/13 발표 피드백 원문 (사용자가 채팅으로 전달, 2026-11-13)
 - `presentation/20261113/20261112_plan_pitch_v10.html` (장 번호 참조)
-- `feedback/발표_피드백_v1.md` (이전 외부 피드백, 별도 문서)
+- `plan/feedback/20261113_external_feedback_v1.md` (이전 외부 피드백, 별도 문서)
