@@ -5,7 +5,7 @@
 
 ## 1. 캐릭터 — 사실
 - 하랑이: 능금 이파리, 짧은 조끼, 납작만두 포쉐트 (`brand/persona_sheet.md` 설정 항목, 근거 `research/daegu_nunggeum_research_v1.md`).
-- 기준 시트: `presentation/assets/harangi_sheet.webp` (본 저장소 자산).
+- 기준 시트: `presentation/20261113/assets/harangi_sheet.webp` (본 저장소 자산).
 
 ## 2. 색과 톤 — 창작 후보 2개
 - 후보 A: 여름 낮 햇빛 톤 (노랑·연두), 그늘은 짙은 청록

@@ -34,7 +34,7 @@ labels: task
 
 <!-- 만들거나 바꿀 파일·화면·링크와 예상 경로. 범위 밖 항목도 적으면 좋습니다. -->
 
-- 경로: `presentation/` (예: `presentation/20261110_plan_pitch_v1.html`)
+- 경로: `presentation/<발표일>/` (예: `presentation/20261113/20261110_plan_pitch_v1.html`)
 - 범위 밖: 대본 수정은 제외
 
 ## 수용 기준

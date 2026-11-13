@@ -23,7 +23,7 @@
 
 ## v3 이미지 프롬프트 (2026-11-10, 발표 자료용)
 
-공통 조건: 동물형 SD 다람쥐 "하랑이"(가칭). 몸 색은 능금 빨강, 꼬리와 얼굴 배는 크림색, 머리 위에 사과 이파리. 도트 RPG 스타일, 배경은 단색. 캐릭터 시트(`presentation/assets/harangi_sheet.webp`)를 참고 이미지로 함께 첨부.
+공통 조건: 동물형 SD 다람쥐 "하랑이"(가칭). 몸 색은 능금 빨강, 꼬리와 얼굴 배는 크림색, 머리 위에 사과 이파리. 도트 RPG 스타일, 배경은 단색. 캐릭터 시트(`presentation/20261113/assets/harangi_sheet.webp`)를 참고 이미지로 함께 첨부.
 
 ### P1 · 표정 3종 (행복 / 차분 / 놀람)
 Chibi SD-style squirrel mascot named Harangi, apple-red fur like a neunggeum fruit, cream-colored face and belly, a green apple leaf on top of the head, dark blue eyes, pixel-art RPG style with clean outlines, three expressions side by side: happy closed-eye smile, calm gentle look, surprised open mouth. Plain light background. Keep accessories to a fan and a small bag only.
