@@ -34,6 +34,7 @@
 | 도구 | 브랜드·Git 스킬, 이슈·PR 양식, 자동화 | `.claude/skills/`, `.github/` |
 
 - `brand/character/images/`: 하랑이 이미지의 기준 위치입니다. 발표 html은 `../../brand/character/images/...` 상대경로로 불러옵니다.
+- `brand/product/`: 상품 콜라보 시안(능금에이드, 하랑이 도지마롤)과 비교용 기존 상품 이미지입니다 ([README](brand/product/README.md)). 하랑이 3D 디자인 시안은 `brand/character/images/harangi_3d_turnaround.webp`입니다.
 - `archive/rejected/daeprica/`: 폐기·보류한 후보 기록입니다 (옛 `versions/daeprica/`).
 - 스킬용 `worldview.md`는 `.claude/skills/brand-daeprica/`에 있고, 설정 원본은 `brand/worldview.md`입니다.
 
