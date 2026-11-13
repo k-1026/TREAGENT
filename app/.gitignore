@@ -39,3 +39,6 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# Supabase 키 파일 (저장소에 올리지 않음)
+.env
