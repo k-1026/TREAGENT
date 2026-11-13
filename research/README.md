@@ -2,7 +2,7 @@
 
 | 찾는 자료 | 위치 |
 | --- | --- |
-| 대구 지역·관광 조사 | [키워드 맵](keyword_map.md), [대구 역사 관광 사례](daegu_history_tour_cases.md), [능금 조사](daegu_nunggeum_research_v1.md) |
+| 대구 지역·관광 조사 | [키워드 맵](keyword_map.md), [대구 역사 관광 사례](daegu_history_tour_cases.md), [능금 조사](daegu_nunggeum_research_v1.md), [여름 장소 후보 풀](summer_place_pool_v1.md), [여름 장소 사실 확인표](summer_place_facts_v1.md) |
 | 기업·기관 원페이지와 출처 | [국가유산진흥원](company/kh_promotion/onepager.md), [이벤터스](company/eventus/onepager.md), [큐알스탬프](company/qrstp/onepager.md), [퀘스투어](company/questour/onepager.md) |
 | 공공 운영 사례와 상용 솔루션 밸류체인 | [밸류체인 자료 목록](valuechain/README.md) |
 | 리뷰 데이터·분류·차트, 새 데이터 등록 방법 | [데이터 목록](data/README.md) |
