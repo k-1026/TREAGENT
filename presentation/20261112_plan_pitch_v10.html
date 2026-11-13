@@ -78,8 +78,8 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
 <body>
 <div class="deck">
 
-<!-- 발표 흐름: 문제(2) → 컨셉(3) → 기존 사례와의 차이(4) → 서비스 구조: 날씨·길·트랙·기록(5~8) → 안내자 하랑이(9~11) → 산업·기업 조사(12~13) → 사업 모델(14) → 정리(15)
-     시간 배분 (약 5분 이내): 1표지 10초 · 2문제 20 · 3컨셉 20 · 4유사사례 20 · 5날씨 25 · 6길 15 · 7트랙 20 · 8스탬프 20 · 9시트 20 · 10표정 10 · 11스티커 10 · 12산업① 20 · 13산업② 25 · 14사업 20 · 15정리 25 -->
+<!-- 발표 흐름: 문제(2) → 컨셉(3) → 기존 사례와의 차이(4) → 서비스 구조: 날씨·길·트랙·기록(5~8) → 유저 플로우(9) → 안내자 하랑이(10~12) → 산업·기업 조사(13~14) → 사업 모델(15) → 정리(16)
+     시간 배분 (약 5분 이내): 1표지 10초 · 2문제 20 · 3컨셉 20 · 4유사사례 20 · 5날씨 25 · 6길 15 · 7트랙 20 · 8스탬프 15 · 9유저플로우 25 · 10시트 15 · 11표정 10 · 12스티커 10 · 13산업① 20 · 14산업② 25 · 15사업 20 · 16정리 25 -->
 
 <!-- 1. 표지 -->
 <section class="slide on" style="justify-content:center">
@@ -251,9 +251,75 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
   <div class="foot">수치와 조건은 예시이며 팀이 정합니다. 근거: brand/game_concept.md 5·6·7·11절</div>
 </section>
 
+<!-- 9. 유저 플로우 -->
+<section class="slide">
+  <style>
+    .uf .wire{fill:none;stroke:var(--red2);stroke-width:3;stroke-linejoin:round}
+    .uf text{font-family:"Noto Sans KR","Malgun Gothic",sans-serif;text-anchor:middle}
+    .uf .lb{fill:var(--ink);font-size:19px;font-weight:700}
+    .uf .lbw{fill:#fff;font-size:19px;font-weight:700}
+    .uf .sb{fill:#6b5a68;font-size:14px}
+    .uf .ed{fill:var(--red2);font-size:16px;font-weight:700;paint-order:stroke;stroke:#fffdf6;stroke-width:5;stroke-linejoin:round}
+    .uf .term{fill:var(--navy);stroke:var(--line);stroke-width:3}
+    .uf .scn{fill:#dff5ef;stroke:var(--line);stroke-width:3}
+    .uf .dec{fill:#fff0c4;stroke:var(--line);stroke-width:3}
+    .uf .box{fill:#fffdf6;stroke:var(--line);stroke-width:3}
+    .uf .bt{fill:var(--ink);font-size:16px;text-anchor:middle}
+    .uf .con{stroke:var(--line);stroke-width:2;stroke-dasharray:5 4}
+    .uf .exc{fill:#f2eef3;stroke:var(--line);stroke-width:3;stroke-dasharray:7 5}
+  </style>
+  <div class="tag">08 · 유저 플로우</div>
+  <h2>🔀 길 확인 → 이동 → 방문 인증 → 내 여행 한 장</h2>
+  <div class="card uf" style="flex:1;min-height:0;display:flex;align-items:center;padding:1vh 1vw">
+    <svg viewBox="0 -118 1360 438" style="width:100%;height:100%" role="img" aria-label="유저 플로우 순서도">
+      <defs><marker id="ufa" markerWidth="9" markerHeight="9" refX="8" refY="4.5" orient="auto"><path fill="#a3232a" d="M0 0L9 4.5L0 9Z"/></marker></defs>
+      <!-- 주 경로 -->
+      <path class="wire" d="M125 100H175" marker-end="url(#ufa)"/>
+      <path class="wire" d="M335 100H385" marker-end="url(#ufa)"/>
+      <path class="wire" d="M545 100H595" marker-end="url(#ufa)"/><text class="ed" x="570" y="88">예</text>
+      <path class="wire" d="M755 100H805" marker-end="url(#ufa)"/>
+      <path class="wire" d="M965 100H1015" marker-end="url(#ufa)"/><text class="ed" x="990" y="88">예</text>
+      <path class="wire" d="M1175 100H1215" marker-end="url(#ufa)"/>
+      <!-- 예외 경로 -->
+      <path class="wire" d="M465 155V220" marker-end="url(#ufa)"/><text class="ed" x="500" y="192">아니요</text>
+      <path class="wire" d="M385 253H255V133" marker-end="url(#ufa)"/><text class="ed" x="320" y="241">다시 확인</text>
+      <path class="wire" d="M620 133V220" marker-end="url(#ufa)"/><text class="ed" x="583" y="182">변경</text>
+      <path class="wire" d="M690 220V133" marker-end="url(#ufa)"/><text class="ed" x="655" y="182">계속</text>
+      <path class="wire" d="M885 155V220" marker-end="url(#ufa)"/><text class="ed" x="920" y="192">아니요</text>
+      <path class="wire" d="M805 253H735V133" marker-end="url(#ufa)"/><text class="ed" x="770" y="241">재시도</text>
+      <!-- 화면 설명 네모 칸 -->
+      <path class="con" d="M255 -20V67"/><path class="con" d="M675 -20V67"/><path class="con" d="M1095 -20V67"/>
+      <rect class="box" x="145" y="-110" width="220" height="90" rx="8"/>
+      <text class="bt" x="255" y="-82">날씨 · 특보 · 요일</text><text class="bt" x="255" y="-60">운영시간 반영해</text><text class="bt" x="255" y="-38">오늘 갈 길을 선별</text>
+      <rect class="box" x="565" y="-110" width="220" height="90" rx="8"/>
+      <text class="bt" x="675" y="-82">추천 이유와 기준 시각</text><text class="bt" x="675" y="-60">조건이 바뀌면</text><text class="bt" x="675" y="-38">대체 길도 제안</text>
+      <rect class="box" x="985" y="-110" width="220" height="90" rx="8"/>
+      <text class="bt" x="1095" y="-82">방문 증거로 지급</text><text class="bt" x="1095" y="-60">날짜 · 스팟 · 날씨</text><text class="bt" x="1095" y="-38">장부에 자동 기록</text>
+      <!-- 노드 -->
+      <rect class="term" x="15" y="67" width="110" height="66" rx="33"/><text class="lbw" x="70" y="96">시작</text><text class="lbw" x="70" y="118">앱 실행</text>
+      <rect class="scn" x="175" y="67" width="160" height="66" rx="10"/><text class="lb" x="255" y="106">오늘의 길 확인</text>
+      <polygon class="dec" points="385,100 465,45 545,100 465,155"/><text class="lb" x="465" y="95">이용 가능한</text><text class="lb" x="465" y="118">경로?</text>
+      <rect class="scn" x="595" y="67" width="160" height="66" rx="10"/><text class="lb" x="675" y="106">하랑이 길 안내</text>
+      <polygon class="dec" points="805,100 885,45 965,100 885,155"/><text class="lb" x="885" y="95">방문 인증</text><text class="lb" x="885" y="118">확인됨?</text>
+      <rect class="scn" x="1015" y="67" width="160" height="66" rx="10"/><text class="lb" x="1095" y="106">능금 스탬프</text>
+      <rect class="term" x="1215" y="67" width="130" height="66" rx="33"/><text class="lbw" x="1280" y="96">완주</text><text class="lbw" x="1280" y="118">내 여행 한 장</text>
+      <rect class="exc" x="385" y="220" width="160" height="66" rx="10"/><text class="lb" x="465" y="248">쉼터·다른 코스</text><text class="sb" x="465" y="270">경로 없음 · 확인 불가</text>
+      <rect class="exc" x="575" y="220" width="140" height="66" rx="10"/><text class="lb" x="645" y="248">대체 길 안내</text><text class="sb" x="645" y="270">남은 경로만 변경</text>
+      <rect class="exc" x="805" y="220" width="160" height="66" rx="10"/><text class="lb" x="885" y="248">하랑이 인증 안내</text><text class="sb" x="885" y="270">권한 · 거리 · 정확도</text>
+    </svg>
+  </div>
+  <div class="grid g2" style="flex:0 0 auto">
+    <div class="card gold s"><h3>🐿️ 하랑이가 나서는 순간</h3>
+      <ul class="b"><li>오늘의 길과 추천 이유, 기준 시각 안내</li><li>날씨·운영이 바뀌면 대체 길, 인증이 막히면 재시도 안내</li></ul></div>
+    <div class="card sky s"><h3>🛟 첫 방문과 복구</h3>
+      <ul class="b"><li>첫 방문은 로그인·하랑이 첫 만남, 닉네임을 건너뛰면 '길동무'</li><li>앱을 다시 열면 저장된 여행과 스탬프를 이어서 시작</li></ul></div>
+  </div>
+  <div class="foot">근거: 팀 사용자 플로우 v1 (TREAGENT_User_Flow_Visual) 기본 코스 P0 흐름만 요약. 미스터리·AI 질의(P1), QR·권역·시즌(P2)은 제외. 인증은 GPS가 현재 개발안이며 방식·반경은 팀 결정 전 [확인 필요]</div>
+</section>
+
 <!-- 9. 하랑이 캐릭터 시트 (유지) -->
 <section class="slide">
-  <div class="tag">08 · 안내자 하랑이</div>
+  <div class="tag">09 · 안내자 하랑이</div>
   <h2>🐿️ 이 길을 안내하는 건 바람 도사 견습생 하랑이입니다</h2>
   <div class="grid" style="grid-template-columns:1.5fr 1fr;flex:1;min-height:0">
     <div class="full"><img src="assets/harangi_sheet.webp" alt="하랑이 캐릭터 시트 전체"></div>
@@ -285,7 +351,7 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
     .dlg .who{font-family:"Do Hyeon",sans-serif;font-size:clamp(21px,1.8vw,28px);color:var(--gold);margin-bottom:.6vh}
     .dlg p{color:#fff;font-size:clamp(17px,1.55vw,24px);line-height:1.55}
   </style>
-  <div class="tag">08 · 안내자 하랑이: 표정과 대사</div>
+  <div class="tag">09 · 안내자 하랑이: 표정과 대사</div>
   <h2>💬 앱 화면에서 하랑이는 이렇게 말합니다</h2>
   <div class="phones">
     <div class="phone"><div class="scr"><div class="face f1"></div><div class="dlg"><div class="who">😊 행복 · 스탬프</div><p>"찍었어요!<br>이 시간대 이 자리는<br>장부에 처음이에요.<br>한 칸 채웠네요~!"</p></div></div></div>
@@ -297,7 +363,7 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
 
 <!-- 11. 스티커 -->
 <section class="slide">
-  <div class="tag">08 · 안내자 하랑이: SNS 스티커</div>
+  <div class="tag">09 · 안내자 하랑이: SNS 스티커</div>
   <h2>📱 인증 사진에 붙이는 하랑이 스티커</h2>
   <div class="grid" style="grid-template-columns:1.5fr 1fr;flex:1;min-height:0">
     <div class="full sticker"><img src="assets/sticker_set_final_v4.webp" alt="하랑이 SNS 스티커 세트 최종본 전체"></div>
@@ -315,7 +381,7 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
 
 <!-- 12. 산업·기업 조사 ① 공공 운영 구조 -->
 <section class="slide">
-  <div class="tag">09 · 벤치마크 ② 산업·기업 조사 (운영 구조)</div>
+  <div class="tag">10 · 벤치마크 ② 산업·기업 조사 (운영 구조)</div>
   <h2>🏛️ 스탬프 투어는 공공 예산으로 돌아가고, 성과는 거의 공개되지 않습니다</h2>
   <div class="card tbl md" style="flex:0 0 auto">
     <table>
@@ -341,7 +407,7 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
 
 <!-- 13. 산업·기업 조사 ② 제작·솔루션 업체 -->
 <section class="slide">
-  <div class="tag">09 · 벤치마크 ② 산업·기업 조사 (제작·솔루션 업체)</div>
+  <div class="tag">10 · 벤치마크 ② 산업·기업 조사 (제작·솔루션 업체)</div>
   <h2>🧩 업체들은 인증 도구를 팔고, 캐릭터와 이야기는 고객 몫입니다</h2>
   <div class="card tbl md" style="flex:0 0 auto">
     <table>
@@ -365,7 +431,7 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
 
 <!-- 14. 사업 모델 -->
 <section class="slide">
-  <div class="tag">10 · 사업 모델</div>
+  <div class="tag">11 · 사업 모델</div>
   <h2>💼 그래서 소비자에게 팔고, 지자체와 대행사에 제작·운영을 제안합니다</h2>
   <div class="card tbl" style="flex:0 0 auto">
     <table>
@@ -386,16 +452,16 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
 
 <!-- 15. 정리: 문제 → 대응, 시즌, 다음 단계 -->
 <section class="slide">
-  <div class="tag">11 · 정리와 다음 단계</div>
+  <div class="tag">12 · 정리와 다음 단계</div>
   <h2>🛠️ 처음 짚은 문제마다 대응이 있고, 여름 하나에 집중합니다</h2>
   <div class="card tbl xl" style="flex:0 0 auto">
     <table>
       <tr><th style="width:30%">문제</th><th>대응</th><th style="width:12%">장</th></tr>
       <tr><td>🔥 더위·쉼터 운영 시간</td><td>날씨 모드별 길, 쉼터 기준 시각·운영 시간 표기</td><td>5·6</td></tr>
-      <tr><td>🍂 가을 쏠림</td><td>6/21~9/23 여름 시즌 길</td><td>15</td></tr>
-      <tr><td>📊 대기·혼잡·운영 변경</td><td>운영 상태 반영, 대체 길 안내</td><td>5</td></tr>
+      <tr><td>🍂 가을 쏠림</td><td>6/21~9/23 여름 시즌 길</td><td>16</td></tr>
+      <tr><td>📊 대기·혼잡·운영 변경</td><td>운영 상태 반영, 대체 길 안내</td><td>5·9</td></tr>
       <tr><td>🗺️ 고정 장소 목록</td><td>날씨·시간대·요일 맞춤 길, 자동 장부</td><td>3·4·8</td></tr>
-      <tr><td>🏢 도구 위주 시장, 성과 미공개</td><td>하랑이 이야기와 방문 기록 집계</td><td>9·12·13</td></tr>
+      <tr><td>🏢 도구 위주 시장, 성과 미공개</td><td>하랑이 이야기와 방문 기록 집계</td><td>9·10·14</td></tr>
     </table>
   </div>
   <div class="grid g3" style="flex:0 0 auto">
