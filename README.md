@@ -24,13 +24,12 @@
 | 대분류 | 하는 일 | 폴더 |
 |---|---|---|
 | 리서치 | 지역·기업 조사, 사용자 문제와 고객 여정, 리뷰 데이터 | [`research/`](research/README.md) (`painpoint/` 포함) |
-| 기획 | 기획서, 고객 전략, 기능·기술 명세 | `plan/` (`spec/` 포함) |
+| 기획 | 기획서, 고객 전략, 기능·기술 명세, 발표 피드백 | `plan/` (`spec/`, `feedback/` 포함) |
 | 브랜드·콘텐츠 | 페르소나, 세계관, 캐릭터(하랑이)와 이미지, 게임 요소 | `brand/` |
 | 스토리보드 | 훅 후보, 전환 문장, 스토리 구조, 등장인물 | `storyboard/` |
 | 개발 | Expo 앱 데모 (코스 A) | `dev/` (`dev/app/`) |
 | 발표 | 발표 자료, 대본, 진행 현황 | [`presentation/`](presentation/README.md) |
 | 보관 | 수집물·메타데이터(`metadata.csv`, `tags.md`), 인벤토리, 탈락·보류 후보 | `archive/` (`inventory/`, `rejected/`) |
-| 피드백 | 발표 피드백 원문과 통합 정리 | `feedback/` |
 | 도구 | 브랜드·Git 스킬, 이슈·PR 양식, 자동화 | `.claude/skills/`, `.github/` |
 
 - `brand/character/images/`: 하랑이 이미지의 기준 위치입니다. 발표 html은 `../../brand/character/images/...` 상대경로로 불러옵니다.
