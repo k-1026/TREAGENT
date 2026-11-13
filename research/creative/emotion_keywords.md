@@ -1,6 +1,6 @@
 # 감정·경험 키워드 사전 초안 (불만·요청 기준)
 
-- 상태: **초안**. 집계는 `painpoint/voc_classified.csv` (52행, 지도 43·블로그 9) 기준입니다.
+- 상태: **초안**. 집계는 `research/painpoint/voc_classified.csv` (52행, 지도 43·블로그 9) 기준입니다.
 - 주의: 리뷰 표본이 작아 비율을 인사이트로 쓰지 않습니다 (표본 5건의 80% 같은 해석 금지).
 
 | 키워드 | 원인 묶음 | 건수 | 근거 |
@@ -15,4 +15,4 @@
 - 땡볕 → 그늘 (후보 A) / 숨 고르기 (후보 B)
 
 ## 출처
-- `painpoint/voc_classified.csv`
+- `research/painpoint/voc_classified.csv`

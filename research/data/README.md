@@ -8,7 +8,7 @@
 | 여정 분석용 리뷰 묶음 | [reviews.csv](reviews/analysis/reviews.csv) | 20건. 이 파일은 여정 분석에 사용한 묶음이다. |
 | 여정·주제·감정 태그 | [reviews_tagged.csv](reviews/analysis/reviews_tagged.csv) | 20건. 같은 분석 묶음 안에서 `id`로 연결한다. |
 | 리뷰 분석 결과 | [리포트](reviews/analysis/report.md), [차트](reviews/analysis/charts/summary.html), [표본 검사](reviews/review_log.md) | 차트나 건수를 인용할 때 사용한 표본과 한계를 함께 표시한다. |
-| 페인포인트 분류용 VOC | [voc_classified.csv](../../painpoint/voc_classified.csv) | 별도 분류 자료 52건. 여정 분석 20건과 `id`가 같아도 같은 행으로 간주할 수 없다. |
+| 페인포인트 분류용 VOC | [voc_classified.csv](../painpoint/voc_classified.csv) | 별도 분류 자료 52건. 여정 분석 20건과 `id`가 같아도 같은 행으로 간주할 수 없다. |
 
 ## 새 데이터 추가
 

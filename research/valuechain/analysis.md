@@ -12,7 +12,7 @@
 | 마커 | 단계 | 무엇이 | 근거 신호 | 출처 |
 |---|---|---|---|---|
 | **병목 B1** | ③ 신청·배포 | 여권을 받으려는 참여자가 기다림 (물량 소진·다음 신청일 대기) | S1, S2 대기·지연 | `tour_cases.md:151`, `:155` |
-| **병목 B2** | ④ 방문·인증 | 거점 도착 후 휴관·운영 변경·폭염으로 헛걸음 | S3, S4 대기·지연 | `painpoint/candidates.md` 진술문 2·3, `plan/daeprica_hidden_quest_plan.md:239` |
+| **병목 B2** | ④ 방문·인증 | 거점 도착 후 휴관·운영 변경·폭염으로 헛걸음 | S3, S4 대기·지연 | `research/painpoint/candidates.md` 진술문 2·3, `plan/daeprica_hidden_quest_plan.md:239` |
 | **비용 C1** | ② 인증 도구 제작 | 실물 여권·도장 용지 인쇄와 직접 날인 관리 `[I]` | S5 수작업 | `tour_cases.md:78`, `:132` |
 | **비용 C2** | ① 기획·거점 선정 | 같은 근대골목 무대에 스탬프 사업이 여러 겹 운영 `[I]` | S8 중복 운영 | `tour_cases.md:126`, `:73` |
 | **기회 O1** | ④ 방문·인증 | 거점 운영 시간·날씨를 확인하고 다음 거점(실내·쉼터 포함)을 안내 | S3, S4 | 같은 근거 + 팀 자산 쉼터 스탬프 (`brand/game_items_v1.md:17`) |
@@ -61,6 +61,6 @@
 
 ## 출처
 - `research/daegu_history_tour_cases.md` 73~99행, 117행, 126~132행, 150~157행
-- `painpoint/candidates.md`
+- `research/painpoint/candidates.md`
 - `brand/game_items_v1.md` 17행
 - `plan/daeprica_hidden_quest_plan.md` 239행

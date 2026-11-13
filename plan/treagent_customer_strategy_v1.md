@@ -211,7 +211,7 @@
 
 ## 출처
 
-- 팀 자료 · `painpoint/voc_classified.csv`, `painpoint/candidates.md`, `painpoint/journey_map.md`
+- 팀 자료 · `research/painpoint/voc_classified.csv`, `research/painpoint/candidates.md`, `research/painpoint/journey_map.md`
 - 팀 자료 · `research/data/reviews/analysis/report.md`, `research/data/reviews/review_log.md`, `brand/customer_persona.md`
 - 팀 자료 · `research/valuechain/analysis.md`, `research/valuechain/competitors/comparison.md`, `app/src/data/courseA.ts`
 - [대구문화예술진흥원 스탬프 로드 20](https://dgfca.or.kr/article/REPORT_NEWS/detail/19682)

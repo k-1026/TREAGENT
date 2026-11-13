@@ -73,6 +73,6 @@
 - [ ] 원문 질문형 문장 (생각 층 근거)
 
 ## 출처
-- `painpoint/voc_classified.csv` (원자료 행 번호)
+- `research/painpoint/voc_classified.csv` (원자료 행 번호)
 - `research/data/reviews/raw/*.csv` (지도·블로그 요약)
 - `research/data/reviews/review_log.md` (표본 검사)

@@ -107,11 +107,11 @@ flowchart LR
 | ① 기획·거점 선정 | `tour_cases.md:73`, `:89`, `:90`, `:150` (거점 수 20·10·76→115) |
 | ② 인증 도구 제작 | `tour_cases.md:73` (캐시워크), `:78` (해설사 앱, 도장 용지), `:90` (앱 QR) |
 | ③ 신청·배포 | `tour_cases.md:151` (8만 부 하루 소진), `:155` (여권1·2 소진) |
-| ④ 방문·인증 | `tour_cases.md:78` (직접 날인), `painpoint/candidates.md` 진술문 2·3 |
+| ④ 방문·인증 | `tour_cases.md:78` (직접 날인), `research/painpoint/candidates.md` 진술문 2·3 |
 | ⑤ 완주·보상·기록 | `tour_cases.md:78` (기념품 신청), `:90` (완주 기록장·탐방록), `:150` (완주 1,146명, 2026.8 누적) |
 
 ## 출처
 - `research/daegu_history_tour_cases.md` 3-2절, 3-2-1절, 4절, 5절 (`tour_cases.md`로 줄여 씀)
-- `painpoint/candidates.md`
+- `research/painpoint/candidates.md`
 - `brand/game_items_v1.md` 17~18행
 - `plan/daeprica_hidden_quest_plan.md` 239행
