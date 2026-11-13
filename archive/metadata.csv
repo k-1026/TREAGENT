@@ -49,3 +49,5 @@ file_name,title,type,location,collected_date,collector,source_url,license,notes
 "../research/daegu_10mi_nakjakmandu_v1.md","대구 10미와 납작만두 조사 v1","문화","daegu","2026-11-13","Claude Sonnet 5.5","기사 5건 (파일 하단 출처 참조)","해당 없음 (팀 정리본)","태그: 맛;스토리. 기사 원문을 열어 확인, 공식 자료(대구푸드)는 미확인"
 "../research/benchmark_compare_v1.md","우리 프로젝트 vs 유사 사례 비교표 v1","산업","daegu","2026-11-11","Claude Haiku 5.5","파일 하단 출처 참조","해당 없음 (팀 정리본)","태그: 가격;품목. 카카오 곳곳 등 유사 사례 비교"
 "../research/company/kakao_gotgot/","카카오 곳곳 기업 조사 자료 (DART·IR·보도자료 16개)","산업","daegu","2026-11-11","Claude Haiku 5.5","각 파일 sources.md 참조","해당 없음 (팀 정리본)","태그: 품목;이용흐름. 공시·보도자료 정리, 원문 대조 여부는 파일별 확인"
+"../research/summer_place_pool_v1.md","여름 기준 장소 후보 풀 v1 (후보 19곳)","자연;역사;문화","daegu","2026-11-13","Claude Sonnet 5.5","저장소 기획·조사 문서 (파일 하단 출처 참조)","해당 없음 (팀 정리본)","태그: 걷기;운영. 후보 단계, 운영 정보는 확인표 참조"
+"../research/summer_place_facts_v1.md","여름 후보 장소 사실 확인표 v1","자연;역사;문화","daegu","2026-11-13","Claude Sonnet 5.5","tour.daegu.go.kr 공식 상세 페이지, daegu.go.kr, 문화체육관광부, 경북매일 (행별 URL 참조)","해당 없음 (팀 정리본)","태그: 운영;이용흐름. 대구관광안내 페이지는 기준일 없음, 일부 장소 미확인"
