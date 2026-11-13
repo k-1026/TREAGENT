@@ -1,8 +1,10 @@
 # 한 장 기획서: 대프리카 히든 퀘스트
 
+> **주의 (2026-11-13)**: 제목 후보 '땡볕 탐정단'과 핵심 구성(단서 미션·이야기 책)은 구버전. 현재 기준: [game_concept.md](game_concept.md), [../plan/daeprica_hidden_quest_plan.md](../plan/daeprica_hidden_quest_plan.md). 대상 근거는 이제 [customer_persona.md](customer_persona.md)가 있음.
+
 > 항목 양식: 제목 · 핵심 자산 · 대상 · 문제·욕구 · 제공 가치는 작성, 나머지는 질문만 둠.
 > 표기: 사실은 근거 id 괄호, 창작은 "창작" 표시 후보 2개. 숫자 목표는 쓰지 않음.
-> 확인 필요: `brand/customer_persona.md`는 파일이 없음. 대상 항목은 `brand/one_page_plan.md`의 창작 후보를 근거로 씀.
+> 참고: `brand/customer_persona.md`가 있음. 대상 항목은 `brand/one_page_plan.md`의 창작 후보를 근거로 씀.
 
 ---
 
