@@ -235,7 +235,7 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
   <div class="tag">07 · 스탬프와 방문 기록</div>
   <h2>🏅 방문하면 스탬프가 찍히고, 기록은 자동으로 쌓입니다</h2>
   <div class="grid g3" style="flex:1">
-    <div class="card red"><h3><img class="stamp-mini" src="assets/stamp_nungeum.webp" alt="">능금 스탬프</h3>
+    <div class="card red"><h3><img class="stamp-mini" src="../../brand/character/images/stamp_nungeum.webp" alt="">능금 스탬프</h3>
       <ul class="b"><li>스팟 방문 인증으로 받음</li><li>방문 증거이며 장부 한 줄로 연결</li><li>날씨 보너스 스탬프는 없음</li></ul></div>
     <div class="card gold"><h3>📒 장부와 개인 기록</h3>
       <ul class="b"><li>날짜, 스팟, 날씨가 자동 기록</li><li>이용자가 글을 쓰지 않음</li><li>좌표는 저장하지 않음</li></ul></div>
@@ -322,7 +322,7 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
   <div class="tag">09 · 안내자 하랑이</div>
   <h2>🐿️ 이 길을 안내하는 건 바람 도사 견습생 하랑이입니다</h2>
   <div class="grid" style="grid-template-columns:1.5fr 1fr;flex:1;min-height:0">
-    <div class="full"><img src="assets/harangi_sheet.webp" alt="하랑이 캐릭터 시트 전체"></div>
+    <div class="full"><img src="../../brand/character/images/harangi_sheet.webp" alt="하랑이 캐릭터 시트 전체"></div>
     <div style="display:flex;flex-direction:column;gap:1.4vh;min-height:0">
       <div class="card gold"><h3>😊 상태 알림 (표정)</h3>
         <ul class="b"><li>행복 → 스탬프 · 차분 → 쉼터 안내 · 놀람 → 길 변경</li></ul></div>
@@ -334,7 +334,7 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
         <ul class="b"><li>사과와 다른 토종 과일, 열매는 더 작음</li><li>1905년 칠성동 과수원 이후 '능금의 도시'로 불렸다는 보도 (2차)</li><li>지역 명물 느낌의 모티프이며 공식 상징은 아님</li></ul></div>
     </div>
   </div>
-  <div class="foot">캐릭터 시트 원본 (assets/harangi_sheet.webp). 근거: research/daegu_nunggeum_research_v1.md 6-2절, 6-5절, brand/character/harangi_character.md 8절</div>
+  <div class="foot">캐릭터 시트 원본 (brand/character/images/harangi_sheet.webp). 근거: research/daegu_nunggeum_research_v1.md 6-2절, 6-5절, brand/character/harangi_character.md 8절</div>
 </section>
 
 <!-- 10. 표정·대사 (스마트폰 3분할) -->
@@ -344,7 +344,7 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
     .phone{--w:calc(min(25vw,420px) - 32px);width:min(25vw,420px);background:#1b1b22;border-radius:40px;padding:26px 16px;box-shadow:10px 10px 0 var(--line)}
     /* 얼굴을 화면 위쪽에 붙이고 대사창을 그 바로 아래에 둬서 대사가 잘리지 않게 함 */
     .scr{position:relative;height:calc(var(--w) + 262px);background:#fffdf6;border-radius:24px;overflow:hidden}
-    .face{position:absolute;left:0;top:8px;width:100%;aspect-ratio:1/1;background-image:url(assets/harangi_expressions.webp);background-size:300% auto;background-repeat:no-repeat}
+    .face{position:absolute;left:0;top:8px;width:100%;aspect-ratio:1/1;background-image:url(../../brand/character/images/harangi_expressions.webp);background-size:300% auto;background-repeat:no-repeat}
     /* 원본(2000px) 기준 각 하랑이 몸체 중심(368 / 1005 / 1626)이 정사각 창 가운데 오도록 오프셋을 폭(--w)에 비례해 계산 */
     .f1{background-position:calc(var(--w) * -0.0525) 0} .f2{background-position:calc(var(--w) * -1.008) 0} .f3{background-position:calc(var(--w) * -1.9395) 0}
     .dlg{position:absolute;left:12px;right:12px;top:calc(var(--w) + 4px);background:var(--navy);color:#fff;border:3px solid #fff;border-radius:16px;padding:14px}
@@ -358,7 +358,7 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
     <div class="phone"><div class="scr"><div class="face f2"></div><div class="dlg"><div class="who">😌 차분 · 쉼터</div><p>"여기서 좀 쉴까요?<br>땀 닦고, 물 마시고요.<br>서두를 건 없어요!"</p></div></div></div>
     <div class="phone"><div class="scr"><div class="face f3"></div><div class="dlg"><div class="who">😲 놀람 · 길 변경</div><p>"오늘은 체감이 높아요.<br>실내 길로 바꿨어요.<br>무리하는 건 안 시킬 거예요!!"</p></div></div></div>
   </div>
-  <div class="foot">대사는 사용자 수정본(brand/character/harangi_character.md 8절 예문 6·5·3)에서 줄여 옮김. 수치·기준 시각 자리는 실제 데이터로 채움. 표정 원본 assets/harangi_expressions.webp</div>
+  <div class="foot">대사는 사용자 수정본(brand/character/harangi_character.md 8절 예문 6·5·3)에서 줄여 옮김. 수치·기준 시각 자리는 실제 데이터로 채움. 표정 원본 brand/character/images/harangi_expressions.webp</div>
 </section>
 
 <!-- 11. 스티커 -->
@@ -366,7 +366,7 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
   <div class="tag">09 · 안내자 하랑이: SNS 스티커</div>
   <h2>📱 인증 사진에 붙이는 하랑이 스티커</h2>
   <div class="grid" style="grid-template-columns:1.5fr 1fr;flex:1;min-height:0">
-    <div class="full sticker"><img src="assets/sticker_set_final_v4.webp" alt="하랑이 SNS 스티커 세트 최종본 전체"></div>
+    <div class="full sticker"><img src="../../brand/character/images/sticker_set_final_v4.webp" alt="하랑이 SNS 스티커 세트 최종본 전체"></div>
     <div class="lg" style="display:flex;flex-direction:column;gap:1.4vh;justify-content:space-between">
       <div class="card mint"><h3>📸 이렇게 씁니다</h3>
         <ul class="b"><li>방문 인증 사진에 붙여 공유</li><li>챌린지 해시태그와 함께 노출</li></ul></div>
@@ -376,7 +376,7 @@ th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-siz
         <ul class="b"><li>인증 공유로 캐릭터 노출</li><li>챌린지 참여의 계기</li></ul></div>
     </div>
   </div>
-  <div class="foot">팀 제작 예시 이미지. 사용 허가 범위 확인 필요. 원본 assets/sticker_set_final_v4.webp.</div>
+  <div class="foot">팀 제작 예시 이미지. 사용 허가 범위 확인 필요. 원본 brand/character/images/sticker_set_final_v4.webp.</div>
 </section>
 
 <!-- 12. 산업·기업 조사 ① 공공 운영 구조 -->
