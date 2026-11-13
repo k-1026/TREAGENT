@@ -104,6 +104,19 @@ Claude Code가 이 저장소에서 작업할 때 따르는 규칙입니다.
 - 예외: `README.md`, `CLAUDE.md`, `SKILL.md`는 대문자 이름을 유지합니다. `git-convention.md`는 루트 규칙 문서라서 하이픈 이름을 유지합니다. 그 밖의 예외는 팀 확인이 필요합니다.
 - 기존 파일 중 이 기준에 맞지 않는 것(한글 파일명, 대문자 파일명 등)은 이름 변경 목록을 먼저 보여 주고 확인받은 뒤 바꿉니다.
 
+## HTML 산출물과 배포 기준
+
+- 저장소의 모든 `.html`은 `main`에 병합될 때 GitHub Pages로 자동 배포되고, 목차(`index.html`)에 자동으로 들어갑니다 (`.github/workflows/deploy-pages.yml`, `.github/scripts/build_site.py`).
+- 주소: `https://k-1026.github.io/TREAGENT/<저장소 안 경로>` (예: `.../presentation/20261113/20261112_plan_pitch_v10.html`). Pages 설정 전에는 열리지 않습니다 `[확인 필요]`.
+- html은 위 "폴더 구조 기준"의 알맞은 대분류 폴더에 만들고, 파일명은 "파일명 기준"을 따릅니다. 배포 전용 폴더는 따로 만들지 않습니다.
+- 모든 html에 `<meta charset="utf-8">`, `<meta name="viewport" content="width=device-width, initial-scale=1">`, **`<title>`** 을 씁니다. `<title>`이 목차의 제목이 됩니다. 한 줄 설명은 `<meta name="description" content="...">`로 쓸 수 있습니다.
+- 이미지·다른 문서는 **상대경로**로 불러옵니다 (예: `../../brand/character/images/harangi_sheet.webp`). `/`로 시작하는 절대경로와 `file://` 경로는 쓰지 않습니다. 참조한 저장소 파일은 사이트에 함께 복사됩니다.
+- 이미지는 쓰는 곳 기준 위치(위 "폴더 구조 기준")에 두고 html에서 참조합니다. 같은 이미지를 발표 폴더에 복사하지 않습니다.
+- 배포에서 빼고 싶은 html은 `.github/site/exclude.txt`에 경로를 적습니다 (목차에도 나오지 않습니다).
+- **배포하면 외부에 공개됩니다.** html을 올리기 전에 개인정보, EXIF 위치 정보, 허가받지 않은 실존 인물·가게 이름이 없는지 확인합니다 ("개인정보", "브랜드·캐릭터 작업" 규칙). 확인이 안 된 html은 `exclude.txt`에 먼저 적습니다.
+- 올리기 전에 로컬에서 확인합니다: `python3 .github/scripts/build_site.py` 실행 후 `_site/index.html`을 열거나 `python3 -m http.server -d _site`로 봅니다. 경고(없는 파일 참조, `<title>` 없음)가 나오면 고칩니다. `_site/`는 커밋하지 않습니다.
+- PR 본문의 `변경한 파일 위치` 표에 새 html의 배포 주소를 비고로 적습니다.
+
 ## 이동·이름 변경 작업 기준
 
 - 파일 이동은 `git mv`로 해서 이력을 유지합니다. 커밋 타입은 `rename`입니다.
