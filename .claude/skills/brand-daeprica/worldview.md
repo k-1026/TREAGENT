@@ -1,5 +1,7 @@
 # 세계관: 대프리카 히든 퀘스트 (브랜드 스킬: brand-daeprica)
 
+> **주의 (2026-11-13)**: 1절 사실 정리만 현재 유효. 3~5절의 땡볕 탐정·그늘이·단서 사건은 구버전 창작 후보로 대체됨. 현재 설정 원본: `brand/worldview.md`, `brand/character/harangi_character.md`.
+
 - 작성일: 2026-11-09
 - 기반: `brand/persona_sheet.md`, `archive/inventory/top3_rationale.md` (선정 자산 대구약령시 · 대프리카 · 이월드·83타워)
 - 표기

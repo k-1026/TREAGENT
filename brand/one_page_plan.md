@@ -1,5 +1,7 @@
 # 한 장 기획서: 대프리카 히든 퀘스트 (크리에이티브 트랙)
 
+> **주의 (2026-11-13)**: '땡볕 탐정단'·퀘스트 표현은 구버전 후보. 현재 기준: [game_concept.md](game_concept.md), [../plan/daeprica_hidden_quest_plan.md](../plan/daeprica_hidden_quest_plan.md).
+
 - 작성일: 2026-11-09
 - 트랙: AX 크리에이티브 트랙 (콘텐츠 & 뷰티)
 - 기반: `brand/persona_sheet.md`, `.claude/skills/brand-daeprica/`, `plan/daeprica_hidden_quest_plan.md`
