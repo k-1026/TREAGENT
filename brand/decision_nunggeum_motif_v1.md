@@ -26,7 +26,7 @@
 **선정 이유 (팀 내부 기록)**
 - 대구 시민이 익숙하게 쓰는 옛 이름이라 지역 감성을 줄 수 있습니다.
 - '대구 명물' 느낌으로 쓰되 공식 상징처럼 과장하지 않는 것이 목표입니다.
-- 기존 발표 자료의 근거 "능금빵 메뉴"는 한 건(블로그 후기)이므로 대표 근거로 쓰지 않습니다. (presentation/20261110_plan_pitch_v3.html 260행)
+- 기존 발표 자료의 근거 "능금빵 메뉴"는 한 건(블로그 후기)이므로 대표 근거로 쓰지 않습니다. (presentation/20261113/20261110_plan_pitch_v3.html 260행)
 
 ---
 
@@ -60,5 +60,5 @@
 - research/daegu_nunggeum_research_v1.md (6-1 ~ 6-7절)
 - brand/character/harangi_squirrel.md (금기)
 - brand/persona_sheet.md (7장 금칙어)
-- presentation/20261110_plan_pitch_v3.html 255~265행 (기존 선정 근거)
+- presentation/20261113/20261110_plan_pitch_v3.html 255~265행 (기존 선정 근거)
 - archive/metadata.csv 36행 (능금 스탬프 이미지)
