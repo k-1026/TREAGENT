@@ -7,6 +7,7 @@ on:
 
 permissions:
   issues: write
+  contents: read
 
 jobs:
   branch-to-issue:
@@ -25,6 +26,14 @@ jobs:
       PROJECT_STATUS_FIELD: 상태
       PROJECT_STATUS_TODO: 할 일
     steps:
+      # create 이벤트는 저장소 파일을 자동으로 받지 않습니다. 이슈 양식을 읽으려면 기본 브랜치를 받아야 합니다.
+      - name: 이슈 양식을 읽기 위해 기본 브랜치 받기
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          sparse-checkout: .github/ISSUE_TEMPLATE
+          sparse-checkout-cone-mode: false
+
       - name: 저장소에 task 라벨 준비
         run: gh label create task --repo "$REPO" --color 0E8A16 --description "작업 등록 이슈" --force
 
