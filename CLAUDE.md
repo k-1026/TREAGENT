@@ -107,7 +107,7 @@ Claude Code가 이 저장소에서 작업할 때 따르는 규칙입니다.
 ## HTML 산출물과 배포 기준
 
 - 저장소의 모든 `.html`은 `main`에 병합될 때 GitHub Pages로 자동 배포되고, 목차(`index.html`)에 자동으로 들어갑니다 (`.github/workflows/deploy-pages.yml`, `.github/scripts/build_site.py`).
-- 주소: `https://k-1026.github.io/TREAGENT/<저장소 안 경로>` (예: `.../presentation/20261113/20261112_plan_pitch_v10.html`). Pages 설정 전에는 열리지 않습니다 `[확인 필요]`.
+- 주소: `https://k-1026.github.io/TREAGENT/<저장소 안 경로>` (예: `.../presentation/20261113/20261112_plan_pitch_v10.html`). 2026-11-13에 배포를 시작했습니다 (Actions "HTML 배포" 성공). 열리지 않으면 Actions 탭의 실행 결과를 확인합니다.
 - html은 위 "폴더 구조 기준"의 알맞은 대분류 폴더에 만들고, 파일명은 "파일명 기준"을 따릅니다. 배포 전용 폴더는 따로 만들지 않습니다.
 - 모든 html에 `<meta charset="utf-8">`, `<meta name="viewport" content="width=device-width, initial-scale=1">`, **`<title>`** 을 씁니다. `<title>`이 목차의 제목이 됩니다. 한 줄 설명은 `<meta name="description" content="...">`로 쓸 수 있습니다.
 - 이미지·다른 문서는 **상대경로**로 불러옵니다 (예: `../../brand/character/images/harangi_sheet.webp`). `/`로 시작하는 절대경로와 `file://` 경로는 쓰지 않습니다. 참조한 저장소 파일은 사이트에 함께 복사됩니다.
