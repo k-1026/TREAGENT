@@ -1,23 +1,44 @@
 # TREAGENT
 
-팀 TREAGENT의 작업 저장소입니다.
+팀 TREAGENT의 작업 저장소입니다. 현재 **기획 단계**입니다.
 
-## 현재 프로젝트
+## 한눈에 보기
 
-**대프리카 히든 퀘스트** (기획 단계)
-- 날씨·기온·시간대·요일에 맞는 길(코스)을 안내하는 스탬프 투어 업그레이드. 하랑이와 함께 걷고, 게임 요소는 최소로 둡니다.
-- 대상: 대구 거주 2030, 대구 방문 2030. 1차 범위는 여름 "대프리카" 퀘스트. 가을 이후는 여름 운영 결과를 보고 검토합니다.
-- 선정 자산 (트랙 가중치, A안): 대구약령시, 대프리카, 이월드·83타워 (역사 테마는 시즌 후반).
-- 트랙: AX 크리에이티브 트랙 (콘텐츠 & 뷰티).
+**대프리카 히든 퀘스트 (가칭)**: 날씨·기온·시간대·방문 요일에 맞춰 대구의 스탬프 투어 길(코스)을 안내하는 서비스 기획입니다.
 
-## 어디부터 읽나
+| 항목 | 내용 | 근거 |
+|---|---|---|
+| 무엇 | 기존 스탬프 투어를 날씨 등에 맞춘 맞춤 프로그램으로 업그레이드합니다. 이용자는 안내하는 길을 따라 걷고 장소마다 방문 인증(스탬프)을 합니다. | `plan/daeprica_hidden_quest_plan.md` "방향 변경" |
+| 누구를 위해 | 대구 거주 2030, 대구 방문 2030. 대표 이용자로 1박 2일 대구 방문 혼행객을 골랐습니다 (2026-11-10 팀 결정). | `brand/customer_persona.md` |
+| 왜 | 대구·경북 관광이 가을 축제 등에 의존하고, 방문객은 늘었지만 체류 시간은 줄었다는 보도가 있습니다. 여름에는 도심 체감온도가 높아 나갈 이유가 부족합니다. | `plan/daeprica_hidden_quest_plan.md` 0-1장 (`[검증됨: 보도]`) |
+| 어떻게 | ① **길**: 날씨·시간대·요일에 맞춰 짠 방문 순서 ② **방문 인증**: 장소별 스탬프 ③ **하랑이**: 능금 모티프 다람쥐 캐릭터가 안내 ④ 폭염·한파특보 시 야외 안내 중단, 위치는 앱 사용 중에만 수집 | `plan/daeprica_hidden_quest_plan.md` "방향 변경", `brand/game_concept.md` 1~2장, `brand/character/harangi_squirrel.md` |
+| 게임 요소 | 퍼즐·미션 풀이 같은 고도화된 게임 요소는 최소로 둡니다. | `brand/game_concept.md` 1장 |
+| 세계관 | 앱 안에서는 대구를 가상의 도시국가 "대프리카"로 소개합니다. 지형과 장소는 실제 대구와 같고 이름만 다릅니다. | `plan/daeprica_hidden_quest_plan.md` "방향 변경" |
+| 트랙 | 장소 인증만 하는 **기본 트랙**, 야외 방탈출 형식의 **미스터리 트랙(가칭)**. 미스터리 트랙의 도입 범위는 팀이 정합니다 `[결정 필요]`. | `plan/daeprica_hidden_quest_plan.md` 방향 변경, 318행 |
+| 범위 | 1차는 여름 "대프리카" 길입니다. 가을 이후는 여름 운영 결과를 보고 검토합니다. | `plan/daeprica_hidden_quest_plan.md` 변경 요점 4 |
+| 지금 단계 | 기획 단계입니다. 무료 MVP 명세 v1이 있고, Expo 앱 데모(코스 A, 4개 장소, 버튼 완료 방식)가 있습니다. 로그인·서버·GPS 인증·운영자 웹은 아직 없습니다. | `plan/spec/treagent_tech_spec_v1.md` 1-1장 |
 
-1. 작업 규칙: [CLAUDE.md](CLAUDE.md), [git-convention.md](git-convention.md)
-2. 기획안: [plan/daeprica_hidden_quest_plan.md](plan/daeprica_hidden_quest_plan.md)
-3. 고객 전략: [plan/treagent_customer_strategy_v1.md](plan/treagent_customer_strategy_v1.md)
-4. 세계관·캐릭터: [brand/worldview.md](brand/worldview.md), [brand/character/harangi_character.md](brand/character/harangi_character.md)
-5. 기능·기술 명세: [plan/spec/treagent_tech_spec_v1.md](plan/spec/treagent_tech_spec_v1.md)
-6. 최신 발표: [presentation/README.md](presentation/README.md)
+- 과제 트랙: AX 크리에이티브 트랙 (콘텐츠 & 뷰티).
+- 선정 자산 (트랙 가중치 A안): 대구약령시, 대프리카, 이월드·83타워 (역사 테마는 시즌 후반) `[확인 필요: 팀 최종 결정]`.
+
+## 어떻게 보면 되나
+
+| 보고 싶은 것 | 먼저 볼 곳 |
+|---|---|
+| 5분 안에 전체 흐름 | 발표 최종본 [`presentation/20261113/20261112_plan_pitch_v10.html`](presentation/20261113/20261112_plan_pitch_v10.html) (PDF도 같은 폴더) |
+| 왜 하는지, 사업 검증 | [고객 전략](plan/treagent_customer_strategy_v1.md), [시각화 html](plan/treagent_customer_strategy_visualization_v1.html) |
+| 서비스 컨셉, 길, 트랙 | [게임·서비스 컨셉](brand/game_concept.md), [기획안](plan/daeprica_hidden_quest_plan.md)의 "방향 변경"과 0장 |
+| 세계관, 하랑이 | [세계관](brand/worldview.md), [하랑이 설정](brand/character/harangi_character.md), 이미지는 `brand/character/images/` |
+| 앱 기능·기술·담당, 만드는 순서 | [기능·기술 명세 v1](plan/spec/treagent_tech_spec_v1.md), 앱 데모는 `dev/app/` |
+| 근거 자료 (사용자 문제, 사례, 경쟁·운영 사례) | [리서치 안내](research/README.md), [페인포인트 후보](research/painpoint/candidates.md) |
+| 발표에서 받은 피드백 | [통합 정리](plan/feedback/20261113_presentation_feedback_v1.md) |
+| 이 저장소 작업 방법 | [CLAUDE.md](CLAUDE.md), [git-convention.md](git-convention.md) |
+
+**읽을 때 주의**
+- 표기: `[검증됨]` 공공 자료·보도 확인, `[확인 필요]` 추가 조사나 협의 필요, `[미검증]` 근거 미확보, `[추정]` 기획상 가정, "창작"은 팀이 정하기 전의 후보입니다.
+- 결정이 필요한 항목은 각 문서의 `결정 필요` 섹션에 모아 둡니다. 확정은 팀이 합니다.
+- 기획안의 "퀘스트" 표현은 방향 변경 이후 "길(코스)"로 읽습니다 (기획안 "방향 변경"의 용어 표).
+- 구버전 문서: `brand/onepager.md`, `brand/one_page_plan.md`(땡볕 탐정단 후보)는 구버전이고, 발표 초안 v1~v9는 최종본 v10 이전 기록입니다. 대본 v3는 v10 내용과 다릅니다 (`presentation/README.md`).
 
 ## 폴더 구성 (대분류)
 
