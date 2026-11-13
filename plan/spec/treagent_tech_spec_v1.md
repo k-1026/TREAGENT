@@ -17,7 +17,7 @@
 | 기획 | 기획서, 고객 전략 v1, 유저 플로우 v1, 화면 구조 도식 7장 (`design/user_flow_images/`) | 첫 코스 확정, 인증 방식 확정 |
 | 스토리보드 | 게임 스토리보드 v1 (`storyboard/20261110_game_storyboard_v1.md`) | 앱 화면 기준 스토리보드 (유저 플로우 v1 반영본) |
 | 캐릭터·에셋 | 하랑이 시트·표정·픽셀 전신·능금 스탬프·스티커 (`brand/character/images/`) | 앱용 분리 에셋(투명 PNG), 화면별 일러스트, 아이콘 세트 |
-| 앱 | Expo 데모(코스 A, 4개 장소, 버튼 완료 방식) (`app/`) | 로그인, 서버, GPS 인증, 여행 저장, 장부 |
+| 앱 | Expo 데모(코스 A, 4개 장소, 버튼 완료 방식) (`dev/app/`) | 로그인, 서버, GPS 인증, 여행 저장, 장부 |
 | 서버·DB | 없음 | 전부 |
 | 운영자 웹 | 없음 (도식만 있음) | 전부 |
 | 명세 | 서비스 명세 v0(로컬 초안), 이 문서 | 기능 명세 최종본(외부 `TREAGENT 무료 MVP 기능 명세`는 이 저장소에서 확인하지 못함) `[확인 필요]` |
@@ -133,8 +133,8 @@ flowchart LR
 
 | 영역 | 현재 상태 | 근거·비고 |
 |---|---|---|
-| 앱 | **Expo + React Native + TypeScript** (확정) | `app/package.json` (expo ~58, react-native 0.88), `_local_drafts/spec/spec.md` |
-| 웹 미리보기 | react-native-web 설치됨 | `app/package.json` |
+| 앱 | **Expo + React Native + TypeScript** (확정) | `dev/app/package.json` (expo ~58, react-native 0.88), `_local_drafts/spec/spec.md` |
+| 웹 미리보기 | react-native-web 설치됨 | `dev/app/package.json` |
 | 위치 | 기기 위치 API (expo 제공 모듈) `[확인 필요: 모듈·권한 문구]` | 위치는 앱 사용 중에만 수집 (`plan/daeprica_hidden_quest_plan.md` 8장) |
 | 길찾기 | 외부 지도 앱 열기. 앱 내 지도 SDK는 P0에서 쓰지 않음 | 유저 플로우 v1 2장 (열 수 없으면 주소·인증 지점 설명) |
 | 서버·DB·인증 | **미정** `[결정 D-02]` | 후보 A: Firebase (인증+Firestore). 후보 B: Supabase (인증+Postgres). 아래 비교 |
@@ -461,7 +461,7 @@ flowchart TD
 
 - 동작: 테마, 예상 소요시간, 출발 장소 확인.
 - 데이터: `courses`, `places`, `course_routes` (정상 경로·대체 경로 변형).
-- 첫 코스 `[결정 D-04]`: 기존 데모는 **코스 A 「사라진 대구의 비밀 레시피」(중구, 30분)** — 동성로 → 근대골목 → 약령시 박물관 → 서문시장 (`app/src/data/courseA.ts`, 기획서 5-1장). 폭염 경로는 약령시 → 동성로 → 서문시장 `[추정]`.
+- 첫 코스 `[결정 D-04]`: 기존 데모는 **코스 A 「사라진 대구의 비밀 레시피」(중구, 30분)** — 동성로 → 근대골목 → 약령시 박물관 → 서문시장 (`dev/app/src/data/courseA.ts`, 기획서 5-1장). 폭염 경로는 약령시 → 동성로 → 서문시장 `[추정]`.
 - 파일럿 코스(생활권 하나)와 일치시킬지 `[확인 필요]` (고객 전략 pilot 절: 코스·소요시간은 현장 답사 후 결정).
 
 | 담당 | 할 일 |
@@ -802,14 +802,14 @@ flowchart TD
 | A-03 | 하랑이 전신 픽셀 | 있음 (`harangi_fullbody_pixel.webp`) | 투명 PNG, 앱 크기별 | CON |
 | A-04 | 능금 스탬프 | 있음 (`stamp_nungeum.webp`) | 투명 PNG, 획득 연출용 프레임 | CON, DES |
 | A-05 | 스티커 세트 | 있음 (`sticker_set_final_v4.webp`) | 앱 사용 여부 결정 `[결정]` | CON |
-| A-06 | 앱 아이콘·스플래시 | Expo 기본 이미지 (`app/assets/`) | 하랑이 기반 교체 | DES |
+| A-06 | 앱 아이콘·스플래시 | Expo 기본 이미지 (`dev/app/assets/`) | 하랑이 기반 교체 | DES |
 | A-07 | 코스 썸네일 | 없음 | 코스별 1장, 사용 조건 확인 | DES, RES |
 | A-08 | 장소 사진 | 없음 | 저작권·사용 조건 확인된 것만. 직접 촬영 시 위치 정보(EXIF) 제거 | RES |
 | A-09 | 실내·야외·쉼터·날씨 아이콘 | 없음 | 아이콘 세트 | DES |
 | A-10 | 하랑이 말풍선·컴포넌트 | 없음 | Figma 컴포넌트 | DES |
 | A-11 | ‘내 여행 한 장’ 카드 템플릿 | 없음 | 날짜·장소·스탬프 배치 | DES |
 | A-12 | 빈 상태·오류 일러스트 | 없음 | 로그인 실패, 기록 없음, 경로 없음 | DES, CON |
-| A-13 | 폰트·색상 토큰 | 데모는 임의 값 (`app/App.tsx` 색 상수) `[확인 필요]` | 디자인 토큰 정의 | DES |
+| A-13 | 폰트·색상 토큰 | 데모는 임의 값 (`dev/app/App.tsx` 색 상수) `[확인 필요]` | 디자인 토큰 정의 | DES |
 | A-14 | 효과음·진동 | 없음 | P0에서는 제외 가능 `[결정]` | — |
 
 에셋 규칙
@@ -1503,7 +1503,7 @@ flowchart TD
 - `plan/daeprica_hidden_quest_plan.md` 5-1, 6-1, 6-2, 7, 8, 10, 11장
 - `storyboard/20261110_game_storyboard_v1.md` A-1~A-4
 - `_local_drafts/spec/spec.md`, `ia.md`, `userflow.md` (Day14 서비스 명세 v0)
-- `app/package.json`, `app/App.tsx`, `app/src/data/courseA.ts` (현재 앱 데모)
+- `dev/app/package.json`, `dev/app/App.tsx`, `dev/app/src/data/courseA.ts` (현재 앱 데모)
 - `brand/character/prompts.md`, `brand/character/images/` 파일 목록, `brand/game_items_v1.md`
 - `.github/ISSUE_TEMPLATE/task.md`, `git-convention.md`, `CLAUDE.md`
 - 확인하지 못한 자료: 외부 `TREAGENT 무료 MVP 기능 명세`, 외부 발표안 링크(ChatGPT 라이브러리), 기상청 API 상세 사양, Figma 시안

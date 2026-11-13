@@ -27,7 +27,7 @@
 | 기획 | 기획서, 고객 전략, 기능·기술 명세 | `plan/` (`spec/` 포함) |
 | 브랜드·콘텐츠 | 페르소나, 세계관, 캐릭터(하랑이)와 이미지, 게임 요소 | `brand/` |
 | 스토리보드 | 훅 후보, 전환 문장, 스토리 구조, 등장인물 | `storyboard/` |
-| 개발 | Expo 앱 데모 (코스 A) | `app/` |
+| 개발 | Expo 앱 데모 (코스 A) | `dev/` (`dev/app/`) |
 | 발표 | 발표 자료, 대본, 진행 현황 | [`presentation/`](presentation/README.md) |
 | 보관 | 수집물·메타데이터(`metadata.csv`, `tags.md`), 인벤토리, 탈락·보류 후보 | `archive/` (`inventory/`, `rejected/`) |
 | 피드백 | 발표 피드백 원문과 통합 정리 | `feedback/` |

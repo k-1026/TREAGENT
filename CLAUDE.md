@@ -74,7 +74,7 @@ Claude Code가 이 저장소에서 작업할 때 따르는 규칙입니다.
 | 기획 | `plan/` | 기획서, 고객 전략, 기능·기술 명세(`spec/`) |
 | 브랜드·콘텐츠 | `brand/` | 페르소나, 세계관, 게임 요소, 캐릭터와 이미지(`character/`, `character/images/`) |
 | 스토리보드 | `storyboard/` | 훅, 전환 문장, 스토리 구조, 등장인물 |
-| 개발 | `app/` | Expo 앱과 앱에 들어가는 에셋(`app/assets/`) |
+| 개발 | `dev/` | Expo 앱(`dev/app/`)과 앱에 들어가는 에셋(`dev/app/assets/`), 이후 서버·운영자 웹 |
 | 발표 | `presentation/` | 발표일 폴더(`YYYYMMDD/`) 단위의 html, pdf, 대본 |
 | 보관 | `archive/` | 수집물·메타데이터(`metadata.csv`, `tags.md`), 인벤토리(`inventory/`), 탈락·보류 후보(`rejected/`) |
 | 피드백 | `feedback/` | 발표 피드백 원문과 통합 정리 |
@@ -84,7 +84,7 @@ Claude Code가 이 저장소에서 작업할 때 따르는 규칙입니다.
 - 하위 폴더는 2단계까지를 기본으로 합니다 (예: `research/company/<이름>/`). 그보다 깊어지면 구조를 먼저 확인받습니다.
 - 같은 성격의 자료를 여러 폴더에 나누지 않습니다. 같은 내용의 다른 형식(md와 html)은 같은 폴더에 둡니다.
 - 폐기·보류한 문서는 지우지 않고 `archive/rejected/`로 옮기고, 원래 문서에는 대체 문서 위치를 적습니다.
-- 이미지는 쓰는 곳 기준으로 둡니다: 캐릭터·브랜드 이미지는 `brand/character/images/`(탈락 시안은 `images/archive/`), 앱 번들용은 `app/assets/`, 발표 전용은 발표일 폴더의 `assets/`.
+- 이미지는 쓰는 곳 기준으로 둡니다: 캐릭터·브랜드 이미지는 `brand/character/images/`(탈락 시안은 `images/archive/`), 앱 번들용은 `dev/app/assets/`, 발표 전용은 발표일 폴더의 `assets/`.
 - 발표 html은 이미지를 상대경로로 불러옵니다. 폴더나 이미지를 옮기면 html의 경로도 함께 고칩니다.
 
 ## 파일명 기준
