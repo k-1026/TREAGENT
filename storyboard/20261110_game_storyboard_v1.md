@@ -27,7 +27,7 @@
 | 장면 | 무엇이 일어나나 | 누가 결정하나 | 근거 |
 |---|---|---|---|
 | 1. 입력 수집 | 날씨, 장소 운영 상태, 플레이어 상태를 받음 | 시스템 (데이터 연동) | 기온 예보 자료 (YTN 2026.7.13) |
-| 2. 규칙 검사 | R1 체감이 기준 이상이면 야외 잠금, R2 휴관·영업 종료 장소 제외, R3 대기가 긴 장소는 뒤 순서 | 규칙 엔진 (사람이 정한 규칙) | `painpoint/voc_classified.csv` (대기 13건, 운영 변경 10건) |
+| 2. 규칙 검사 | R1 체감이 기준 이상이면 야외 잠금, R2 휴관·영업 종료 장소 제외, R3 대기가 긴 장소는 뒤 순서 | 규칙 엔진 (사람이 정한 규칙) | `research/painpoint/voc_classified.csv` (대기 13건, 운영 변경 10건) |
 | 3. 퀘스트 후보 생성 | 규칙을 통과한 장소로 후보를 만듦 | 규칙 엔진 | — |
 | 4. 문장 생성 | 에이전트가 단서 문장과 하랑이 대사를 만듦 | AI 에이전트 (문장만 담당) | — |
 | 5. 사실 검수 | 역사·장소 설명을 근거 자료와 대조. 틀리면 반려 | 검수 규칙 + 운영자 | `research/daegu_history_tour_cases.md` 3-3 (AI 투어 역사 설명 부정확 지적) |
@@ -149,6 +149,6 @@
 ## 근거와 출처
 
 - `plan/daeprica_hidden_quest_plan.md` (기획안)
-- `painpoint/voc_classified.csv`, `painpoint/candidates.md` (불편 근거)
+- `research/painpoint/voc_classified.csv`, `research/painpoint/candidates.md` (불편 근거)
 - `research/daegu_history_tour_cases.md` 3-3 (AI 투어 사례)
 - `presentation/20261113/20261110_plan_pitch_v6.html` (발표 자료 장면과 규칙)

@@ -858,7 +858,7 @@ flowchart TD
 | 게임 스토리보드 v1 (`storyboard/20261110_game_storyboard_v1.md`) | 있음. 시스템 흐름·하랑이 트리거 포함 | 유저 플로우 v1(로그인·장부·이어하기)을 반영한 v2 작성 | PM, CON |
 | 유저 플로우 v1 | 있음 (루트에 미커밋 파일) | `design/` 또는 `spec/`로 이동 위치 결정 | PM |
 | 화면 구조 도식 7장 (`design/user_flow_images/`) | 있음 | Figma 화면과 대조 | DES |
-| 고객 여정 지도 (`design/customer_journey_map_v1.html`) | 있음 | 앱 여정 측정 항목과 연결 | PM |
+| 고객 여정 지도 (`research/painpoint/customer_journey_map_v1.html`) | 있음 | 앱 여정 측정 항목과 연결 | PM |
 | Figma 시안 | 없음 `[확인 필요]` | 5장 S-01~S-13 | DES |
 | 서비스 명세 v0 (`_local_drafts/spec/`) | 로컬 초안 | 이 문서로 흡수할지 결정 | PM |
 | 기술 명세 v1 (이 문서) | 작성 | 팀 검토 후 v2 | 전원 |

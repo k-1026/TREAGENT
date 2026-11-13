@@ -1,6 +1,6 @@
 # 캐릭터 기준 이미지 (원본 시트) 초안: 대프리카 히든 퀘스트
 
-> 대체됨: `brand/character/hongok_squirrel.md`, `versions/daeprica/concept_candidates.md`. 판단 기록용입니다.
+> 대체됨: `brand/character/hongok_squirrel.md`, `archive/rejected/daeprica/concept_candidates.md`. 판단 기록용입니다.
 
 - 작성일: 2026-11-09
 - 트랙: AX 크리에이티브 트랙. 외형을 고정하고, 이후 모든 장면에서 같은 캐릭터로 보이게 함.

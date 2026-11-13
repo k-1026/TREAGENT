@@ -17,7 +17,7 @@
 
 ## 3. 문제 — 사실
 - 여름 도심 체감온도가 높습니다. 2026년 7월 수성구 범어네거리 기온 36℃, 체감 40℃ `[검증됨: 영남일보, 원자료 재확인 필요]`.
-- 지도 후기 불만 52건 중 대기·혼잡 13건, 휴관·공사·운영 변경 10건 (`painpoint/voc_classified.csv`, 요약 기준 집계).
+- 지도 후기 불만 52건 중 대기·혼잡 13건, 휴관·공사·운영 변경 10건 (`research/painpoint/voc_classified.csv`, 요약 기준 집계).
 
 ## 4. 제공 가치 — 사실 + 창작
 - 사실: 날씨와 기온에 맞춰 방문 순서를 안내하는 **맞춤 코스** (방향 변경 문서).
@@ -46,5 +46,5 @@
 
 ## 출처
 - `plan/daeprica_hidden_quest_plan.md` (0절, 방향 변경)
-- `painpoint/voc_classified.csv` (52행 집계)
+- `research/painpoint/voc_classified.csv` (52행 집계)
 - 영남일보 2026.07 보도 (plan 0-1절에서 인용, 원자료 재확인 필요)

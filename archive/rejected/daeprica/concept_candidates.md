@@ -3,7 +3,7 @@
 > 후보 보관: 확정 캐릭터는 `brand/character/hongok_squirrel.md`입니다. 이 파일은 탈락·보류 후보 기록입니다.
 
 - 작성일: 2026-11-09
-- 기반: `.claude/skills/brand-daeprica/worldview.md`, `brand/persona_sheet.md`, `versions/daeprica/versions/daeprica/character_base_sheet.md`
+- 기반: `.claude/skills/brand-daeprica/worldview.md`, `brand/persona_sheet.md`, `archive/rejected/daeprica/character_base_sheet.md`
 - 표기: 모든 항목은 **창작 후보 2개씩**. 최종 선택은 팀이 정함. 사실 근거는 worldview.md 1장 (근거 id 표기).
 
 ## 의인화 대상

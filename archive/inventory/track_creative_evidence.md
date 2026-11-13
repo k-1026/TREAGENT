@@ -4,7 +4,7 @@
 - 트랙: **AX 크리에이티브 트랙** (콘텐츠 & 뷰티)
 - 프로젝트: 대프리카 히든 퀘스트
 - 가중치: **A안 확정** (스토리성 30 · 캐릭터 확장성 15 · K-웰니스/뷰티 20 · 시장성 15 · 데이터 가용성 20)
-- 점수 원본: `versions/daeprica/track_creative_draft.md` (초안, 채점자 A·B 입력 대기)
+- 점수 원본: `archive/rejected/daeprica/track_creative_draft.md` (초안, 채점자 A·B 입력 대기)
 
 ## 1. 트랙 기준 2개 추가 채점 (의인화 후보·웰니스 근거)
 

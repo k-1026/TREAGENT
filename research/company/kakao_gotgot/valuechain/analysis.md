@@ -14,7 +14,7 @@
 | [10] | research/company/kakao_gotgot/10_dart_인적분할결정.md |
 | [12] | research/company/kakao_gotgot/onepager.md |
 | [13] | research/company/kakao_gotgot/sources.md (S1, 곳곳 보도자료 2026.10.06) |
-| painpoint | painpoint/voc_classified.csv (프로젝트 VOC, 52건 중 대기·혼잡 13건) |
+| painpoint | research/painpoint/voc_classified.csv (프로젝트 VOC, 52건 중 대기·혼잡 13건) |
 
 ## 마커
 
