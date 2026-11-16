@@ -1,2 +1,11 @@
 # 배포용 사이트 빌드 결과 (python3 .github/scripts/build_site.py)
 _site/
+
+# 비밀 값: 실제 .env는 올리지 않고 예시 파일(.env.example)만 올립니다.
+.env
+.env.*
+!.env.example
+
+# 의존성·로그
+node_modules/
+*.log
