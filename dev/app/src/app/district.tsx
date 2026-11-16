@@ -6,7 +6,7 @@
  *
  * 동작
  *  - DISTRICTS 목록을 버튼으로 보여 준다.
- *  - 하나를 누르면 위치 확인 화면(/location)으로 돌아가며, 선택한 코드를 district 파라미터로 넘긴다.
+  *  - 하나를 누르면 위치 확인 화면(/)으로 돌아가며, 선택한 코드를 district 파라미터로 넘긴다.
  *  - "닫기"는 선택 없이 이전 화면으로 돌아간다.
  *
  * 규칙: 좌표는 다루지 않는다. 선택값은 저장하지 않는다 (앱을 다시 켜면 사라진다).
@@ -24,7 +24,7 @@ export default function DistrictScreen() {
         {DISTRICTS.map((d) => (
           <Pressable
             key={d.code}
-            onPress={() => router.navigate({ pathname: '/location', params: { district: d.code } })}
+            onPress={() => router.navigate({ pathname: '/', params: { district: d.code } })}
             style={{ backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#e6dccd', borderRadius: 12, padding: 14 }}
           >
             <Text style={{ fontSize: 16, fontWeight: '600', color: '#2b2118' }}>{d.name}</Text>
