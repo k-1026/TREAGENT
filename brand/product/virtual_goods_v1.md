@@ -12,6 +12,7 @@
 | 2 | 하랑이 도지마롤 | `harangi_dojima_roll_mockup.webp` | 하랑이 얼굴·능금 이파리, 소상공인 베이커리 | 카페 메뉴 콜라보 (창작) |
 | 3 | 하랑이 크로스백 | `harangi_crossbody_bag_mockup.webp` | 하랑이 소품(포쉐트) | 실물 굿즈 (판매 검토) |
 | 4 | 하랑이 인형 | `harangi_plush_mockup.webp` | 하랑이 인형 굿즈 | 실물 굿즈 (판매 검토) |
+| 5 | 하랑이 모니터 피규어 | `harangi_monitor_figure_mockup.webp` | 하랑이 피규어, 능금 | 실물 굿즈 (판매 검토) |
 
 ## 굿즈 1. 능금에이드 (시안)
 
@@ -110,6 +111,33 @@
   - 후보 A: 붉은 소용돌이 (구름 모양)
   - 후보 B: 능금 잎 모양
 
+## 굿즈 5. 하랑이 모니터 피규어 (시안)
+
+파일: `harangi_monitor_figure_mockup.webp`
+
+**사실 (이미지 확인)**
+- 검은 모니터 윗면 가장자리에 걸터앉은 모습의 피규어입니다 (harangi_monitor_figure_mockup.webp).
+- 빨간 몸에 크림색 얼굴·배·꼬리 끝, 파란 눈, 머리 위 줄기와 초록 잎이 있습니다 (harangi_monitor_figure_mockup.webp).
+- 두 손으로 주황빛 빨강 능금을 안고 있습니다. 어깨에 크림색 후드 조끼와 끈 달린 작은 주머니가 보입니다 (harangi_monitor_figure_mockup.webp, 과일이 능금이라는 것은 요청자 확인).
+- 배경은 흐린 푸른 창가와 화분입니다. 부채는 이 이미지에 없습니다 (harangi_monitor_figure_mockup.webp).
+- 요청자 메모: 생성형 AI로 만든 모니터 피규어 시안입니다. 실제 제작품 사진이 아닙니다. 부채는 의도해서 뺐습니다.
+
+**프로젝트 연결 (저장소 근거)**
+- 외형 요소(능금 빨강 몸, 머리 이파리, 후드 조끼, 포쉐트)는 하랑이 설정과 같습니다 (brand/character/harangi_character.md 5절).
+- 피규어류는 실물 굿즈 후보입니다 (brand/game_concept.md 9절).
+- 하랑이 3D 디자인 시안과 외형 비교가 필요합니다 (brand/character/images/harangi_3d_turnaround.webp).
+
+**창작 (후보 2개씩)**
+- 굿즈 이름 (창작)
+  - 후보 A: 하랑이 모니터 피규어
+  - 후보 B: 하랑이 책상 지킴이
+- 사용 장면 (창작)
+  - 후보 A: 학생·직장인 책상 굿즈
+  - 후보 B: 방문 인증 보상용 굿즈
+
+**확인 필요**
+- 모니터 위 고정 방식과 제작 가능성 `[확인 필요]`.
+
 ## 공통 확인 필요
 
 - 인형의 캐릭터가 하랑이인지 `[확인 필요]`. 하랑이 3D 디자인 시안(`brand/character/images/harangi_3d_turnaround.webp`)과 외형을 비교해 팀이 확인합니다.
@@ -120,7 +148,7 @@
 
 ## 결정 필요
 
-- 굿즈 4종 중 공식 시안으로 쓸 것과 보류할 것.
+- 굿즈 5종 중 공식 시안으로 쓸 것과 보류할 것.
 - 음식 굿즈(능금에이드, 도지마롤)를 소상공인 협업으로 갈지, 하랑이 메뉴 시안으로만 둘지.
 - "공식 쉼터" 표현을 쓸지, 쉼터와 상업 메뉴를 분리할지.
 - 굿즈 이름 후보 선택과 자수·부채 문양 의미 선택.
@@ -132,6 +160,7 @@
 - `brand/product/harangi_dojima_roll_mockup.webp` (이미지 관찰)
 - `brand/product/harangi_crossbody_bag_mockup.webp` (이미지 관찰)
 - `brand/product/harangi_plush_mockup.webp` (이미지 관찰)
+- `brand/product/harangi_monitor_figure_mockup.webp` (이미지 관찰, 요청자 메모: 생성형 AI 시안)
 - `brand/character/harangi_character.md` (5절 능금 정령과 하랑이)
 - `brand/character/harangi_personality_v1.md` (외형 설정, 3-1절)
 - `brand/game_concept.md` (9절 인증 굿즈)

@@ -9,6 +9,7 @@
 | `harangi_dojima_roll_mockup.webp` | 가상 굿즈 2 (시안) | 하랑이 도지마롤. 하랑이 얼굴을 살린 롤케이크 시안 (창작, 상세는 `virtual_goods_v1.md`) |
 | `harangi_crossbody_bag_mockup.webp` | 가상 굿즈 3 (시안) | 크림색 반달형 크로스백. 붉은 어깨끈, 전면 살구색 자수 3개 (창작, 상세는 `virtual_goods_v1.md`) |
 | `harangi_plush_mockup.webp` | 가상 굿즈 4 (시안) | 하랑이 인형 시안. 크로스백을 멘 모습 (창작, 상세는 `virtual_goods_v1.md`) |
+| `harangi_monitor_figure_mockup.webp` | 가상 굿즈 5 (시안) | 모니터 위에 앉아 능금을 안은 하랑이 피규어. 생성형 AI 시안 (창작, 상세는 `virtual_goods_v1.md`) |
 | `woori_nungeum_juice_reference.jpg` | 기존 상품 (참고) | 농협 우리능금쥬스. 기존 능금 활용 상품 사례 |
 
 - 캐릭터 디자인 시안은 `brand/character/images/harangi_3d_turnaround.webp`에 있습니다 (3D 콘텐츠 제작 시 참고용 디자인 시안, 실제 3D 모델링 아님).
@@ -19,7 +20,7 @@
 - 시안 이미지 생성에 쓴 프롬프트가 있으면 `brand/character/prompts.md`에 기록합니다 `[확인 필요]`.
 - 상품 시안 속 문구(능금에이드, 대프리카 히든 퀘스트)는 가칭입니다.
 - 인형 시안(`harangi_plush_mockup.webp`)의 캐릭터가 하랑이인지 `[확인 필요]`. 외형상 하랑이 3D 시안과 같은지 팀이 확인합니다.
-- 굿즈 2종 이미지(`harangi_crossbody_bag_mockup.webp`, `harangi_plush_mockup.webp`)의 제작 방식(AI 생성 여부, 프롬프트)을 `[확인 필요]`. 프롬프트는 `brand/character/prompts.md`에 기록합니다.
+- 굿즈 3종 이미지(`harangi_crossbody_bag_mockup.webp`, `harangi_plush_mockup.webp`, `harangi_monitor_figure_mockup.webp`)의 제작 방식(AI 생성 여부, 프롬프트)을 `[확인 필요]`. 프롬프트는 `brand/character/prompts.md`에 기록합니다.
 
 ## 출처
 
