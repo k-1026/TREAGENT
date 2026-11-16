@@ -3,12 +3,14 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "description": "TREAGENT 서버 (날씨 조회, 규칙 판정, 장소 추천)",
   "engines": {
     "node": ">=22.9"
   },
   "scripts": {
     "start": "node --env-file-if-exists=.env src/index.js",
     "test": "node --test"
+  },
+  "dependencies": {
+    "express": "^5.3.0"
   }
 }
