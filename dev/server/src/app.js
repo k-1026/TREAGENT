@@ -1,40 +1,54 @@
-/*
- * [app.js] 서버 요청 처리 (PR 0: /health 하나만)
- *
- * 역할
- *  - 들어온 요청을 보고 알맞은 응답을 돌려준다. 아직 프레임워크 없이 Node 기본 http만 쓴다.
- *
- * 로그 규칙 (F-23, 좌표 미저장)
- *  - 한 줄에 "메서드 경로 상태코드 걸린시간"만 남긴다.
- *  - 쿼리스트링(?뒤)과 요청 본문(body)은 절대 기록하지 않는다.
- *  - 이후 PR에서 에러를 출력할 때도 요청 내용을 같이 찍지 않는다.
- */
 import http from 'node:http';
-
-function sendJson(res, status, body) {
-  res.writeHead(status, { 'Content-Type': 'application/json; charset=utf-8' });
-  res.end(JSON.stringify(body));
-}
-
-// 요청 한 건을 처리한다. 경로만 쓰고 쿼리스트링은 읽지 않는다.
-function handleRequest(req, res) {
+import express from 'express';
+import { createWeatherRouter } from './routes/weather.js';
+import { createWeatherService } from './weather/index.js';
+// ① 요청 로그: 요청 한 건이 끝나면 딱 한 줄만 남긴다.
+function requestLogger(req, res, next) {
+  // 요청이 들어온 시각을 기억한다 (걸린 시간 계산용)
   const startedAt = Date.now();
-  const pathname = new URL(req.url ?? '/', 'http://localhost').pathname;
-
-  // 응답이 끝난 뒤 로그 한 줄 (본문·쿼리는 포함하지 않음)
+  // 'finish'는 응답을 다 보낸 뒤 발생한다. 이때는 상태 코드가 정해져 있다.
   res.on('finish', () => {
-    const ms = Date.now() - startedAt;
-    console.log(`${req.method} ${pathname} ${res.statusCode} ${ms}ms`);
+    // req.path는 ?lat=... 같은 쿼리스트링을 뺀 경로다. 본문(body)은 아예 읽지 않는다.
+    console.log(`${req.method} ${req.path} ${res.statusCode} ${Date.now() - startedAt}ms`);
   });
-
-  if (req.method === 'GET' && pathname === '/health') {
-    sendJson(res, 200, { status: 'ok' });
-    return;
-  }
-
-  sendJson(res, 404, { error: 'NOT_FOUND' });
+  // 다음 단계로 넘긴다. 이걸 빼먹으면 요청이 멈춘다.
+  next();
 }
 
-export function createApp() {
-  return http.createServer(handleRequest);
+// ⑤ 에러 처리: 인자가 4개(err, req, res, next)여야 Express가 에러 처리기로 인식한다.
+function errorHandler(err, req, res, next) {
+  // 깨진 JSON을 보내면 Express가 status 400 또는 type 'entity.parse.failed' 에러를 만든다.
+  const isBadRequest = err?.status === 400 || err?.type === 'entity.parse.failed';
+  // 에러 "종류"만 기록한다. err.message와 err.body에는 요청 원문(좌표)이 들어 있을 수 있어서 절대 찍지 않는다.
+  console.log(`요청 처리 오류: ${isBadRequest ? 'BAD_REQUEST' : 'INTERNAL'}`);
+  // 응답에도 입력값을 되돌려 주지 않고 고정된 코드만 보낸다.
+  res
+    .status(isBadRequest ? 400 : 500)
+    .json({ error: isBadRequest ? 'BAD_REQUEST' : 'INTERNAL_ERROR' });
+}
+
+export function createApp({ weatherService = createWeatherService() } = {}) {
+  const app = express();
+  // 응답 헤더에서 "Express를 쓴다"는 정보를 숨긴다.
+  app.disable('x-powered-by');
+
+  // 순서가 중요하다. 위에서 아래로 차례로 거친다.
+  app.use(requestLogger); // ① 가장 먼저: 모든 요청을 기록 대상으로
+  // ② 요청 본문(JSON)을 읽어 req.body에 넣는다. 좌표만 받으니 1KB로 작게 제한한다.
+  app.use(express.json({ limit: '1kb' }));
+
+  // ③ 라우트
+  app.get('/health', (req, res) => {
+    res.json({ status: 'ok' });
+  });
+  app.use('/weather', createWeatherRouter(weatherService));
+
+  // ④ 위 라우트에 안 걸린 모든 요청은 404
+  app.use((req, res) => {
+    res.status(404).json({ error: 'NOT_FOUND' });
+  });
+  // ⑤ 에러 처리기는 맨 마지막에 등록한다.
+  app.use(errorHandler);
+
+  return http.createServer(app);
 }
