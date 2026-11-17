@@ -2,7 +2,7 @@ import { Router } from 'express';
 
 // 숫자이고 한국 부근 범위 안인지 검사한다. 문자열 "35.8"은 숫자가 아니므로 거부한다.
 // [확인 필요] 범위는 한반도를 넉넉히 덮는 값으로 정했다.
-function isValidCoordinate(latitude, longitude) {
+export function isValidCoordinate(latitude, longitude) {
   return (
     typeof latitude === 'number' && Number.isFinite(latitude) &&
     typeof longitude === 'number' && Number.isFinite(longitude) &&
