@@ -208,8 +208,8 @@
         <div class="reg px"><div class="n"><b>[권역 이름 3]</b>인증 3/3곳 <span class="tag">완주 배지</span></div><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><span class="pct">100%</span></div>
         <div class="h3">칸 <span>스팟 · 날씨·시간대·요일 조합</span></div>
         <button class="tog px" id="fMine" aria-pressed="false">내가 채운 칸만 보기 (도장 모음)</button>
-        <div class="cell px mine"><div class="l"><b>[스팟 이름] · [날씨]·[시간대]·[요일]</b>[상태 한 줄: 검수된 정보 요약]<small>앞서 확인한 길동무 [N]명 · [날짜]에 내가 채움</small></div><img src="../brand/character/images/stamp_nungeum.webp" alt="내 도장"></div>
-        <div class="cell px other"><div class="l"><b>[스팟 이름] · [날씨]·[시간대]·[요일]</b>[상태 한 줄: 검수된 정보 요약]<small>앞서 확인한 길동무 [N]명</small></div><div class="slot"></div></div>
+        <div class="cell px mine"><div class="l"><b>[스팟 이름] · [날씨]·[시간대]·[요일]</b>[상태 한 줄: 검수된 정보 요약]<small>앞서 들른 길동무 [N]명 · [날짜]에 내가 채움</small></div><img src="../brand/character/images/stamp_nungeum.webp" alt="내 도장"></div>
+        <div class="cell px other"><div class="l"><b>[스팟 이름] · [날씨]·[시간대]·[요일]</b>[상태 한 줄: 검수된 정보 요약]<small>앞서 들른 길동무 [N]명</small></div><div class="slot"></div></div>
         <div class="cell px other"><div class="l"><b>[스팟 이름] · [날씨]·[시간대]·[요일]</b>[상태 한 줄: 검수된 정보 요약]<small>아직 아무도 안 걸은 칸이에요!</small></div><div class="slot"></div></div>
         <div class="row px"><div>[칸]은 모든 길동무의 방문이 쌓이는 공동 장부입니다. 구현은 P2, 시즌 연결 데이터는 P0부터입니다 (F-17). 도사 인정 진행률은 보여 주지 않습니다 (보류).</div></div>
       </div>
@@ -233,7 +233,7 @@
   <section class="view" id="v-today" aria-label="오늘 페이지">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">펼친 장부의 오늘 페이지</div><div class="t">오늘 페이지</div><button class="back px" data-view="home">‹ 홈</button></div>
     <div class="scroll">
-      <div class="row px"><div><b>[요일] · [시간대] · [날씨]</b>이 조건으로 걸을 장소 3곳이에요. 앞서 걸은 길동무 수는 장소마다 따로 보여요. [승인 대사 대기]</div></div>
+      <div class="row px"><div><b>[요일] · [시간대] · [날씨]</b>이 조건으로 걸을 장소 3곳이에요. [승인 대사 대기]</div></div>
       <div class="h3">오늘 걸을 칸 <span id="todayCnt"></span></div>
       <div id="todayCells" class="segp"></div>
       <button class="cta px" data-go="S-04 코스 상세 (오늘의 길)" style="height:56px">이 길 확인하기<small>칸을 채우라는 재촉은 하지 않아요 [임시]</small></button>
@@ -344,7 +344,7 @@
     // 오늘 페이지
     $('#todayCnt').textContent='도장 '+s.today+'/3 · 칸마다 도장 1개';
     var T=$('#todayCells'); T.innerHTML='';
-    for(var i=0;i<3;i++){var done=i<s.today;T.insertAdjacentHTML('beforeend','<div class="cell px"><div class="l"><b>'+stopName(k,i)+' · [미션 종류]</b>[상태 한 줄: 검수된 정보 요약]<small>'+(done?'내가 채운 칸 · 미션 완료 · 이 장소에서 앞서 확인한 길동무 [N]명':'이 장소에서 앞서 확인한 길동무 [N]명 (0이면 "아직 아무도 안 걸은 칸이에요!")')+'</small></div>'+(done?'<img src="'+STAMP+'" alt="내 도장">':'<div class="slot"></div>')+'</div>')}
+    for(var i=0;i<3;i++){var done=i<s.today;T.insertAdjacentHTML('beforeend','<div class="cell px"><div class="l"><b>'+stopName(k,i)+' · [미션 종류]</b>[상태 한 줄: 검수된 정보 요약]<small>'+(done?'내가 채운 칸 · 미션 완료':'아직 비어 있어요')+'</small></div>'+(done?'<img src="'+STAMP+'" alt="내 도장">':'<div class="slot"></div>')+'</div>')}
   }
   // 진행 중인 여행이 있으면 경고창을 먼저 띄우고, [새로 시작]을 눌러야 외출 연출로 넘어간다 (D-08 결정)
   function startRoute(){
