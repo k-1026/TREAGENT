@@ -19,7 +19,21 @@ function requestLogger(req, res, next) {
   // 다음 단계로 넘긴다. 이걸 빼먹으면 요청이 멈춘다.
   next();
 }
-
+// 개발용 CORS: CORS_ORIGIN에 적어 둔 주소(예: 웹 개발 서버)만 허용한다. 비어 있으면 아무것도 열지 않는다.
+function devCors(req, res, next) {
+  const allowed = process.env.CORS_ORIGIN;
+  if (allowed && req.headers.origin === allowed) {
+    res.setHeader('Access-Control-Allow-Origin', allowed);
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+  }
+  // 브라우저가 POST 전에 보내는 사전 확인(OPTIONS)에는 바로 답한다.
+  if (req.method === 'OPTIONS') {
+    res.sendStatus(204);
+    return;
+  }
+  next();
+}
 // ⑤ 에러 처리: 인자가 4개(err, req, res, next)여야 Express가 에러 처리기로 인식한다.
 function errorHandler(err, req, res, next) {
   // 깨진 JSON을 보내면 Express가 status 400 또는 type 'entity.parse.failed' 에러를 만든다.
@@ -50,6 +64,7 @@ export function createApp({
 
   // 순서가 중요하다. 위에서 아래로 차례로 거친다.
   app.use(requestLogger); // ① 가장 먼저: 모든 요청을 기록 대상으로
+  app.use(devCors);
   // ② 요청 본문(JSON)을 읽어 req.body에 넣는다. 좌표만 받으니 1KB로 작게 제한한다.
   app.use(express.json({ limit: '1kb' }));
 
