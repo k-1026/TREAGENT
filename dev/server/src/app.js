@@ -2,6 +2,10 @@ import http from 'node:http';
 import express from 'express';
 import { createWeatherRouter } from './routes/weather.js';
 import { createWeatherService } from './weather/index.js';
+import { createRecommendRouter } from './routes/recommend.js';
+import { createPlaceLoader, createPgQuery } from './places/load_places.js';
+
+
 // ① 요청 로그: 요청 한 건이 끝나면 딱 한 줄만 남긴다.
 function requestLogger(req, res, next) {
   // 요청이 들어온 시각을 기억한다 (걸린 시간 계산용)
@@ -27,7 +31,11 @@ function errorHandler(err, req, res, next) {
     .json({ error: isBadRequest ? 'BAD_REQUEST' : 'INTERNAL_ERROR' });
 }
 
-export function createApp({ weatherService = createWeatherService() } = {}) {
+export function createApp({
+  weatherService = createWeatherService(),
+  placeLoader = createPlaceLoader({ query: createPgQuery() }),
+  now = () => new Date(),
+} = {}) {
   const app = express();
   // 응답 헤더에서 "Express를 쓴다"는 정보를 숨긴다.
   app.disable('x-powered-by');
@@ -42,7 +50,7 @@ export function createApp({ weatherService = createWeatherService() } = {}) {
     res.json({ status: 'ok' });
   });
   app.use('/weather', createWeatherRouter(weatherService));
-
+  app.use('/recommend', createRecommendRouter({ weatherService, placeLoader, now }));
   // ④ 위 라우트에 안 걸린 모든 요청은 404
   app.use((req, res) => {
     res.status(404).json({ error: 'NOT_FOUND' });
