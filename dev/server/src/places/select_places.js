@@ -9,7 +9,10 @@ function isOpenAt(place, hour, dayOfWeek) {
   if (!Number.isInteger(hour)) return false;
   return place.openHour <= hour && hour < place.closeHour;
 }
-
+// 지금 갈 수 있는 장소인가: 운영 중 상태이고, 휴관 요일·운영시간에 걸리지 않는다.
+export function isAvailable(place, { hour, dayOfWeek } = {}) {
+  return place.status === 'open' && isOpenAt(place, hour, dayOfWeek);
+}
 // 이 장소를 이 모드에서 보여 줄 수 있는지.
 // 장소에 modeAllowed(배열)가 있으면 그 목록이 우선이고, 없으면(null) 유형 규칙표를 따른다.
 function allowsMode(place, mode, allowed) {
@@ -27,7 +30,7 @@ export function selectPlaces(mode, places, context = {}, allowedTypes = MODE_ALL
   if (!allowed || allowed.length === 0) return { places: [], reason: 'MODE_NO_PLACES' };
 
   const candidates = places.filter(
-    (p) => allowsMode(p, mode, allowed) && p.status === 'open' && isOpenAt(p, hour, dayOfWeek),
+    (p) => allowsMode(p, mode, allowed) && isAvailable(p, { hour, dayOfWeek }),
   );
   if (candidates.length === 0) return { places: [], reason: 'NO_CANDIDATE' };
 

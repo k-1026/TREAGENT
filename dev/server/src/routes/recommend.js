@@ -8,13 +8,13 @@ const MODE_VALUES = Object.values(MODES);
 const KST_OFFSET_MS = 9 * 60 * 60 * 1000;
 
 // 한국 시간의 시(0~23)와 요일(0=일요일)을 구한다. 서버 시계가 UTC여도 같은 값이 나온다.
-function koreaClock(date) {
+export function koreaClock(date) {
   const k = new Date(date.getTime() + KST_OFFSET_MS);
   return { hour: k.getUTCHours(), dayOfWeek: k.getUTCDay() };
 }
 
 // 선택 입력(district, previousMode)을 검사한다. 이상하면 null.
-function readOptions(body) {
+export function readOptions(body) {
   const { district, previousMode } = body;
   if (district !== undefined && (typeof district !== 'string' || district.length === 0 || district.length > 20)) {
     return null;

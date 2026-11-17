@@ -7,10 +7,12 @@ const SQL = `
          open_hour       as "openHour",
          close_hour      as "closeHour",
          closed_weekdays as "closedWeekdays",
+         hours_text      as "hoursText",
+         closed_text     as "closedText",
+         caution,
          status
   from public.places
   order by id`;
-
 // 실제 DB로 쿼리를 보내는 함수. DATABASE_URL은 .env에서만 읽는다.
 export function createPgQuery(connectionString = process.env.DATABASE_URL) {
   const pool = new pg.Pool({ connectionString, max: 2 });

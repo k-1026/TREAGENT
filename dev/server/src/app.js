@@ -4,7 +4,8 @@ import { createWeatherRouter } from './routes/weather.js';
 import { createWeatherService } from './weather/index.js';
 import { createRecommendRouter } from './routes/recommend.js';
 import { createPlaceLoader, createPgQuery } from './places/load_places.js';
-
+import { createCoursesRouter } from './routes/courses.js';
+import { createCourseLoader } from './courses/load_courses.js';
 
 // ① 요청 로그: 요청 한 건이 끝나면 딱 한 줄만 남긴다.
 function requestLogger(req, res, next) {
@@ -33,9 +34,16 @@ function errorHandler(err, req, res, next) {
 
 export function createApp({
   weatherService = createWeatherService(),
-  placeLoader = createPlaceLoader({ query: createPgQuery() }),
+  placeLoader,
+  courseLoader,
   now = () => new Date(),
 } = {}) {
+  // 두 로더가 DB 연결 하나를 같이 쓴다. 처음 쓸 때 만든다.
+  let sharedQuery;
+  const query = (text) => (sharedQuery ??= createPgQuery())(text);
+  placeLoader ??= createPlaceLoader({ query });
+  courseLoader ??= createCourseLoader({ query });
+
   const app = express();
   // 응답 헤더에서 "Express를 쓴다"는 정보를 숨긴다.
   app.disable('x-powered-by');
@@ -51,6 +59,8 @@ export function createApp({
   });
   app.use('/weather', createWeatherRouter(weatherService));
   app.use('/recommend', createRecommendRouter({ weatherService, placeLoader, now }));
+    app.use('/courses', createCoursesRouter({ weatherService, placeLoader, courseLoader, now }));
+  
   // ④ 위 라우트에 안 걸린 모든 요청은 404
   app.use((req, res) => {
     res.status(404).json({ error: 'NOT_FOUND' });
