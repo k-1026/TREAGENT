@@ -36,7 +36,7 @@
 - 쓰지 말 것:
   - "대구 대표 과일", "대구 공식 상징", "대구의 시목·시화" (근거 없음)
   - "대구 능금 유명세", "최고 품질 능금" (미검증·최상급)
-  - "능금 상표·로고" (brand/character/harangi_squirrel.md 금기)
+  - "능금 상표·로고" (brand/character/profile/harangi_squirrel.md 금기)
   - 과장 금칙어: 유일, 최초, 최고, 가장, 최대 (brand/persona_sheet.md 7장)
 - 사과와의 관계: 과일 이름의 차이는 설명하되, 사전 뜻과 2차 자료를 구분해 씁니다. (6-1절)
 
@@ -58,7 +58,7 @@
 ## 출처
 
 - research/daegu_nunggeum_research_v1.md (6-1 ~ 6-7절)
-- brand/character/harangi_squirrel.md (금기)
+- brand/character/profile/harangi_squirrel.md (금기)
 - brand/persona_sheet.md (7장 금칙어)
 - presentation/20261113/20261110_plan_pitch_v3.html 255~265행 (기존 선정 근거)
 - archive/metadata.csv 36행 (능금 스탬프 이미지)

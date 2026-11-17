@@ -1,5 +1,5 @@
 // 컷씬 ② "그늘 아래, 숨 고르기" — 납작만두 가게 앞 그늘에서 하랑이가 숨을 고르는 회상 장면 (창작 시안 v1)
-// 근거: brand/worldview.md 3-5절 (컷씬 ②, 후보 A), brand/character/harangi_character.md 6절
+// 근거: brand/worldview.md 3-5절 (컷씬 ②, 후보 A), brand/character/profile/harangi_character.md 6절
 // 견습생이 되기 전의 일이라 부채·후드 조끼·포쉐트가 없다. 주머니는 가게 주인이 걸어 두는 선물이다.
 import { el, pen, shape, blot, paint, limb, solid, f, pt, inkDefs, run, INK, PAPER, type Pt, type Vec } from '../lib/ink.ts';
 import { spring, pendulum, pointerWind, seeded, wobble, ease, lerp, clamp, smooth } from '../lib/motion.ts';

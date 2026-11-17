@@ -31,7 +31,7 @@
 - 안전·인증·판정은 규칙 코드가 한다. LLM은 판정에 관여하지 않고 문장만 만든다 (spec 745행).
 - 생성 문장은 형식·근거·금칙어 검증을 통과해야 표시한다. 실패하거나 시간 초과면 승인 대사로 돌아간다 (spec 662~669행).
 - tool calling 도구는 조회 전용(읽기)으로 시작하고, 점수·스탬프를 바꾸는 도구는 두지 않는다 (절대 규칙 3).
-- 페르소나 문구는 창작 항목이다. 후보 2개를 제안하고 확정은 팀이 한다. 기준 문서는 `brand/character/harangi_personality_v1.md`, 톤은 `.claude/skills/brand-daeprica/SKILL.md`.
+- 페르소나 문구는 창작 항목이다. 후보 2개를 제안하고 확정은 팀이 한다. 기준 문서는 `brand/character/profile/harangi_personality_v1.md`, 톤은 `.claude/skills/brand-daeprica/SKILL.md`.
 - 금칙어(유일, 최초, 최고)는 생성 대사에도 적용한다 (`brand/persona_sheet.md` 7장). 민감 소재(식민지·전쟁·참사)는 연출 소재로 쓰지 않는다.
 - 기획서는 이 기능을 P1로 두고 P0는 승인 대사만 쓰도록 했다 (spec 326행, 644행). 지금 전부 진행하는 것과 순서가 다르므로 PR 순서는 `[결정 필요]`.
 - LangGraph 사용(D-14 A안), LLM 제공자(D-13)는 미확정이다. 라이브러리 옵션은 설치한 버전의 공식 문서를 확인한 뒤 쓴다.

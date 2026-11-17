@@ -2,7 +2,7 @@
 
 - 작성일: 2026-11-12 (수정: 2026-11-13)
 - 상태: 확정 항목은 `[확정]`, 나머지는 창작 후보입니다. 결정은 팀이 합니다.
-- 짝 문서: brand/worldview.md (세계관·관계·서사), brand/game_concept.md (게임·서비스 컨셉), brand/character/harangi_personality_v1.md (성격 축)
+- 짝 문서: brand/worldview.md (세계관·관계·서사), brand/game_concept.md (게임·서비스 컨셉), brand/character/profile/harangi_personality_v1.md (성격 축)
 - 표기: **사실** (근거 파일:행), **사용자 제공**, **창작** (후보 2개), `[확인 필요]`
 - 문서 분담: 이 문서는 하랑이 개인(역할, 외형, 신상, 성격, 말투, 대사)을 다룹니다. 세계 규칙과 관계는 worldview.md에 두고 여기서는 절 번호로 가리킵니다.
 
@@ -70,7 +70,7 @@
 
 - 네온처럼 미래지향적인 이미지는 쓰지 않습니다. 대프리카 골목, 여름, 손그림 SD 분위기에 맞춰 세련되게 재해석합니다 (사용자 제공).
 - 후보 1 **한지 질감 + 능금 빨강 포인트**: 바탕은 종이 질감의 크림색, 포인트만 능금 빨강.
-- 후보 2 **골목 간판 타이포 + 크림 바탕**: 골목 간판 손글씨 느낌을 로고·굿즈 타이포에 씀. 능금 상표·로고는 쓰지 않음 (brand/character/harangi_squirrel.md).
+- 후보 2 **골목 간판 타이포 + 크림 바탕**: 골목 간판 손글씨 느낌을 로고·굿즈 타이포에 씀. 능금 상표·로고는 쓰지 않음 (brand/character/profile/harangi_squirrel.md).
 - 실존 유물이나 문양을 그대로 복제하지 않습니다 `[확인 필요]`.
 
 ---
@@ -234,6 +234,6 @@
 ## 출처
 
 - brand/character/images/harangi_sheet.webp (외형, 머리 이파리 설명)
-- brand/character/harangi_personality_v1.md (성격 축)
-- brand/character/harangi_squirrel.md (상표·로고 금지)
+- brand/character/profile/harangi_personality_v1.md (성격 축)
+- brand/character/profile/harangi_squirrel.md (상표·로고 금지)
 - 사용자 제공 (대화, 2026-11-12~13): 마스코트 가이드 역할, 시작 전 달성 설정, 정령 지적, 성격·말투·취향·신상 확정

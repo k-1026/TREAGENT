@@ -110,7 +110,7 @@
 | 중구 밖 (MVP는 중구만) | 배너 "지금 계신 곳은 중구가 아니에요" | 중구 코스 둘러보기 | 중구 코스 카드 |
 | 코스 없음 | 갸웃 | 오늘의 길 확인 | 빈 상태 문구 |
 
-- 앱에 다시 들어왔을 때는 낮잠에서 깨는 연출을 씁니다 (brand/character/harangi_character.md 예문 17).
+- 앱에 다시 들어왔을 때는 낮잠에서 깨는 연출을 씁니다 (brand/character/profile/harangi_character.md 예문 17).
 - 표정과 대사는 승인 전이라 자리만 둡니다 `[승인 대사 대기]`.
 
 ## 5. 외출 전환 (코스를 선택하면)
@@ -166,7 +166,7 @@
 - dev/supabase/migrations/seed_courses.sql (코스 C01과 경로 2종, 장소 3곳), dev/app/src/app/index.tsx (중구만 안내)
 - plan/spec/treagent_tech_spec_v1.md (F-03 :451, 날씨 시나리오 :504-512, D-04, D-06)
 - brand/worldview.md (2-1절, 2-4절, 3-3절, 4-3절, 4-10절, 5-3절)
-- brand/character/harangi_character.md (예문 17 낮잠에서 깸)
+- brand/character/profile/harangi_character.md (예문 17 낮잠에서 깸)
 - brand/character/images/harangi_fullbody_pixel.webp (도트 화풍 기준)
 - brand/character/images/harangi_fullbody_pixel_transparent.png (투명 배경 하랑이, 목업 스프라이트로 사용)
 - CLAUDE.md (민감한 소재, 브랜드·캐릭터 작업)

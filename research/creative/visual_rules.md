@@ -1,7 +1,7 @@
 # 시각 규칙 초안 (크리에이티브 트랙)
 
 - 상태: **초안 · 팀 검토 전**.
-- 근거 파일: `brand/character/harangi_character.md`, `brand/persona_sheet.md`, `brand/worldview.md`
+- 근거 파일: `brand/character/profile/harangi_character.md`, `brand/persona_sheet.md`, `brand/worldview.md`
 
 ## 1. 캐릭터 — 사실
 - 하랑이: 능금 이파리, 짧은 조끼, 납작만두 포쉐트 (`brand/persona_sheet.md` 설정 항목, 근거 `research/daegu_nunggeum_research_v1.md`).

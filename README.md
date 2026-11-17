@@ -11,7 +11,7 @@
 | 무엇 | 기존 스탬프 투어를 날씨 등에 맞춘 맞춤 프로그램으로 업그레이드합니다. 이용자는 안내하는 길을 따라 걷고 장소마다 방문 인증(스탬프)을 합니다. | `plan/daeprica_hidden_quest_plan.md` "방향 변경" |
 | 누구를 위해 | 대구 거주 2030, 대구 방문 2030. 대표 이용자로 1박 2일 대구 방문 혼행객을 골랐습니다 (2026-11-10 팀 결정). | `brand/customer_persona.md` |
 | 왜 | 대구·경북 관광이 가을 축제 등에 의존하고, 방문객은 늘었지만 체류 시간은 줄었다는 보도가 있습니다. 여름에는 도심 체감온도가 높아 나갈 이유가 부족합니다. | `plan/daeprica_hidden_quest_plan.md` 0-1장 (`[검증됨: 보도]`) |
-| 어떻게 | ① **길**: 날씨·시간대·요일에 맞춰 짠 방문 순서 ② **방문 인증**: 장소별 스탬프 ③ **하랑이**: 능금 모티프 다람쥐 캐릭터가 안내 ④ 폭염·한파특보 시 야외 안내 중단, 위치는 앱 사용 중에만 수집 | `plan/daeprica_hidden_quest_plan.md` "방향 변경", `brand/game_concept.md` 1~2장, `brand/character/harangi_squirrel.md` |
+| 어떻게 | ① **길**: 날씨·시간대·요일에 맞춰 짠 방문 순서 ② **방문 인증**: 장소별 스탬프 ③ **하랑이**: 능금 모티프 다람쥐 캐릭터가 안내 ④ 폭염·한파특보 시 야외 안내 중단, 위치는 앱 사용 중에만 수집 | `plan/daeprica_hidden_quest_plan.md` "방향 변경", `brand/game_concept.md` 1~2장, `brand/character/profile/harangi_squirrel.md` |
 | 게임 요소 | 퍼즐·미션 풀이 같은 고도화된 게임 요소는 최소로 둡니다. | `brand/game_concept.md` 1장 |
 | 세계관 | 앱 안에서는 대구를 가상의 도시국가 "대프리카"로 소개합니다. 지형과 장소는 실제 대구와 같고 이름만 다릅니다. | `plan/daeprica_hidden_quest_plan.md` "방향 변경" |
 | 트랙 | 장소 인증만 하는 **기본 트랙**, 야외 방탈출 형식의 **미스터리 트랙(가칭)**. 미스터리 트랙의 도입 범위는 팀이 정합니다 `[결정 필요]`. | `plan/daeprica_hidden_quest_plan.md` 방향 변경, 318행 |
@@ -29,7 +29,7 @@
 | 5분 안에 전체 흐름 | 발표 최종본 [`presentation/20261113/20261112_plan_pitch_v10.html`](presentation/20261113/20261112_plan_pitch_v10.html) (PDF도 같은 폴더) |
 | 왜 하는지, 사업 검증 | [고객 전략](plan/treagent_customer_strategy_v1.md), [시각화 html](plan/treagent_customer_strategy_visualization_v1.html) |
 | 서비스 컨셉, 길, 트랙 | [게임·서비스 컨셉](brand/game_concept.md), [기획안](plan/daeprica_hidden_quest_plan.md)의 "방향 변경"과 0장 |
-| 세계관, 하랑이 | [세계관](brand/worldview.md), [하랑이 설정](brand/character/harangi_character.md), 이미지는 `brand/character/images/` |
+| 세계관, 하랑이 | [세계관](brand/worldview.md), [하랑이 설정](brand/character/profile/harangi_character.md), 이미지는 `brand/character/images/` |
 | 앱 기능·기술·담당, 만드는 순서 | [기능·기술 명세 v1](plan/spec/treagent_tech_spec_v1.md), 앱 데모는 `dev/app/` |
 | 근거 자료 (사용자 문제, 사례, 경쟁·운영 사례) | [리서치 안내](research/README.md), [페인포인트 후보](research/painpoint/candidates.md) |
 | 발표에서 받은 피드백 | [통합 정리](plan/feedback/20261113_presentation_feedback_v1.md) |

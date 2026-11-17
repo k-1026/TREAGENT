@@ -1039,7 +1039,7 @@ DB 제품 결정(D-02) 후 확정합니다. 아래는 개념 모델입니다.
 | D-15 | 멀티 에이전트 범위 | A 에이전트 3개(검색·작성·검증)만 / B A + 대사 초안 제작 파이프라인(F-20) | P1 시작 전 |
 | D-16 | 질문 입력 방식 | A 버튼 2개만(‘내 진행’, ‘장소 이야기’) / B 자유 입력 허용 | P1 시작 전 |
 | D-17 | LLM에 보낼 개인 정보 범위 | A 닉네임·여행 요약만, 좌표·계정 식별자 제외 / B 닉네임도 제외하고 호칭 코드만 | P1 시작 전 |
-| D-18 | 하랑이 페르소나 확정 | 성격 축 메인 3개, 말버릇 A/B, 대구 습관 2개 이내 (`brand/character/harangi_personality_v1.md` 6장) | P1 시작 전 (승인 대사 작성 전이 더 좋음) |
+| D-18 | 하랑이 페르소나 확정 | 성격 축 메인 3개, 말버릇 A/B, 대구 습관 2개 이내 (`brand/character/profile/harangi_personality_v1.md` 6장) | P1 시작 전 (승인 대사 작성 전이 더 좋음) |
 | D-19 | 응답 제한 시간·재시도 횟수 | 초 단위 값은 현장 시험 후 정함 | P1 구현 중 |
 | D-20 | 근거 표시 방식 | A 모델 인용 기능 사용 / B 구조화 출력에 근거 ID 필드를 두고 서버가 검증 | P1 시작 전 |
 | D-21 | 푸시 알림 방식 | A 앱 개발 도구가 제공하는 푸시 서비스 / B 서버가 모바일 OS 푸시 서비스에 직접 발송 `[확인 필요: 제품·설정 방법]` | 단계 6 |
@@ -1129,7 +1129,7 @@ DB 제품 결정(D-02) 후 확정합니다. 아래는 개념 모델입니다.
 
 | 항목 | 내용 | 현재 상태 |
 |---|---|---|
-| 정체·역할 | 대프리카 골목에 바람을 전하는 바람 도사 견습생, 골목의 작은 단서를 모아 주는 안내자 | 팀 자료에 정리됨 (`brand/character/harangi_personality_v1.md` 1장). 이름은 가칭 |
+| 정체·역할 | 대프리카 골목에 바람을 전하는 바람 도사 견습생, 골목의 작은 단서를 모아 주는 안내자 | 팀 자료에 정리됨 (`brand/character/profile/harangi_personality_v1.md` 1장). 이름은 가칭 |
 | 성격 축 | 호기심, 외향·붙임성, 덜렁댐, 귀찮음, T 같은 직설, 자부심, 자각 (7개, 창작) | 메인 3개 선택 필요 `[결정 D-18]` |
 | 핵심 균형 | 자부심 + 자각. 직설은 해결책과 함께, 차갑게 읽히지 않게 | 정리됨 (2장) |
 | 말투 규칙 | 존댓말, 짧은 문장, 한 문장 두 줄 이내, 과장 금지, 근거 없는 역사 금지 | 스토리보드 B-3, 브랜드 스킬 톤 |
@@ -1515,7 +1515,7 @@ flowchart TD
 ## 출처
 
 - Claude API 참고 자료(이 세션에서 불러온 `claude-api` 스킬 문서): 모델 ID·가격 표(2026-11-03 캐시), 구조화 출력·인용 기능 제약, 일부 모델의 사고·샘플링·강제 도구 호출·prefill 제약, 거부 처리, 프롬프트 캐싱, 에이전트 구성 방식 비교. 공식 문서 페이지는 직접 열지 않음
-- `brand/character/harangi_personality_v1.md`, `brand/character/harangi_character.md` (페르소나), `.claude/skills/brand-daeprica/SKILL.md` (톤·금칙어), `storyboard/20261110_game_storyboard_v1.md` B-1~B-3, P-4 (표정 규칙, 대사 생성 구조, 프롬프트 초안), `plan/daeprica_hidden_quest_plan.md` 8장 (AI 에이전트 구조)
+- `brand/character/profile/harangi_personality_v1.md`, `brand/character/profile/harangi_character.md` (페르소나), `.claude/skills/brand-daeprica/SKILL.md` (톤·금칙어), `storyboard/20261110_game_storyboard_v1.md` B-1~B-3, P-4 (표정 규칙, 대사 생성 구조, 프롬프트 초안), `plan/daeprica_hidden_quest_plan.md` 8장 (AI 에이전트 구조)
 - LangGraph: 상태 그래프·조건부 분기·체크포인트 개념 수준으로만 인용. 버전·API 상세는 확인하지 않음 `[확인 필요]`
 - `TREAGENT_User_Flow_v1.md` 1~6장 (사용자 흐름, 화면·버튼, P0~P2, 팀 확정 항목, 검수 항목)
 - `design/user_flow_images/00_App_Structure.png` ~ `06_Mystery.png` (4장의 컬러 도식 7장, 내용 동일 확인)

@@ -35,7 +35,7 @@
 **지금 바로 할 순서 (소형)** — 병합 정리(A1~A3)는 끝났습니다.
 1. **A5 명세 조정 PR**: 도장=미션 완료, GPS+미션, 새 여행 경고, 코스 3곳, 앨범 화면, MVP 중구만 (소정에게 먼저 공유)
 2. **C2 도트 UI 에셋 시트**: GPT 프롬프트 작성과 생성 (카드·버튼 틀, 탭·배지·날씨 아이콘, 말풍선)
-3. ~~C3 외출용 옆모습 걷기~~ **완료** (4프레임, 홈 목업 외출 연출에 적용). 남은 P0 포즈는 brand/character/pose_list_v1.md 참고
+3. ~~C3 외출용 옆모습 걷기~~ **완료** (4프레임, 홈 목업 외출 연출에 적용). 남은 P0 포즈는 brand/character/pose/pose_list_v1.md 참고
 4. **A4, A6, A7 문서 정리**: 길동무 수 장소별 문구, "능금 도장" 표기, 코스 A 문서를 C01 기준으로
 5. **B4 장소별 미션**: 민지의 장소 목록 조사가 끝나면 장소마다 미션 종류를 정해 DB 입력 (조사 중, 대기)
 6. **회의 안건 올리기** (4절): 시간대 구분, 하던 여행 처리, 코스 제목·소요 시간
@@ -69,7 +69,7 @@
 |---|---|---|
 | C1 | Figma 홈 화면: 목업 기준으로 상태 8종, 장부 3책갈피, 주머니, 오늘 페이지, 내 정보 | 목업이 배치 기준 |
 | C2 | **GPT 도트 UI 에셋 시트**: 카드·버튼 틀, 탭 아이콘 3개, 배지, 실내·야외·쉼터·날씨 아이콘(A-09), 말풍선(A-10) | React Native는 CSS 틀을 못 써서 이미지·SVG로 필요 |
-| C3 | 하랑이 P0 포즈 8개와 옆모습 걷기 | brand/character/pose_list_v1.md |
+| C3 | 하랑이 P0 포즈 8개와 옆모습 걷기 | brand/character/pose/pose_list_v1.md |
 | C4 | 홈 배경 변형: 날씨 W1~W4, 시간대, 외출 프레임 X1~X3 | brand/home_prompts_v1.md |
 | C5 | 내 여행 한 장 카드(A-11), 빈 상태 일러스트(A-12), 도장 찍히는 연출(S-18) | |
 | C6 | 코스 썸네일(A-07)은 사용 조건 확인 후, 앱 아이콘·스플래시(A-06), 폰트·색 토큰(A-13) | |
@@ -124,6 +124,6 @@
 - plan/spec/treagent_tech_spec_v1.md (1-2절 시작 순서, 2장 역할, 3장 기능, 부록 에셋 표 A-01~A-17)
 - storyboard/game_flow_story_v1.md (13절 이후 할 일, 14절 결정 필요)
 - storyboard/app_home_screen_v1.md, storyboard/app_screen_storyboard_v1.md
-- brand/character/pose_list_v1.md, brand/home_prompts_v1.md
+- brand/character/pose/pose_list_v1.md, brand/home_prompts_v1.md
 - dev/supabase/migrations/seed_courses.sql, seed_places.sql, dev/app/src/app/index.tsx, dev/server/src/rules/rule_config.js
 - 사용자 제공 (대화, 2026-11-17)
