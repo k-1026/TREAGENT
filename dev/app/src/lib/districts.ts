@@ -12,18 +12,23 @@
  * [확인 필요] code는 임시 영문 표기다. 서버 추천 API의 "구·군 코드"(spec 911행)
  *             체계가 정해지면 맞춰야 한다. 결정 필요 항목으로 올린다.
  */
-export type District = { code: string; name: string };
-
+export type District = {
+  code: string;
+  name: string;
+  // 날씨 조회용 지역 기준점(사용자 좌표 아님). 코스가 있는 지역만 둔다.
+  center?: { latitude: number; longitude: number };
+};
 export const DISTRICTS: District[] = [
-  { code: 'jung', name: '중구' },
-  { code: 'dong', name: '동구' },
-  { code: 'seo', name: '서구' },
-  { code: 'nam', name: '남구' },
-  { code: 'buk', name: '북구' },
-  { code: 'suseong', name: '수성구' },
-  { code: 'dalseo', name: '달서구' },
-  { code: 'dalseong', name: '달성군' },
-  { code: 'gunwi', name: '군위군' },
+    // [확인 필요] 임시 기준점: 테스트에서 쓴 대구 시내 좌표. 중구 안인지와 출처 확인 필요.
+  { code: 'jung', name: '중구', center: { latitude: 35.8714, longitude: 128.6014 } },
+  // { code: 'dong', name: '동구' },
+  // { code: 'seo', name: '서구' },
+  // { code: 'nam', name: '남구' },
+  // { code: 'buk', name: '북구' },
+  // { code: 'suseong', name: '수성구' },
+  // { code: 'dalseo', name: '달서구' },
+  // { code: 'dalseong', name: '달성군' },
+  // { code: 'gunwi', name: '군위군' },
 ];
 
 export function findDistrict(code: string | undefined): District | undefined {

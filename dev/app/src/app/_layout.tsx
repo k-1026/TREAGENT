@@ -16,7 +16,7 @@
  */
 import { Redirect, Stack, useSegments } from 'expo-router';
 import { AuthProvider, useAuth } from '../lib/auth_context';
-
+import { PlaceProvider } from '../lib/place_context';
 function Gate() {
   const { session, loading } = useAuth();
   const segments = useSegments();
@@ -37,7 +37,9 @@ function Gate() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <Gate />
+      <PlaceProvider>
+        <Gate />
+      </PlaceProvider>
     </AuthProvider>
   );
 }

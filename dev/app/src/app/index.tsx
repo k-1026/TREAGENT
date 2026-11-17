@@ -21,7 +21,7 @@ import { ActivityIndicator, Linking, Pressable, SafeAreaView, Text, View } from 
 import { findDistrict } from '../lib/districts';
 import { getCurrentLocation, LocationResult } from '../lib/location';
 import { supabase } from '../lib/supabase';
-
+import { usePlace } from '../lib/place_context';
 // "구·군 선택하기" 버튼 (구·군 선택 화면으로 이동). 위치 버튼 옆에 항상 같이 보여 준다
 function DistrictButton() {
   return (
@@ -40,7 +40,20 @@ export default function LocationScreen() {
   // /district에서 넘어온 값 (없으면 undefined)
   const { district } = useLocalSearchParams<{ district?: string }>();
   const selectedDistrict = findDistrict(district);
+  const { setPlace } = usePlace();
+  // 위치를 읽었으면 그 좌표, 아니면 구·군 기준점(코스가 있는 지역만)을 쓴다.
+  const canGoCourses = location?.status === 'ok' || !!selectedDistrict?.center;
 
+  const onPressCourses = () => {
+    if (location?.status === 'ok') {
+      setPlace({ kind: 'gps', latitude: location.latitude, longitude: location.longitude });
+    } else if (selectedDistrict?.center) {
+      setPlace({ kind: 'district', code: selectedDistrict.code, ...selectedDistrict.center });
+    } else {
+      return;
+    }
+    router.push('/courses');
+  };
   const onPressLocation = async () => {
     setLoading(true);
     setLocation(await getCurrentLocation());
@@ -95,6 +108,17 @@ export default function LocationScreen() {
         {selectedDistrict && (
           <Text style={{ color: '#2b2118' }}>선택한 구·군: {selectedDistrict.name}</Text>
         )}
+        {selectedDistrict && !selectedDistrict.center && location?.status !== 'ok' && (
+          <Text style={{ color: '#7a6a5a' }}>아직 준비 중이에요. 지금은 중구만 갈 수 있어요.</Text>
+        )}
+
+        <Pressable
+          disabled={!canGoCourses}
+          onPress={onPressCourses}
+          style={{ backgroundColor: '#2b2118', paddingVertical: 14, borderRadius: 12, alignItems: 'center', opacity: canGoCourses ? 1 : 0.4 }}
+        >
+          <Text style={{ color: '#fff', fontWeight: '700' }}>오늘의 길 보기</Text>
+        </Pressable>
       </View>
     </SafeAreaView>
   );
