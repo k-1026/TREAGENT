@@ -41,7 +41,8 @@
   .bubble:after{content:"";position:absolute;left:18px;bottom:-12px;width:9px;height:9px;background:var(--paper);box-shadow:-3px 0 0 var(--ink),3px 0 0 var(--ink),0 3px 0 var(--ink)}
   .bubble b{display:block;font-size:10px;color:var(--muted);font-weight:400;margin-top:3px}
   .bubble .a{display:block;margin-top:4px;padding-top:4px;border-top:2px dotted #b9825a;color:var(--red-d)}
-  .spr{position:absolute;left:88px;top:206px;width:80px;height:110px;z-index:3;background:url(../brand/character/images/harangi_fullbody_pixel_alpha.webp) -34px -5px / 358px 119px no-repeat;image-rendering:pixelated;transform-origin:50% 100%}
+  .spr{position:absolute;left:88px;top:206px;width:80px;height:110px;z-index:3;overflow:hidden;transform-origin:50% 100%}
+  .spr img{position:absolute;left:-34px;top:-5px;width:358px;height:119px;max-width:none;image-rendering:pixelated;display:block}
   .glow{position:absolute;left:6px;top:116px;width:74px;height:120px;z-index:2;background:radial-gradient(ellipse at 50% 60%,#fff3b8,rgba(255,230,150,0) 70%);opacity:0;transition:opacity 1.2s}
   .going .glow{opacity:1}
   /* 외출: 옆모습으로 돌아 문 쪽으로 걸음 (임시: 정면 스프라이트를 좁혀 흉내) */
@@ -134,7 +135,7 @@
       <img class="bg" src="../brand/home/home_room_day_v1.webp" alt="도트 방 배경: 문, 창 너머 골목, 장부가 놓인 책상">
       <div class="status"><span>9:41</span><span>●●● ▮</span></div>
       <div class="glow"></div>
-      <div class="spr" id="spr" role="img" aria-label="하랑이"></div>
+      <div class="spr" id="spr"><img src="../brand/character/images/harangi_fullbody_pixel_alpha.webp" alt="하랑이 (정면, 임시 합성)"></div>
       <button class="badge px" id="badge" data-go="S-14 지역(구·군) 변경"><i></i><span id="badgeTx"></span></button>
       <div class="bubble px"><span id="bubbleTx"></span><b>[승인 대사 대기]</b><span class="a" id="bubbleA">오늘 이 조건 칸이 비어 있어요 [임시]</span></div>
       <button class="sbanner" id="sbanner" hidden></button>
