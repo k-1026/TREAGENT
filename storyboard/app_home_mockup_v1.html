@@ -50,10 +50,14 @@
   .spr img{position:absolute;left:-34px;top:-5px;width:358px;height:119px;max-width:none;image-rendering:pixelated;display:block}
   .glow{position:absolute;left:6px;top:116px;width:74px;height:120px;z-index:2;background:radial-gradient(ellipse at 50% 60%,#fff3b8,rgba(255,230,150,0) 70%);opacity:0;transition:opacity 1.2s}
   .going .glow{opacity:1}
-  /* 외출: 옆모습으로 돌아 문 쪽으로 걸음 (임시: 정면 스프라이트를 좁혀 흉내) */
-  .going .spr{animation:turn .5s steps(3) forwards, walk 1.4s .5s linear forwards}
-  @keyframes turn{to{transform:scaleX(.62)}}
-  @keyframes walk{0%{transform:translateX(0) scaleX(.62)}20%{transform:translate(-12px,-3px) scaleX(.62)}40%{transform:translate(-24px,0) scaleX(.62)}60%{transform:translate(-36px,-3px) scaleX(.62)}80%{transform:translate(-48px,0) scaleX(.62);opacity:1}100%{transform:translate(-62px,-3px) scaleX(.62);opacity:0}}
+  /* 외출: 정면 스프라이트를 숨기고 옆모습 걷기 4프레임(brand/character/images/harangi_pixel_walk_side_0N_transparent.png)으로 문 쪽(왼쪽)으로 걸어 나감 */
+  .walker{position:absolute;left:69px;top:196px;width:117px;height:121px;z-index:3;display:none;transform:scaleX(-1);transform-origin:58px 100%}
+  .walker img{position:absolute;left:0;top:0;width:117px;height:121px;max-width:none;image-rendering:pixelated;opacity:0;animation:fr .56s steps(1) infinite}
+  .walker img:nth-child(2){animation-delay:.14s}.walker img:nth-child(3){animation-delay:.28s}.walker img:nth-child(4){animation-delay:.42s}
+  @keyframes fr{0%{opacity:1}25%{opacity:0}100%{opacity:0}}
+  .going .spr{visibility:hidden}
+  .going .walker{display:block;animation:out 1.5s .1s linear forwards}
+  @keyframes out{0%{transform:translateX(0) scaleX(-1)}80%{transform:translateX(-52px) scaleX(-1);opacity:1}100%{transform:translateX(-66px) scaleX(-1);opacity:0}}
   .sbanner{position:absolute;left:0;right:0;bottom:0;z-index:5;padding:6px 12px;font-size:11px;line-height:1.35;font-weight:700;background:#ffe1d6;border:0;border-top:3px solid var(--ink);text-align:left;width:100%;cursor:pointer}
   .sbanner.n{background:#fff0b8}
   .toast{position:absolute;left:50%;top:332px;transform:translateX(-50%);z-index:40;background:var(--ink);color:#fff;font-size:12px;padding:8px 12px;display:none;white-space:nowrap}
@@ -169,6 +173,7 @@
       <div class="status"><span>9:41</span><span>●●● ▮</span></div>
       <div class="glow"></div>
       <div class="spr" id="spr"><img src="../brand/character/images/harangi_fullbody_pixel_transparent.png" alt="하랑이 (정면, 임시 합성)"></div>
+      <div class="walker" aria-hidden="true"><img src="../brand/character/images/harangi_pixel_walk_side_01_transparent.png" alt=""><img src="../brand/character/images/harangi_pixel_walk_side_02_transparent.png" alt=""><img src="../brand/character/images/harangi_pixel_walk_side_03_transparent.png" alt=""><img src="../brand/character/images/harangi_pixel_walk_side_04_transparent.png" alt=""></div>
       <button class="hot" style="left:232px;top:180px;width:80px;height:44px" data-view="today" title="오늘 페이지" aria-label="오늘 페이지 열기"></button>
       <span class="mark">오늘 페이지 ▾</span>
       <button class="hot" style="left:193px;top:86px;width:140px;height:92px" data-go="날씨 상세 (기준 시각·AWS 여부, S-14)" title="날씨 보기" aria-label="날씨 보기"></button>
@@ -360,8 +365,8 @@
     if(going)return; going=true;
     var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
     if(!reduce) scene.classList.add('going');
-    setTimeout(function(){toast('외출 연출 후 S-04 코스 상세로 이동')},reduce?0:1900);
-    setTimeout(function(){scene.classList.remove('going');going=false},reduce?1200:3600);
+    setTimeout(function(){toast('외출 연출 후 S-04 코스 상세로 이동')},reduce?0:1700);
+    setTimeout(function(){scene.classList.remove('going');going=false},reduce?1200:3200);
   }
   var TABOF={home:'home',today:'home',pouch:'home',ledger:'ledger',me:'me'};
   function show(name){
