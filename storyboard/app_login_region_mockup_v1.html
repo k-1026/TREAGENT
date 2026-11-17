@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>앱 시작 화면(타이틀·로그인·지역 선택) 목업 v1 (도트)</title>
+<meta name="description" content="타이틀, 로그인, 가입, 위치 확인, 구·군 선택 화면에 도트 컨셉을 입힌 배치 확인용 목업. 화면과 상태를 바꿔 볼 수 있습니다 (임시 문구, 창작).">
+<style>
+  :root{
+    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#c9763a;
+    --red:#dc3b30; --red-d:#9c2420; --sage:#9fb58a; --paper:#fffaf1; --muted:#8a6a5c; --shade:#d9bf98;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;min-height:100%;background:#e9e4dc;color:var(--ink);font-family:var(--font)}
+  body{display:flex;flex-direction:column;align-items:center;padding:12px 12px 28px;gap:10px}
+  .ctrl{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:center;font-size:13px;max-width:760px}
+  .ctrl select{font:inherit;padding:5px 8px;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:0}
+  .ctrl label{display:flex;gap:4px;align-items:center;cursor:pointer}
+  .stagebox{width:390px;height:844px}
+  .stage{width:390px;height:844px;transform-origin:top left}
+  .phone{word-break:keep-all;overflow-wrap:break-word;position:relative;width:390px;height:844px;background:var(--cream);overflow:hidden;box-shadow:0 0 0 3px var(--ink),0 14px 36px rgba(60,40,20,.28);user-select:none}
+  .px{box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink),0 6px 0 0 var(--shade)}
+  button,input{font-family:inherit;color:var(--ink)}
+  .view{position:absolute;left:0;top:0;width:390px;height:844px;display:none;overflow:hidden}
+  .view.on{display:block}
+  .status{position:absolute;left:0;top:0;width:390px;height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:12px;font-weight:700;z-index:5}
+  .toast{position:absolute;left:50%;top:92px;transform:translateX(-50%);z-index:60;background:var(--ink);color:#fff;font-size:12px;padding:8px 12px;display:none;white-space:nowrap}
+  .toast.on{display:block}
+  svg.pix{display:block;shape-rendering:crispEdges}
+
+  /* ---------- 공통 버튼·입력 ---------- */
+  .btn{display:block;width:100%;padding:13px 14px;background:var(--red);color:#fff;font-weight:800;font-size:16px;text-align:center;border:0;cursor:pointer;--shade:var(--red-d)}
+  .btn small{display:block;font-weight:400;font-size:11px;opacity:.9;margin-top:2px}
+  .btn.sub{background:var(--paper);color:var(--ink);--shade:var(--shade)}
+  .btn[disabled]{opacity:.45;cursor:not-allowed}
+  .link{background:none;border:0;color:var(--red-d);font-weight:700;font-size:13px;text-align:center;cursor:pointer;padding:8px;width:100%}
+  .field{display:block;width:100%;padding:12px;background:#fff;border:0;font-size:14px;outline:none;margin-bottom:12px}
+  .field:focus{outline:3px solid var(--red)}
+  .msg{padding:9px 11px;background:#ffe1d6;font-size:12px;line-height:1.45;margin-bottom:12px;--shade:#c58a7a}
+  .msg.ok{background:#e4efd9;--shade:#a8bd96}
+  .note{font-size:11px;color:var(--muted);line-height:1.45;margin:0 0 12px}
+
+  /* ---------- 타이틀 ---------- */
+  #v-title{background:var(--cream);background-image:repeating-linear-gradient(0deg,rgba(185,130,90,.07) 0 2px,transparent 2px 6px)}
+  #v-title .status{color:var(--ink)}
+  .wind{position:absolute;left:-200px;height:3px;width:160px;background:#fff;opacity:.0;box-shadow:0 0 0 1px rgba(91,42,34,.15)}
+  .go .wind{animation:sweep 1.6s ease-in forwards}
+  .w1{top:150px}.w2{top:300px;animation-delay:.2s!important;width:110px}.w3{top:520px;animation-delay:.4s!important;width:190px}
+  @keyframes sweep{0%{left:-200px;opacity:.9}100%{left:420px;opacity:.9}}
+  .book{position:absolute;left:111px;top:150px;width:168px;height:210px}
+  .tail{position:absolute;right:-6px;top:300px;width:60px;height:42px;transform-origin:100% 60%}
+  .go .tail{animation:wag 2.4s steps(4) 1.2s 1, hide 0.5s steps(3) 3.6s forwards}
+  @keyframes wag{0%,100%{transform:rotate(0)}50%{transform:rotate(-8deg)}}
+  @keyframes hide{to{transform:translateX(70px)}}
+  .apple{position:absolute;left:284px;top:404px;width:36px;height:36px}
+  .go .apple{animation:roll 1.8s steps(12) .6s both}
+  @keyframes roll{0%{transform:translateX(160px) rotate(360deg);opacity:1}100%{transform:translateX(0) rotate(0)}}
+  .logo{position:absolute;left:0;right:0;top:392px;text-align:center;font-weight:800;line-height:1.15}
+  .logo b{display:block;font-size:34px;letter-spacing:2px;text-shadow:3px 3px 0 var(--cream2)}
+  .logo i{display:block;font-style:normal;font-size:26px;color:var(--red-d);letter-spacing:1px;text-shadow:2px 2px 0 var(--cream2)}
+  .logo small{display:block;font-size:11px;color:var(--muted);font-weight:400;margin-top:4px}
+  .catch{position:absolute;left:30px;right:30px;top:520px;text-align:center;font-size:13px;line-height:1.55}
+  .actions{position:absolute;left:24px;right:24px;bottom:56px;display:flex;flex-direction:column;gap:14px}
+
+  /* ---------- 로그인·가입 ---------- */
+  .art{position:absolute;left:0;top:0;width:390px;height:190px;background:var(--beam);border-bottom:3px solid var(--ink)}
+  .art .status{color:#fff3e0}
+  .art svg{position:absolute;left:163px;top:46px}
+  .art h2{position:absolute;left:0;right:0;bottom:12px;margin:0;text-align:center;color:#fff;font-size:20px;text-shadow:2px 2px 0 var(--ink)}
+  .art h2 small{display:block;font-size:11px;font-weight:400;color:#fff3e0;text-shadow:none;margin-top:2px}
+  .form{position:absolute;left:0;right:0;top:190px;bottom:0;padding:26px 24px;background:var(--cream);background-image:repeating-linear-gradient(0deg,rgba(185,130,90,.07) 0 2px,transparent 2px 6px)}
+  .deco{position:absolute;bottom:40px;pointer-events:none}
+  .deco.t{right:-6px;width:84px;height:59px;transform:rotate(-8deg)}
+  .deco.a{left:34px;width:40px;height:40px;bottom:46px}
+  .key{position:absolute;inset:0;z-index:40;background:rgba(43,24,20,.62);display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:#fff;font-size:13px}
+  .key.on{display:flex}
+  .key svg{animation:turn .9s steps(6) forwards}
+  @keyframes turn{to{transform:rotate(90deg)}}
+  .key span{opacity:0;animation:fadein .5s .6s forwards}
+  @keyframes fadein{to{opacity:1}}
+
+  /* ---------- 위치 확인 ---------- */
+  .scene{position:absolute;left:0;top:0;width:390px;height:316px;background:var(--beam);overflow:hidden}
+  .scene img.bg{position:absolute;left:0;top:56px;width:390px;height:260px;image-rendering:pixelated;display:block}
+  .scene .status{color:#fff3e0}
+  .spr{position:absolute;left:84px;top:222px;width:92px;height:95px;z-index:3;image-rendering:pixelated}
+  .bubble{position:absolute;left:104px;top:92px;width:210px;z-index:4;background:var(--paper);padding:8px 10px;font-size:11px;line-height:1.4;--shade:#d9bf98}
+  .bubble b{display:block;font-size:10px;color:var(--muted);font-weight:400;margin-top:3px}
+  .bubble svg{position:absolute;left:30px;top:100%}
+  .panel{position:absolute;left:0;top:316px;right:0;bottom:0;padding:18px 20px;background:var(--cream);border-top:6px solid var(--ink)}
+  .panel h3{margin:0 0 6px;font-size:18px}
+  .row2{display:flex;gap:12px;margin:12px 0 12px}
+  .row2 .btn{font-size:14px;padding:12px 8px}
+  .spin{display:inline-block;width:12px;height:12px;background:var(--red);animation:blink .6s steps(2) infinite;margin-right:6px;vertical-align:-1px}
+  @keyframes blink{50%{opacity:.2}}
+
+  /* ---------- 구·군 선택 ---------- */
+  .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:6px 0 14px}
+  .dgrid button{padding:14px 10px;border:0;background:var(--paper);font-size:15px;font-weight:800;text-align:center;cursor:pointer}
+  .dgrid button small{display:block;font-size:10px;font-weight:400;color:var(--muted);margin-top:3px}
+  .dgrid button.on{background:var(--red);color:#fff;--shade:var(--red-d)}
+  .dgrid button.on small{color:#ffe1d6}
+  .dgrid button.off{opacity:.5;cursor:not-allowed}
+  .pbody{position:absolute;left:0;right:0;top:130px;bottom:0;padding:22px 24px;background:var(--cream)}
+  .pbody h3{margin:0 0 4px;font-size:18px}
+  .head2{position:absolute;left:0;top:0;width:390px;height:130px;background:var(--beam);border-bottom:3px solid var(--ink)}
+  .head2 .status{color:#fff3e0}
+  .head2 h2{position:absolute;left:20px;bottom:14px;margin:0;color:#fff;font-size:20px;text-shadow:2px 2px 0 var(--ink)}
+
+  .foot{max-width:700px;font-size:12px;line-height:1.6;color:#5a4a42}
+  .foot b{color:var(--ink)}
+  [hidden]{display:none!important}
+</style>
+</head>
+<body>
+<div class="ctrl">
+  <label>화면 <select id="screen">
+    <option value="title">① 타이틀 (로그인 전)</option>
+    <option value="login">② 로그인</option>
+    <option value="signup">③ 가입</option>
+    <option value="loc">④ 위치 확인</option>
+    <option value="dist">⑤ 구·군 선택</option>
+  </select></label>
+  <label>상태 <select id="stateSel"></select></label>
+  <label><input type="checkbox" id="optB"> 버튼 문구 후보 B ([로그인]/[시작하기])</label>
+  <label><input type="checkbox" id="optFail"> 로그인 실패로 시뮬레이션</label>
+</div>
+
+<div class="stagebox" id="box"><div class="stage" id="stage">
+<div class="phone" id="phone">
+
+  <!-- ① 타이틀 (S-01 앞면) -->
+  <section class="view on go" id="v-title" aria-label="타이틀">
+    <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+    <i class="wind w1"></i><i class="wind w2"></i><i class="wind w3"></i>
+    <svg class="pix book" viewBox="0 0 24 30" aria-label="닫힌 장부 (열쇠 구멍, 임시 도형)"><rect x="1" y="1" width="22" height="28" fill="#5b2a22"/><rect x="2" y="2" width="20" height="26" fill="#a33a2b"/><rect x="2" y="2" width="4" height="26" fill="#7a2a20"/><rect x="8" y="4" width="12" height="1" fill="#f3dfc0"/><rect x="8" y="25" width="12" height="1" fill="#f3dfc0"/><rect x="8" y="4" width="1" height="22" fill="#f3dfc0"/><rect x="19" y="4" width="1" height="22" fill="#f3dfc0"/><rect x="10" y="7" width="3" height="1" fill="#f3dfc0"/><rect x="12" y="8" width="3" height="1" fill="#f3dfc0"/><rect x="15" y="7" width="2" height="1" fill="#f3dfc0"/><rect x="11" y="12" width="4" height="4" fill="#fbefdc"/><rect x="12" y="16" width="2" height="5" fill="#fbefdc"/><rect x="12" y="13" width="2" height="2" fill="#5b2a22"/></svg>
+    <svg class="pix tail" viewBox="0 0 20 14" aria-label="하랑이 꼬리 끝 (임시 도형)"><polygon fill="#5b2a22" points="0,13 2,6 8,1 15,0 20,5 19,12 12,14"/><polygon fill="#dc3b30" points="2,12 4,7 8,3 14,2 18,6 17,11 11,12"/><polygon fill="#fbefdc" points="13,2 14,2 18,6 17,10 14,8 13,5"/></svg>
+    <svg class="pix apple" viewBox="0 0 12 12" aria-label="능금 (임시 도형)"><polygon fill="#5b2a22" points="3,2 9,2 11,4 11,8 9,11 3,11 1,8 1,4"/><polygon fill="#dc3b30" points="4,3 8,3 10,5 10,8 8,10 4,10 2,8 2,5"/><rect fill="#fbefdc" x="3" y="4" width="1" height="2"/><rect fill="#5b2a22" x="5" y="0" width="1" height="3"/><rect fill="#6d9a58" x="6" y="0" width="4" height="2"/></svg>
+    <div class="logo"><b>대프리카</b><i>히든 퀘스트</i><small>(가칭)</small></div>
+    <p class="catch">하랑이와 함께 오늘 날씨에 맞는 길을 찾아 걸어요.</p>
+    <div class="actions">
+      <button class="btn px" id="tOpen"><span id="tOpenT">장부 열기</span><small id="tOpenS">로그인</small></button>
+      <button class="btn sub px" id="tNew"><span id="tNewT">처음이에요</span><small id="tNewS">가입</small></button>
+    </div>
+  </section>
+
+  <!-- ② 로그인 (S-01) -->
+  <section class="view" id="v-login" aria-label="로그인">
+    <div class="art"><div class="status"><span>9:41</span><span>●●● ▮</span></div>
+      <svg class="pix" width="64" height="80" viewBox="0 0 24 30" aria-hidden="true"><rect x="1" y="1" width="22" height="28" fill="#5b2a22"/><rect x="2" y="2" width="20" height="26" fill="#a33a2b"/><rect x="2" y="2" width="4" height="26" fill="#7a2a20"/><rect x="8" y="4" width="12" height="1" fill="#f3dfc0"/><rect x="8" y="25" width="12" height="1" fill="#f3dfc0"/><rect x="8" y="4" width="1" height="22" fill="#f3dfc0"/><rect x="19" y="4" width="1" height="22" fill="#f3dfc0"/><rect x="11" y="12" width="4" height="4" fill="#fbefdc"/><rect x="12" y="16" width="2" height="5" fill="#fbefdc"/></svg>
+      <h2>장부 열기<small>로그인</small></h2></div>
+    <div class="form">
+      <input class="field px" id="lEmail" type="email" placeholder="이메일" autocomplete="off">
+      <input class="field px" id="lPw" type="password" placeholder="비밀번호" autocomplete="off">
+      <div class="msg px" id="lMsg" hidden>이메일 또는 비밀번호를 확인해 주세요.</div>
+      <button class="btn px" id="lBtn" disabled>로그인</button>
+      <button class="link" id="lToSign">계정이 없어요</button>
+      <p class="note">이메일과 비밀번호만 받아요. 입력한 값은 기록하지 않아요 [임시 문구]</p>
+      <svg class="pix deco t" viewBox="0 0 20 14" aria-hidden="true"><polygon fill="#5b2a22" points="0,13 2,6 8,1 15,0 20,5 19,12 12,14"/><polygon fill="#dc3b30" points="2,12 4,7 8,3 14,2 18,6 17,11 11,12"/><polygon fill="#fbefdc" points="13,2 14,2 18,6 17,10 14,8 13,5"/></svg><svg class="pix deco a" viewBox="0 0 12 12" aria-hidden="true"><polygon fill="#5b2a22" points="3,2 9,2 11,4 11,8 9,11 3,11 1,8 1,4"/><polygon fill="#dc3b30" points="4,3 8,3 10,5 10,8 8,10 4,10 2,8 2,5"/><rect fill="#fbefdc" x="3" y="4" width="1" height="2"/><rect fill="#5b2a22" x="5" y="0" width="1" height="3"/><rect fill="#6d9a58" x="6" y="0" width="4" height="2"/></svg>
+    </div>
+    <div class="key" id="lKey"><svg class="pix" width="96" height="96" viewBox="0 0 16 16" aria-hidden="true"><g transform="translate(0 3)"><polygon fill="#5b2a22" points="3,0 6,0 8,2 8,5 6,7 3,7 1,5 1,2"/><polygon fill="#e8b230" points="4,1 5,1 7,3 7,4 5,6 4,6 2,4 2,3"/><rect fill="#fffaf1" x="4" y="3" width="2" height="2"/><rect fill="#5b2a22" x="8" y="2" width="7" height="4"/><rect fill="#e8b230" x="8" y="3" width="6" height="2"/><rect fill="#5b2a22" x="10" y="6" width="2" height="4"/><rect fill="#e8b230" x="10" y="6" width="1" height="3"/><rect fill="#5b2a22" x="13" y="6" width="2" height="3"/><rect fill="#e8b230" x="13" y="6" width="1" height="2"/></g></svg><span>열쇠가 돌아가요... [날짜]에 열렸어요 [임시]</span></div>
+  </section>
+
+  <!-- ③ 가입 (S-01) -->
+  <section class="view" id="v-signup" aria-label="가입">
+    <div class="art"><div class="status"><span>9:41</span><span>●●● ▮</span></div>
+      <svg class="pix" width="64" height="80" viewBox="0 0 24 30" aria-hidden="true"><rect x="1" y="1" width="22" height="28" fill="#5b2a22"/><rect x="2" y="2" width="20" height="26" fill="#a33a2b"/><rect x="2" y="2" width="4" height="26" fill="#7a2a20"/><rect x="8" y="4" width="12" height="1" fill="#f3dfc0"/><rect x="8" y="25" width="12" height="1" fill="#f3dfc0"/><rect x="8" y="4" width="1" height="22" fill="#f3dfc0"/><rect x="19" y="4" width="1" height="22" fill="#f3dfc0"/><rect x="11" y="12" width="4" height="4" fill="#fbefdc"/><rect x="12" y="16" width="2" height="5" fill="#fbefdc"/></svg>
+      <h2>처음이에요<small>가입</small></h2></div>
+    <div class="form">
+      <p class="note" style="font-size:12px;color:var(--ink)">하랑이와 걷기 전에 이메일과 비밀번호를 정해요</p>
+      <input class="field px" id="sEmail" type="email" placeholder="이메일" autocomplete="off">
+      <input class="field px" id="sPw" type="password" placeholder="비밀번호 (8자 이상)" autocomplete="off">
+      <input class="field px" id="sPw2" type="password" placeholder="비밀번호 확인" autocomplete="off">
+      <div class="msg px" id="sMsg" hidden></div>
+      <button class="btn px" id="sBtn" disabled><span id="sBtnT">가입하기</span></button>
+      <button class="link" id="sToLogin">이미 계정이 있어요 [임시]</button>
+      <svg class="pix deco t" viewBox="0 0 20 14" aria-hidden="true"><polygon fill="#5b2a22" points="0,13 2,6 8,1 15,0 20,5 19,12 12,14"/><polygon fill="#dc3b30" points="2,12 4,7 8,3 14,2 18,6 17,11 11,12"/><polygon fill="#fbefdc" points="13,2 14,2 18,6 17,10 14,8 13,5"/></svg><svg class="pix deco a" viewBox="0 0 12 12" aria-hidden="true"><polygon fill="#5b2a22" points="3,2 9,2 11,4 11,8 9,11 3,11 1,8 1,4"/><polygon fill="#dc3b30" points="4,3 8,3 10,5 10,8 8,10 4,10 2,8 2,5"/><rect fill="#fbefdc" x="3" y="4" width="1" height="2"/><rect fill="#5b2a22" x="5" y="0" width="1" height="3"/><rect fill="#6d9a58" x="6" y="0" width="4" height="2"/></svg>
+    </div>
+  </section>
+
+  <!-- ④ 위치 확인 (S-14 첫 단계, 첫 만남 2-12) -->
+  <section class="view" id="v-loc" aria-label="위치 확인">
+    <div class="scene">
+      <img class="bg" src="../brand/home/home_room_day_v1.webp" alt="도트 방 배경">
+      <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+      <img class="spr" src="../brand/character/images/harangi_pixel_idle_transparent.png" alt="하랑이">
+      <div class="bubble px"><span id="bTx"></span><b>[승인 대사 대기]</b>
+        <svg class="pix" width="21" height="21" viewBox="0 0 21 21" aria-hidden="true"><polygon fill="#5b2a22" points="0,0 21,0 21,3 18,3 18,6 15,6 15,9 12,9 12,12 9,12 9,15 6,15 6,18 3,18 3,21 0,21"/><polygon fill="#fffaf1" points="3,0 18,0 18,3 15,3 15,6 12,6 12,9 9,9 9,12 6,12 6,15 3,15"/></svg></div>
+    </div>
+    <div class="panel">
+      <h3>어디서 시작할까요?</h3>
+      <p class="note">위치는 앱을 쓰는 동안만 써요. 좌표는 저장하지 않고 화면에도 보이지 않아요.</p>
+      <div class="row2">
+        <button class="btn px" id="lcUse">현재 위치 사용</button>
+        <button class="btn sub px" id="lcPick">구·군 선택하기</button>
+      </div>
+      <div id="lcStatus"></div>
+      <button class="btn px" id="lcGo" style="margin-top:6px">오늘의 길 보기</button>
+    </div>
+  </section>
+
+  <!-- ⑤ 구·군 선택 -->
+  <section class="view" id="v-dist" aria-label="구·군 선택">
+    <div class="head2"><div class="status"><span>9:41</span><span>●●● ▮</span></div><h2>어느 동네에서 시작할까요?</h2></div>
+    <div class="pbody">
+      <p class="note">지금은 <b>중구</b>만 안내해요. 나머지 동네는 준비 중이에요 [MVP는 중구만].</p>
+      <div class="dgrid" id="dgrid"></div>
+      <button class="link" id="dClose">닫기</button>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</div>
+</div></div>
+
+<p class="foot">
+  <b>배치 확인용 목업입니다.</b> 390 x 844 기준이고 문구는 임시, 대사는 <b>[승인 대사 대기]</b>입니다.
+  소정님이 만든 화면(<code>dev/app/src/app/login.tsx, signup.tsx, index.tsx, district.tsx</code>)의 입력·상태·문구를 그대로 두고 도트 컨셉으로 옷만 입혔습니다.
+  타이틀의 꼬리·능금·닫힌 장부는 임시 도형이며, 실제 이미지는 따로 만듭니다 (storyboard/game_flow_story_v1.md 3절).
+  타이틀 버튼 문구는 후보 A [장부 열기]/[처음이에요](기본)와 후보 B [로그인]/[시작하기]를 상단 체크로 바꿔 볼 수 있습니다.
+  구·군은 MVP에서 중구만 선택할 수 있고 나머지는 "준비 중"으로 흐리게 보입니다 (현재 코드는 중구만 목록에 있음, 소정님과 확인 필요).
+  근거: storyboard/game_flow_story_v1.md 3~5절, storyboard/app_screen_storyboard_v1.md (S-01, S-02, S-14), storyboard/app_home_screen_v1.md.
+</p>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)}, $$=function(s){return document.querySelectorAll(s)};
+  var toastT, district=null, failSim=false;
+  var DIST=[['jung','중구',true],['dong','동구'],['seo','서구'],['nam','남구'],['buk','북구'],['suseong','수성구'],['dalseo','달서구'],['dalseong','달성군'],['gunwi','군위군']];
+  var STATES={
+    title:[['default','기본 (바람·능금·꼬리 연출 다시 보기)']],
+    login:[['default','기본 (입력 전)'],['filled','입력함'],['error','로그인 실패'],['loading','로그인 중'],['success','로그인 성공 (열쇠 돌리기)']],
+    signup:[['default','기본'],['short','비밀번호 8자 미만'],['mismatch','비밀번호 불일치'],['fail','가입 실패'],['loading','가입 중'],['mail','가입 메일 안내']],
+    loc:[['default','기본'],['loading','위치 읽는 중'],['ok','위치 확인됨 (중구 안)'],['out','위치 확인됨 (중구 밖)'],['denied','권한 꺼짐 (다시 물을 수 있음)'],['denied2','권한 꺼짐 (설정에서만 가능)'],['unavail','위치를 읽지 못함'],['picked','구·군 선택함 (중구)']],
+    dist:[['default','기본']]
+  };
+  function toast(t){var el=$('#toast');el.textContent=t+' (자리)';el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('on')},1800)}
+  function show(name){
+    ['title','login','signup','loc','dist'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
+    $('#screen').value=name;
+    var sel=$('#stateSel'); sel.innerHTML=''; STATES[name].forEach(function(s){var o=document.createElement('option');o.value=s[0];o.textContent=s[1];sel.appendChild(o)});
+    state('default');
+  }
+  function labels(){
+    var B=$('#optB').checked;
+    $('#tOpenT').textContent=B?'로그인':'장부 열기'; $('#tOpenS').textContent=B?'':'로그인';
+    $('#tNewT').textContent=B?'시작하기':'처음이에요'; $('#tNewS').textContent=B?'':'가입';
+    $('#tOpenS').hidden=B; $('#tNewS').hidden=B;
+  }
+  function state(s){
+    $('#stateSel').value=s;
+    var cur=$('#screen').value;
+    if(cur==='title'){var t=$('#v-title'); t.classList.remove('go'); void t.offsetWidth; t.classList.add('go')}
+    if(cur==='login'){
+      var e=$('#lEmail'), p=$('#lPw');
+      if(s==='default'){e.value='';p.value=''}
+      else {e.value='name@example.com';p.value='••••••••'}
+      $('#lMsg').hidden=s!=='error';
+      var b=$('#lBtn'); b.textContent=s==='loading'?'로그인 중...':'로그인'; b.disabled=!(e.value&&p.value)||s==='loading';
+      $('#lKey').classList.toggle('on',s==='success');
+    }
+    if(cur==='signup'){
+      var se=$('#sEmail'), a=$('#sPw'), c=$('#sPw2'), m=$('#sMsg');
+      if(s==='default'){se.value='';a.value='';c.value=''}
+      else {se.value='name@example.com'; a.value=(s==='short')?'abc123':'abcd1234'; c.value=(s==='mismatch')?'abcd9999':(s==='short'?'abc123':'abcd1234')}
+      var msg={short:'비밀번호는 8자 이상으로 입력해 주세요.',mismatch:'비밀번호가 서로 달라요.',fail:'가입하지 못했어요. 입력한 내용을 확인해 주세요.',mail:'가입 메일을 보냈어요. 메일의 확인 링크를 누른 뒤 로그인해 주세요.'}[s];
+      m.hidden=!msg; m.textContent=msg||''; m.className='msg px'+(s==='mail'?' ok':'');
+      $('#sBtnT').textContent=s==='loading'?'가입 중...':'가입하기';
+      $('#sBtn').disabled=!(se.value&&a.value&&c.value)||s==='loading';
+    }
+    if(cur==='loc'){
+      var st=$('#lcStatus'), use=$('#lcUse'), go=$('#lcGo'), tx=$('#bTx');
+      tx.textContent='오늘의 길을 고르려면 어디쯤인지 알아야 해요. 위치는 앱 쓰는 동안만 쓰고 저장은 안 해요!';
+      use.disabled=false; var html='', okGo=false, goLabel='오늘의 길 보기';
+      if(s==='loading'){html='<div class="msg px" style="background:var(--paper);--shade:#d9bf98"><i class="spin"></i>위치를 읽는 중이에요...</div>';use.disabled=true}
+      if(s==='ok'){html='<div class="msg ok px">현재 위치로 안내해요 (좌표는 보이지 않아요)</div>';okGo=true}
+      if(s==='out'){html='<div class="msg px" style="background:#fff0b8;--shade:#c9b36a">지금 계신 곳은 중구가 아니에요. 지금은 중구만 안내해요 [임시 문구]</div>';okGo=true;goLabel='중구 코스 둘러보기'}
+      if(s==='denied'){html='<div class="msg px">위치 권한이 꺼져 있어요. 구·군을 골라도 괜찮아요.</div>'}
+      if(s==='denied2'){html='<div class="msg px">위치 권한이 꺼져 있어요.</div><button class="link" data-go="설정 열기">설정 열기</button>'}
+      if(s==='unavail'){tx.textContent='어라, 위치를 못 읽었어요... 구·군을 골라 줄래요? [대사 자리]';html='<div class="msg px">위치를 읽지 못했어요. 구·군을 골라 주세요.</div>'}
+      if(s==='picked'){html='<div class="msg ok px">선택한 동네: 중구</div>';okGo=true}
+      st.innerHTML=html; go.disabled=!okGo; go.textContent=goLabel;
+    }
+    if(cur==='dist'){
+      var g=$('#dgrid'); g.innerHTML='';
+      DIST.forEach(function(d){var b=document.createElement('button');b.className='px '+(d[2]?'on':'off');b.innerHTML=d[1]+'<small>'+(d[2]?'안내해요':'준비 중')+'</small>';
+        b.addEventListener('click',function(){ if(d[2]){show('loc');state('picked')} else toast(d[1]+'은 준비 중이에요')});g.appendChild(b)});
+    }
+  }
+  // 입력 연동 (소정님 화면과 같은 규칙: 이메일·비밀번호가 비면 버튼 비활성)
+  ['#lEmail','#lPw'].forEach(function(id){$(id).addEventListener('input',function(){$('#lBtn').disabled=!($('#lEmail').value&&$('#lPw').value);$('#lMsg').hidden=true})});
+  ['#sEmail','#sPw','#sPw2'].forEach(function(id){$(id).addEventListener('input',function(){$('#sBtn').disabled=!($('#sEmail').value&&$('#sPw').value&&$('#sPw2').value);$('#sMsg').hidden=true})});
+  $('#lBtn').addEventListener('click',function(){ state('loading'); setTimeout(function(){ if($('#optFail').checked){state('error')} else {state('success'); setTimeout(function(){toast('→ 홈(S-03)')},1500)} },700)});
+  $('#sBtn').addEventListener('click',function(){
+    var a=$('#sPw').value,c=$('#sPw2').value;
+    if(a.length<8){state('short');return}
+    if(a!==c){state('mismatch');return}
+    state('loading'); setTimeout(function(){state($('#optFail').checked?'fail':'mail')},700);
+  });
+  $('#tOpen').addEventListener('click',function(){show('login')});
+  $('#tNew').addEventListener('click',function(){show('signup')});
+  $('#lToSign').addEventListener('click',function(){show('signup')});
+  $('#sToLogin').addEventListener('click',function(){show('login')});
+  $('#lcPick').addEventListener('click',function(){show('dist')});
+  $('#dClose').addEventListener('click',function(){show('loc')});
+  $('#lcUse').addEventListener('click',function(){state('loading'); setTimeout(function(){state('ok')},800)});
+  $('#lcGo').addEventListener('click',function(){toast('→ 코스 둘러보기·오늘의 길 (S-14, S-04)')});
+  document.addEventListener('click',function(e){var g=e.target.closest('[data-go]'); if(g)toast('→ '+g.dataset.go)});
+  $('#screen').addEventListener('change',function(){show($('#screen').value)});
+  $('#stateSel').addEventListener('change',function(){state($('#stateSel').value)});
+  $('#optB').addEventListener('change',labels);
+  function fit(){
+    var s=Math.min(1,Math.max(0.5,(window.innerHeight-130)/844),(window.innerWidth-24)/390);
+    $('#stage').style.transform='scale('+s+')';
+    $('#box').style.width=(390*s)+'px'; $('#box').style.height=(844*s)+'px';
+  }
+  window.addEventListener('resize',fit); fit(); labels(); show('title');
+})();
+</script>
+</body>
+</html>
