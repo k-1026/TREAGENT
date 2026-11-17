@@ -42,3 +42,11 @@ Set of 6 pixel-art sticker emoji of the same character as the reference sheet (H
 - 주의: 캐릭터 이름은 가칭이므로 이미지에 글자를 넣지 않습니다. 이름 확정 후 다시 생성합니다.
 
 - 수정 기록 (2026-11-11): 이름을 하랑이로 확정하고, 홍옥 사과 표현을 능금으로 바꿨습니다. 영문 프롬프트의 "Hongok apple"은 "neunggeum fruit"로 바꿨습니다. 이미 생성한 이미지는 새 프롬프트와 다르므로 다시 생성 여부를 팀이 정합니다.
+
+## 팀 제공 결과물 (2026-11-17 전달, 프롬프트 미기록)
+
+- 아래 파일은 팀이 만들어 전달한 결과물입니다. 생성 도구와 프롬프트는 받지 못했습니다 `[확인 필요]`.
+- `images/harangi_3d_forest.jpg`, `images/harangi_3d_alley_ledger.jpg`: 3D 렌더 2장
+- `images/harangi_title_screen.mp4`, `images/harangi_title_screen.gif`: 첫 화면 영상과 GIF
+- `images/harangi_pixel_expressions_fan.png`, `images/harangi_pixel_expressions_fullbody.png`: 픽셀 전신 표정 3종 2장
+- 프롬프트를 받으면 위 기록 표에 한 줄씩 추가합니다.
