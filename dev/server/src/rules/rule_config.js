@@ -31,4 +31,21 @@ export const MODE_ALLOWED_TYPES = Object.freeze({
   [MODES.SAFETY]: ['indoor', 'exhibit'],
   [MODES.UNKNOWN]: ['indoor', 'exhibit'],
   [MODES.HOLD]: [],
-})
+});
+
+// 모드별로 장소 적합도(place_mode_fit.mode)의 어느 칸을 볼지.
+// SAFETY와 UNKNOWN은 실내 위주 안내라서 INDOOR 적합도를 쓴다. HOLD는 추천하지 않으므로 없다.
+export const FIT_MODE_KEY = Object.freeze({
+  [MODES.EXPLORE]: 'EXPLORE',
+  [MODES.SHADE]: 'SHADE',
+  [MODES.INDOOR]: 'INDOOR',
+  [MODES.SAFETY]: 'INDOOR',
+  [MODES.UNKNOWN]: 'INDOOR',
+});
+
+// 장소 선택 설정.
+export const PLACE_RULES = Object.freeze({
+  // true면 허가 상태(permissionState)가 not_needed 또는 granted인 장소만 보여 준다.
+  // 팀 결정 전이라 꺼 둔다 (43곳 전부 노출 결정).
+  requirePermission: false,
+});
