@@ -2,7 +2,7 @@
 
 - 작성일: 2026-11-16
 - 상태: 단계 ①~⑧ 초안 (전 단계 초안 완료). 확정 항목은 `[확정]`, 나머지는 창작 후보이며 결정은 팀이 합니다.
-- 짝 문서: brand/worldview.md (세계관), brand/character/harangi_character.md (하랑이, 예문), brand/game_concept.md (컨셉), plan/spec/treagent_tech_spec_v1.md (화면 S-01~S-14, 기능 F-01~F-23)
+- 짝 문서: brand/worldview.md (세계관), brand/character/profile/harangi_character.md (하랑이, 예문), brand/game_concept.md (컨셉), plan/spec/treagent_tech_spec_v1.md (화면 S-01~S-14, 기능 F-01~F-23)
 - 표기: **사실** (근거 파일:행), **사용자 제공**, **창작** (후보), `[확인 필요]`
 - 목적: 앱의 클릭 하나하나에 이야기를 입힙니다. 행마다 이용자 동작, 이야기 속 의미, 하랑이 대사·연출, 규칙을 적습니다.
 - 대사는 승인 대사 후보 초안입니다 (명세 F-13). 최종 승인은 팀이 합니다. P1에서 LLM이 대사를 생성하더라도 harangi_character.md 7절 말투 규칙과 금칙어를 따릅니다 (dev/CLAUDE.md의 AI 절).
@@ -533,7 +533,7 @@ flowchart TD
 ## 출처
 
 - brand/worldview.md (2-3절, 2-4절, 4-5절, 4-7절, 4-10절, 5-5절)
-- brand/character/harangi_character.md (7절 말투 규칙, 8절 예문 1, 4, 12, 17, 18, 19)
+- brand/character/profile/harangi_character.md (7절 말투 규칙, 8절 예문 1, 4, 12, 17, 18, 19)
 - brand/game_concept.md (10절 주머니)
 - plan/spec/treagent_tech_spec_v1.md (4-3, 4-4, 5, 6장 F-01~F-03, F-23, 7-3, 14장)
 - dev/app/src/app/index.tsx, login.tsx, signup.tsx (현재 앱의 위치 화면, 로그인, 가입)

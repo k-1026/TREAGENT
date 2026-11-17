@@ -29,7 +29,7 @@
 | 이야기 책 | 장부와 개인 방문 기록 |
 | 게임 일시 중지 | 야외 안내 중단 |
 
-- 설정 문서: brand/game_concept.md (서비스 컨셉), brand/worldview.md (세계관), brand/character/harangi_character.md (하랑이).
+- 설정 문서: brand/game_concept.md (서비스 컨셉), brand/worldview.md (세계관), brand/character/profile/harangi_character.md (하랑이).
 - 이 문서의 1·6·7·8·10·11장은 새 방향으로 고쳤습니다. 그 밖의 장에 남은 "퀘스트" 표현은 위 표로 읽습니다. 서비스 이름은 "대프리카 히든 퀘스트 (가칭)"으로 확정했습니다.
 
 ---

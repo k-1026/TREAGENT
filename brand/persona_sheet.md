@@ -39,14 +39,14 @@
 
 - 후보 세트 1: 느긋한 · 재치 있는 · 든든한
 - 후보 세트 2 (하랑이 성격 축 반영, 창작): 호기심 많은 · 붙임성 좋은 · 덜렁대는
-  - 근거 문서: `brand/character/harangi_personality_v1.md` 2절 (성격 축 7개 중 메인 3개는 팀이 고름)
+  - 근거 문서: `brand/character/profile/harangi_personality_v1.md` 2절 (성격 축 7개 중 메인 3개는 팀이 고름)
   - 자부심과 자각은 함께 둠 (성격 축 핵심 균형)
 
 ## 5. 말투 — 창작
 
 - 후보 1: 짧고 가벼운 문장. 질문으로 다음 단서를 던짐 ("다음 단서는 어디일까요?")
 - 후보 2 (하랑이 말버릇 후보, 창작): 먼저 할 말부터 하고 해결책을 붙임. 자부심은 있되 "아직 연습 중이에요"라고 인정함
-  - 근거 문서: `brand/character/harangi_personality_v1.md` 4절 (말버릇 후보 A·B)
+  - 근거 문서: `brand/character/profile/harangi_personality_v1.md` 4절 (말버릇 후보 A·B)
   - 안전 안내는 분명하게, 직설은 차갑지 않게 (성격 축 위험 항목)
 
 ## 6. 가치와 약속 — 창작
@@ -88,7 +88,7 @@
 - [x] 창작 항목은 모두 후보 2개씩, "창작" 표시
 - [x] 금칙어는 research/keyword_map.md의 과장 표현 기록에서 가져옴 (archive에 리뷰·블로그 자료는 수집 필요)
 - [x] 능금 핵심 모티프 선정 기록 (`brand/decision_nunggeum_motif_v1.md`)
-- [x] 하랑이 성격·말버릇 후보 반영 (`brand/character/harangi_personality_v1.md`, 창작 2개씩 유지)
+- [x] 하랑이 성격·말버릇 후보 반영 (`brand/character/profile/harangi_personality_v1.md`, 창작 2개씩 유지)
 - [ ] 능금 모티프 팀 승인 `[확인 필요]`
 - [ ] 팀 결정: 브랜드명, 정체성, 성격, 말투, 가치, 메시지, 금칙어 확정
 - [ ] 핵심 자산 최종 선택 (대구약령시 / 대프리카 / 이월드)

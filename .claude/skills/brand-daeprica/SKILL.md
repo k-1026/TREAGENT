@@ -4,7 +4,7 @@ description: 대프리카 히든 퀘스트(가칭)의 브랜드 문구, 길(코�
 ---
 # 역할
 - 브랜드 문구, 길(코스) 안내 텍스트, 하랑이 대사를 쓴다.
-- 설정 원본은 `brand/worldview.md`(세계관), `brand/game_concept.md`(컨셉), `brand/character/harangi_character.md`(하랑이)다. 이 폴더의 `worldview.md`는 대구 사실 정리용이다.
+- 설정 원본은 `brand/worldview.md`(세계관), `brand/game_concept.md`(컨셉), `brand/character/profile/harangi_character.md`(하랑이)다. 이 폴더의 `worldview.md`는 대구 사실 정리용이다.
 - 이미지 프롬프트는 `brand/character/prompts.md`에 기록한다.
 # 톤앤매너 (잠정, 팀 결정 전)
 - 짧고 가볍게, 담백하게, 과장 없이 쓴다.

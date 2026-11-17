@@ -48,8 +48,8 @@ NO text, NO letters, NO numbers, NO logos, NO brand names, NO people, NO animals
   - **문과 창**: 문은 외출 연출의 출구이고, 창은 날씨·시간대 변형이 들어갈 자리입니다. 없으면 변형마다 방 전체를 다시 그려야 합니다.
   - **장부와 능금 그릇**: 장부 탭과 하랑이 정체성을 한눈에 이어 줍니다. 장부는 빈 페이지로 둡니다. 안내 정보는 검수된 DB에서만 가져오고 그림은 연출입니다 (brand/worldview.md 5-3절).
   - **빈 자리**: 하랑이 스프라이트와 말풍선이 겹치지 않게 합니다.
-  - **부채**: 하랑이의 소품이 방에 놓여 있어 같은 세계로 읽힙니다 (brand/character/harangi_character.md 6절).
-  - **상표 금지**: 능금 상표·로고는 쓰지 않습니다 (brand/character/harangi_squirrel.md).
+  - **부채**: 하랑이의 소품이 방에 놓여 있어 같은 세계로 읽힙니다 (brand/character/profile/harangi_character.md 6절).
+  - **상표 금지**: 능금 상표·로고는 쓰지 않습니다 (brand/character/profile/harangi_squirrel.md).
 
 ## 4. 변형 지시 (기본본을 첨부하고 아래를 붙임, 창작)
 
@@ -140,7 +140,7 @@ NO text, NO letters, NO numbers, NO logos, NO other characters, NO shadows on th
 - storyboard/app_home_screen_v1.md (구성, 변형, 외출 전환)
 - brand/character/images/harangi_fullbody_pixel.webp (화풍 기준)
 - brand/character/prompts.md (프롬프트 기록 형식, 영문 원문 + 한국어 참고)
-- brand/worldview.md (5-3절 장부는 연출), brand/character/harangi_squirrel.md (상표·로고 금지)
+- brand/worldview.md (5-3절 장부는 연출), brand/character/profile/harangi_squirrel.md (상표·로고 금지)
 - plan/spec/treagent_tech_spec_v1.md:506-512 (날씨 시나리오)
 - CLAUDE.md (민감한 소재, 브랜드·캐릭터 작업)
 - 사용자 제공 (대화, 2026-11-17)

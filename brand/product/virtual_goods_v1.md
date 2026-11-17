@@ -24,8 +24,8 @@
 - 띠 하단에 하랑이 그림과 "하랑이" 이름표가 있습니다 (nungeum_ade_mockup.webp).
 
 **프로젝트 연결 (저장소 근거)**
-- 하랑이는 능금 정령이고, 능금은 하랑이의 모티프입니다 (brand/character/harangi_character.md 5절).
-- 쉼터는 앱의 핵심 장소입니다. 무더위쉼터 운영 시간 정보가 안전 안내의 기준입니다 (brand/character/harangi_character.md 대사 예, plan/daeprica_hidden_quest_plan.md:239).
+- 하랑이는 능금 정령이고, 능금은 하랑이의 모티프입니다 (brand/character/profile/harangi_character.md 5절).
+- 쉼터는 앱의 핵심 장소입니다. 무더위쉼터 운영 시간 정보가 안전 안내의 기준입니다 (brand/character/profile/harangi_character.md 대사 예, plan/daeprica_hidden_quest_plan.md:239).
 - 카페를 쉼터처럼 쓰자는 아이디어는 외부 피드백에 있습니다. 실내 안전지대에 소상공인 카페를 넣고, 쉼터 체크인 시 할인권을 주자는 내용입니다 (plan/feedback/20261113_external_feedback_v1.md 3번 항목).
 - 주의: 능금은 품목 이름입니다. 상표·로고로 쓰지 않습니다 (research/daegu_nunggeum_research_v1.md:6, brand/game_concept.md 9절).
 
@@ -39,7 +39,7 @@
 
 **확인 필요**
 - "공식 쉼터 지정" 표현은 공공 무더위쉼터와 혼동될 수 있습니다. 쉼터 정보와 상업 카페를 섞지 않도록 `[확인 필요]`.
-- 특정 카페와 협업하는 것은 광고로 읽힐 수 있고, 제휴 구조와 정산이 필요합니다 (brand/character/harangi_personality_v1.md 3-1절, research/benchmark_similar_cases_v1.md:46).
+- 특정 카페와 협업하는 것은 광고로 읽힐 수 있고, 제휴 구조와 정산이 필요합니다 (brand/character/profile/harangi_personality_v1.md 3-1절, research/benchmark_similar_cases_v1.md:46).
 
 ## 굿즈 2. 하랑이 도지마롤 (시안)
 
@@ -51,7 +51,7 @@
 - 윗면에 갈색 줄기와 초록 이파리가 있고, 양옆에 귀 모양 장식이 있습니다 (harangi_dojima_roll_mockup.webp).
 
 **프로젝트 연결 (저장소 근거)**
-- 하랑이의 머리 위 능금 이파리와 빨간 몸 색이 그대로 옮겨졌습니다 (brand/character/harangi_character.md 5절, brand/character/harangi_personality_v1.md 외형 설정).
+- 하랑이의 머리 위 능금 이파리와 빨간 몸 색이 그대로 옮겨졌습니다 (brand/character/profile/harangi_character.md 5절, brand/character/profile/harangi_personality_v1.md 외형 설정).
 - "도지마"라는 이름의 뜻은 저장소에서 찾지 못했습니다. `[확인 필요]` 이름 뜻과 출처.
 
 **창작 (후보 2개씩)**
@@ -77,7 +77,7 @@
 - 전면 윗부분에 주름 장식이 있고, 그 아래에 살구색 자수 3개가 있습니다 (harangi_crossbody_bag_mockup.webp).
 
 **프로젝트 연결 (저장소 근거)**
-- 하랑이의 소품은 납작만두 포쉐트입니다 (brand/character/harangi_character.md 5절). 크로스백은 같은 소품 계열로 볼 수 있습니다 `[확인 필요]`.
+- 하랑이의 소품은 납작만두 포쉐트입니다 (brand/character/profile/harangi_character.md 5절). 크로스백은 같은 소품 계열로 볼 수 있습니다 `[확인 필요]`.
 - 실물 굿즈 후보 목록에 포쉐트가 있습니다 (brand/game_concept.md 9절).
 - 의상·소품류는 제작비와 재고 부담이 커서 판매 중심으로 검토합니다 (brand/game_concept.md 9절).
 
@@ -100,7 +100,7 @@
 
 **프로젝트 연결 (저장소 근거)**
 - 하랑이 인형은 여러 크기로 만드는 실물 굿즈 후보입니다 (brand/game_concept.md 9절).
-- 부채는 하랑이 소품입니다 (brand/character/harangi_character.md 5절).
+- 부채는 하랑이 소품입니다 (brand/character/profile/harangi_character.md 5절).
 - 인형의 안전 기준은 `[확인 필요]` (brand/game_concept.md 9절).
 
 **창작 (후보 2개씩)**
@@ -123,7 +123,7 @@
 - 요청자 메모: 생성형 AI로 만든 모니터 피규어 시안입니다. 실제 제작품 사진이 아닙니다. 부채는 의도해서 뺐습니다.
 
 **프로젝트 연결 (저장소 근거)**
-- 외형 요소(능금 빨강 몸, 머리 이파리, 후드 조끼, 포쉐트)는 하랑이 설정과 같습니다 (brand/character/harangi_character.md 5절).
+- 외형 요소(능금 빨강 몸, 머리 이파리, 후드 조끼, 포쉐트)는 하랑이 설정과 같습니다 (brand/character/profile/harangi_character.md 5절).
 - 피규어류는 실물 굿즈 후보입니다 (brand/game_concept.md 9절).
 - 하랑이 3D 디자인 시안과 외형 비교가 필요합니다 (brand/character/images/harangi_3d_turnaround.webp).
 
@@ -161,8 +161,8 @@
 - `brand/product/harangi_crossbody_bag_mockup.webp` (이미지 관찰)
 - `brand/product/harangi_plush_mockup.webp` (이미지 관찰)
 - `brand/product/harangi_monitor_figure_mockup.webp` (이미지 관찰, 요청자 메모: 생성형 AI 시안)
-- `brand/character/harangi_character.md` (5절 능금 정령과 하랑이)
-- `brand/character/harangi_personality_v1.md` (외형 설정, 3-1절)
+- `brand/character/profile/harangi_character.md` (5절 능금 정령과 하랑이)
+- `brand/character/profile/harangi_personality_v1.md` (외형 설정, 3-1절)
 - `brand/game_concept.md` (9절 인증 굿즈)
 - `plan/feedback/20261113_external_feedback_v1.md` (3번 항목, 소상공인 카페와 쿠폰 제안)
 - `plan/daeprica_hidden_quest_plan.md` (239행 쉼터 정보, 315행 굿즈 보류)

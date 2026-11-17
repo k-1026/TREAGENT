@@ -9,7 +9,7 @@
 
 ## 1. 바탕 설정 (확정 사항으로 보는 것)
 
-- 정체: 대프리카의 골목에 바람을 전하는 바람 도사 견습생 (brand/character/harangi_squirrel.md v2 근처 시트 설명, 시트 이미지 `brand/character/images/harangi_sheet.webp`).
+- 정체: 대프리카의 골목에 바람을 전하는 바람 도사 견습생 (brand/character/profile/harangi_squirrel.md v2 근처 시트 설명, 시트 이미지 `brand/character/images/harangi_sheet.webp`).
 - 외형 설정: 머리 위 능금 이파리, 짧은 조끼와 납작만두 포쉐트 (발표 자료 07-2 장).
 - 역할: 오늘 날씨에 맞는 길로 이용자를 안내하는 마스코트 가이드 (harangi_character.md 1절).
 
@@ -121,7 +121,7 @@
 
 ## 5. 금기
 
-- 능금 상표·로고 금지 (brand/character/harangi_squirrel.md 금기).
+- 능금 상표·로고 금지 (brand/character/profile/harangi_squirrel.md 금기).
 - 과장 금칙어 금지: 유일, 최초, 최고, 가장, 최대.
 - 기존 IP와 닮지 않게 함 (도달쑤, 뚜비, 리카, 빅디).
 - 더위와 참사 장면을 웃음거리로 쓰지 않음 (brand 가이드 민감 소재 규칙).
@@ -138,7 +138,7 @@
 
 ## 출처
 
-- brand/character/harangi_squirrel.md (콘셉트, 금기, 확인 필요 항목)
+- brand/character/profile/harangi_squirrel.md (콘셉트, 금기, 확인 필요 항목)
 - brand/persona_sheet.md (대구약령시 선정, 금칙어 후보, 2행·7장)
 - brand/game_items_v1.md 18행 (능금 스탬프, 능금 유명세 미검증)
 - research/daegu_history_tour_cases.md 2-4절 (3호선 모노레일)

@@ -13,7 +13,7 @@
 
 - 근거: 납작만두 가게 앞 그늘에서 하랑이가 숨을 고르는 장면, 지친 일은 앉아서 숨을 고르는 정도로 가볍게, 대사 없음 (brand/worldview.md 3-5절 컷씬 ②, 연출 기준).
 - 시간 흐름:
-  - 0~3초: 한낮 골목. 하랑이가 땀을 흘리며 헐떡이고 손으로 부채질합니다. 이파리가 처져 있습니다 (신호 규칙: brand/character/harangi_character.md 8절 예문 18).
+  - 0~3초: 한낮 골목. 하랑이가 땀을 흘리며 헐떡이고 손으로 부채질합니다. 이파리가 처져 있습니다 (신호 규칙: brand/character/profile/harangi_character.md 8절 예문 18).
   - 2.5~5초: 가게 창가의 주인이 팔을 내밀어 의자 등받이에 천 주머니를 걸고 들어갑니다. 주인은 실루엣과 팔로만 나옵니다. 하랑이를 보지 못한 채 베푸는 호의입니다 (worldview.md 3-5절 후보 A).
   - 5~8초: 하랑이가 걸린 주머니를 올려다보고, 걸상 위 물 컵 쪽으로 조금 다가앉아 컵을 잡습니다.
   - 8~10초: 눈을 감고 한 모금 마신 뒤 숨을 내쉽니다 (바람 은유: worldview.md 1절).
@@ -40,6 +40,6 @@
 ## 출처
 
 - brand/worldview.md (1절 바람, 2-3절 정령은 보이지 않음, 3-5절 컷씬 규칙·컷씬 ②·가게 주인과 포쉐트)
-- brand/character/harangi_character.md (6절 외형, 6-3절 시각 방향, 8절 예문 18)
+- brand/character/profile/harangi_character.md (6절 외형, 6-3절 시각 방향, 8절 예문 18)
 - brand/character/images/harangi_sheet.webp (외형 기준: 다람쥐, 능금 빨강 몸, 크림색 얼굴·배·꼬리 끝, 파란 눈, 머리 이파리)
 - CLAUDE.md (민감한 소재, HTML 산출물과 배포 기준)

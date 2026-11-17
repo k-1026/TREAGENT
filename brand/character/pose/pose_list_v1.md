@@ -3,7 +3,7 @@
 - 작성일: 2026-11-17
 - 상태: 초안. 만들 포즈와 우선순위는 팀이 정합니다. 확정 항목은 `[확정]`, 나머지는 창작 후보입니다.
 - 표기: **사실** (근거 파일), **사용자 결정**, **창작**, `[확인 필요]`
-- 짝 문서: brand/character/harangi_character.md (외형·예문), brand/home_prompts_v1.md (GPT 도트 프롬프트), storyboard/app_home_screen_v1.md (홈 화면)
+- 짝 문서: brand/character/profile/harangi_character.md (외형·예문), brand/home_prompts_v1.md (GPT 도트 프롬프트), storyboard/app_home_screen_v1.md (홈 화면)
 - 문서 분담: 이 문서는 앱에 얹는 도트 하랑이의 **포즈 목록과 파일 규칙**만 다룹니다. 외형과 말투는 harangi_character.md가 맡습니다.
 
 ---
@@ -75,7 +75,7 @@
 
 - brand/character/images/harangi_fullbody_pixel_transparent.png (분할 원본)
 - brand/character/images/harangi_6actions.png, harangi_expressions_fullbody.png, harangi_expressions.webp (참고 그림)
-- brand/character/harangi_character.md (6절 외형, 7절 말투 규칙, 8절 예문 5·6·10·12·14~18)
+- brand/character/profile/harangi_character.md (6절 외형, 7절 말투 규칙, 8절 예문 5·6·10·12·14~18)
 - storyboard/app_screen_storyboard_v1.md (S-01, S-02, S-04, S-05, S-07, S-14, S-18)
 - storyboard/game_flow_story_v1.md (8-1절, 9-2절)
 - storyboard/app_home_screen_v1.md, brand/home_prompts_v1.md
