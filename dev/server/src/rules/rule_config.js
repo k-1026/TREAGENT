@@ -22,3 +22,13 @@ export const RULE_CONFIG = Object.freeze({
   // 환경변수 DEMO_ALERT=1 이면 폭염특보가 있는 것처럼 판정한다.
   demoAlert: process.env.DEMO_ALERT === '1',
 });
+
+
+export const MODE_ALLOWED_TYPES = Object.freeze({
+  [MODES.EXPLORE]: ['outdoor', 'shade', 'indoor', 'exhibit'],
+  [MODES.SHADE]: ['shade', 'indoor', 'exhibit'],
+  [MODES.INDOOR]: ['indoor', 'exhibit'],
+  [MODES.SAFETY]: ['indoor', 'exhibit'],
+  [MODES.UNKNOWN]: ['indoor', 'exhibit'],
+  [MODES.HOLD]: [],
+})
