@@ -59,11 +59,12 @@ td:first-child{font-family:"Do Hyeon",sans-serif;background:#fff8e1}
 .route{margin:0;padding-left:1.4em}
 .route li{margin:1.2vh 0;font-size:clamp(20px,2.1vw,30px)}
 .avatar{width:15vh;height:15vh;object-fit:cover;border:3px solid var(--line);border-radius:12px;align-self:center;margin-bottom:1.2vh;background:#fff;display:block}
-.person{justify-content:flex-start}
+.person{justify-content:flex-start;padding:3.2vh 1.8vw}
 .nameRow{display:flex;align-items:center;gap:1.4vw;margin-bottom:1.2vh}
 .nameRow .avatar{width:12vh;height:12vh;margin:0;flex:0 0 auto;align-self:auto}
 .nameRow h3{margin:0}
 .person .ai p{font-size:clamp(15px,1.3vw,19px);margin:.3vh 0}
+.person .ai b{font-weight:700}
 .person h3{font-size:clamp(28px,2.6vw,40px)}
 @media (max-width:760px){
   .slide{padding:3vh 16px}
@@ -258,33 +259,29 @@ td:first-child{font-family:"Do Hyeon",sans-serif;background:#fff8e1}
 </section>
 
 <!-- 9. BM -->
-<section class="slide" style="gap:1.6vh">
+<section class="slide">
   <div class="tag">04 · 사업 모델</div>
-  <h2>팀권 판매와 지자체 코스 제작</h2>
+  <h2>지자체와 함께 코스를 만들고 운영합니다</h2>
   <div class="grid g3" style="flex:0 0 auto">
-    <div class="card gold s"><h3>🙋 민간 직접</h3><p>팀권 첫 가격 가설 14,900원</p></div>
-    <div class="card sky s"><h3>🏛️ 지자체·재단</h3><p>코스 한 개 단위로 기획·제작·운영 견적</p></div>
-    <div class="card mint s"><h3>🎪 행사 대행사</h3><p>공공 행사에 코스·미션 제작과<br>현장 운영 지원</p></div>
+    <div class="card gold s"><h3>🏛️ 코스 제작</h3><p>지자체 발주 한 건 단위로 기획·제작</p></div>
+    <div class="card sky s"><h3>🛠️ 현장 운영</h3><p>정해진 기간 동안 운영과 정보 갱신</p></div>
+    <div class="card mint s"><h3>📍 파일럿 1곳</h3><p>중구에서 시작하고, 다른 구·군은 가정</p></div>
   </div>
-  <div class="grid g2" style="flex:0 0 auto">
+  <div class="grid g2">
     <div class="card" style="padding:0;justify-content:stretch">
       <table style="height:100%;font-size:clamp(16px,1.5vw,22px)">
-        <tr><th style="width:52%">매출 가정 (수수료·세금 반영 전)</th><th>금액</th></tr>
-        <tr><td>팀권 100건 판매</td><td>149만 원</td></tr>
-        <tr><td>팀권 300건 판매</td><td>447만 원</td></tr>
+        <tr><th style="width:46%">비용 항목</th><th>근거 상태</th></tr>
+        <tr><td>제작 공수 (코스 1건)</td><td>가정 40시간 (근거 없음)</td></tr>
+        <tr><td>인건비 단가</td><td>2026 최저임금 10,320원 (미검증)</td></tr>
+        <tr><td>클라우드 (서버·호스팅)</td><td>Supabase Pro 5/월, Vercel Pro 0/월 (공식 요금)</td></tr>
       </table>
     </div>
-    <div class="card" style="padding:0;justify-content:stretch">
-      <table style="height:100%;font-size:clamp(16px,1.5vw,22px)">
-        <tr><th style="width:30%">시나리오 (가정)</th><th>공수 (시간/코스)</th><th>수수료</th><th>손익분기 (건)</th></tr>
-        <tr><td>낙관</td><td>25</td><td>1.97% (미검증)</td><td>약 1,080</td></tr>
-        <tr><td>기준</td><td>40</td><td>3.0% (가정)</td><td>약 1,124</td></tr>
-        <tr><td>보수</td><td>60</td><td>3.4% (미검증)</td><td>약 1,172</td></tr>
-      </table>
+    <div class="hl" style="display:flex;flex-direction:column;justify-content:center">
+      <p class="lead" style="font-size:clamp(18px,1.7vw,26px)">⚠️ 견적 단가와 운영 기간은 아직 근거가 없습니다.</p>
+      <p style="margin-top:1vh">중구 파일럿에서 실제 견적과 비용을 확인합니다.</p>
     </div>
   </div>
-  <div class="hl" style="padding:1.2vh 1.5vw"><p class="lead" style="font-size:clamp(18px,1.7vw,26px)">⚠️ 팀권 100건은 손익분기보다 적습니다.<br>손익분기는 약 1,100건 (가정). 파일럿에서 판매량과 원가를 확인합니다.</p></div>
-  <div class="foot">출처: research/bm/jung_summer_som_unit_economics_v2.md (2026-11-18 조사, 원격 브랜치 docs/research-jung-som-unit-economics), plan/treagent_customer_strategy_v1.md 6장. 수수료 1.97%는 2025년 공시 평균 (미검증), 3.4%는 개별사 값 (충돌, 사용 안 함). 고정비 1,500만 원과 공수 40시간은 가정 (근거 없음). 최저임금 10,320원은 2차 출처 (원문 확인 전). 손익분기 = 고정비 ÷ (판매가 − 수수료 − 변동비)</div>
+  <div class="foot">출처: research/bm/jung_summer_som_unit_economics_v2.md (2026-11-18 조사, 원격 브랜치 docs/research-jung-som-unit-economics). 제작 공수와 지자체 견적 단가는 자료 없음 (C5). 클라우드는 공식 pricing 페이지 (2026-11 기준). 최저임금은 2차 출처 (원문 확인 전)</div>
 </section>
 
 <!-- 11. MVP ② : 화면 (목업) -->
@@ -332,21 +329,21 @@ td:first-child{font-family:"Do Hyeon",sans-serif;background:#fff8e1}
 <section class="slide">
   <div class="tag">06 · 팀</div>
   <h2>역할 7개를 3명이 나눠 맡음</h2>
-  <div class="grid g3" style="flex:0 0 auto">
+  <div class="grid g3" style="flex:0 0 auto;margin-bottom:2.5vh">
     <div class="card gold person">
       <div class="nameRow"><img class="avatar" src="assets/profile_sojeong.png" alt="소정 프로필"><h3>소정</h3></div>
       <ul class="b"><li>FE · BE · AI 일부</li></ul>
-      <div class="ai"><p>🤖 Claude Code</p><p>🤖 ChatGPT</p></div>
+      <div class="ai"><p><b>개발</b></p><p>🤖 Claude Code · 🤖 ChatGPT</p></div>
     </div>
     <div class="card sky person">
       <div class="nameRow"><img class="avatar" src="assets/profile_sohyeong.png" alt="소형 프로필"><h3>소형</h3></div>
       <ul class="b"><li>CON · DES · PM</li><li>AI 일부 · FE 일부</li></ul>
-      <div class="ai"><p>🤖 Claude Code</p><p>🤖 ChatGPT</p></div>
+      <div class="ai"><p><b>프롬프트 설계·UI 목업</b></p><p>🤖 Claude Code · 🤖 ChatGPT</p><p><b>캐릭터 디자인</b></p><p>🤖 ChatGPT</p></div>
     </div>
     <div class="card person" style="background:#ffe4ec">
       <div class="nameRow"><img class="avatar" src="assets/profile_minji.png" alt="민지 프로필"><h3>민지</h3></div>
       <ul class="b"><li>RES · DES · PM</li><li>FE 일부</li></ul>
-      <div class="ai"><p>🤖 Claude Code</p><p>🤖 ChatGPT</p><p>🤖 Google Flow</p><p>🤖 Gemini</p><p>🤖 Google AI Studio</p></div>
+      <div class="ai"><p><b>리서치·사실 검증</b></p><p>🤖 Claude Code · 🤖 ChatGPT · 🤖 Gemini</p><p><b>영상·시각 콘텐츠</b></p><p>🤖 Google Flow · 🤖 Google AI Studio</p></div>
     </div>
   </div>
   <div class="grid g2" style="flex:0 0 auto;margin-top:1vh">
