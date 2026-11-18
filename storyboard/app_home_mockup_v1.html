@@ -18,6 +18,11 @@
   .ctrl select{font:inherit;padding:5px 8px;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:0}
   .ctrl label{display:flex;gap:4px;align-items:center;cursor:pointer}
   .stagebox{width:390px;height:844px}
+  /* ?only: 발표용 화면만 (조작 패널 숨김, 휴대폰 화면이 iframe 전체를 채움) */
+  .only html,.only body{display:block;margin:0;padding:0;gap:0;height:100vh;overflow:hidden;background:var(--cream)}
+  .only .ctrl{display:none}
+  .only .stagebox{width:100vw;height:100vh;overflow:hidden}
+  .only .phone{box-shadow:none}
   .stage{width:390px;height:844px;transform-origin:top left}
   .phone{word-break:keep-all;overflow-wrap:break-word;position:relative;width:390px;height:844px;background:var(--cream);overflow:hidden;box-shadow:0 0 0 3px var(--ink),0 14px 36px rgba(60,40,20,.28);user-select:none}
   .px{box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink),0 6px 0 0 var(--shade)}
@@ -328,7 +333,7 @@
     empty:  {b1:'맑음 · 체감 [○]℃',b2:'[구·군] · [기준 시각] 기준 ▾',tone:'',cta:['오늘의 길 확인','날씨에 맞는 길을 찾아봐요 [임시]','S-14 오늘의 길'],q1:'코스 전체',bub:'{이름} 님, [갸웃 대사]',cards:[],msg:'지금 보여 드릴 코스가 없어요 [임시 문구]',note:'',st:[3,'최근 한 장 · 도장 3/3 [임시]'],today:0}
   };
   function stopName(k,i){var r=C.C01.routes[routeOf(k)];return r.stops[i]||('[스팟 '+(i+1)+']')}
-  function toast(t){var el=$('#toast');el.textContent=t+' (자리)';el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('on')},1800)}
+  function toast(t){var el=$('#toast');el.textContent=t+' (자리)';el.classList.add('on');clearTimeout(toastT);toastT=_realST(function(){el.classList.remove('on')},1800)}
   function stampImgs(n,cls){var h='';for(var i=0;i<3;i++)h+='<img'+(i>=n?' class="e"':'')+' src="'+STAMP+'" alt="'+(i<n?'받은 도장':'빈 도장 자리')+'">';return h}
   function render(){
     var k=$('#state').value, s=S[k];
@@ -391,12 +396,24 @@
   });
   $('#state').addEventListener('change',render);
   ['#optA','#optB'].forEach(function(i){$(i).addEventListener('change',render)});
+  /* ?lock: no automatic steps. Screens change only by clicks or the deck controls. */
+  var _realST=window.setTimeout.bind(window);
+  if(new URLSearchParams(location.search).has('lock')){ window.setTimeout=function(){ return 0; }; }
+  var ONLY=new URLSearchParams(location.search).has('only');
+  if(ONLY){document.documentElement.classList.add('only');}
   function fit(){
-    var s=Math.min(1,Math.max(0.5,(window.innerHeight-110)/844),(window.innerWidth-24)/390);
+    var s=ONLY?Math.min(window.innerHeight/844,window.innerWidth/390):Math.min(1,Math.max(0.5,(window.innerHeight-110)/844),(window.innerWidth-24)/390);
     $('#stage').style.transform='scale('+s+')';
     $('#box').style.width=(390*s)+'px'; $('#box').style.height=(844*s)+'px';
   }
+  function report(){parent.postMessage({src:'treagent-mockup',state:$('#state').value,optA:$('#optA').checked,optB:$('#optB').checked},'*')}
+  window.addEventListener('message',function(e){var d=e.data;if(!d||d.src!=='treagent-deck')return;
+    if(d.state)$('#state').value=d.state;
+    if(typeof d.optA==='boolean')$('#optA').checked=d.optA;
+    if(typeof d.optB==='boolean')$('#optB').checked=d.optB;
+    render();report();});
   window.addEventListener('resize',fit); fit(); render();
+  report();
 })();
 </script>
 </body>
