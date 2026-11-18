@@ -1,0 +1,443 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>대프리카 히든 퀘스트 · 피치 v3 (11/18)</title>
+<meta name="description" content="11/18 피치 발표 v3. 피치 7장을 앞에 두고, 11/13 이후 정한 것·구현 화면·목업을 각 장 안에 넣은 발표 초안.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2a1f2d;--bg:#fff4dc;--paper:#fffdf6;--red:#e0474c;--red2:#a3232a;--mint:#2fa68f;--gold:#f2b632;--sky:#6cc7e0;--purple:#8b6fd1;--line:#2a1f2d}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{word-break:keep-all;overflow-wrap:break-word;background:#22181f;font-family:"Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink)}
+.deck{position:relative;width:100vw;height:100vh;overflow:hidden;
+  background:linear-gradient(45deg,rgba(242,182,50,.13) 25%,transparent 25%) 0 0/36px 36px,
+             linear-gradient(-45deg,rgba(108,199,224,.13) 25%,transparent 25%) 0 0/36px 36px, var(--bg)}
+.slide{position:absolute;inset:0;padding:4vh 4vw;display:none;flex-direction:column;gap:2.2vh;overflow:auto}
+.slide.on{display:flex}
+.tag{align-self:flex-start;font-family:"Do Hyeon",sans-serif;font-size:clamp(15px,1.3vw,19px);color:#fff;background:var(--mint);border:3px solid var(--line);box-shadow:4px 4px 0 var(--line);padding:.4vh 1.2vw}
+h1{font-family:"Do Hyeon",sans-serif;font-size:clamp(60px,7vw,110px);font-weight:400;margin:0;line-height:1.2;color:var(--red2);text-shadow:5px 5px 0 var(--gold)}
+h2{font-family:"Do Hyeon",sans-serif;font-size:clamp(32px,3.4vw,50px);font-weight:400;margin:0;line-height:1.25;color:var(--red2)}
+h3{font-family:"Do Hyeon",sans-serif;font-size:clamp(24px,min(2.5vw,4vh),38px);font-weight:400;margin:0 0 1vh}
+p,li{font-size:clamp(18px,min(2.1vw,3.4vh),30px);line-height:1.55;margin:0}
+.lead{font-size:clamp(22px,min(2.6vw,4.2vh),38px);line-height:1.5;font-family:"Do Hyeon",sans-serif}
+.card{background:var(--paper);border:3px solid var(--line);box-shadow:6px 6px 0 var(--line);padding:2vh 1.6vw;position:relative;display:flex;flex-direction:column;justify-content:center}
+.card.mint{background:#dff5ef}.card.gold{background:#fff0c4}.card.red{background:#ffe0de}.card.sky{background:#dff1fa}.card.purple{background:#ece5fb}
+.card.s{padding:1.6vh 1.2vw}
+.card.s p,.card.s li{font-size:clamp(18px,min(2vw,3.3vh),28px);line-height:1.5}
+.grid{display:grid;gap:1.6vw;flex:1;min-height:0;align-content:stretch}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}
+.strip{display:flex;align-items:stretch;gap:.8vw}
+.strip .card{flex:1}
+.arrow{font-family:"Do Hyeon",sans-serif;font-size:clamp(26px,2.5vw,38px);align-self:center;color:var(--red2)}
+.hl{background:var(--paper);border:3px dashed var(--red);padding:1.6vh 1.6vw;box-shadow:6px 6px 0 var(--red)}
+.big{font-family:"Do Hyeon",sans-serif;font-size:clamp(90px,min(12vw,22vh),200px);line-height:1;color:var(--red2);margin:.5vh 0}
+.num{font-family:"Do Hyeon",sans-serif;font-size:clamp(60px,min(8vw,14vh),130px);line-height:1;color:var(--red2)}
+ul.b{padding-left:1.3em;margin:0}ul.b li{margin:.8vh 0;font-size:clamp(18px,min(2.1vw,3.4vh),30px)}
+table{border-collapse:collapse;width:100%;font-size:clamp(17px,min(1.9vw,3.2vh),27px)}
+th,td{border:2px solid var(--line);padding:1.4vh .9vw;text-align:left;vertical-align:middle;background:var(--paper)}
+th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:clamp(22px,2.2vw,32px)}
+td:first-child{font-family:"Do Hyeon",sans-serif;background:#fff8e1}
+.foot{margin-top:auto;font-size:clamp(13px,1.1vw,16px);color:#6b5a68;line-height:1.45}
+.nav{position:fixed;bottom:1.5vh;right:2vw;font-size:15px;color:#fff}
+/* 휴대폰 화면: 목업의 화면 영역만 (조작 패널 없이 휴대폰 안이 꽉 차도록) */
+.phone{height:68vh;aspect-ratio:390/844;border-radius:30px;overflow:hidden;outline:4px solid var(--line);box-shadow:8px 8px 0 var(--line);margin:0;background:#fff;flex:0 0 auto}
+.phone iframe{width:100%;height:100%;border:0;display:block;overflow:hidden}
+.phones{display:flex;gap:1.2vw;justify-content:center;align-items:center;flex:1;min-height:0}
+.map{position:relative;flex:1;min-height:0;border:3px solid var(--line);background:var(--paper);box-shadow:6px 6px 0 var(--line)}
+.map .chip{position:absolute;transform:translate(-50%,-50%);font-family:"Do Hyeon",sans-serif;font-size:clamp(17px,1.7vw,25px);background:#fff;border:2px solid var(--line);padding:.8vh 1.1vw;white-space:nowrap}
+.map .axis{position:absolute;font-family:"Do Hyeon",sans-serif;font-size:clamp(16px,1.5vw,22px);color:#6b5a68}
+.compact th,.compact td{padding:.9vh .8vw}
+.ctrl-panel{display:flex;flex-direction:column;gap:1.5vh;flex:0 0 auto;max-width:28vw}
+.ctrl-box{padding:1.2vh 1vw;gap:.8vh}
+.ctrl-box h3{font-size:clamp(18px,1.6vw,24px);margin:0 0 .4vh}
+.ctrl-box label{display:flex;align-items:center;gap:.5vw;font-size:clamp(14px,1.2vw,18px);flex-wrap:wrap}
+.ctrl-box select{font:inherit;font-size:clamp(14px,1.2vw,18px);padding:.4vh .4vw;border:2px solid var(--line);background:#fff;color:var(--ink);border-radius:0;max-width:100%}
+.ai{margin-top:1.5vh}
+.route{margin:0;padding-left:1.4em}
+.route li{margin:1.2vh 0;font-size:clamp(20px,2.1vw,30px)}
+.avatar{width:15vh;height:15vh;object-fit:cover;border:3px solid var(--line);border-radius:12px;align-self:center;margin-bottom:1.2vh;background:#fff;display:block}
+.person{justify-content:flex-start}
+.nameRow{display:flex;align-items:center;gap:1.4vw;margin-bottom:1.2vh}
+.nameRow .avatar{width:12vh;height:12vh;margin:0;flex:0 0 auto;align-self:auto}
+.nameRow h3{margin:0}
+.person .ai p{font-size:clamp(15px,1.3vw,19px);margin:.3vh 0}
+.person h3{font-size:clamp(28px,2.6vw,40px)}
+@media (max-width:760px){
+  .slide{padding:3vh 16px}
+  .g2,.g3{grid-template-columns:1fr}
+  .strip{flex-direction:column}
+  .strip .arrow{transform:rotate(90deg);align-self:center}
+  .phones{flex-direction:column}
+  .phone{height:auto;width:62vw}
+  table{font-size:15px}
+  h2{font-size:28px}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!-- 1. 표지 -->
+<section class="slide on" style="justify-content:center">
+  <div class="tag">TREAGENT · AX 크리에이티브 트랙 · 피치 2026.11.18</div>
+  <h1>대프리카 히든 퀘스트</h1>
+  <p class="lead">날씨에 맞춰 길을 바꿔 주는 여름 도심 투어</p>
+  <div class="hl" style="margin-top:4vh;max-width:72vw">
+    <p class="lead">🍎 문제 → 해결 → 시장 → 사업 모델 → MVP → 팀 → 요청</p>
+    <p class="lead">🛠️ 11/13 이후 정한 것과 만든 화면을 각 장 안에서 함께 보입니다.</p>
+  </div>
+    <img src="../../brand/character/images/harangi_pixel_fan_transparent.png" alt="하랑이" style="position:absolute;right:0.5vw;bottom:2vh;height:60vh;width:auto">
+  <div class="foot" style="margin-top:auto;max-width:60vw">대상 지역: 대구 중구 · 발표 자료 v3 · 팀 확인 전 문구는 [확인 필요]로 표시</div>
+</section>
+
+<!-- 2. 문제 ① -->
+<section class="slide">
+  <div class="tag">01 · 문제</div>
+  <h2>더위에 줄어드는 도심 산책</h2>
+  <div class="grid g2">
+    <div class="card red">
+      <h3>🌡️ 대구 여름 평균기온 (1991~2020 평년)</h3>
+      <p class="big">25.5℃</p>
+      <p>전국 여름 평년은 23.7℃입니다.</p>
+    </div>
+    <div class="card gold">
+      <h3>📍 서문야시장, 헛걸음한 후기</h3>
+      <ul class="b">
+        <li>평일 운영처럼 보였지만 금·토·일만 운영</li>
+        <li>금요일에 가 보니 영업을 하지 않음</li>
+        <li>운영 시간이라 들었는데 운영하지 않음</li>
+      </ul>
+      <p style="margin-top:1.5vh;font-size:clamp(15px,1.4vw,20px)">서문야시장 한 곳의 지도 리뷰 3건</p>
+    </div>
+  </div>
+  <div class="foot">출처: 대구 기후변화 분석보고서 (기상청, 2025.9) 26쪽 · 2023년 여름철 기후분석 보도자료 (기상청, 2023.9.7) 붙임 4 · research/painpoint/voc_classified.csv (id 7~9). 두 평년 값은 모두 1991~2020 기준</div>
+</section>
+
+<!-- 3. 문제 ② -->
+<section class="slide">
+  <div class="tag">01 · 문제</div>
+  <h2>저녁 6시 이후 여는 쉼터 비율</h2>
+  <div class="grid g2">
+    <div class="card sky">
+      <h3>🏠 무더위쉼터 1,196곳 중</h3>
+      <p class="big">19.6%</p>
+      <p>오후 6시 이후에도 운영하는 곳은 235곳입니다.<br>24시간 운영은 5곳입니다.</p>
+    </div>
+    <div class="card purple">
+      <h3>🧭 그래서 우리가 보는 것</h3>
+      <ul class="b">
+        <li>비교 기준은 오후 6시 이후 운영 여부입니다</li>
+        <li>운영 시간이 바뀌면 길을 다시 짭니다</li>
+        <li>쉼터 정보는 검수된 목록에서만 씁니다</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot">출처: 매일신문 인용, 2026년 8월 기준 (plan/daeprica_hidden_quest_plan.md 9장, 원문 재확인 전 [미검증]). 235 ÷ 1,196 = 19.6% 계산 확인. 오후 6시는 원자료가 집계한 기준 시각 (plan/daeprica_hidden_quest_plan.md 9장)</div>
+</section>
+
+<!-- 4. 해결 ① -->
+<section class="slide">
+  <div class="tag">02 · 해결</div>
+  <h2>날씨·시간대로 고르는 오늘의 길</h2>
+  <div class="strip">
+    <div class="card sky"><h3>① 입력</h3><p>기온·체감, 시간대, 요일, 위치</p></div>
+    <span class="arrow">▶</span>
+    <div class="card mint"><h3>② 규칙 판정</h3><p>야외 가능 여부와 모드를 규칙으로 정함</p></div>
+    <span class="arrow">▶</span>
+    <div class="card gold"><h3>③ 길 선택</h3><p>검수된 장소 목록에서 고름</p></div>
+    <span class="arrow">▶</span>
+    <div class="card red"><h3>④ 안내</h3><p>하랑이가 오늘 길을 안내</p></div>
+  </div>
+  <div class="grid g2">
+    <div class="card purple">
+      <h3>🛡️ 안전 원칙</h3>
+      <ul class="b">
+        <li>안전 규칙은 AI가 바꾸지 않습니다</li>
+        <li>장소·쉼터는 검수 목록에서만 고릅니다</li>
+        <li>폭염·호우 특보면 야외 안내를 멈추고 쉼터를 안내합니다</li>
+      </ul>
+    </div>
+    <div class="card gold s">
+      <h3>🔁 이동 중 날씨가 바뀌면</h3>
+      <ul class="b">
+        <li>이미 방문한 장소는 그대로 둡니다</li>
+        <li>남은 장소만 날씨에 맞춰 다시 짭니다</li>
+        <li style="white-space:nowrap;font-size:clamp(16px,1.5vw,22px)">경고창에서 경로 변경 또는 현재 경로 유지를 고릅니다</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot">출처: plan/daeprica_hidden_quest_plan.md 6-1·8장 · presentation/20261118/pitch_outline_v1.md 확정된 전제 (안전 원칙, 스토리보드 발표 2·9장) · dev/server/src/ (규칙 함수 decideMode). 모드 기준 28℃·33℃는 확인 전 [확인 필요]. 재계획 규칙은 팀 결정 전 [확인 필요]</div>
+</section>
+
+<!-- 4-1. 해결 예시: 같은 코스, 날씨별 경로 -->
+<section class="slide">
+  <div class="tag">02 · 해결 · 예시</div>
+  <h2>같은 코스, 날씨에 따라 다른 길</h2>
+  <div class="grid g2">
+    <div class="card mint">
+      <h3>☀️ 맑은 날: 야외 탐방</h3>
+      <ol class="route">
+        <li>동성로 (상권)</li>
+        <li>대구 근대골목 (도보 골목)</li>
+        <li>대구약령시한의약박물관 (실내 체험)</li>
+      </ol>
+    </div>
+    <div class="card red">
+      <h3>🔥 폭염: 실내 경로</h3>
+      <ol class="route">
+        <li>대구약령시한의약박물관</li>
+        <li>카페 트레전트 (예시)</li>
+        <li>대구향토역사관</li>
+      </ol>
+    </div>
+  </div>
+  <div class="hl" style="flex:0 0 auto;display:flex;align-items:center;gap:2vw">
+    <div aria-label="하랑이" role="img" style="flex:0 0 auto;width:24vh;height:24vh;border:3px solid var(--line);background:#fdf2e3 url('../../brand/character/images/harangi_expressions.webp') no-repeat;background-size:77.6vh 25.9vh;background-position:-51vh -1.4vh"></div>
+    <div>
+      <p class="lead" style="font-size:clamp(24px,2.8vw,40px)">날씨가 바뀌었어요. 남은 길을 바꿀까요?</p>
+      <p style="margin-top:1vh">[길 바꾸기] [이대로 가기]</p>
+    </div>
+  </div>
+  <div class="foot">출처: dev/supabase/migrations/seed_courses.sql (C01 explore·indoor 경로), seed_places.sql (장소 이름·유형). 예시는 경로 구성을 보여 주기 위한 것이며 실제 판정 결과가 아님. 기온 기준 28℃·33℃ [확인 필요], 거리·소요 시간은 현장 확인 전 [확인 필요]</div>
+</section>
+
+<!-- 5. 해결 ② : 11/17 결정 -->
+<section class="slide">
+  <div class="tag">02 · 해결 · 11/13 이후 정한 것</div>
+  <h2>11/17 팀 회의 결정 6건</h2>
+  <div class="card" style="padding:0;flex:0 0 auto">
+    <table>
+      <tr><th style="width:26%">결정</th><th>지금 방식</th></tr>
+      <tr><td>🍎 도장 = 미션 완료</td><td>장소마다 미션을 마치면 능금 도장 1개, 한 코스는 도장 3개입니다.</td></tr>
+      <tr><td>📍 인증 = GPS + 미션</td><td>GPS로 도착을 확인한 뒤 미션을 마쳐야 방문 인증이 끝납니다.</td></tr>
+      <tr><td>🚶 코스 = 장소 3곳</td><td>첫 코스는 중구 근대골목 걷기(C01) 3곳입니다.</td></tr>
+    </table>
+  </div>
+  <div class="grid g3">
+    <div class="card sky s"><h3>🔁 새 여행</h3><p>진행 중인 여행이 있으면<br>경고창을 보고 새로 시작합니다.</p></div>
+    <div class="card gold s"><h3>🗺️ 지역</h3><p>MVP는 중구만 안내합니다.<br>중구 밖이면 "지금은 중구만 안내해요"라고 말합니다.</p></div>
+    <div class="card mint s"><h3>📒 화면</h3><p>장부에 앨범을 더하고,<br>주머니는 홈에서 따로 엽니다.<br>오늘 페이지는 홈의 장부입니다.</p></div>
+  </div>
+  <div class="foot">출처: plan/spec/treagent_tech_spec_v1.md 1-3절 결정 #1~6 (2026-11-17 팀 논의). 반경·정확도 수치는 현장 시험 후 정함 [확인 필요]</div>
+</section>
+
+<!-- 7. 시장 ① -->
+<section class="slide">
+  <div class="tag">03 · 시장</div>
+  <h2>날씨 맞춤 길, 조사 범위 안 경쟁 없음</h2>
+  <div class="card" style="padding:0;flex:0 0 auto">
+    <table>
+      <tr><th style="width:22%">도구</th><th>주로 하는 일</th><th style="width:30%">시작 가격 (회사 공개, VAT 별도)</th></tr>
+      <tr><td>큐알스탬프</td><td>QR·NFC·GPS 인증, 리워드 게임, 100% 맞춤 제작</td><td>정액 플랜 100만 원~</td></tr>
+      <tr><td>이벤터스</td><td>행사 플랫폼 안의 QR 스탬프</td><td>행사 개설 베이직 무료</td></tr>
+      <tr><td>퀘스투어</td><td>셀프·맞춤 미션, QR·GPS, 상권 리포트</td><td>Starter 30만 원~</td></tr>
+      <tr><td>리얼월드</td><td>AI 스토리 분기, 대화형 NPC, 실시간 콘텐츠 변경</td><td>공개 설명 페이지만 확인<br>(직접 플레이 못 함)</td></tr>
+    </table>
+  </div>
+  <div class="hl" style="padding:1.4vh 1.6vw"><p class="lead">✅ 위 네 곳 모두 날씨에 따라 길을 바꾸는 기능은 공개 자료에서 찾지 못함 (검색 범위 안)</p><p style="margin-top:.8vh">✅ 2026 스탬프투어: 대구 전역 관광지 20곳, 4주 (대구문화예술진흥원)</p><p style="margin-top:.6vh">⏳ 2026 상반기 대구 방문자 6.0% 증가 (대구 전체). 중구 방문객 수와 예산 규모는 집계 기준 확인 중</p></div>
+  <div class="foot">출처: research/valuechain/competitors/comparison.md (확인일 2026-11-12, 가격은 회사 공개 시작가) · presentation/20261113/20261112_plan_pitch_v10.html 4장 (리얼월드) · research/bm/jung_summer_tam_sam_som_v3.md (2026-11-18, 열람 확인 항목만 사용; 원격 브랜치 docs/research-jung-som-unit-economics). 플레이더월드는 조사 자료 확인 전이라 제외</div>
+</section>
+
+<!-- 8. 시장 ② : 포지셔닝 -->
+<section class="slide">
+  <div class="tag">03 · 시장</div>
+  <h2>날씨 맞춤과 안내가 겹치는 자리</h2>
+  <div class="grid" style="grid-template-columns:2.3fr 1fr;flex:1;min-height:0">
+    <div class="card" style="padding:1.5vh 1vw">
+      <img src="assets/positioning_map.webp" alt="포지셔닝 맵: 가로 고정 목록↔날씨에 맞춘 길, 세로 기록만↔기록과 안내" style="width:100%;height:auto;display:block">
+    </div>
+    <div style="display:flex;flex-direction:column;gap:2vh;justify-content:center;min-height:0">
+      <div class="card gold s"><h3>📌 축 설명</h3><ul class="b"><li>가로: 길이 고정 ↔ 날씨에 맞춘 길</li><li>세로: 기록만 ↔ 기록과 안내</li></ul></div>
+      <div class="card red s"><h3>⏳ 시장 규모</h3><ul class="b"><li>TAM·SAM·SOM 숫자 없음</li><li>도달·전환은 가정 필요</li></ul></div>
+    </div>
+  </div>
+  <div class="foot">위치는 팀의 해석입니다 (research/valuechain/competitors/comparison.md의 운영 방식 비교를 바탕으로 배치). 축 이름은 팀 확인 후 확정 [확인 필요]</div>
+</section>
+
+<!-- 9. BM -->
+<section class="slide" style="gap:1.6vh">
+  <div class="tag">04 · 사업 모델</div>
+  <h2>팀권 판매와 지자체 코스 제작</h2>
+  <div class="grid g3" style="flex:0 0 auto">
+    <div class="card gold s"><h3>🙋 민간 직접</h3><p>팀권 첫 가격 가설 14,900원</p></div>
+    <div class="card sky s"><h3>🏛️ 지자체·재단</h3><p>코스 한 개 단위로 기획·제작·운영 견적</p></div>
+    <div class="card mint s"><h3>🎪 행사 대행사</h3><p>공공 행사에 코스·미션 제작과<br>현장 운영 지원</p></div>
+  </div>
+  <div class="grid g2" style="flex:0 0 auto">
+    <div class="card" style="padding:0;justify-content:stretch">
+      <table style="height:100%;font-size:clamp(16px,1.5vw,22px)">
+        <tr><th style="width:52%">매출 가정 (수수료·세금 반영 전)</th><th>금액</th></tr>
+        <tr><td>팀권 100건 판매</td><td>149만 원</td></tr>
+        <tr><td>팀권 300건 판매</td><td>447만 원</td></tr>
+      </table>
+    </div>
+    <div class="card" style="padding:0;justify-content:stretch">
+      <table style="height:100%;font-size:clamp(16px,1.5vw,22px)">
+        <tr><th style="width:30%">시나리오 (가정)</th><th>공수 (시간/코스)</th><th>수수료</th><th>손익분기 (건)</th></tr>
+        <tr><td>낙관</td><td>25</td><td>1.97% (미검증)</td><td>약 1,080</td></tr>
+        <tr><td>기준</td><td>40</td><td>3.0% (가정)</td><td>약 1,124</td></tr>
+        <tr><td>보수</td><td>60</td><td>3.4% (미검증)</td><td>약 1,172</td></tr>
+      </table>
+    </div>
+  </div>
+  <div class="hl" style="padding:1.2vh 1.5vw"><p class="lead" style="font-size:clamp(18px,1.7vw,26px)">⚠️ 팀권 100건은 손익분기보다 적습니다.<br>손익분기는 약 1,100건 (가정). 파일럿에서 판매량과 원가를 확인합니다.</p></div>
+  <div class="foot">출처: research/bm/jung_summer_som_unit_economics_v2.md (2026-11-18 조사, 원격 브랜치 docs/research-jung-som-unit-economics), plan/treagent_customer_strategy_v1.md 6장. 수수료 1.97%는 2025년 공시 평균 (미검증), 3.4%는 개별사 값 (충돌, 사용 안 함). 고정비 1,500만 원과 공수 40시간은 가정 (근거 없음). 최저임금 10,320원은 2차 출처 (원문 확인 전). 손익분기 = 고정비 ÷ (판매가 − 수수료 − 변동비)</div>
+</section>
+
+<!-- 11. MVP ② : 화면 (목업) -->
+<section class="slide" style="overflow:hidden">
+  <div class="tag">05 · MVP · 화면 목업</div>
+  <h2>다음 화면: 시작과 홈 (목업)</h2>
+  <div class="phones">
+    <div class="phone"><iframe scrolling="no" id="m-login" src="../../storyboard/app_login_region_mockup_v1.html?only&amp;lock&amp;screen=title" title="시작 화면 목업"></iframe></div>
+    <div class="phone"><iframe scrolling="no" id="m-home" src="../../storyboard/app_home_mockup_v1.html?only&amp;lock" title="홈 화면 목업"></iframe></div>
+    <div class="ctrl-panel">
+      <div class="card gold ctrl-box">
+        <h3>로그인 목업</h3>
+        <label>화면 <select id="c-screen">
+          <option value="title">① 타이틀 (로그인 전)</option>
+          <option value="login">② 로그인</option>
+          <option value="signup">③ 가입</option>
+          <option value="loc">④ 위치 확인</option>
+          <option value="dist">⑤ 구·군 선택</option>
+        </select></label>
+        <label>상태 <select id="c-lstate"></select></label>
+        <label><input type="checkbox" id="c-optB"> 버튼 문구 후보 B</label>
+        <label><input type="checkbox" id="c-optFail"> 로그인 실패로 시뮬레이션</label>
+      </div>
+      <div class="card sky ctrl-box">
+        <h3>홈 목업</h3>
+        <label>상태 <select id="c-hstate">
+          <option value="none">진행 여행 없음</option>
+          <option value="active">진행 여행 있음</option>
+          <option value="notice">진행 여행 + 경로 변경 알림</option>
+          <option value="heat">폭염</option>
+          <option value="storm">호우·이동 보류</option>
+          <option value="unknown">날씨 확인 불가</option>
+          <option value="outside">중구 밖 (MVP는 중구만)</option>
+          <option value="empty">코스 없음</option>
+        </select></label>
+        <label><input type="checkbox" id="c-optA" checked> 오늘의 빈 칸 한 줄(A)</label>
+        <label><input type="checkbox" id="c-optH2" checked> 도장 미리보기(B)</label>
+      </div>
+    </div>
+  </div>
+  <div class="foot">출처: storyboard/app_login_region_mockup_v1.html (시작 화면) · storyboard/app_home_mockup_v1.html (홈, S-03) · storyboard/app_home_screen_v1.md. 로그인 방식은 결정 전이라 두 안의 입력 칸을 모두 표시</div>
+</section>
+
+<!-- 13. 팀 -->
+<section class="slide">
+  <div class="tag">06 · 팀</div>
+  <h2>역할 7개를 3명이 나눠 맡음</h2>
+  <div class="grid g3" style="flex:0 0 auto">
+    <div class="card gold person">
+      <div class="nameRow"><img class="avatar" src="assets/profile_sojeong.png" alt="소정 프로필"><h3>소정</h3></div>
+      <ul class="b"><li>FE · BE · AI 일부</li></ul>
+      <div class="ai"><p>🤖 Claude Code</p><p>🤖 ChatGPT</p></div>
+    </div>
+    <div class="card sky person">
+      <div class="nameRow"><img class="avatar" src="assets/profile_sohyeong.png" alt="소형 프로필"><h3>소형</h3></div>
+      <ul class="b"><li>CON · DES · PM</li><li>AI 일부 · FE 일부</li></ul>
+      <div class="ai"><p>🤖 Claude Code</p><p>🤖 ChatGPT</p></div>
+    </div>
+    <div class="card person" style="background:#ffe4ec">
+      <div class="nameRow"><img class="avatar" src="assets/profile_minji.png" alt="민지 프로필"><h3>민지</h3></div>
+      <ul class="b"><li>RES · DES · PM</li><li>FE 일부</li></ul>
+      <div class="ai"><p>🤖 Claude Code</p><p>🤖 ChatGPT</p><p>🤖 Google Flow</p><p>🤖 Gemini</p><p>🤖 Google AI Studio</p></div>
+    </div>
+  </div>
+  <div class="grid g2" style="flex:0 0 auto;margin-top:1vh">
+    <div class="card purple s" style="flex-direction:row;justify-content:space-between;align-items:center"><p>커밋</p><p class="num">143건</p></div>
+    <div class="card purple s" style="flex-direction:row;justify-content:space-between;align-items:center"><p>PR</p><p class="num">84건</p></div>
+  </div>
+  <div class="foot">출처: plan/team_roles_v1.md 1·2장 (2026-11-13 합의) · plan/spec/treagent_tech_spec_v1.md 2장 · git log origin/main, 2026-11-03~11-18 (2026-11-18 확인). 사용 AI 도구는 팀원 응답 (2026-11-18 전달)</div>
+</section>
+
+<!-- 14. 요청 (마지막 장) -->
+<section class="slide">
+  <div class="tag">07 · 요청</div>
+  <h2>요청: 중구 근대골목 운영 확인 담당</h2>
+  <div class="hl" style="flex:0 0 auto">
+    <p class="lead">중구 근대골목 코스의 운영 정보를 함께 확인해 줄 담당 부서가 필요합니다.</p>
+  </div>
+  <div class="grid g3">
+    <div class="card gold">
+      <h3>🤝 누구에게</h3>
+      <ul class="b">
+        <li>중구 관광·문화 담당 부서</li>
+        <li>중구 발주 상황을 가정한<br>파일럿 협의 대상</li>
+      </ul>
+    </div>
+    <div class="card mint">
+      <h3>🗓️ 무엇을 함께</h3>
+      <ul class="b">
+        <li>코스 C01 중구 근대골목 걷기 3곳의 운영 시간 확인</li>
+        <li>파일럿을 함께 열지 협의</li>
+      </ul>
+    </div>
+    <div class="card red">
+      <h3>📉 왜 필요한가</h3>
+      <ul class="b">
+        <li>후기 52건 중<br>휴관·공사·운영 변경 10건</li>
+        <li>운영 정보가 맞지 않아<br>헛걸음한 후기가 있음</li>
+      </ul>
+    </div>
+  </div>
+  <div class="foot">출처: presentation/20261118/pitch_outline_v1.md 7장 (요청 문장 창작 초안, 팀 확정 전). 중구 발주 상황은 팀이 설명에 쓰는 가정이며 확정된 사실이 아님 [가정] · research/painpoint/voc_classified.csv (후기 52건, 운영 변경 10건 집계)</div>
+</section>
+
+</div>
+<div class="nav" id="nav">← → 키로 이동</div>
+<script>
+(function(){
+  var s=document.querySelectorAll('.slide'),i=0;
+  function show(n){s[i].classList.remove('on');i=(n+s.length)%s.length;s[i].classList.add('on');document.getElementById('nav').textContent=(i+1)+' / '+s.length+' · ← → 키로 이동';}
+  var CTRL='select, option, input, label, button, textarea, iframe, .ctrl-panel, .ctrl-box';
+  document.addEventListener('keydown',function(e){if(e.target.closest&&e.target.closest(CTRL))return;if(e.key==='ArrowRight'||e.key===' ')show(i+1);if(e.key==='ArrowLeft')show(i-1);});
+  document.addEventListener('click',function(e){if(e.target.closest&&e.target.closest(CTRL+', table'))return;if(e.clientX>window.innerWidth/2)show(i+1);else show(i-1);});
+  show(0);
+  var STATE_LIST={
+    title:[['default','기본 (바람·능금·꼬리 연출 다시 보기)']],
+    login:[['default','기본 (입력 전)'],['filled','입력함'],['error','로그인 실패'],['loading','로그인 중'],['success','로그인 성공 (열쇠 돌리기)']],
+    signup:[['default','기본'],['short','비밀번호 8자 미만'],['mismatch','비밀번호 불일치'],['fail','가입 실패'],['loading','가입 중'],['mail','가입 메일 안내']],
+    loc:[['default','기본'],['loading','위치 읽는 중'],['ok','위치 확인됨 (중구 안)'],['out','위치 확인됨 (중구 밖)'],['denied','권한 꺼짐 (다시 물을 수 있음)'],['denied2','권한 꺼짐 (설정에서만 가능)'],['unavail','위치를 읽지 못함'],['picked','구·군 선택함 (중구)']],
+    dist:[['default','기본']]
+  };
+  function fillStates(screen){
+    var sel=document.getElementById('c-lstate'); if(!sel) return;
+    sel.innerHTML='';
+    (STATE_LIST[screen]||[]).forEach(function(st){var o=document.createElement('option');o.value=st[0];o.textContent=st[1];sel.appendChild(o)});
+  }
+  fillStates('title');
+  var LM=document.getElementById('m-login'), HM=document.getElementById('m-home');
+  function $(id){return document.getElementById(id);}
+  function post(f,o){o.src='treagent-deck'; if(f&&f.contentWindow) f.contentWindow.postMessage(o,'*');}
+  if($('c-screen')){
+    $('c-screen').addEventListener('change',function(){fillStates(this.value); post(LM,{screen:this.value})});
+    $('c-lstate').addEventListener('change',function(){post(LM,{state:this.value})});
+    $('c-optB').addEventListener('change',function(){post(LM,{optB:this.checked})});
+    $('c-optFail').addEventListener('change',function(){post(LM,{optFail:this.checked})});
+    $('c-hstate').addEventListener('change',function(){post(HM,{state:this.value})});
+    $('c-optA').addEventListener('change',function(){post(HM,{optA:this.checked})});
+    $('c-optH2').addEventListener('change',function(){post(HM,{optB:this.checked})});
+    window.addEventListener('message',function(e){
+      var d=e.data; if(!d||d.src!=='treagent-mockup') return;
+      if(LM && e.source===LM.contentWindow && d.states){
+        $('c-screen').value=d.screen;
+        var sel=$('c-lstate'); sel.innerHTML='';
+        d.states.forEach(function(st){var o=document.createElement('option');o.value=st[0];o.textContent=st[1];sel.appendChild(o)});
+        sel.value=d.state; $('c-optB').checked=d.optB; $('c-optFail').checked=d.optFail;
+      }
+      if(HM && e.source===HM.contentWindow && d.optA!==undefined){
+        $('c-hstate').value=d.state; $('c-optA').checked=d.optA; $('c-optH2').checked=d.optB;
+      }
+    });
+  }
+})();
+
+</script>
+</body>
+</html>
