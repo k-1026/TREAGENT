@@ -1,0 +1,18 @@
+item_id,item,value,unit,period,source_url,checked_date,category,note
+A1_m_2023_01,중구 방문객 수 (데이터랩 방문자 탭),,명,2023-01,https://datalab.visitkorea.or.kr/datalab/portal/loc/getAreaDataForm.do?SGG_CD=27110,,자료 없음 (직접 조회 입력 대기),일 단위 중복 집계 정의 확인 후 입력
+A1_m_2023_02,중구 방문객 수 (데이터랩 방문자 탭),,명,2023-02,https://datalab.visitkorea.or.kr/datalab/portal/loc/getAreaDataForm.do?SGG_CD=27110,,자료 없음 (직접 조회 입력 대기),
+A1_m_2025_12,중구 방문객 수 (데이터랩 방문자 탭),,명,2025-12,https://datalab.visitkorea.or.kr/datalab/portal/loc/getAreaDataForm.do?SGG_CD=27110,,자료 없음 (직접 조회 입력 대기),36개월 행을 같은 형식으로 추가
+A3_offshore_ratio_summer,여름(6~9월) 중구 도보·야외 관광 비율,,%,2025,,,자료 없음,대체 지표로 데이터랩 여름 방문율 사용 가능
+A4_bid_01,나라장터 낙찰 건 1 (발주처·사업명·추정가·낙찰금액·기간),,원,2024~2026,https://www.g2b.go.kr,,자료 없음 (로그인 후 입력),검색 키워드: 대구 중구 관광 / 관광 코스 / 스탬프 투어
+A4_bid_02,나라장터 낙찰 건 2,,원,,https://www.g2b.go.kr,,자료 없음 (로그인 후 입력),
+A4_bid_03,나라장터 낙찰 건 3,,원,,https://www.g2b.go.kr,,자료 없음 (로그인 후 입력),
+A4_bid_04,나라장터 낙찰 건 4,,원,,https://www.g2b.go.kr,,자료 없음 (로그인 후 입력),
+A4_bid_05,나라장터 낙찰 건 5,,원,,https://www.g2b.go.kr,,자료 없음 (로그인 후 입력),
+C5_hours_per_course,코스 1개 제작 공수 (과업지시서 근거),40,시간,,,,가정,낙찰 건 과업지시서에서 투입 인력·기간 확인 후 교체
+C6_dev_cost,개발비 (퀘스트 1,500만 원 근거),15000000,원,2022,,,가정,근거 없음. 낙찰 건으로 대체 가능
+C4_min_wage_2026,2026 최저임금 시간급,10320,원,2026,https://www.minimumwage.go.kr/minWage/policy/decisionMain.do,2026-11-18,사실 (고용노동부 최저임금 페이지),고시 번호는 페이지에 없음
+C2_supabase_pro_usd,Supabase Pro 월 요금,25,USD,2026-11,https://supabase.com/pricing,2026-11-18,사실,
+C2_vercel_pro_usd,Vercel Pro 월 요금,20,USD,2026-11,https://vercel.com/pricing,2026-11-18,사실,
+C1_card_fee_public,카드 결제수수료율 (17개사 공시 평균),1.97,%,2025.8~10,https://www.fsc.go.kr/po010101/86029,2026-11-18,사실 (보도자료 페이지),PDF 원문 미열람
+C1_card_fee_toss,토스페이먼츠 카드 수수료,,%,,,,충돌 (3.4는 비공식 블로그),공식 요율 확인 후 입력
+P_price,팀권 판매가 (가설),14900,원,,,,가정,
