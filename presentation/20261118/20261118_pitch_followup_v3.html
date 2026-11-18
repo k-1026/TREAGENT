@@ -153,7 +153,7 @@ td:first-child{font-family:"Do Hyeon",sans-serif;background:#fff8e1}
     <div class="card red"><h3>④ 안내</h3><p>하랑이가 오늘 길을 안내</p></div>
   </div>
   <div class="grid g2">
-    <div class="card purple">
+    <div class="card red">
       <h3>🛡️ 안전 원칙</h3>
       <ul class="b">
         <li>안전 규칙은 AI가 바꾸지 않습니다</li>
@@ -161,7 +161,7 @@ td:first-child{font-family:"Do Hyeon",sans-serif;background:#fff8e1}
         <li>폭염·호우 특보면 야외 안내를 멈추고 쉼터를 안내합니다</li>
       </ul>
     </div>
-    <div class="card gold s">
+    <div class="card purple s">
       <h3>🔁 이동 중 날씨가 바뀌면</h3>
       <ul class="b">
         <li>이미 방문한 장소는 그대로 둡니다</li>
@@ -220,7 +220,7 @@ td:first-child{font-family:"Do Hyeon",sans-serif;background:#fff8e1}
   <div class="grid g3">
     <div class="card sky s"><h3>🔁 새 여행</h3><p>진행 중인 여행이 있으면<br>경고창을 보고 새로 시작합니다.</p></div>
     <div class="card gold s"><h3>🗺️ 지역</h3><p>MVP는 중구만 안내합니다.<br>중구 밖이면 "지금은 중구만 안내해요"라고 말합니다.</p></div>
-    <div class="card mint s"><h3>📒 화면</h3><p>장부에 앨범을 더하고,<br>주머니는 홈에서 따로 엽니다.<br>오늘 페이지는 홈의 장부입니다.</p></div>
+    <div class="card red s"><h3>📒 화면</h3><p>장부에 앨범을 더하고,<br>주머니는 홈에서 따로 엽니다.<br>오늘 페이지는 홈의 장부입니다.</p></div>
   </div>
   <div class="foot">출처: plan/spec/treagent_tech_spec_v1.md 1-3절 결정 #1~6 (2026-11-17 팀 논의). 반경·정확도 수치는 현장 시험 후 정함 [확인 필요]</div>
 </section>
@@ -247,12 +247,13 @@ td:first-child{font-family:"Do Hyeon",sans-serif;background:#fff8e1}
   <div class="tag">03 · 시장</div>
   <h2>날씨 맞춤과 안내가 겹치는 자리</h2>
   <div class="grid" style="grid-template-columns:2.3fr 1fr;flex:1;min-height:0">
-    <div class="card" style="padding:1.5vh 1vw">
+    <div class="card" style="padding:1.5vh 1vw;position:relative">
       <img src="assets/positioning_map.webp" alt="포지셔닝 맵: 가로 고정 목록↔날씨에 맞춘 길, 세로 기록만↔기록과 안내" style="width:100%;height:auto;display:block">
+      <img src="../../brand/character/images/stamp_nungeum.webp" alt="우리(대프리카) 능금 도장" style="position:absolute;left:72.4%;top:20.7%;width:8%;height:auto;transform:translate(-50%,-50%);mix-blend-mode:multiply">
     </div>
     <div style="display:flex;flex-direction:column;gap:2vh;justify-content:center;min-height:0">
       <div class="card gold s"><h3>📌 축 설명</h3><ul class="b"><li>가로: 길이 고정 ↔ 날씨에 맞춘 길</li><li>세로: 기록만 ↔ 기록과 안내</li></ul></div>
-      <div class="card red s"><h3>⏳ 시장 규모</h3><ul class="b"><li>TAM·SAM·SOM 숫자 없음</li><li>도달·전환은 가정 필요</li></ul></div>
+      <div class="card red s"><h3>⏳ 시장 규모</h3><ul class="b"><li>TAM·SAM·SOM 숫자 없음</li><li>도달 가능 비율 참고: 스마트폰 보유율 전체 98.8% (2025, 요약)</li><li>전환율은 가정 필요</li></ul></div>
     </div>
   </div>
   <div class="foot">위치는 팀의 해석입니다 (research/valuechain/competitors/comparison.md의 운영 방식 비교를 바탕으로 배치). 축 이름은 팀 확인 후 확정 [확인 필요]</div>
@@ -272,7 +273,7 @@ td:first-child{font-family:"Do Hyeon",sans-serif;background:#fff8e1}
       <table style="height:100%;font-size:clamp(16px,1.5vw,22px)">
         <tr><th style="width:46%">비용 항목</th><th>근거 상태</th></tr>
         <tr><td>제작 공수 (코스 1건)</td><td>가정 40시간 (근거 없음)</td></tr>
-        <tr><td>인건비 단가</td><td>2026 최저임금 10,320원 (미검증)</td></tr>
+        <tr><td>인건비 단가</td><td>2026 최저임금 10,320원 (고용노동부 확인)</td></tr>
         <tr><td>클라우드 (서버·호스팅)</td><td>Supabase Pro 5/월, Vercel Pro 0/월 (공식 요금)</td></tr>
       </table>
     </div>
@@ -281,7 +282,7 @@ td:first-child{font-family:"Do Hyeon",sans-serif;background:#fff8e1}
       <p style="margin-top:1vh">중구 파일럿에서 실제 견적과 비용을 확인합니다.</p>
     </div>
   </div>
-  <div class="foot">출처: research/bm/jung_summer_som_unit_economics_v2.md (2026-11-18 조사, 원격 브랜치 docs/research-jung-som-unit-economics). 제작 공수와 지자체 견적 단가는 자료 없음 (C5). 클라우드는 공식 pricing 페이지 (2026-11 기준). 최저임금은 2차 출처 (원문 확인 전)</div>
+  <div class="foot">출처: research/bm/jung_summer_som_unit_economics_v2.md (2026-11-18 조사, 원격 브랜치 docs/research-jung-som-unit-economics). 제작 공수와 지자체 견적 단가는 자료 없음 (C5). 클라우드는 공식 pricing 페이지 (2026-11 기준). 최저임금은 고용노동부 결정 페이지 (열람)</div>
 </section>
 
 <!-- 11. MVP ② : 화면 (목업) -->
