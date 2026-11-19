@@ -52,13 +52,15 @@ Claude Code가 이 저장소에서 작업할 때 따르는 규칙입니다.
 
 ## 저장소 작업
 
-- Git 규칙은 [git-convention.md](git-convention.md)를 따릅니다 (GitHub Flow).
-- 브랜치는 `main`에서 `<타입>/<영역>-<설명>` 형식으로 만듭니다 (예: `fix/pitch-asset-path`). 작업 하나 = 브랜치 하나 = PR 하나.
-- 브랜치를 푸시하면 이슈와 프로젝트 항목이 자동으로 만들어집니다 (`.github/workflows/branch-to-issue.yml`).
-- `main`에 직접 푸시하지 않고, PR은 `main`으로 엽니다. 병합은 팀원 1명 승인 후 사람이 합니다.
+- Git 규칙은 [git-convention.md](git-convention.md)를 따릅니다 (장수 브랜치 3개: `dev`, `main`, `presentation`).
+- `dev`: 개발 중인 모든 작업이 모이는 곳. `main`: 최종(시연·제출·배포). `presentation`: 발표 자료(`presentation/`)만.
+- 작업 브랜치는 최신 `dev`에서 `<타입>/<영역>-<설명>` 형식으로 만듭니다 (예: `fix/pitch-asset-path`). 발표 자료 작업은 `presentation`에서 만듭니다. 작업 하나 = 브랜치 하나 = PR 하나.
+- 이슈는 자동으로 만들지 않습니다. 필요할 때만 사람이 직접 만듭니다.
+- `main`, `dev`, `presentation`에 직접 푸시하지 않습니다. 작업 PR은 `dev`로(발표 자료는 `presentation`으로) 엽니다. 병합은 팀원 1명 승인 후 사람이 합니다.
+- `dev → main`은 자동으로 하지 않습니다. 사람이 PR을 열고 승인한 뒤 `Create a merge commit`으로 병합하고, 병합 직후 `main`을 `dev`에 합칩니다. 절차는 git-convention.md의 "`dev` → `main` 올리기"를 따릅니다.
 - 커밋 제목은 `<타입>/<영역>: <내용>` 형식입니다 (예: `fix/개발부분: 발표 자료 이미지 경로 수정`).
 - 커밋과 푸시는 사용자가 요청했을 때만 합니다.
-- 새 작업은 파일을 고치기 전에 반드시 최신 `main`에서 브랜치를 만들고 시작합니다. 병합이 끝나면 로컬과 원격 브랜치를 지웁니다.
+- 새 작업은 파일을 고치기 전에 반드시 최신 `dev`(발표 자료는 `presentation`)에서 브랜치를 만들고 시작합니다. 병합이 끝나면 로컬과 원격 작업 브랜치를 지웁니다.
 - 커밋·PR·병합 요청을 받으면 `.claude/skills/git-task-commit/SKILL.md` 순서를 따릅니다: 작업별 브랜치와 커밋 → 작업별 PR → 승인 확인 후 병합.
 - 기존 미커밋 변경을 임의로 덮어쓰거나 삭제하지 않습니다.
 - 파일 삭제는 삭제 대상 목록을 먼저 보여 주고 확인받은 뒤에만 합니다.
@@ -106,7 +108,7 @@ Claude Code가 이 저장소에서 작업할 때 따르는 규칙입니다.
 
 ## HTML 산출물과 배포 기준
 
-- 저장소의 모든 `.html`은 `main`에 병합될 때 GitHub Pages로 자동 배포되고, 목차(`index.html`)에 자동으로 들어갑니다 (`.github/workflows/deploy-pages.yml`, `.github/scripts/build_site.py`).
+- 저장소의 모든 `.html`은 `main`에 병합될 때(`dev → main`, `presentation → main`) GitHub Pages로 자동 배포되고, 목차(`index.html`)에 자동으로 들어갑니다 (`.github/workflows/deploy-pages.yml`, `.github/scripts/build_site.py`).
 - 주소: `https://k-1026.github.io/TREAGENT/<저장소 안 경로>` (예: `.../presentation/20261113/20261112_plan_pitch_v10.html`). 2026-11-13에 배포를 시작했습니다 (Actions "HTML 배포" 성공). 열리지 않으면 Actions 탭의 실행 결과를 확인합니다.
 - html은 위 "폴더 구조 기준"의 알맞은 대분류 폴더에 만들고, 파일명은 "파일명 기준"을 따릅니다. 배포 전용 폴더는 따로 만들지 않습니다.
 - 모든 html에 `<meta charset="utf-8">`, `<meta name="viewport" content="width=device-width, initial-scale=1">`, **`<title>`** 을 씁니다. `<title>`이 목차의 제목이 됩니다. 한 줄 설명은 `<meta name="description" content="...">`로 쓸 수 있습니다.
