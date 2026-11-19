@@ -33,19 +33,20 @@
   /* ---------- home: scene ---------- */
   .scene{position:absolute;left:0;top:0;width:390px;height:316px;background:var(--beam);overflow:hidden}
   .scene img.bg{position:absolute;left:0;top:56px;width:390px;height:260px;image-rendering:pixelated;display:block}
-  .scene.heat img.bg{filter:brightness(1.1) saturate(.9) contrast(.95)}
-  .scene.storm img.bg{filter:brightness(.8) saturate(.75) hue-rotate(-8deg)}
   .status{position:absolute;left:0;top:0;width:390px;height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:12px;color:#fff3e0;font-weight:700}
   .badge{position:absolute;left:12px;top:50px;z-index:4;padding:5px 8px;background:var(--cream);font-size:11px;font-weight:700;display:flex;gap:6px;align-items:center;--shade:#b98d62;max-width:250px;line-height:1.25;border:0;text-align:left;cursor:pointer}
   .badge i{width:11px;height:11px;background:#f5b82e;box-shadow:0 0 0 2px var(--ink);display:block;flex:none}
   .badge small{font-weight:400;color:var(--muted);display:block;font-size:10px}
   .warn .badge{background:#ffe1d6;--shade:#c58a7a}
   .warn .badge i{background:var(--red)}
+  .storm .badge{background:#dfe7f0;--shade:#8fa3b8}
+  .storm .badge i{background:#2f4a6b}
   .grey .badge i{background:#b9b2a8}
   .bubble{position:absolute;left:80px;bottom:128px;width:122px;z-index:4;background:var(--paper);padding:7px 8px;font-size:11px;line-height:1.35}
   .bubble .tail{position:absolute;left:30px;top:100%;display:block;overflow:visible}
   .hot{position:absolute;z-index:6;background:transparent;border:0;padding:0;cursor:pointer}
   .hot:focus-visible{outline:3px solid var(--red)}
+  .mark.wxmark{left:242px;top:62px}
   .mark{position:absolute;z-index:6;left:222px;top:166px;padding:1px 5px;font-size:10px;font-weight:800;background:var(--cream);box-shadow:0 0 0 2px var(--ink);pointer-events:none;animation:bob 1s steps(2) infinite;white-space:nowrap}
   @keyframes bob{50%{transform:translateY(-3px)}}
   @media (prefers-reduced-motion:reduce){.mark{animation:none}}
@@ -274,14 +275,15 @@
   <!-- 홈 (S-03) -->
   <section class="view on" id="v-home" aria-label="홈">
     <div class="scene" id="scene">
-      <img class="bg" src="../brand/home/home_room_day_v1.webp" alt="도트 방 배경: 문, 창 너머 골목, 장부가 놓인 책상">
+      <img class="bg" src="../brand/home/home_room_day_v2.webp" alt="도트 방 배경: 문, 창 너머 골목, 장부가 놓인 책상">
       <div class="status"><span>9:41</span><span>●●● ▮</span></div>
       <div class="glow"></div>
       <div class="spr" id="spr"><img src="../brand/character/images/harangi_fullbody_pixel_transparent.png" alt="하랑이 (정면, 임시 합성)"></div>
       <div class="walker" aria-hidden="true"><img src="../brand/character/images/harangi_pixel_walk_side_01_transparent.png" alt=""><img src="../brand/character/images/harangi_pixel_walk_side_02_transparent.png" alt=""><img src="../brand/character/images/harangi_pixel_walk_side_03_transparent.png" alt=""><img src="../brand/character/images/harangi_pixel_walk_side_04_transparent.png" alt=""></div>
       <button class="hot" style="left:232px;top:180px;width:80px;height:44px" data-view="today" title="오늘 페이지" aria-label="오늘 페이지 열기"></button>
       <span class="mark">오늘 페이지 ▾</span>
-      <button class="hot" style="left:193px;top:86px;width:140px;height:92px" data-go="날씨 상세 (기준 시각·AWS 여부, S-14)" title="날씨 보기" aria-label="날씨 보기"></button>
+      <button class="hot" style="left:193px;top:86px;width:140px;height:92px" data-nav="weather" title="날씨 보기" aria-label="날씨 보기"></button>
+      <span class="mark wxmark">날씨 ▾</span>
       <button class="hot" style="left:92px;top:210px;width:66px;height:104px" data-go="하랑이 반응 (대사 넘기기)" title="하랑이" aria-label="하랑이 누르기"></button>
       <button class="badge px" id="badge" data-go="S-14 지역(구·군) 변경"><i></i><span id="badgeTx"></span></button>
       <div class="bubble px" id="mainBub"><span id="bubbleTx"></span><b>[승인 대사 대기]</b><span class="a" id="bubbleA">오늘 비어 있는 칸이 있어요 [임시]</span>
@@ -298,7 +300,7 @@
       <button class="cta px" id="cta"><span id="ctaT"></span><small id="ctaS"></small></button>
       <div class="quick">
         <button class="px" id="q1"><i class="qi list"></i><span id="q1t">코스 전체</span></button>
-        <button class="px" data-go="S-14 가까운 쉼터"><i class="qi rest"></i>쉼터</button>
+        <button class="px" data-nav="shelter"><i class="qi rest"></i>쉼터</button>
         <button class="px" data-view="pouch"><i class="qi pouch"></i>주머니</button>
       </div>
       <div class="sec">지금 추천 미리보기 <span id="listNote"></span></div>
@@ -442,6 +444,28 @@
     </div>
   </section>
 
+  <!-- 날씨 상세 (S-14): 홈 방의 창을 눌렀을 때 -->
+  <section class="view" id="v-weather" aria-label="날씨 상세">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">날씨 기준 시각 · [기준 시각]</div><div class="t">오늘 날씨</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="scroll">
+      <div class="row px"><div><b id="wxNow"></b><small id="wxWhere"></small></div></div>
+      <div class="h3">측정 <span>AWS 여부 확인 필요</span></div>
+      <div class="row px"><div><b>측정 방식</b><small>[AWS 여부 · 확인 필요] · 측정 시각 [기준 시각]</small></div></div>
+      <div class="row px"><div><b>이 날씨에 할 수 있는 것</b><small>야외 코스는 [모드 규칙에 따라 숨김 또는 표시]. 쉼터는 [운영 시간]까지 [확인 필요]</small></div></div>
+    </div>
+  </section>
+
+  <!-- 쉼터 안내 (S-14): 폭염·호우·확인 불가일 때 -->
+  <section class="view" id="v-shelter" aria-label="쉼터">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="shSub"></div><div class="t" id="shTitle"></div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="scroll">
+      <div class="row px"><div>기준: [기준 시각] · 운영 시간과 AWS 여부는 방문 전에 한 번 더 확인해 주세요. [확인 필요]</div></div>
+      <div class="h3">가까운 쉼터 <span>도보 시간은 예시</span></div>
+      <div id="shList" class="list"></div>
+      <button class="row px" style="justify-content:center;font-weight:800">외부 지도에서 길 안내 보기 [자리]</button>
+    </div>
+  </section>
+
   <!-- 코스 브리핑: 이 길로 출발 → 하랑이가 짧게 소개 → 좋아요 → 홈(출발 준비) -->
   <section class="view" id="v-brief" aria-label="코스 브리핑">
     <div class="briefhead"><span>하랑이가 알려 줄게요</span><b id="briefWx"></b></div>
@@ -562,15 +586,17 @@
   function stampImgs(n,cls){var h='';for(var i=0;i<3;i++)h+='<img'+(i>=n?' class="e"':'')+' src="'+STAMP+'" alt="'+(i<n?'받은 도장':'빈 도장 자리')+'">';return h}
   function render(){
     var k=$('#state').value, s=S[k];
+    var bgImg=scene.querySelector('img.bg'), BG={heat:'../brand/home/home_room_heat_v1.webp',storm:'../brand/home/home_room_storm_v1.webp'};
+    bgImg.src=BG[k]||'../brand/home/home_room_day_v2.webp';
     scene.className='scene '+s.tone+(scene.classList.contains('going')?' going':'')+(scene.classList.contains('ready')?' ready':'');
     $('#badgeTx').innerHTML=s.b1+'<small>'+s.b2+'</small>';
     $('#bubbleTx').textContent=s.bub;
     $('#bubbleA').hidden=!$('#optA').checked || k!=='none';
     $('#ctaT').textContent=s.cta[0]; $('#ctaS').textContent=s.cta[1]; $('#cta').dataset.go=s.cta[2];
-    $('#cta').dataset.nav=({none:'picks',outside:'picks',active:'travel',notice:'travel'})[k]||'';
+    $('#cta').dataset.nav=({none:'picks',outside:'picks',active:'travel',notice:'travel',heat:'shelter',storm:'shelter',unknown:'shelter'})[k]||'';
     $('#q1t').textContent=s.q1; $('#q1').dataset.go = s.q1==='오늘의 길' ? 'S-14 오늘의 길 (진행 중에도 보기, D-08)' : 'S-04 코스 전체';
     var sb=$('#sbanner'); if(s.banner){sb.hidden=false;sb.className='sbanner'+(s.banner[0]==='n'?' n':'');sb.textContent=s.banner[1];sb.dataset.go=s.banner[2]}else{sb.hidden=true}
-    sb.dataset.nav=(s.banner&&s.banner[2]==='S-07 경로 변경')?'reroute':'';
+    sb.dataset.nav=(s.banner&&s.banner[2]==='S-07 경로 변경')?'reroute':(s.banner&&s.banner[2]==='S-14 가까운 쉼터')?'shelter':'';
     $('#listNote').textContent=s.note||'';
     var L=$('#list'); L.innerHTML='';
     s.cards.forEach(function(id){var c=C[id], r=c.routes[routeOf(k)];var b=document.createElement('button');b.className='card px';b.dataset.c=id;
@@ -682,13 +708,27 @@
     } else {
       h+='<div class="msg px">대체 길이 없어요. 여행을 보류하고 확인된 쉼터를 안내해요 [임시 문구]</div>';
       h+='<div class="row px"><div class="tx" style="flex:1"><b>가까운 쉼터 [이름]</b><small>운영 [시간]까지 · [기준 시각] 기준 · AWS 여부 [확인 필요]</small></div></div>';
-      h+='<button class="cta px" data-go="S-14 가까운 쉼터 (확인된 곳만)" style="height:56px">쉼터 보기</button>';
+      h+='<button class="cta px" data-nav="shelter" style="height:56px">쉼터 보기</button>';
       h+='<button class="row px" data-nav="reroute" style="justify-content:center;font-weight:800">다시 확인</button>';
       h+='<button class="row px" data-nav="reroute-later" style="justify-content:center;font-weight:800">나중에 이어하기</button>';
     }
     $('#rrBody').innerHTML=h;
   }
+  // 쉼터 (S-14 쉼터 안내): 폭염·호우·날씨 확인 불가일 때 보여 줌. 기준 시각, 운영 시간, AWS 여부를 함께 적음 (CLAUDE.md 안전 정보 규칙)
+  function renderShelter(k){
+    var t={heat:['폭염이에요, 잠깐 쉬어 가요','야외 길 안내는 멈췄어요 [임시]'],storm:['호우예요, 실내에서 기다려요','신규 이동은 보류했어요 [임시]'],unknown:['날씨를 확인하지 못했어요','날씨를 모르면 길을 권하지 않아요 [임시]']}[k]||['가까운 쉼터','지금 쉬어 갈 곳이에요 [임시]'];
+    $('#shTitle').textContent=t[0]; $('#shTitle').style.fontSize='18px'; $('#shSub').textContent=t[1];
+    $('#shList').innerHTML=[1,2,3].map(function(i){return '<div class="row px" style="flex-direction:column;align-items:flex-start;gap:4px"><b>[쉼터 이름 '+i+'] [예시]</b><small>운영 [시간]까지 · AWS 여부 [확인 필요] · 도보 약 [N]분 [예시]</small></div>'}).join('');
+  }
+  // 날씨 상세 (S-14): 기준 시각, 측정 방식(AWS 여부)을 함께 적음 [확인 필요]
+  function renderWeather(k){
+    var st=S[k]||S.none;
+    $('#wxNow').textContent=st.b1;
+    $('#wxWhere').textContent=st.b2;
+  }
   function nav(name,idx){
+    if(name==='weather'){ renderWeather($('#state').value); show('weather'); return }
+    if(name==='shelter'){ renderShelter($('#state').value); show('shelter'); return }
     if(name==='picks'){ PAGE=0; renderPicks(); show('picks'); return }
     if(name==='reroll'){ PAGE++; renderPicks(); return }
     if(name==='fullsnap'){ $('#snapFull').innerHTML=(idx==='trip'?$('#snapTrip'):$('#snapCard')).innerHTML; $('#fsv').hidden=false; return }
@@ -752,10 +792,10 @@
   $('#mKeep').addEventListener('click',function(){ $('#modal').hidden=true; nav('travel') });
   $('#mNew').addEventListener('click',function(){ $('#modal').hidden=true; depart() });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') $('#modal').hidden=true });
-  var TABOF={home:'home',today:'home',pouch:'home',course:'home',travel:'home',stop:'home',done:'home',reroute:'home',tripdetail:'ledger',brief:'home',picks:'home',ledger:'ledger',me:'me'};
+  var TABOF={weather:'home',shelter:'home',home:'home',today:'home',pouch:'home',course:'home',travel:'home',stop:'home',done:'home',reroute:'home',tripdetail:'ledger',brief:'home',picks:'home',ledger:'ledger',me:'me'};
   function show(name){
     $('#phone').classList.toggle('fullscreen',name==='brief');
-    ['home','ledger','today','pouch','me','course','travel','stop','done','reroute','tripdetail','brief','picks'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
+    ['home','ledger','today','pouch','me','course','travel','stop','done','reroute','tripdetail','brief','picks','shelter','weather'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
     var cur=TABOF[name];
     $$('.tab button').forEach(function(b){var t=b.dataset.tab||b.dataset.view; if(t===cur)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   }
