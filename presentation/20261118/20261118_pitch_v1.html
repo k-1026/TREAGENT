@@ -1,0 +1,438 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TREAGENT 피치 7장 v1: 대프리카 히든 퀘스트</title>
+<meta name="description" content="일곱 장, 장마다 증명할 것 하나: 문제, 해결, 시장, BM, MVP, 팀, 요청사항 (초안 v1)">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#2a1f2d;--bg:#fff4dc;--paper:#fffdf6;--red:#e0474c;--red2:#a3232a;--mint:#2fa68f;--gold:#f2b632;--sky:#6cc7e0;--purple:#8b6fd1;--line:#2a1f2d;--navy:#1d2340;--mute:#6b5a68}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:#22181f;font-family:"Noto Sans KR","Malgun Gothic",sans-serif;color:var(--ink)}
+.deck{position:relative;width:100vw;height:100vh;overflow:hidden;
+  background:linear-gradient(45deg,rgba(242,182,50,.13) 25%,transparent 25%) 0 0/36px 36px,
+             linear-gradient(-45deg,rgba(108,199,224,.13) 25%,transparent 25%) 0 0/36px 36px, var(--bg)}
+.slide{position:absolute;inset:0;padding:3.2vh 3.4vw 4.2vh;display:none;flex-direction:column;gap:1.5vh;min-height:0}
+.slide.on{display:flex}
+.head{display:flex;align-items:center;gap:1.2vw;flex-wrap:wrap}
+.tag{font-family:"Do Hyeon",sans-serif;font-size:clamp(15px,1.45vw,23px);color:#fff;background:var(--mint);border:3px solid var(--line);box-shadow:4px 4px 0 var(--line);padding:.3vh 1.1vw}
+.q{font-family:"Do Hyeon",sans-serif;font-size:clamp(14px,1.4vw,22px);color:var(--mute)}
+h1{font-family:"Do Hyeon",sans-serif;font-size:clamp(40px,5vw,80px);font-weight:400;margin:0;line-height:1.2;color:var(--red2)}
+h2{font-family:"Do Hyeon",sans-serif;font-size:clamp(26px,3vw,48px);font-weight:400;margin:0;line-height:1.25;color:var(--red2)}
+h3{font-family:"Do Hyeon",sans-serif;font-size:clamp(18px,1.85vw,30px);font-weight:400;margin:0 0 .5vh}
+p,li{font-size:clamp(14px,1.4vw,23px);line-height:1.45;margin:0}
+.card{background:var(--paper);border:3px solid var(--line);box-shadow:5px 5px 0 var(--line);padding:1.2vh 1.1vw;position:relative;min-height:0}
+.card.mint{background:#dff5ef}.card.gold{background:#fff0c4}.card.red{background:#ffe0de}.card.sky{background:#dff1fa}.card.purple{background:#ece5fb}
+.grid{display:grid;gap:1.1vw;min-height:0}
+.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:1fr 1fr 1fr}
+.fill{flex:1}
+.hl{background:var(--paper);border:3px dashed var(--red);padding:1vh 1.3vw;box-shadow:5px 5px 0 var(--red)}
+.lead{font-family:"Do Hyeon",sans-serif;font-size:clamp(18px,2vw,32px);line-height:1.4}
+ul.b{padding-left:1.2em;margin:0}ul.b li{margin:.3vh 0}
+table{border-collapse:collapse;width:100%}
+th,td{border:2px solid var(--line);padding:.7vh .6vw;text-align:left;vertical-align:top;font-size:clamp(13px,1.28vw,21px);line-height:1.35}
+th{background:#ffe9a8;font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:clamp(14px,1.45vw,23px)}
+td:first-child{font-family:"Do Hyeon",sans-serif;background:#fff8e1;font-size:clamp(14px,1.4vw,22px)}
+.card.tbl{padding:0;overflow:hidden}
+.foot{margin-top:auto;font-size:clamp(10.5px,.9vw,14px);color:var(--mute);line-height:1.35}
+.mk{display:inline-block;font-size:.8em;padding:0 .4em;border:2px solid var(--line);background:#fff;font-family:"Do Hyeon",sans-serif;white-space:nowrap}
+.mk.w{background:#ffe0de}.mk.ok{background:#dff5ef}.mk.pend{background:#fff0c4}
+/* 막대 */
+.bar{display:grid;grid-template-columns:8.4em 1fr;align-items:center;gap:.6vw;margin:.7vh 0}
+.bar .nm{font-size:clamp(14px,1.4vw,22px);font-weight:700}
+.bar .tr{background:#fff;border:2px solid var(--line);height:3.4vh;min-height:16px;position:relative}
+.bar .fl{position:absolute;inset:0 auto 0 0;background:var(--red)}
+.bar .fl.g{background:var(--gold)}.bar .fl.s{background:var(--sky)}
+.bar .vl{font-size:clamp(12px,1.15vw,18px);color:var(--mute);grid-column:2}
+.stat{display:flex;flex-direction:column;gap:.1vh;margin:.8vh 0}
+.stat b{font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:clamp(24px,2.9vw,46px);color:var(--red2);line-height:1.1}
+.stat span{font-size:clamp(12px,1.18vw,19px);line-height:1.35}
+.quote{border-left:6px solid var(--red);background:#fff;padding:.8vh .8vw;font-size:clamp(14px,1.3vw,21px);margin:.6vh 0}
+.quote small{display:block;color:var(--mute);font-size:.8em}
+/* 여정 */
+.jr{display:flex;gap:.4vw;align-items:stretch}
+.jr div{flex:1;text-align:center;border:3px solid var(--line);background:var(--paper);padding:.8vh .3vw;font-family:"Do Hyeon",sans-serif;font-size:clamp(15px,1.5vw,24px)}
+.jr div small{display:block;font-family:"Noto Sans KR",sans-serif;font-size:clamp(11px,1vw,16px);color:var(--mute)}
+.jr div.hot{background:#ffe0de}
+.jr div.zero{background:#eee;color:var(--mute)}
+/* 흐름 */
+.flow{display:flex;align-items:stretch;gap:.5vw}
+.flow .card{flex:1;padding:.8vh .7vw}
+.flow .card p{font-size:clamp(12px,1.15vw,18px)}
+.flow .card h3{font-size:clamp(15px,1.5vw,24px);margin-bottom:.2vh}
+.arrow{font-family:"Do Hyeon",sans-serif;font-size:clamp(18px,1.8vw,28px);align-self:center;color:var(--red2)}
+/* BM 캔버스 */
+.bmc{display:grid;grid-template-columns:repeat(5,1fr);grid-template-rows:1fr 1fr auto;gap:.5vw;min-height:0}
+.bmc .cell{background:var(--paper);border:3px solid var(--line);padding:.7vh .6vw;min-height:0}
+.bmc .cell h4{font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:clamp(14px,1.4vw,22px);margin:0 0 .3vh;color:var(--red2)}
+.bmc .cell p,.bmc .cell li{font-size:clamp(12px,1.12vw,18px);line-height:1.35}
+.bmc ul{padding-left:1.1em;margin:0}
+.bmc .kp{grid-column:1;grid-row:1/3}.bmc .ka{grid-column:2;grid-row:1}.bmc .kr{grid-column:2;grid-row:2}
+.bmc .vp{grid-column:3;grid-row:1/3;background:#fff0c4}.bmc .cr{grid-column:4;grid-row:1}.bmc .ch{grid-column:4;grid-row:2}
+.bmc .cs{grid-column:5;grid-row:1/3}.bmc .cost{grid-column:1/3;grid-row:3}.bmc .rev{grid-column:3/6;grid-row:3;background:#dff5ef}
+/* 포지셔닝 맵 */
+.map svg{width:100%;height:100%;display:block}
+.map text{font-family:"Noto Sans KR","Malgun Gothic",sans-serif}
+/* 가설 판정 */
+.fm{font-family:"Do Hyeon",sans-serif;font-size:clamp(14px,1.3vw,20px);background:#fff;border:2px solid var(--line);padding:.4vh .7vw;display:inline-block}
+.op{font-family:"Do Hyeon",sans-serif;color:var(--red2);font-size:clamp(18px,1.8vw,28px)}
+.formula{display:flex;flex-wrap:wrap;align-items:center;gap:.5vw}
+.formula .it{background:#fff;border:2px solid var(--line);padding:.5vh .6vw;font-size:clamp(12px,1.12vw,18px);line-height:1.3}
+.formula .it b{display:block;font-family:"Do Hyeon",sans-serif;font-weight:400;font-size:1.1em}
+.url{font-family:"Do Hyeon",sans-serif;font-size:clamp(20px,2.4vw,38px);background:var(--navy);color:var(--gold);border:4px solid #fff;box-shadow:0 0 0 3px var(--line);padding:1vh 1.4vw;display:inline-block}
+.nav{position:fixed;bottom:1.1vh;right:1.6vw;font-size:14px;color:#fff;z-index:9}
+.dense p,.dense li{font-size:clamp(12px,1.15vw,18px)}
+.dense th,.dense td{font-size:clamp(12px,1.08vw,17px);padding:.5vh .5vw}
+.dense td:first-child{font-size:clamp(12px,1.15vw,18px)}
+.dense th{font-size:clamp(13px,1.2vw,19px)}
+.dense h3{font-size:clamp(15px,1.5vw,24px)}
+@media print{
+  html,body{height:auto;background:#fff}
+  .deck{position:static;width:auto;height:auto;overflow:visible;background:#fff}
+  .slide{display:flex!important;position:relative;width:100%;height:100vh;page-break-after:always;break-after:page;background:var(--bg)}
+  .nav{display:none}
+}
+</style>
+</head>
+<body>
+<div class="deck">
+
+<!--
+  피치 7장 v1 (초안). 구조: 표지 없이 문제로 시작, 회사·팀 소개로 시작하지 않음, 마지막 장은 요청사항 한 문장과 MVP URL.
+  장마다 증명할 것 하나: 1 문제 / 2 해결 / 3 시장 / 4 BM / 5 MVP / 6 팀 / 7 요청사항.
+
+  결정 필요 (팀)
+  - 7장 요청 문장: 후보 A(화면에 사용) / 후보 B: "14,900원 팀권 가설을 검증할 유료 파일럿 1회를 함께 열 파트너와 가격·의향 피드백을 요청합니다."
+  - 7장 민감도 1위 가정: 구조상 추정입니다. 팀이 수치로 확인한 뒤 확정합니다.
+  - 5장·7장 MVP URL: 배포된 주소가 없어 자리만 둡니다.
+  - 발표일과 폴더 위치: 오늘(2026-11-18) 폴더에 두었고, 발표일이 다르면 옮깁니다.
+-->
+
+<!-- 1. 문제 -->
+<section class="slide on">
+  <div class="head"><div class="tag">1 · 문제</div><div class="q">증명할 것: 정말 있는 문제인가? 누가, 어떤 장면에서, 얼마나 불편한가</div></div>
+  <h2>😓 가 보니 닫혀 있고, 줄이 길고, 너무 덥습니다</h2>
+  <div class="grid g3 fill" style="grid-template-columns:1.05fr 1.15fr .9fr">
+    <div class="card gold">
+      <h3>👤 누가 · 어떤 장면에서</h3>
+      <p>대구 도심에서 1박 2일, 짧게 걷는 2030 혼행객 <span class="mk">대표 이용자 · 상황은 가설</span></p>
+      <ul class="b" style="margin-top:.6vh">
+        <li>방문 직전 본 운영 정보가 현장과 다릅니다</li>
+        <li>주말·축제 시간대에 줄이 길어 포기합니다</li>
+        <li>한여름 낮에 야외를 오래 걷기 어렵습니다</li>
+      </ul>
+      <div class="quote">"평일 운영처럼 보였으나 금토일만 운영 (헛걸음)"<small>서문야시장 후기 요약 · VOC id 7 (원문 아님, 요약문)</small></div>
+    </div>
+    <div class="card red">
+      <h3>📊 얼마나 · 후기 52건의 불편 원인</h3>
+      <div class="bar"><span class="nm">대기·혼잡</span><div class="tr"><div class="fl" style="width:100%"></div></div><span class="vl">13건 · 강도 합 21</span></div>
+      <div class="bar"><span class="nm">휴관·운영 변경</span><div class="tr"><div class="fl" style="width:95%"></div></div><span class="vl">10건 · 강도 합 20 (헛걸음 3건, 강도 3)</span></div>
+      <div class="bar"><span class="nm">날씨·온도</span><div class="tr"><div class="fl g" style="width:24%"></div></div><span class="vl">4건 · 강도 합 5</span></div>
+      <p class="legend" style="font-size:clamp(11px,1vw,16px);color:var(--mute);margin-top:.8vh">강도 합 = 1(짧은 불편)~3(포기·헛걸음·손해)의 합. 불만·요청 중심으로 모은 분류표라 <b>전체 불편률이 아닙니다</b>. 축제 기간 글 포함, 원문 대조는 표본 10건.</p>
+    </div>
+    <div class="card sky">
+      <h3>🌡️ 환경 수치</h3>
+      <div class="stat"><b>25.5℃ ↔ 23.7℃</b><span>6~8월 평균기온, 대구 vs 전국 평년 (1991~2020, 대구지방기상청)</span></div>
+      <div class="stat"><b>235 / 1,196곳</b><span>18시 이후 운영하는 무더위쉼터 19.6%, 24시간은 5곳 (2026.8, 매일신문)</span></div>
+      <div class="stat"><b>36℃ · 체감 40℃</b><span>2026.7 수성구 범어네거리 현장 측정 (영남일보)</span></div>
+    </div>
+  </div>
+  <div>
+    <div class="q" style="margin-bottom:.5vh">고객 여정 6단계 (팀 확정) · 불만·요청 52건이 놓인 단계</div>
+    <div class="jr">
+      <div class="hot">알아보기<small>9건 · 운영 확인</small></div>
+      <div>이동<small>2건</small></div>
+      <div class="hot">둘러보기<small>27건 · 대기·날씨</small></div>
+      <div>결제<small>4건</small></div>
+      <div>먹기<small>10건</small></div>
+      <div class="zero">재방문<small>0건 · 수집 필요</small></div>
+    </div>
+  </div>
+  <div class="foot">출처: research/painpoint/candidates.md (원인별 집계), research/painpoint/voc_classified.csv (id 7~9, 단계별 건수는 2026-11-18 직접 집계), research/painpoint/journey_map.md, plan/daeprica_hidden_quest_plan.md 0-1·9장, plan/treagent_customer_strategy_v1.md 1장, brand/customer_persona.md. 대표 이용자 상황은 근거 수집 필요</div>
+</section>
+
+<!-- 2. 해결 -->
+<section class="slide">
+  <div class="head"><div class="tag">2 · 해결</div><div class="q">증명할 것: AI로 무엇이 어떻게 달라지는가? 왜 이 방법인가</div></div>
+  <h2>🧭 날씨·운영 상태는 규칙이 판정하고, 하랑이가 오늘 갈 길을 안내합니다</h2>
+  <div class="grid fill" style="grid-template-columns:1.6fr 1fr">
+    <div style="display:flex;flex-direction:column;gap:1.2vh;min-height:0">
+      <div class="card tbl">
+        <table>
+          <tr><th style="width:15%">장면</th><th style="width:33%">As-Is · 지금</th><th>To-Be · 우리 서비스</th></tr>
+          <tr><td>🗺️ 갈 곳</td><td>고정 장소 목록에서 이용자가 직접 고름</td><td>날씨 모드·시간대·요일에 맞춰 오늘의 길 추천, 이유와 기준 시각 표시</td></tr>
+          <tr><td>🌡️ 날씨</td><td>이용자가 직접 확인하고 판단</td><td>규칙이 모드(탐험·그늘·실내·안전·보류) 판정, 폭염특보 시 야외 안내 중단</td></tr>
+          <tr><td>🚪 닫힌 곳</td><td>도착해서야 알고 일정을 다시 짬</td><td>운영 상태를 반영해 검수된 대체 길 제안, 남은 경로만 바꾸고 도장 유지 <span class="mk pend">운영자 웹은 개발 전</span></td></tr>
+          <tr><td>🐿️ 안내</td><td>지도·블로그를 오가며 찾음</td><td>하랑이가 상황별 표정과 대사로 안내 (P0는 승인 대사)</td></tr>
+          <tr><td>📒 기록</td><td>도장 날인, 수집</td><td>방문하면 날짜·장소·날씨가 장부에 자동 기록 <span class="mk pend">구현 전</span></td></tr>
+        </table>
+      </div>
+      <div class="flow">
+        <div class="card sky"><h3>① 📥 입력</h3><p>기온·체감, 시간대, 요일, 위치(저장 안 함)</p></div><span class="arrow">▶</span>
+        <div class="card mint"><h3>② ⚙️ 규칙 판정</h3><p>날씨 모드 결정. AI가 못 바꿈</p></div><span class="arrow">▶</span>
+        <div class="card gold"><h3>③ 🗺️ 길 선택</h3><p>검수한 장소 DB에서만 선택</p></div><span class="arrow">▶</span>
+        <div class="card red"><h3>④ 🐿️ 안내</h3><p>하랑이가 문장으로 전달</p></div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1.2vh;min-height:0">
+      <div class="card purple">
+        <h3>🎯 AX 기회 정의</h3>
+        <ul class="b">
+          <li>스탬프 투어 밸류체인에서 병목은 <b>④ 방문·인증</b> 단계: 거점 도착 후 휴관·운영 변경·폭염으로 헛걸음</li>
+          <li>기회 O1 “운영·날씨 확인 후 다음 거점 안내”: 영향 3, 실현 3 → <b>먼저 간다</b> <span class="mk w">점수는 AI 초안, 팀 재채점 전</span></li>
+        </ul>
+      </div>
+      <div class="card gold">
+        <h3>🤖 AI는 어디까지 쓰나</h3>
+        <ul class="b">
+          <li><b>규칙이 결정</b>: 경로 열림, 운영 여부, 안전, 인증 판정</li>
+          <li><b>LLM은 문장만</b>: 이미 정해진 결과를 하랑이 말투로 (서버에서만 호출)</li>
+          <li>지금(P0)은 LLM 없이 승인 대사. 질의·대사 초안 생성은 <b>P1</b></li>
+        </ul>
+      </div>
+      <div class="card sky">
+        <h3>❓ 왜 이 방법인가</h3>
+        <ul class="b">
+          <li>안전·운영 판단은 매번 같은 답이어야 해서 규칙으로 둠</li>
+          <li>방문자 수요는 있음: 국가유산 방문자 여권 발급 2023년 6만 1,912권 → 2025년 20만 7,370권</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot">출처: plan/spec/treagent_tech_spec_v1.md (F-05·F-08·F-19·F-23, 15-1장 설계 원칙), research/valuechain/analysis.md 1~3장 (병목 B2, 기회 O1, 발급 수치), plan/daeprica_hidden_quest_plan.md 방향 변경 (2026-11-12). 폭염특보 연동은 아직 없고 규칙 기준 수치는 확정 전 [확인 필요]</div>
+</section>
+
+<!-- 3. 시장 -->
+<section class="slide">
+  <div class="head"><div class="tag">3 · 시장</div><div class="q">증명할 것: 누가 이미 하고, 우리가 얻을 몫은 충분히 큰가</div></div>
+  <h2>🏁 도구와 고정 목록은 이미 있고, 날씨·운영 변경에 맞춘 안내는 비어 있습니다</h2>
+  <div class="grid fill" style="grid-template-columns:1.45fr 1fr">
+    <div style="display:flex;flex-direction:column;gap:1vh;min-height:0">
+      <div class="card tbl">
+        <table>
+          <tr><th style="width:17%">구분</th><th style="width:36%">사례</th><th>하는 일 · 비어 있는 곳</th></tr>
+          <tr><td>🛂 공공 투어</td><td>국가유산 방문자 여권, 대구 스탬프로드 20 (캐시워크 인증)</td><td>고정 장소 목록. 이야기 요소 없음, 방문 성과 공개 수치는 거의 없음</td></tr>
+          <tr><td>🔲 인증 솔루션</td><td>큐알스탬프(100만 원~), 이벤터스(베이직 무료), 퀘스투어(30만 원~)</td><td>인증·리워드·리포트 도구 판매. 캐릭터·스토리 제작은 상품 목록에 없음 (3곳 모두)</td></tr>
+          <tr><td>🎮 이야기형 체험</td><td>리얼월드, 플레이더월드(동성로 야외 방탈출)</td><td><b>가장 가까운 경쟁</b>. 리얼월드는 AI 분기·NPC·콘텐츠 실시간 변경을 제안. 운영 변경 대응의 실제 구현은 <span class="mk w">미확인</span></td></tr>
+        </table>
+      </div>
+      <div class="card gold" style="flex:1">
+        <h3>🧮 우리가 얻을 몫 (SOM): 숫자는 정하지 않았습니다</h3>
+        <div class="formula">
+          <div class="it"><b>중구 여름 이용 가능 인원</b>데이터랩 미조회 <span class="mk w">확인 필요</span></div><span class="op">×</span>
+          <div class="it"><b>앱 시작 비율</b>파일럿에서 측정</div><span class="op">×</span>
+          <div class="it"><b>결제 비율</b>파일럿에서 측정</div><span class="op">×</span>
+          <div class="it"><b>팀권 14,900원</b>가설</div><span class="op">+</span>
+          <div class="it"><b>지자체·대행사 과업</b>건수·견적 미정</div>
+        </div>
+        <p style="margin-top:.8vh">시장 전체 규모(TAM·SAM)는 이번 자료에 없습니다 <span class="mk w">미검증</span>. 공공 수요 사례: 국채보상운동기념공원 독립추리게임 (2024, 대학생 약 400명, 낙찰가·참가비 미확인)</p>
+      </div>
+    </div>
+    <div class="card map" style="display:flex;flex-direction:column">
+      <h3>🧭 포지셔닝 맵 <span class="mk w">팀 판단·추정</span></h3>
+      <svg viewBox="0 0 420 330" role="img" aria-label="포지셔닝 맵: 가로는 길이 고정에서 날씨·운영에 맞춰 바뀜, 세로는 인증 도구에서 이야기·캐릭터 경험">
+        <rect x="40" y="10" width="370" height="280" fill="#fff" stroke="#2a1f2d" stroke-width="3"/>
+        <line x1="225" y1="10" x2="225" y2="290" stroke="#2a1f2d" stroke-width="1.5" stroke-dasharray="6 5"/>
+        <line x1="40" y1="150" x2="410" y2="150" stroke="#2a1f2d" stroke-width="1.5" stroke-dasharray="6 5"/>
+        <text x="225" y="312" text-anchor="middle" font-size="13" font-weight="700">길이 고정 ◀──▶ 날씨·운영에 맞춰 바뀜</text>
+        <text transform="translate(16,150) rotate(-90)" text-anchor="middle" font-size="13" font-weight="700">인증 도구 ◀──▶ 이야기·캐릭터</text>
+        <circle cx="85" cy="262" r="9" fill="#6cc7e0" stroke="#2a1f2d" stroke-width="2"/><text x="100" y="266" font-size="14">큐알스탬프·이벤터스</text>
+        <circle cx="85" cy="232" r="9" fill="#6cc7e0" stroke="#2a1f2d" stroke-width="2"/><text x="100" y="236" font-size="14">여권·스탬프로드 20</text>
+        <circle cx="100" cy="185" r="9" fill="#f2b632" stroke="#2a1f2d" stroke-width="2"/><text x="115" y="189" font-size="14">퀘스투어</text>
+        <circle cx="85" cy="105" r="9" fill="#f2b632" stroke="#2a1f2d" stroke-width="2"/><text x="100" y="109" font-size="14">플레이더월드</text>
+        <circle cx="240" cy="112" r="9" fill="#f2b632" stroke="#2a1f2d" stroke-width="2"/><text x="255" y="116" font-size="14">리얼월드</text>
+        <text x="255" y="132" font-size="11.5" fill="#6b5a68">실시간 변경 제안</text><text x="255" y="146" font-size="11.5" fill="#6b5a68">(구현 미확인)</text>
+        <polygon points="350,34 356,48 371,48 359,57 363,72 350,63 337,72 341,57 329,48 344,48" fill="#e0474c" stroke="#2a1f2d" stroke-width="2"/>
+        <text x="350" y="92" text-anchor="middle" font-size="15" font-weight="700" fill="#a3232a">TREAGENT</text>
+      </svg>
+      <p style="font-size:clamp(11px,1vw,16px);color:var(--mute)">공개 자료 기준. 직접 사용·플레이는 못 했고 설명 페이지만 확인했습니다. 가까운 사례가 있어 차별점은 파일럿으로 검증합니다.</p>
+    </div>
+  </div>
+  <div class="foot">출처: research/valuechain/competitors/comparison.md (가격은 회사 공개 시작가 VAT 별도, 2026-11-12 확인), research/valuechain/operators/comparison.md, research/benchmark_compare_v1.md, plan/treagent_customer_strategy_v1.md 3·6장, research/daegu_history_tour_cases.md. SOM의 14,900원은 가설 (plan/treagent_customer_strategy_v1.md 6장). 목표 숫자는 쓰지 않음</div>
+</section>
+
+<!-- 4. BM -->
+<section class="slide">
+  <div class="head"><div class="tag">4 · BM</div><div class="q">증명할 것: 어떻게 돈이 남는가? 지속 가능한가</div></div>
+  <h2>💼 소비자는 팀권으로, 지자체·대행사는 코스 단위 제작·운영으로 냅니다</h2>
+  <div class="grid fill" style="grid-template-columns:1.55fr 1fr">
+    <div class="bmc">
+      <div class="cell kp"><h4>🤝 핵심 파트너</h4><ul><li>지자체·관광기관</li><li>쉼터·시설 운영자</li><li>상권 제휴 <span class="mk w">확인 필요</span></li></ul></div>
+      <div class="cell ka"><h4>🛠️ 핵심 활동</h4><ul><li>장소 답사·검수</li><li>길·대사 제작</li><li>운영 상태 갱신</li></ul></div>
+      <div class="cell kr"><h4>🧱 핵심 자원</h4><ul><li>규칙 엔진·검수 장소 DB</li><li>하랑이 캐릭터</li></ul></div>
+      <div class="cell vp"><h4>🎁 가치 제안</h4><ul><li><b>이용자</b>: 날씨·운영이 바뀌어도 이어지는 길, 하랑이 안내, 자동 기록</li><li><b>운영자</b>: 변경을 한 번 입력하면 안내가 바뀌고, 방문 집계를 받음 <span class="mk pend">검증 대상</span></li></ul></div>
+      <div class="cell cr"><h4>💬 관계</h4><ul><li>앱 안 하랑이</li><li>시즌 한정 배지</li></ul></div>
+      <div class="cell ch"><h4>📣 채널</h4><ul><li>현장 QR, SNS 챌린지</li><li>숙박·대학 연계 <span class="mk w">확인 필요</span></li></ul></div>
+      <div class="cell cs"><h4>🙋 고객</h4><ul><li>대구 시민·커플·친구</li><li>1박 2일 혼행객</li><li>지자체·재단</li><li>행사 대행사</li></ul></div>
+      <div class="cell cost"><h4>💸 비용</h4><ul><li>개발(무료 플랜 전제), 현장 답사·제작, 운영</li><li>LLM 호출비 <span class="mk w">확인 필요</span></li></ul></div>
+      <div class="cell rev"><h4>💰 수익원</h4><ul><li>① 디지털 팀권 <b>14,900원</b> (첫 가격 실험값, 가설)</li><li>② 지자체·재단 코스 단위 제작·운영 견적</li><li>③ 행사 대행사 납품 과업</li></ul></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1.2vh;min-height:0">
+      <div class="card sky">
+        <h3>🧾 단위 경제 (계산 틀)</h3>
+        <p>단위 공헌이익 = 실수령액 − 주문당 변동비</p>
+        <p>손익분기 판매 건수 = ⌈고정비 ÷ 단위 공헌이익⌉</p>
+        <p style="margin-top:.5vh">수수료·환불·세금·변동비·고정비는 아직 입력하지 않았습니다 <span class="mk w">미확인</span></p>
+      </div>
+      <div class="card tbl">
+        <table>
+          <tr><th>시나리오 (예시)</th><th style="width:38%">금액</th></tr>
+          <tr><td>A 민간 팀권 100건</td><td>결제총액 149만 원</td></tr>
+          <tr><td>B 민간 팀권 300건</td><td>결제총액 447만 원</td></tr>
+          <tr><td>C 지자체 과업 1건</td><td>시장 참고 시작가 1,500만 원~ (퀘스투어 개발 라이트, 우리 견적 아님)</td></tr>
+        </table>
+      </div>
+      <div class="hl">
+        <p><b>읽는 법</b>: A·B는 수수료·환불·세금·비용 반영 전 금액이고 판매량 예측이 아닙니다. 15,000,000 ÷ 14,900 ≈ 1,007건이라, 팀권만으로 제작비 규모를 채우기는 어려워 B2B 경로를 함께 둡니다. 낙찰가는 미확인입니다.</p>
+      </div>
+    </div>
+  </div>
+  <div class="foot">출처: plan/treagent_customer_strategy_v1.md 6장 (수익 경로, 14,900원, 100건·300건 계산, 퀘스투어 questour.kr/outdoor_escape_b), plan/daeprica_hidden_quest_plan.md 0-2·0-3장, dev/CLAUDE.md (비용 0원 조건). 가격 단위가 인원·테마·키트로 달라 동일 시장가가 아님. 과금 방식은 팀 결정 전</div>
+</section>
+
+<!-- 5. MVP -->
+<section class="slide dense">
+  <div class="head"><div class="tag">5 · MVP</div><div class="q">증명할 것: 실제로 동작하고 반응이 있는가? 보여 줄 수 있나</div></div>
+  <h2>🧪 날씨에 따라 길이 달라지는 부분은 돌아가고, 인증·장부·운영자 웹은 아직입니다</h2>
+  <div class="grid fill" style="grid-template-columns:1fr 1fr 1fr">
+    <div class="card mint">
+      <h3>✅ 지금 동작 (2026-11-18 확인)</h3>
+      <ul class="b">
+        <li><b>앱</b> (Expo): 로그인·가입, 위치·구·군 선택(중구), 코스 목록, 오늘의 길</li>
+        <li><b>서버</b> (Node): 날씨, 모드 판정, 장소 선택, 추천·코스 경로 API</li>
+        <li><b>DB</b> (Supabase): 장소·코스·적합도 테이블</li>
+        <li><b>서버 테스트 120개</b> 직접 실행, 전부 통과</li>
+      </ul>
+      <h3 style="margin-top:.8vh">🔨 아직 없음</h3>
+      <p>홈 · 장부 · 도장 · GPS 인증 · 대사 엔진 · 운영자 웹 · 이용자 반응(미검증)</p>
+    </div>
+    <div class="card tbl" style="display:flex;flex-direction:column">
+      <table>
+        <tr><th colspan="2">⚙️ 규칙 엔진이 실제로 낸 판정</th></tr>
+        <tr><td style="width:44%">기온 20℃</td><td>🌳 EXPLORE (탐험)</td></tr>
+        <tr><td>기온 30℃</td><td>🌿 SHADE (그늘)</td></tr>
+        <tr><td>기온 35℃</td><td>❄️ INDOOR (실내)</td></tr>
+        <tr><td>폭염특보</td><td>🛑 SAFETY (야외 중단)</td></tr>
+        <tr><td>위험 상황</td><td>⏸️ HOLD (멈춤)</td></tr>
+        <tr><td>확인 불가</td><td>❔ UNKNOWN</td></tr>
+      </table>
+      <p style="padding:.8vh .7vw;font-size:clamp(11px,1vw,16px);color:var(--mute)">decideMode를 직접 실행한 결과. 28℃·33℃는 임시 기준, 폭염특보는 시연용 스위치입니다 <span class="mk w">확인 필요</span></p>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1.2vh;min-height:0">
+      <div class="card" style="background:var(--navy);color:#fff">
+        <h3 style="color:var(--gold)">🔗 라이브 데모 URL</h3>
+        <span class="url" style="font-size:clamp(16px,1.8vw,28px)">[확인 필요] 배포 전</span>
+        <p style="color:#fff;margin-top:.6vh">지금은 각자 컴퓨터에서 실행합니다 (dev/README.md). 보여 줄 주소를 정해야 합니다.</p>
+      </div>
+      <div class="card gold">
+        <h3>🎯 보여 줄 장면</h3>
+        <ul class="b"><li>같은 위치, 날씨만 바꿔(mock: ok·hot·very_hot) 모드와 추천이 달라지는 장면</li></ul>
+      </div>
+    </div>
+  </div>
+  <div class="card tbl">
+    <table>
+      <tr><th style="width:30%">가설</th><th>판정 지표 (정의만, 목표 숫자 없음)</th><th style="width:19%">지금 상태</th></tr>
+      <tr><td>날씨가 바뀌면 추천이 달라진다</td><td>입력(일반·더움·특보·확인 불가)마다 모드와 길이 다르게 나옴</td><td><span class="mk ok">✅ 모드 판정 확인</span></td></tr>
+      <tr><td>닫히면 대체 길로 이어 간다</td><td>변경 후 재개율 = 대체 길 시작 인원 ÷ 변경 안내를 받은 인원</td><td><span class="mk pend">🔨 구현 전</span></td></tr>
+      <tr><td>도착해서 인증하고 완주한다</td><td>첫 인증률 = 첫 인증 성공 ÷ 시작 인원, 완주율 = 완주 ÷ 시작 인원</td><td><span class="mk pend">🔨 구현 전</span></td></tr>
+      <tr><td>가격을 내고 시작한다</td><td>소규모 기간 한정 회차의 시작 대비 결제 건수</td><td><span class="mk">❔ 미측정</span></td></tr>
+    </table>
+  </div>
+  <div class="foot">출처: dev/app/src/app (login·signup·district·courses), dev/server/src (routes·rules·weather·places·courses), dev/server/test (npm test 120 통과), dev/supabase/migrations, plan/spec/treagent_tech_spec_v1.md 1-1장, plan/treagent_customer_strategy_v1.md 7장 (지표 정의)</div>
+</section>
+
+<!-- 6. 팀 -->
+<section class="slide">
+  <div class="head"><div class="tag">6 · 팀</div><div class="q">증명할 것: 누가 무엇을 맡았고 어떤 AI로 했는가? 이 팀이 할 수 있나</div></div>
+  <h2>👥 세 명이 일곱 역할을 나눠 맡고, AI 초안은 사람이 검증합니다</h2>
+  <div class="grid fill" style="grid-template-columns:1.05fr 1fr 1fr">
+    <div class="card tbl" style="display:flex;flex-direction:column">
+      <table>
+        <tr><th style="width:22%">팀원</th><th>역할 (2026-11-13 합의)</th></tr>
+        <tr><td>소정</td><td>FE · BE · AI<br><span style="color:var(--mute)">앱·운영자 웹, 서버·규칙 엔진, 조회 도구·검증 로직</span></td></tr>
+        <tr><td>소형</td><td>PM · CON · DES · AI · FE<br><span style="color:var(--mute)">콘텐츠·스토리·에셋, 대사 생성 프롬프트, 화면</span></td></tr>
+        <tr><td>민지</td><td>RES · DES · PM · FE<br><span style="color:var(--mute)">리서치·장소 사실 확인·QA, 화면</span></td></tr>
+      </table>
+      <p style="padding:.8vh .7vw;font-size:clamp(11px,1vw,16px);color:var(--mute)">DES·PM의 주 담당은 정하지 않았습니다 <span class="mk w">결정 필요</span></p>
+    </div>
+    <div class="card gold">
+      <h3>🧰 사용 도구</h3>
+      <ul class="b">
+        <li><b>Claude Code</b>: 저장소 규칙(CLAUDE.md)과 스킬 2개(브랜드 톤, Git 작업)로 문서·코드 작업</li>
+        <li><b>GPT 이미지 생성</b>: 하랑이 이미지, 프롬프트는 저장소에 기록</li>
+        <li><b>개발</b>: Expo·React Native, Node·Express, Supabase, 기상청 공공데이터 API</li>
+        <li><b>협업</b>: GitHub 브랜치·PR, Actions(HTML 자동 배포·이슈 생성)</li>
+        <li><b>서비스에 넣을 AI</b>: LLM·LangChain·LangGraph (서버에서만, P1 예정, 확정 전)</li>
+      </ul>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:1.2vh;min-height:0">
+      <div class="card mint">
+        <h3>📂 작업 흔적 (저장소 main)</h3>
+        <div class="stat"><b style="font-size:clamp(22px,2.4vw,38px)">커밋 142건 · PR 83건</b><span>2026-11-03 ~ 11-18, main 기준 (2026-11-18 집계). PR 수는 (#번호)가 붙은 커밋 수</span></div>
+        <ul class="b"><li>대분류 7개 폴더: 리서치·기획·브랜드·스토리보드·개발·발표·보관</li><li>산출물 파일마다 근거 위치와 출처 표기</li></ul>
+      </div>
+      <div class="card purple">
+        <h3>🔎 AI 결과를 믿는 방법</h3>
+        <ul class="b">
+          <li>사실은 <span class="mk ok">검증됨</span> <span class="mk w">미검증</span> <span class="mk pend">확인 필요</span>로 구분</li>
+          <li>창작은 후보 2개씩, 결정은 팀이</li>
+          <li>목표 숫자는 쓰지 않음</li>
+          <li>밸류체인 분석 v1은 AI 초안의 여섯 가지 오류 자리를 점검했고, <b>팀 전원 검토는 아직</b></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <div class="foot">출처: plan/team_roles_v1.md, plan/spec/treagent_tech_spec_v1.md 2장, CLAUDE.md, .claude/skills/, brand/character/prompts.md 41행, dev/CLAUDE.md 기술 스택, research/valuechain/analysis.md 4장, git log origin/main (2026-11-18 집계). 역할은 합의된 분담이며 개인별 산출물 귀속이 아님</div>
+</section>
+
+<!-- 7. 요청사항 -->
+<section class="slide">
+  <div class="head"><div class="tag">7 · 요청사항</div><div class="q">증명할 것: 그래서 무엇을 해 주면 되나</div></div>
+  <h2>🙋 가장 흔들리는 가정을 확인할 파일럿 한 곳이 필요합니다</h2>
+  <div class="hl" style="padding:2vh 1.8vw">
+    <p class="lead" style="font-size:clamp(20px,2.4vw,38px)">중구 근대골목 코스(장소 3곳)에서 운영 담당자와 함께 현장 파일럿을 열어 주실 분을 찾고 있습니다.</p>
+  </div>
+  <div class="card tbl">
+    <table>
+      <tr><th style="width:26%">가정 (민감도 순 · 추정)</th><th>검증 방법과 지표 (정의만)</th><th style="width:28%">필요한 것</th></tr>
+      <tr><td>1위 이용자가 가격을 내고 코스를 시작한다</td><td>소규모 기간 한정 회차 · 시작 대비 결제 건수 (매출과 손익분기가 모두 이 값에 비례)</td><td>중구 코스 C01 현장 협조, 결제 방식 <span class="mk w">확인 필요</span></td></tr>
+      <tr><td>2위 닫혀도 대체 길로 이어 간다</td><td>변경 후 재개율 · 인증까지 걸린 시간 · 기존 도장 유지</td><td>장소 운영시간·휴관 공유, 인증 지점·좌표 확인</td></tr>
+      <tr><td>3위 지자체·대행사가 제작·운영비를 낸다</td><td>데모 후 견적 요청 · 예산 항목 확인 · 담당자 인터뷰</td><td>데모를 보고 의견 줄 담당자 연결</td></tr>
+    </table>
+  </div>
+  <div class="grid g2" style="grid-template-columns:1.2fr 1fr">
+    <div class="card sky">
+      <h3>🧪 결과 계획 (목표 숫자 없이)</h3>
+      <ul class="b">
+        <li>파일럿에서 얻을 것: 시작률 · 첫 인증률 · 완주율 · 변경 후 재개율 · 결제 건수</li>
+        <li>작은 파일럿이라 비율과 함께 <b>인원과 실패 사례</b>를 같이 보고</li>
+        <li>지역 전체 방문·소비 증가는 별도 비교 자료가 필요해 이번 평가에서 제외</li>
+      </ul>
+    </div>
+    <div class="card" style="background:var(--navy);color:#fff;display:flex;flex-direction:column;justify-content:center;gap:.8vh">
+      <h3 style="color:var(--gold);margin:0">🔗 MVP URL</h3>
+      <span class="url">[확인 필요] 배포 전</span>
+      <p style="color:#fff;font-size:clamp(10px,.9vw,13px)">주소가 정해지면 이 칸에 넣습니다</p>
+    </div>
+  </div>
+  <div class="foot">민감도 순서는 계산이 아니라 구조상 추정이며 팀 확정 전입니다 (입력 수치 없음). 출처: plan/treagent_customer_strategy_v1.md 6·7장, plan/spec/treagent_tech_spec_v1.md 1-1장, plan/feedback/20261113_presentation_feedback_v1.md. 요청 문장은 후보 2개 중 A (후보 B는 이 파일 상단 주석)</div>
+</section>
+
+<div class="nav" id="nav">← → 키로 이동</div>
+</div>
+<script>
+(function(){
+  var s=document.querySelectorAll('.slide'),i=0;
+  function show(n){s[i].classList.remove('on');i=(n+s.length)%s.length;s[i].classList.add('on');document.getElementById('nav').textContent=(i+1)+' / '+s.length+' · ← → 키로 이동';}
+  document.addEventListener('keydown',function(e){if(e.key==='ArrowRight'||e.key===' ')show(i+1);if(e.key==='ArrowLeft')show(i-1);});
+  document.addEventListener('click',function(e){if(e.clientX>window.innerWidth/2)show(i+1);else show(i-1);});
+  var start=parseInt((location.hash||'').replace('#',''),10);
+  show(start>=1&&start<=s.length?start-1:0);
+})();
+</script>
+</body>
+</html>
