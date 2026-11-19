@@ -149,6 +149,19 @@
   .row .tx b{display:block;margin-bottom:8px}
   .note{max-width:660px;font-size:12px;line-height:1.6;color:#5a4a42}
   .note b{color:var(--ink)}
+  /* ---------- 여행 흐름 (S-04~S-08) ---------- */
+  .nextgo{display:none;position:absolute;right:12px;bottom:50px;z-index:7;background:var(--red);color:#fff;border:0;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;--shade:var(--red-d)}
+  .scene.going .nextgo{display:block}
+  .map{position:relative;height:200px;margin-bottom:4px;background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px);box-shadow:0 0 0 2px var(--ink)}
+  .maptx{position:absolute;left:10px;bottom:10px;padding:3px 6px;background:var(--paper);font-size:10px;color:var(--muted)}
+  .pin{position:absolute;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--paper);box-shadow:0 0 0 2px var(--ink);font-size:11px;font-weight:800}
+  .pin.on{background:var(--red);color:#fff}
+  .stampRow{display:flex;gap:12px;align-items:center;padding:10px 12px;background:var(--paper);font-size:12px}
+  .stampRow img,.dnst img{width:44px;height:44px;image-rendering:pixelated;flex:none}
+  .dnst{display:flex;gap:6px;margin-top:8px}
+  @keyframes stampin{0%{transform:scale(2.2);opacity:0}100%{transform:scale(1);opacity:1}}
+  .stamp-in{animation:stampin .4s steps(4) both}
+  @media (prefers-reduced-motion:reduce){.stamp-in{animation:none}}
   [hidden]{display:none!important}
 </style>
 </head>
@@ -166,6 +179,7 @@
   </select></label>
   <label><input type="checkbox" id="optA" checked> 오늘의 빈 칸 한 줄(A)</label>
   <label><input type="checkbox" id="optB" checked> 도장 미리보기(B)</label>
+  <label><input type="checkbox" id="optMiss"> 미션 첫 시도 실패로 시뮬레이션 (S-06)</label>
 </div>
 
 <div class="stagebox" id="box"><div class="stage" id="stage">
@@ -186,6 +200,7 @@
       <button class="badge px" id="badge" data-go="S-14 지역(구·군) 변경"><i></i><span id="badgeTx"></span></button>
       <div class="bubble px"><span id="bubbleTx"></span><b>[승인 대사 대기]</b><span class="a" id="bubbleA">오늘 비어 있는 칸이 있어요 [임시]</span>
         <svg class="tail" width="21" height="21" viewBox="0 0 21 21" shape-rendering="crispEdges" aria-hidden="true"><polygon fill="#5b2a22" points="0,0 21,0 21,3 18,3 18,6 15,6 15,9 12,9 12,12 9,12 9,15 6,15 6,18 3,18 3,21 0,21"/><polygon fill="#fffaf1" points="3,0 18,0 18,3 15,3 15,6 12,6 12,9 9,9 9,12 6,12 6,15 3,15"/></svg></div>
+      <button class="nextgo px" data-nav="travel">여행 지도 보기 ›</button>
       <button class="sbanner" id="sbanner" hidden></button>
     </div>
     <div class="body">
@@ -283,6 +298,47 @@
     </div>
   </section>
 
+  <!-- S-04 코스 상세·오늘의 길 (추천 길 카드·홈 버튼에서 들어옴) -->
+  <section class="view" id="v-course" aria-label="코스 상세">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">날씨에 맞춘 길 · [기준 시각] 기준</div><div class="t">중구 근대골목 걷기</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="scroll">
+      <div class="row px" style="flex-direction:column;align-items:flex-start"><div id="crsChips"></div><small style="color:var(--muted);font-size:10px;margin-top:6px">중구 · 3곳 · 약 60분 [확인 필요]</small></div>
+      <div class="h3">걷는 순서 <span>순서는 안내일 뿐이에요 [임시]</span></div>
+      <div id="crsStops" class="segp"></div>
+      <div id="crsCaution"></div>
+      <div class="row px"><div>출발하면 하랑이가 먼저 나가요. 길에서 날씨가 바뀌면 알려 드릴게요 [임시 문구]</div></div>
+      <button class="cta px" data-nav="depart" style="height:56px">이 길로 출발<small>[사유: 승인 대사 대기]</small></button>
+    </div>
+  </section>
+
+  <!-- S-05 여행 지도·진행 (이어하기·외출 후 진입) -->
+  <section class="view" id="v-travel" aria-label="여행 지도·진행">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="trvSub"></div><div class="t">여행 지도</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="scroll">
+      <div class="map px"><span class="maptx">[지도 이미지 자리 · 아직 안 그렸어요]</span><div id="trvPins"></div></div>
+      <div class="h3">장소 <span>도장은 미션을 마쳐야 찍혀요</span></div>
+      <div id="trvList" class="segp"></div>
+      <button class="cta px" id="trvBtn" data-nav="stop" style="height:56px"></button>
+      <div class="row px"><div>날씨가 바뀌면 여기서 경로 변경을 알려요 (S-07, 다음 단계) [임시]</div></div>
+    </div>
+  </section>
+
+  <!-- S-06 장소 상세·방문 확인 (도착 → 미션 → 도장) -->
+  <section class="view" id="v-stop" aria-label="장소 방문 확인">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="stpSub"></div><div class="t">방문 확인</div><button class="back px" data-nav="travel">‹ 여행</button></div>
+    <div class="scroll" id="stpBody"></div>
+  </section>
+
+  <!-- S-08 완주 한 장 -->
+  <section class="view" id="v-done" aria-label="완주">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">하랑이와 함께 끝까지 걸었어요</div><div class="t">완주</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="scroll">
+      <div class="row px" style="flex-direction:column;align-items:flex-start"><b>중구 근대골목 걷기</b><small id="dnSub"></small><div class="dnst" id="dnStamps"></div></div>
+      <div class="row px"><div>하랑이의 한 줄 [승인 대사 대기]</div></div>
+      <button class="cta px" data-tab="ledger" data-bm="trips" style="height:56px">내 여행에서 보기</button>
+    </div>
+  </section>
+
   <div class="modal" id="modal" role="alertdialog" aria-modal="true" aria-labelledby="modalT" hidden>
     <div class="box px">
       <b id="modalT">진행 중인 여행이 있어요</b>
@@ -304,9 +360,9 @@
   <b>배치 확인용 목업입니다.</b> 390 x 844 기준이고, 문구는 모두 임시이며 대사는 <b>[승인 대사 대기]</b>입니다.
   <b>역할 구분</b>: 하단 <b>장부 탭</b> = 장부 전체(칸·내 여행·앨범), 방 안 <b>책상 위 장부 그림</b> = 오늘 페이지(오늘 조건의 칸), 홈 <b>주머니 버튼</b> = 받은 물건.
   한 코스의 도장은 3개이고, 장소 3곳을 방문해 미션을 마칠 때마다 1개씩 받습니다.
-  추천 길 카드를 누르면 외출 연출(하랑이가 옆을 보고 문으로 걸어감)의 자리를 볼 수 있습니다. 옆모습은 정면 스프라이트를 좁혀 흉내 낸 것입니다.
+  흐름: 추천 길 카드 → 코스 상세(S-04) → [이 길로 출발] → 외출 연출(옆모습 걷기 프레임 4장) → [여행 지도 보기] → 여행 지도(S-05) → [도착 확인] → 방문 확인·미션(S-06) → 도장 → 3곳을 마치면 완주 한 장(S-08). 화면 전환은 클릭으로만 일어납니다. GPS 도착과 미션 판정은 임시 버튼입니다. 상단 "미션 첫 시도 실패" 체크를 켜면 첫 시도가 실패합니다.
   글꼴은 기기 기본 한글 글꼴입니다. 폭염·호우 배경은 변형 이미지가 없어 필터로 대신했습니다.
-  근거: storyboard/app_home_screen_v1.md, storyboard/game_flow_story_v1.md (6-1, 8, 9-2), brand/worldview.md 5-1, brand/game_concept.md 7, plan/spec/treagent_tech_spec_v1.md (F-10, F-11, F-17).
+  근거: storyboard/app_home_screen_v1.md, storyboard/app_screen_storyboard_v1.md (S-04~S-08), storyboard/game_flow_story_v1.md (6-1, 8, 9-2), brand/worldview.md 5-1, brand/game_concept.md 7, plan/spec/treagent_tech_spec_v1.md (F-10, F-11, F-17).
 </p>
 
 <script>
@@ -337,18 +393,19 @@
   function stampImgs(n,cls){var h='';for(var i=0;i<3;i++)h+='<img'+(i>=n?' class="e"':'')+' src="'+STAMP+'" alt="'+(i<n?'받은 도장':'빈 도장 자리')+'">';return h}
   function render(){
     var k=$('#state').value, s=S[k];
-    scene.className='scene '+s.tone;
+    scene.className='scene '+s.tone+(scene.classList.contains('going')?' going':'');
     $('#badgeTx').innerHTML=s.b1+'<small>'+s.b2+'</small>';
     $('#bubbleTx').textContent=s.bub;
     $('#bubbleA').hidden=!$('#optA').checked || k!=='none';
     $('#ctaT').textContent=s.cta[0]; $('#ctaS').textContent=s.cta[1]; $('#cta').dataset.go=s.cta[2];
+    $('#cta').dataset.nav=({none:'course',outside:'course',active:'travel',notice:'travel'})[k]||'';
     $('#q1t').textContent=s.q1; $('#q1').dataset.go = s.q1==='오늘의 길' ? 'S-14 오늘의 길 (진행 중에도 보기, D-08)' : 'S-04 코스 전체';
     var sb=$('#sbanner'); if(s.banner){sb.hidden=false;sb.className='sbanner'+(s.banner[0]==='n'?' n':'');sb.textContent=s.banner[1];sb.dataset.go=s.banner[2]}else{sb.hidden=true}
     $('#listNote').textContent=s.note||'';
     var L=$('#list'); L.innerHTML='';
     s.cards.forEach(function(id){var c=C[id], r=c.routes[routeOf(k)];var b=document.createElement('button');b.className='card px';b.dataset.c=id;
       b.innerHTML='<div class="th">[코스<br>썸네일]</div><div class="tx">'+c.t+'<small>'+c.m+'</small>'+r.chips+'<div class="route">'+r.stops.join(' → ')+'</div>'+(r.caution?'<div class="why">'+r.caution+'</div>':'')+'<div class="why">[사유: 승인 대사 빈칸 채우기]</div></div>';
-      b.addEventListener('click',startRoute);L.appendChild(b)});
+      b.addEventListener('click',function(){nav('course')});L.appendChild(b)});
     if(!s.cards.length){var m=document.createElement('div');m.className='msg px';m.textContent=s.msg;L.appendChild(m)}
     var sx=$('#stampBox'); sx.innerHTML=stampImgs(s.st[0])+'<span>'+s.st[1]+'</span>'; sx.hidden=!$('#optB').checked;
     // 오늘 페이지
@@ -356,26 +413,66 @@
     var T=$('#todayCells'); T.innerHTML='';
     for(var i=0;i<3;i++){var done=i<s.today;T.insertAdjacentHTML('beforeend','<div class="cell px"><div class="l"><b>'+stopName(k,i)+' · [미션 종류]</b>[상태 한 줄: 검수된 정보 요약]<small>'+(done?'내가 채운 칸 · 미션 완료':'아직 비어 있어요')+'</small></div>'+(done?'<img src="'+STAMP+'" alt="내 도장">':'<div class="slot"></div>')+'</div>')}
   }
-  // 진행 중인 여행이 있으면 경고창을 먼저 띄우고, [새로 시작]을 눌러야 외출 연출로 넘어간다 (D-08 결정)
+  /* 여행 흐름 (S-04 → 외출 → S-05 → S-06 → S-08). 목업용 임시 값이며 실제 진행 데이터가 아님.
+     화면 전환은 클릭으로만 일어난다 (자동 전환 없음, ?lock 모드와 맞춤). */
+  var TRIP={on:false,route:'explore',done:0}, cur=0, phase='mission';
+  function stopAt(i){var r=C.C01.routes[TRIP.route];return r.stops[i]||('[스팟 '+(i+1)+']')}
+  function ensureTrip(){ if(!TRIP.on){ var k=$('#state').value; TRIP={on:true,route:routeOf(k),done:(k==='active'||k==='notice')?2:0} } }
+  function renderCourse(){
+    var r=C.C01.routes[routeOf($('#state').value)];
+    $('#crsChips').innerHTML=r.chips;
+    $('#crsStops').innerHTML=r.stops.map(function(n,i){return '<div class="row px"><div class="tx" style="flex:1"><b>'+(i+1)+'. '+n+'</b><small>[미션 종류] · [검수된 정보 요약]</small></div></div>'}).join('');
+    $('#crsCaution').innerHTML=r.caution?'<div class="msg px">'+r.caution+'</div>':'';
+  }
+  function renderTravel(){
+    var n=TRIP.done, X=[40,150,262], Y=[120,60,130];
+    $('#trvSub').textContent=n>=3?'3곳을 모두 걸었어요':'3곳 중 '+n+'곳 걸었어요 · 다음: '+stopAt(n);
+    $('#trvPins').innerHTML=[0,1,2].map(function(i){return '<span class="pin'+(i<n?' on':'')+'" style="left:'+X[i]+'px;top:'+Y[i]+'px">'+(i+1)+'</span>'}).join('');
+    $('#trvList').innerHTML=[0,1,2].map(function(i){var st=i<n?'도장 받음':(i===n?'다음 장소':'아직'); return '<div class="row px"><div class="tx" style="flex:1"><b>'+(i+1)+'. '+stopAt(i)+'</b><small>'+st+'</small></div></div>'}).join('');
+    var b=$('#trvBtn'); b.dataset.nav=n>=3?'done':'stop'; b.textContent=n>=3?'완주 한 장 보기':'도착했어요 · 방문 확인';
+  }
+  function renderStop(){
+    $('#stpSub').textContent=(cur+1)+'번째 장소';
+    var h='<div class="h3">'+stopAt(cur)+'</div>';
+    h+='<div class="row px"><div class="tx" style="flex:1"><b>도착 확인</b><small>GPS 반경 안에 들어왔어요 [반경·정확도는 현장 시험 후 정함, D-05]</small></div></div>';
+    if(phase==='mission') h+='<div class="row px"><div class="tx" style="flex:1"><b>[미션 종류]</b><small>[미션 내용 자리] · [승인 대사 대기]</small></div></div><button class="cta px" data-nav="mission" style="height:56px">미션 마치기</button>';
+    else if(phase==='failed') h+='<div class="msg px">아직 미션을 마치지 못했어요. 다시 해 볼까요? [임시 문구]</div><button class="cta px" data-nav="mission" style="height:56px">다시 하기</button>';
+    else { var last=cur>=2; h+='<div class="stampRow"><img class="stamp-in" src="'+STAMP+'" alt="받은 도장"><span>'+(cur+1)+'번째 도장을 받았어요 [임시 문구]</span></div><button class="cta px" data-nav="'+(last?'done':'travel')+'" style="height:56px">'+(last?'완주 한 장 보기':'다음 장소로')+'</button>'; }
+    $('#stpBody').innerHTML=h;
+  }
+  function mission(){
+    if(phase==='mission' && $('#optMiss').checked){ phase='failed' } else { phase='passed'; TRIP.done=cur+1 }
+    renderStop();
+  }
+  function renderDone(){
+    $('#dnSub').textContent='[날짜] · 3곳 · 도장 3/3 · 완주';
+    $('#dnStamps').innerHTML=[0,1,2].map(function(i){return '<img src="'+STAMP+'" alt="도장 '+(i+1)+'">'}).join('');
+  }
+  function nav(name){
+    if(name==='course'){ renderCourse(); show('course') }
+    else if(name==='depart'){ startRoute() }
+    else if(name==='travel'){ scene.classList.remove('going'); ensureTrip(); renderTravel(); show('travel') }
+    else if(name==='stop'){ cur=TRIP.done; phase='mission'; renderStop(); show('stop') }
+    else if(name==='mission'){ mission() }
+    else if(name==='done'){ renderDone(); show('done') }
+  }
+  // 진행 중인 여행이 있으면 경고창을 먼저 띄우고, [새로 시작]을 눌러야 출발한다 (D-08 결정)
   function startRoute(){
     var k=$('#state').value;
     if(k==='active'||k==='notice'){ $('#modal').hidden=false; $('#mKeep').focus(); return }
-    go();
+    depart();
   }
-  $('#mKeep').addEventListener('click',function(){ $('#modal').hidden=true; toast('→ S-05 이어하기') });
-  $('#mNew').addEventListener('click',function(){ $('#modal').hidden=true; go() });
+  function depart(){
+    TRIP={on:true,route:routeOf($('#state').value),done:0};
+    show('home');
+    scene.classList.remove('going'); void scene.offsetWidth; scene.classList.add('going');
+  }
+  $('#mKeep').addEventListener('click',function(){ $('#modal').hidden=true; nav('travel') });
+  $('#mNew').addEventListener('click',function(){ $('#modal').hidden=true; depart() });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') $('#modal').hidden=true });
-  var going=false;
-  function go(){
-    if(going)return; going=true;
-    var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(!reduce) scene.classList.add('going');
-    setTimeout(function(){toast('외출 연출 후 S-04 코스 상세로 이동')},reduce?0:1700);
-    setTimeout(function(){scene.classList.remove('going');going=false},reduce?1200:3200);
-  }
-  var TABOF={home:'home',today:'home',pouch:'home',ledger:'ledger',me:'me'};
+  var TABOF={home:'home',today:'home',pouch:'home',course:'home',travel:'home',stop:'home',done:'home',ledger:'ledger',me:'me'};
   function show(name){
-    ['home','ledger','today','pouch','me'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
+    ['home','ledger','today','pouch','me','course','travel','stop','done'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
     var cur=TABOF[name];
     $$('.tab button').forEach(function(b){var t=b.dataset.tab||b.dataset.view; if(t===cur)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   }
@@ -388,6 +485,7 @@
     $$('#bm-cells .cell.other').forEach(function(c){c.hidden=on});
   }
   document.addEventListener('click',function(e){
+    var nv=e.target.closest('[data-nav]'); if(nv&&nv.dataset.nav){nav(nv.dataset.nav);return}
     var sg=e.target.closest('.seg button'); if(sg){bm(sg.dataset.bm);return}
     var tg=e.target.closest('#fMine'); if(tg){mine(tg.getAttribute('aria-pressed')!=='true');return}
     var t=e.target.closest('[data-tab]'); if(t){show(t.dataset.tab); if(t.dataset.bm){bm(t.dataset.bm); mine(!!t.dataset.mine)} return}
