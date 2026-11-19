@@ -56,12 +56,13 @@
   .glow{position:absolute;left:6px;top:116px;width:74px;height:120px;z-index:2;background:radial-gradient(ellipse at 50% 60%,#fff3b8,rgba(255,230,150,0) 70%);opacity:0;transition:opacity 1.2s}
   .going .glow{opacity:1}
   /* 외출: 정면 스프라이트를 숨기고 옆모습 걷기 4프레임(brand/character/images/harangi_pixel_walk_side_0N_transparent.png)으로 문 쪽(왼쪽)으로 걸어 나감 */
-  .walker{position:absolute;left:69px;top:196px;width:117px;height:121px;z-index:3;display:none;transform:scaleX(-1);transform-origin:58px 100%}
+  .walker{position:absolute;left:69px;top:196px;width:117px;height:121px;z-index:3;display:none;visibility:hidden;transform:scaleX(-1);transform-origin:58px 100%}
   .walker img{position:absolute;left:0;top:0;width:117px;height:121px;max-width:none;image-rendering:pixelated;opacity:0;animation:fr .56s steps(1) infinite}
   .walker img:nth-child(2){animation-delay:.14s}.walker img:nth-child(3){animation-delay:.28s}.walker img:nth-child(4){animation-delay:.42s}
   @keyframes fr{0%{opacity:1}25%{opacity:0}100%{opacity:0}}
-  .going .spr{visibility:hidden}
-  .going .walker{display:block;animation:out 1.5s .1s linear forwards}
+  /* 출발 순서: 대사 → 몸 돌리기(정면 스프라이트 찌그러뜨리며 숨김) → 옆모습으로 문 쪽 걷기 → 문 밖으로 사라짐 */
+  .going .spr{animation:turnspr .45s steps(2) .9s both}
+  .going .walker{display:block;animation:out 1.5s 1.3s linear forwards,showit 0s 1.3s forwards}
   @keyframes out{0%{transform:translateX(0) scaleX(-1)}80%{transform:translateX(-52px) scaleX(-1);opacity:1}100%{transform:translateX(-66px) scaleX(-1);opacity:0}}
   .sbanner{position:absolute;left:0;right:0;bottom:0;z-index:5;padding:6px 12px;font-size:11px;line-height:1.35;font-weight:700;background:#ffe1d6;border:0;border-top:3px solid var(--ink);text-align:left;width:100%;cursor:pointer}
   .sbanner.n{background:#fff0b8}
@@ -149,6 +150,103 @@
   .row .tx b{display:block;margin-bottom:8px}
   .note{max-width:660px;font-size:12px;line-height:1.6;color:#5a4a42}
   .note b{color:var(--ink)}
+  /* ---------- 여행 흐름 (S-04~S-08) ---------- */
+  .nextgo{display:none;position:absolute;right:12px;bottom:50px;z-index:7;background:var(--red);color:#fff;border:0;padding:8px 12px;font-size:12px;font-weight:800;cursor:pointer;--shade:var(--red-d)}
+  .scene.going .nextgo{display:block;visibility:hidden;animation:showit 0s 2.9s forwards}
+  @keyframes showit{to{visibility:visible}}
+  @keyframes turnspr{0%{transform:scaleX(1)}60%{transform:scaleX(.1)}100%{transform:scaleX(.1);visibility:hidden}}
+  /* 현관문(배경 그림 기준 왼쪽 문, 약 x 8~79 · y 116~240) 위에 나가기 표시. 출발 준비 상태에서만 보임 */
+  .door-hot{display:none;left:8px;top:116px;width:72px;height:124px}
+  .exitarrow{display:none;position:absolute;left:14px;top:246px;z-index:6;width:56px;height:56px;padding:0;border:0;background:none;cursor:pointer;animation:bobY 1s steps(2) infinite}
+  .exitarrow svg{width:56px;height:56px;display:block}
+  @keyframes bobY{50%{transform:translateY(-8px)}}
+  @media (prefers-reduced-motion:reduce){.exitarrow{animation:none}}
+  @keyframes bubgone{to{visibility:hidden}}
+  .spot{position:absolute;width:0;height:0}
+  .spot img{position:absolute;left:-13px;top:-13px;width:26px;height:26px;image-rendering:pixelated}
+  .spotempty{position:absolute;left:-7px;top:-7px;width:14px;height:14px;background:var(--paper);box-shadow:0 0 0 2px var(--muted)}
+  .spot em{position:absolute;left:0;top:14px;transform:translateX(-50%);white-space:nowrap;font-style:normal;font-size:9px;font-weight:800;background:var(--paper);padding:0 3px}
+  .pic{height:170px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px)}
+  .slam{animation:slam .35s ease-out both}
+  .stampRow img.slam{width:84px;height:84px}
+  @keyframes slam{0%{transform:scale(2.6);opacity:0}60%{transform:scale(.92);opacity:1}80%{transform:scale(1.04)}100%{transform:scale(1)}}
+  @media (prefers-reduced-motion:reduce){.slam,.kwang,.stamp-in{animation:none}}
+  #dBub{display:none;z-index:8;width:150px;font-size:12px}
+  .pin,.pinst{transform:translate(-50%,-50%)}
+  .pinst{position:absolute;width:30px;height:30px;image-rendering:pixelated}
+  /* 코스 브리핑 씬 */
+  /* 코스 브리핑: 전체 화면(탭 바 숨김). 위: 날씨 → 코스 설명 한 칸(구역 나눔) → 말풍선 → 하랑이(화면 맨 아래 가운데) → 버튼 */
+  .phone.fullscreen .tab{display:none}
+  #v-brief{background:var(--cream);bottom:0}
+  .briefhead{position:absolute;left:24px;right:24px;top:44px;display:flex;flex-direction:column;gap:4px}
+  .briefhead span{font-size:13px;color:var(--muted);font-weight:700}
+  .briefhead b{font-size:15px;color:var(--ink)}
+  .briefpanel{position:absolute;left:12px;right:12px;top:110px;background:var(--paper);box-shadow:0 0 0 2px var(--ink),0 6px 0 0 var(--shade)}
+  .bsec{padding:16px 16px}
+  .chip.t{background:#fff0b8;color:var(--ink)}
+  .bsec+.bsec{border-top:2px solid var(--ink)}
+  .bsec-intro b{display:block;font-size:22px;line-height:1.35;margin-bottom:8px}
+  .bchips{font-size:13px;line-height:1.8}
+  .bchips .bmeta{font-size:12px;color:var(--muted);font-weight:700}
+  .bchips .chip{font-size:13px;padding:2px 8px}
+  .brieflist{position:relative}
+  .brieflist::before{content:"";position:absolute;left:19px;top:24px;bottom:24px;width:4px;background:#d42a2a}
+  .bstop{position:relative;display:flex;gap:14px;align-items:center}
+  .bstop img{width:40px;height:40px;image-rendering:pixelated;flex:none}
+  .bstop .bt b{display:block;font-size:17px;line-height:1.3}
+  .bstop .bt small{display:block;font-size:13px;color:var(--muted);line-height:1.5}
+  .bwalk{position:relative;margin:20px 0 20px 62px;font-size:13px;color:#b02a20;font-weight:800}
+  .bsec-foot small{font-size:12px;color:var(--muted)}
+  .briefbub{position:absolute;left:24px;right:24px;top:506px;background:var(--paper);padding:12px 14px;font-size:15px;line-height:1.6}
+  .briefbub p{margin:0}
+  .briefbub::after{content:"";position:absolute;left:50%;bottom:-12px;transform:translateX(-50%);border-left:10px solid transparent;border-right:10px solid transparent;border-top:12px solid var(--ink)}
+  .briefbub::before{content:"";position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);z-index:1;border-left:8px solid transparent;border-right:8px solid transparent;border-top:9px solid var(--paper)}
+  .briefstage{position:absolute;left:0;right:0;top:600px;height:180px;overflow:hidden}
+  .briefstage::after{content:"";position:absolute;left:0;right:0;bottom:10px;height:3px;background:var(--ink);z-index:2}
+  .briefhara{position:absolute;left:50%;transform:translateX(-50%);top:0;width:180px;height:180px;background-image:url(../brand/character/images/harangi_pixel_expressions_transparent.webp);background-size:540px 180px;background-position:-180px 0;background-repeat:no-repeat;image-rendering:pixelated}
+  .briefbtns{position:absolute;left:20px;right:20px;top:786px;display:flex;gap:10px}
+  .briefbtns button{flex:1;height:52px;margin:0;font-size:16px;font-weight:800;text-align:center;justify-content:center;border:0;cursor:pointer;display:flex;align-items:center}
+  .briefbtns .cta{display:block;width:auto}
+  .backbtn{display:none;position:absolute;right:12px;top:268px;z-index:7;border:0;background:var(--paper);padding:7px 10px;font-size:11px;font-weight:800;cursor:pointer;--shade:#d9bf98}
+  .scene.ready .backbtn{display:block}
+  /* 대구 지도 구역 (예시) */
+  .dist{position:absolute;width:110px;height:58px;padding:5px 6px;background:rgba(255,250,241,.8);box-shadow:0 0 0 2px var(--ink);font-size:11px}
+  .dist b{display:block;font-size:12px}
+  .dist small{display:block;font-size:10px;color:var(--muted)}
+  .dist.on{background:var(--paper)}
+  .dist.on small{color:var(--red-d);font-weight:800}
+  /* 오늘의 여행 사진 (완주 카드) */
+  .photo{background:#fff;padding:12px;display:flex;flex-direction:column;gap:10px}
+  .photoin{height:220px;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-size:11px;color:var(--muted);background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px)}
+  .photocap b{display:block;font-size:14px}
+  .photocap small{display:block;font-size:10px;color:var(--muted);margin-top:2px}
+  /* SNS 완주 카드: 4:5 비율 (인스타 피드 기준), 전체 화면 보기는 같은 카드를 크게 */
+  .snap{aspect-ratio:4/5;width:100%;box-sizing:border-box;background:var(--paper);box-shadow:0 0 0 3px var(--ink);padding:14px;display:flex;flex-direction:column;gap:8px;font-size:12px}
+  .snaptop,.snapfoot{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
+  .snapw{font-size:13px;font-weight:800}
+  .snapphoto{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px)}
+  .snapcap b{display:block;font-size:15px;margin-bottom:4px}
+  .snaprow{display:flex;align-items:center;gap:8px;padding:2px 0}
+  .snaprow b{width:46px;font-size:12px}
+  .snaprow span{flex:1;min-width:0}
+  .snaprow img{width:26px;height:26px;image-rendering:pixelated;flex:none}
+  .fsview{position:absolute;left:0;top:0;width:390px;height:844px;z-index:70;background:#2b1814;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;box-sizing:border-box}
+  .fsview .snap{max-width:354px}
+  /* 출발 전: 출발 대사와 [나가요]만 보임. 외출 중에는 말풍선을 모두 숨김 */
+  .scene.ready .door-hot,.scene.ready .exitarrow{display:block}
+  /* 대사: 출발 준비 때 뜨고, 나가는 동안 잠깐 보였다가 하랑이가 문 밖으로 나가면 사라짐 */
+  .scene.going #dBub{display:block;animation:bubgone 0s linear 2.6s forwards}
+  .scene.ready #dBub{display:block}
+  .scene.ready #mainBub,.scene.going #mainBub{display:none}
+  .map{position:relative;height:200px;margin-bottom:4px;background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px);box-shadow:0 0 0 2px var(--ink)}
+  .maptx{position:absolute;left:10px;bottom:10px;padding:3px 6px;background:var(--paper);font-size:10px;color:var(--muted)}
+  .pin{position:absolute;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--paper);box-shadow:0 0 0 2px var(--ink);font-size:11px;font-weight:800}
+  .pin.on{background:var(--red);color:#fff}
+  .stampRow{display:flex;gap:12px;align-items:center;padding:10px 12px;background:var(--paper);font-size:12px}
+  .stampRow img,.dnst img{width:44px;height:44px;image-rendering:pixelated;flex:none}
+  .dnst{display:flex;gap:6px;margin-top:8px}
+  @keyframes stampin{0%{transform:scale(2.2);opacity:0}100%{transform:scale(1);opacity:1}}
+  .stamp-in{animation:stampin .4s steps(4) both}
   [hidden]{display:none!important}
 </style>
 </head>
@@ -166,6 +264,8 @@
   </select></label>
   <label><input type="checkbox" id="optA" checked> 오늘의 빈 칸 한 줄(A)</label>
   <label><input type="checkbox" id="optB" checked> 도장 미리보기(B)</label>
+  <label><input type="checkbox" id="optMiss"> 미션 첫 시도 실패로 시뮬레이션 (S-06)</label>
+  <label><input type="checkbox" id="optNoAlt"> 대체 길 없음으로 시뮬레이션 (S-07)</label>
 </div>
 
 <div class="stagebox" id="box"><div class="stage" id="stage">
@@ -184,8 +284,14 @@
       <button class="hot" style="left:193px;top:86px;width:140px;height:92px" data-go="날씨 상세 (기준 시각·AWS 여부, S-14)" title="날씨 보기" aria-label="날씨 보기"></button>
       <button class="hot" style="left:92px;top:210px;width:66px;height:104px" data-go="하랑이 반응 (대사 넘기기)" title="하랑이" aria-label="하랑이 누르기"></button>
       <button class="badge px" id="badge" data-go="S-14 지역(구·군) 변경"><i></i><span id="badgeTx"></span></button>
-      <div class="bubble px"><span id="bubbleTx"></span><b>[승인 대사 대기]</b><span class="a" id="bubbleA">오늘 비어 있는 칸이 있어요 [임시]</span>
+      <div class="bubble px" id="mainBub"><span id="bubbleTx"></span><b>[승인 대사 대기]</b><span class="a" id="bubbleA">오늘 비어 있는 칸이 있어요 [임시]</span>
         <svg class="tail" width="21" height="21" viewBox="0 0 21 21" shape-rendering="crispEdges" aria-hidden="true"><polygon fill="#5b2a22" points="0,0 21,0 21,3 18,3 18,6 15,6 15,9 12,9 12,12 9,12 9,15 6,15 6,18 3,18 3,21 0,21"/><polygon fill="#fffaf1" points="3,0 18,0 18,3 15,3 15,6 12,6 12,9 9,9 9,12 6,12 6,15 3,15"/></svg></div>
+      <div class="bubble px" id="dBub"><span id="dBubTx"></span><b>[승인 대사 대기 · 창작 후보 A]</b>
+        <svg class="tail" width="21" height="21" viewBox="0 0 21 21" shape-rendering="crispEdges" aria-hidden="true"><polygon fill="#5b2a22" points="0,0 21,0 21,3 18,3 18,6 15,6 15,9 12,9 12,12 9,12 9,15 6,15 6,18 3,18 3,21 0,21"/><polygon fill="#fffaf1" points="3,0 18,0 18,3 15,3 15,6 12,6 12,9 9,9 9,12 6,12 6,15 3,15"/></svg></div>
+      <button class="hot door-hot" data-nav="walkout" aria-label="현관문으로 나가기" title="현관문으로 나가기"></button>
+      <button class="exitarrow" data-nav="walkout" aria-label="나가기"><svg viewBox="0 0 100 100" aria-hidden="true"><polygon fill="#f5b82e" stroke="#5b2a22" stroke-width="8" stroke-linejoin="miter" points="50,8 92,50 66,50 66,92 34,92 34,50 8,50"/></svg></button>
+      <button class="nextgo px" data-nav="travel">여행 지도 보기 ›</button>
+      <button class="backbtn" data-nav="cancelready">나가지 않기</button>
       <button class="sbanner" id="sbanner" hidden></button>
     </div>
     <div class="body">
@@ -195,46 +301,41 @@
         <button class="px" data-go="S-14 가까운 쉼터"><i class="qi rest"></i>쉼터</button>
         <button class="px" data-view="pouch"><i class="qi pouch"></i>주머니</button>
       </div>
-      <div class="sec">오늘의 추천 길 <span id="listNote"></span></div>
+      <div class="sec">지금 추천 미리보기 <span id="listNote"></span></div>
       <div class="list" id="list"></div>
-      <button class="stamps px" id="stampBox" data-tab="ledger" data-bm="cells" data-mine="1"></button>
+      <button class="stamps px" id="stampBox" data-tab="ledger" data-bm="map"></button>
     </div>
   </section>
 
   <!-- 장부 (S-09): 책갈피 [칸] [내 여행] [앨범] -->
   <section class="view" id="v-ledger" aria-label="장부">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">하랑이와 함께 걸어 확인한 기록 · 칸, 내 여행, 앨범</div><div class="t">장부</div></div>
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">하랑이와 함께 걸어 확인한 기록 · 지도, 내 여행, 앨범</div><div class="t">장부</div></div>
     <div class="scroll">
       <div class="seg" role="tablist" aria-label="장부 책갈피">
-        <button role="tab" data-bm="cells" aria-selected="true">칸</button>
+        <button role="tab" data-bm="map" aria-selected="true">지도</button>
         <button role="tab" data-bm="trips" aria-selected="false">내 여행</button>
         <button role="tab" data-bm="album" aria-selected="false">앨범</button>
       </div>
 
-      <div class="segp" id="bm-cells">
-        <div class="h3">권역별 달성 <span>[MVP 제외 · P2 자리 · 예시]</span></div>
-        <div class="reg px"><div class="n"><b>[권역 이름 1]</b>인증 2/3곳 · 실내 1곳 포함 [예시]</div><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img class="e" src="../brand/character/images/stamp_nungeum.webp" alt=""><span class="pct">67%</span></div>
-        <div class="reg px"><div class="n"><b>[권역 이름 2]</b>인증 0/3곳 [예시]</div><img class="e" src="../brand/character/images/stamp_nungeum.webp" alt=""><img class="e" src="../brand/character/images/stamp_nungeum.webp" alt=""><img class="e" src="../brand/character/images/stamp_nungeum.webp" alt=""><span class="pct">0%</span></div>
-        <div class="reg px"><div class="n"><b>[권역 이름 3]</b>인증 3/3곳 <span class="tag">완주 배지</span></div><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><span class="pct">100%</span></div>
-        <div class="h3">칸 <span>스팟 · 날씨·시간대·요일 조합</span></div>
-        <button class="tog px" id="fMine" aria-pressed="false">내가 채운 칸만 보기 (도장 모음)</button>
-        <div class="cell px mine"><div class="l"><b>[스팟 이름] · [날씨]·[시간대]·[요일]</b>[상태 한 줄: 검수된 정보 요약]<small>앞서 들른 길동무 [N]명 · [날짜]에 내가 채움</small></div><img src="../brand/character/images/stamp_nungeum.webp" alt="내 도장"></div>
-        <div class="cell px other"><div class="l"><b>[스팟 이름] · [날씨]·[시간대]·[요일]</b>[상태 한 줄: 검수된 정보 요약]<small>앞서 들른 길동무 [N]명</small></div><div class="slot"></div></div>
-        <div class="cell px other"><div class="l"><b>[스팟 이름] · [날씨]·[시간대]·[요일]</b>[상태 한 줄: 검수된 정보 요약]<small>아직 아무도 안 걸은 칸이에요!</small></div><div class="slot"></div></div>
-        <div class="row px"><div>[칸]은 모든 길동무의 방문이 쌓이는 공동 장부입니다. 구현은 P2, 시즌 연결 데이터는 P0부터입니다 (F-17). 도사 인정 진행률은 보여 주지 않습니다 (보류).</div></div>
+      <div class="segp" id="bm-map">
+        <div class="h3">지도 <span>대구 전역 · 구역별 내 완주율</span></div>
+        <div class="map px">
+          <span class="maptx">[대구 전역 그림 자리 · 구역 경계는 예시]</span>
+          <div id="mapPins"></div>
+        </div>
+        <div class="row px"><div>내 완주율 = 내가 완주한 길 ÷ 전체 길 [기준 확인 필요]. MVP는 중구만 안내해요. 나머지 구·군은 준비 중이에요.</div></div>
       </div>
 
       <div class="segp" id="bm-trips" hidden>
         <div class="h3">내 여행 <span>여행 1회가 한 장 · 본인 것만</span></div>
-        <button class="row px" data-go="S-08 내 여행 한 장"><div style="flex:1"><b>중구 근대골목 걷기</b><small>[날짜] · 3곳 · 도장 3/3 · 완주</small><div class="mini"><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""></div><small>하랑이의 한 줄 [승인 대사 대기]</small></div></button>
-        <button class="row px" data-go="S-05 이어하기"><div style="flex:1"><b>중구 근대골목 걷기</b><small>[날짜] · 3곳 · 진행 중 · 눌러서 이어하기 [임시]</small><div class="mini"><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img class="e" src="../brand/character/images/stamp_nungeum.webp" alt=""></div></div></button>
+        <button class="row px" data-nav="tripdetail"><div style="flex:1"><b>중구 근대골목 걷기</b><small>[날짜] · 3곳 · 도장 3/3 · 완주</small><div class="mini"><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""></div></div></button>
+        <button class="row px" data-nav="travel"><div style="flex:1"><b>중구 근대골목 걷기</b><small>[날짜] · 3곳 · 진행 중 · 눌러서 이어하기 [임시]</small><div class="mini"><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img class="e" src="../brand/character/images/stamp_nungeum.webp" alt=""></div></div></button>
         <div class="row px"><div>한 장에는 실제로 방문한 장소와 날짜만 담겨요. 좌표는 담지 않아요.</div></div>
       </div>
 
       <div class="segp" id="bm-album" hidden>
-        <div class="h3">앨범 <span>하랑이의 이야기 · 해금한 것만 보여요</span></div>
+        <div class="h3">앨범 <span>하랑이의 이야기</span></div>
         <button class="row px" data-go="컷씬 ① 다시 보기 (건너뛰기 가능)"><div class="thumb">[컷씬 ①<br>썸네일]</div><div style="flex:1"><b>[컷씬 ① 제목]</b><small>[해금한 날짜] · 눌러서 다시 보기</small></div></button>
-        <div class="row px"><div>앨범에는 안내 정보가 없어요. 이야기만 담겨요. 건너뛴 이야기도 여기에 저장돼요.</div></div>
       </div>
     </div>
   </section>
@@ -246,7 +347,7 @@
       <div class="row px"><div><b>[요일] · [시간대] · [날씨]</b>이 조건으로 걸을 장소 3곳이에요. [승인 대사 대기]</div></div>
       <div class="h3">오늘 걸을 칸 <span id="todayCnt"></span></div>
       <div id="todayCells" class="segp"></div>
-      <button class="cta px" data-go="S-04 코스 상세 (오늘의 길)" style="height:56px">이 길 확인하기<small>칸을 채우라는 재촉은 하지 않아요 [임시]</small></button>
+      <button class="cta px" data-nav="course" data-idx="C01" style="height:56px">이 길 확인하기<small>칸을 채우라는 재촉은 하지 않아요 [임시]</small></button>
     </div>
   </section>
 
@@ -283,6 +384,102 @@
     </div>
   </section>
 
+  <!-- S-04 코스 상세·오늘의 길 (추천 길 카드·홈 버튼에서 들어옴) -->
+  <section class="view" id="v-course" aria-label="코스 상세">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">날씨에 맞춘 길 · [기준 시각] 기준</div><div class="t" id="crsT">코스</div><button class="back px" data-nav="picks">‹ 오늘의 길</button></div>
+    <div class="scroll">
+      <div class="row px" style="flex-direction:column;align-items:flex-start"><div id="crsChips"></div><small style="color:var(--muted);font-size:10px;margin-top:6px">중구 · 3곳 · 약 60분 [확인 필요]</small></div>
+      <div class="h3">걷는 순서 <span>순서는 안내일 뿐이에요 [임시]</span></div>
+      <div id="crsStops" class="segp"></div>
+      <div id="crsCaution"></div>
+      <div class="row px"><div>출발하면 하랑이가 먼저 나가요. 길에서 날씨가 바뀌면 알려 드릴게요 [임시 문구]</div></div>
+      <button class="cta px" data-nav="depart" style="height:56px">이 길로 출발</button>
+      <button class="row px" data-nav="picks" style="justify-content:center;font-weight:800">다른 길 보기</button>
+    </div>
+  </section>
+
+  <!-- S-05 여행 지도·진행 (이어하기·외출 후 진입) -->
+  <section class="view" id="v-travel" aria-label="여행 지도·진행">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="trvSub"></div><div class="t">여행 지도</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="scroll">
+      <div class="map px"><span class="maptx">[지도 이미지 자리 · 아직 안 그렸어요]</span><div id="trvPins"></div></div>
+      <div class="h3">장소 <span>도장은 미션을 마쳐야 찍혀요</span></div>
+      <div id="trvList" class="segp"></div>
+      <button class="cta px" id="trvBtn" data-nav="place" data-idx="0" style="height:56px"></button>
+      <button class="row px" data-nav="reroute" style="justify-content:center;font-weight:800">날씨가 바뀌었다고 가정하고 보기 (S-07)</button>
+    </div>
+  </section>
+
+  <!-- S-06 장소 상세·방문 확인 (도착 → 미션 → 도장) -->
+  <section class="view" id="v-stop" aria-label="장소 방문 확인">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="stpSub"></div><div class="t">방문 확인</div><button class="back px" data-nav="travel">‹ 여행</button></div>
+    <div class="scroll" id="stpBody"></div>
+  </section>
+
+  <!-- S-08 완주 한 장 -->
+  <section class="view" id="v-done" aria-label="오늘의 여행 사진">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">하랑이와 함께 끝까지 걸었어요</div><div class="t">완주</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="scroll">
+      <div class="snap" id="snapCard"></div>
+      <button class="cta px" data-nav="fullsnap" data-idx="done" style="height:52px">전체 화면으로 보기</button>
+      <button class="row px" data-nav="share" style="justify-content:center;font-weight:800">SNS 공유 (4:5)</button>
+      <button class="row px" data-tab="ledger" data-bm="trips" style="justify-content:center;font-weight:800">내 여행에 넣기</button>
+      <button class="row px" data-view="home" style="justify-content:center;font-weight:800">홈으로</button>
+    </div>
+  </section>
+  <!-- 전체 화면 보기 (SNS 4:5 카드를 크게) -->
+  <div class="fsview" id="fsv" hidden>
+    <div class="snap" id="snapFull"></div>
+    <button class="row px" data-nav="closefull" style="justify-content:center;font-weight:800;width:auto;padding:10px 24px">닫기</button>
+  </div>
+
+  <!-- 오늘의 길: 3개 보기, 새로고침으로 다른 3개 -->
+  <section class="view" id="v-picks" aria-label="오늘의 길 3개">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="pickNote"></div><div class="t">오늘의 길</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="scroll">
+      <div id="pickList" class="list"></div>
+      <button class="row px" data-nav="reroll" style="justify-content:center;font-weight:800">마음에 드는 길이 없어요 · 다른 길 3개 새로 불러오기</button>
+    </div>
+  </section>
+
+  <!-- 코스 브리핑: 이 길로 출발 → 하랑이가 짧게 소개 → 좋아요 → 홈(출발 준비) -->
+  <section class="view" id="v-brief" aria-label="코스 브리핑">
+    <div class="briefhead"><span>하랑이가 알려 줄게요</span><b id="briefWx"></b></div>
+    <div class="briefpanel px">
+      <div class="bsec bsec-intro"><b id="briefT"></b><div class="bchips" id="briefChips"></div></div>
+      <div class="bsec bsec-route"><div class="brieflist" id="briefList"></div></div>
+    </div>
+    <div class="briefbub px"><p id="briefTx"></p></div>
+    <div class="briefstage"><div class="briefhara" role="img" aria-label="하랑이 기본 표정"></div></div>
+    <div class="briefbtns"><button class="cta px" data-nav="briefdone">확인</button><button class="row px" data-nav="briefback">이전으로</button></div>
+  </section>
+
+  <!-- S-07 경로 변경·보류 (S-05에서 날씨·특보·운영 상태가 바뀌었을 때) -->
+  <section class="view" id="v-reroute" aria-label="경로 변경">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">여행 중에 조건이 바뀌었어요</div><div class="t">경로 변경</div><button class="back px" data-nav="travel">‹ 여행</button></div>
+    <div class="scroll" id="rrBody"></div>
+  </section>
+
+  <!-- 내 여행 상세: 장부 [내 여행]에서 지난 여행 한 장을 누르면 열림 (F-11, 본인 것만, 좌표 없음) -->
+  <section class="view" id="v-tripdetail" aria-label="내 여행 상세">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">지난 여행 한 장</div><div class="t">내 여행</div><button class="back px" data-tab="ledger" data-bm="trips">‹ 장부</button></div>
+    <div class="scroll">
+      <div class="snap" id="snapTrip">
+        <div class="snaptop"><span>하랑이와 걸은 오늘</span><span>[지난 날짜]</span></div>
+        <div class="snapw">[지난 날씨 기록]</div>
+        <div class="snapphoto"><span>[지난 여행 사진 자리]</span></div>
+        <div class="snapcap"><b>중구 근대골목 걷기</b>
+          <div class="snaprow"><b>[시각]</b><span>동성로</span><img src="../brand/character/images/stamp_nungeum.webp" alt="도장"></div>
+          <div class="snaprow"><b>[시각]</b><span>대구 근대골목</span><img src="../brand/character/images/stamp_nungeum.webp" alt="도장"></div>
+          <div class="snaprow"><b>[시각]</b><span>대구약령시한의약박물관</span><img src="../brand/character/images/stamp_nungeum.webp" alt="도장"></div>
+        </div>
+        <div class="snapfoot"><span>[하랑이 마무리 대사 · 승인 대기]</span><span>도장 3/3</span></div>
+      </div>
+      <button class="cta px" data-nav="fullsnap" data-idx="trip" style="height:52px">전체 화면으로 보기</button>
+      <button class="row px" data-tab="ledger" data-bm="trips" style="justify-content:center;font-weight:800">내 여행 목록으로</button>
+    </div>
+  </section>
+
   <div class="modal" id="modal" role="alertdialog" aria-modal="true" aria-labelledby="modalT" hidden>
     <div class="box px">
       <b id="modalT">진행 중인 여행이 있어요</b>
@@ -304,9 +501,9 @@
   <b>배치 확인용 목업입니다.</b> 390 x 844 기준이고, 문구는 모두 임시이며 대사는 <b>[승인 대사 대기]</b>입니다.
   <b>역할 구분</b>: 하단 <b>장부 탭</b> = 장부 전체(칸·내 여행·앨범), 방 안 <b>책상 위 장부 그림</b> = 오늘 페이지(오늘 조건의 칸), 홈 <b>주머니 버튼</b> = 받은 물건.
   한 코스의 도장은 3개이고, 장소 3곳을 방문해 미션을 마칠 때마다 1개씩 받습니다.
-  추천 길 카드를 누르면 외출 연출(하랑이가 옆을 보고 문으로 걸어감)의 자리를 볼 수 있습니다. 옆모습은 정면 스프라이트를 좁혀 흉내 낸 것입니다.
+  흐름: 추천 길 카드 → 코스 상세(S-04) → [이 길로 출발] → 하랑이 브리핑 → 홈 출발 준비 → 현관문 화살표 → 대사 → 몸 돌리기·옆모습 걷기(4장)로 문 밖 외출 → [여행 지도 보기] → 여행 지도(S-05) → [도착 확인] → 방문 확인·미션(S-06) → 도장 → 3곳을 마치면 완주 한 장(S-08). 여행 중 조건이 바뀌면 경로 변경(S-07)에서 검수된 대체 길을 제안만 하고 자동으로 바꾸지 않습니다. 화면 전환은 클릭으로만 일어납니다. GPS 도착과 미션 판정은 임시 버튼입니다. 상단 "미션 첫 시도 실패" 체크를 켜면 첫 시도가 실패합니다.
   글꼴은 기기 기본 한글 글꼴입니다. 폭염·호우 배경은 변형 이미지가 없어 필터로 대신했습니다.
-  근거: storyboard/app_home_screen_v1.md, storyboard/game_flow_story_v1.md (6-1, 8, 9-2), brand/worldview.md 5-1, brand/game_concept.md 7, plan/spec/treagent_tech_spec_v1.md (F-10, F-11, F-17).
+  근거: storyboard/app_home_screen_v1.md, storyboard/app_screen_storyboard_v1.md (S-04~S-08), storyboard/game_flow_story_v1.md (6-1, 8, 9-2), brand/worldview.md 5-1, brand/game_concept.md 7, plan/spec/treagent_tech_spec_v1.md (F-10, F-11, F-17).
 </p>
 
 <script>
@@ -319,36 +516,66 @@
       routes:{
         explore:{chips:'<span class="chip">야외</span> <span class="chip i">실내</span>',stops:['동성로','대구 근대골목','대구약령시한의약박물관']},
         indoor:{chips:'<span class="chip i">실내</span> <span class="chip i">전시</span>',stops:['대구약령시한의약박물관','대구향토역사관','국채보상운동기념관'],caution:'국채보상운동기념관은 민감한 역사 소재라 [주의] 표시 필요'}
+      }},
+    /* 아래 C02~C06은 목업용 임시 코스 (장소 이름은 자리 표시, 실제 장소 확정 전) */
+    C02:{t:'[임시] 중구 골목 산책 B',m:'중구 · 3곳 · 약 60분 [확인 필요]',
+      routes:{
+        explore:{chips:'<span class="chip">야외</span>',stops:['[장소 2-1]','[장소 2-2]','[장소 2-3]']},
+        indoor:{chips:'<span class="chip i">실내</span>',stops:['[실내 2-1]','[실내 2-2]','[실내 2-3]']}
+      }},
+    C03:{t:'[임시] 중구 한나절 코스 C',m:'중구 · 3곳 · 약 60분 [확인 필요]',
+      routes:{
+        explore:{chips:'<span class="chip">야외</span>',stops:['[장소 3-1]','[장소 3-2]','[장소 3-3]']},
+        indoor:{chips:'<span class="chip i">실내</span>',stops:['[실내 3-1]','[실내 3-2]','[실내 3-3]']}
+      }},
+    C04:{t:'[임시] 중구 짧은 코스 D',m:'중구 · 3곳 · 약 60분 [확인 필요]',
+      routes:{
+        explore:{chips:'<span class="chip">야외</span>',stops:['[장소 4-1]','[장소 4-2]','[장소 4-3]']},
+        indoor:{chips:'<span class="chip i">실내</span>',stops:['[실내 4-1]','[실내 4-2]','[실내 4-3]']}
+      }},
+    C05:{t:'[임시] 중구 실내 위주 E',m:'중구 · 3곳 · 약 60분 [확인 필요]',
+      routes:{
+        explore:{chips:'<span class="chip">야외</span>',stops:['[장소 5-1]','[장소 5-2]','[장소 5-3]']},
+        indoor:{chips:'<span class="chip i">실내</span>',stops:['[실내 5-1]','[실내 5-2]','[실내 5-3]']}
+      }},
+    C06:{t:'[임시] 중구 전망 코스 F',m:'중구 · 3곳 · 약 60분 [확인 필요]',
+      routes:{
+        explore:{chips:'<span class="chip">야외</span>',stops:['[장소 6-1]','[장소 6-2]','[장소 6-3]']},
+        indoor:{chips:'<span class="chip i">실내</span>',stops:['[실내 6-1]','[실내 6-2]','[실내 6-3]']}
       }}
   };
+  var CUR='C01';
+  function cc(){ return C[CUR] }
   function routeOf(k){return (S[k]&&S[k].rt)||'explore'}
   var S={
-    none:   {b1:'맑음 · 체감 [○]℃',b2:'[구·군] · [기준 시각] 기준 ▾',tone:'',cta:['오늘의 길 확인','날씨에 맞는 길을 찾아봐요 [임시]','S-14 오늘의 길'],q1:'코스 전체',bub:'{이름} 님, [대사 자리]',cards:['C01'],note:'1~3개 [예시] · MVP는 코스 1개',st:[3,'최근 한 장 · 도장 3/3 [임시]'],today:0},
+    none:   {b1:'맑음 · 체감 [○]℃',b2:'[구·군] · [기준 시각] 기준 ▾',tone:'',cta:['오늘의 길 고르기','날씨에 맞는 길을 찾아봐요 [임시]','S-14 오늘의 길'],q1:'코스 전체',bub:'{이름} 님, [대사 자리]',cards:['C01'],note:'1~3개 [예시] · MVP는 중구 안 여러 길',st:[3,'최근 한 장 · 도장 3/3 [임시]'],today:0},
     active: {b1:'맑음 · 체감 [○]℃',b2:'[구·군] · [기준 시각] 기준 ▾',tone:'',cta:['이어하기','다음: [장소명] · 3곳 중 2곳 [임시]','S-05 이어하기'],q1:'오늘의 길',bub:'{이름} 님, [출발 준비 대사]',cards:['C01'],note:'새 여행 허용은 D-08 결정 전',st:[2,'오늘 길 · 도장 2/3 [임시]'],today:2},
     notice: {b1:'맑음 · 체감 [○]℃',b2:'[구·군] · [기준 시각] 기준 ▾',tone:'',cta:['이어하기','다음: [장소명] · 3곳 중 2곳 [임시]','S-05 이어하기'],q1:'오늘의 길',bub:'{이름} 님, [경로 변경 대사]',cards:['C01'],note:'새 여행 허용은 D-08 결정 전',st:[2,'오늘 길 · 도장 2/3 [임시]'],today:2,banner:['n','경로가 바뀌었어요 [임시 문구] · 눌러서 확인','S-07 경로 변경']},
     heat:   {b1:'폭염특보 · 체감 [○]℃',b2:'[구·군] · [기준 시각] 기준 · [AWS 여부] ▾',tone:'warn heat',cta:['가까운 쉼터 보기','야외 길 안내를 멈췄어요 [임시]','S-14 가까운 쉼터'],q1:'코스 전체',bub:'{이름} 님, [쉬어 가는 대사]',cards:['C01'],rt:'indoor',note:'실내 경로로 바뀜',st:[3,'최근 한 장 · 도장 3/3 [임시]'],today:0,banner:['w','[기준 시각] 기준 · 쉼터는 [운영 시간]까지 · 야외 안내 중단','S-14 가까운 쉼터']},
     storm:  {b1:'호우 · 강수 [○]mm',b2:'[구·군] · [기준 시각] 기준 ▾',tone:'warn storm',cta:['가까운 쉼터 보기','신규 이동을 보류했어요 [임시]','S-14 가까운 쉼터'],q1:'코스 전체',bub:'{이름} 님, [안전 대사]',cards:[],msg:'지금은 실내 안내만 보여요. 안전한 곳에서 기다려요 [임시 문구]',note:'',st:[3,'최근 한 장 · 도장 3/3 [임시]'],today:0,banner:['w','[기준 시각] 기준 · 야외 코스 숨김 · 신규 이동 보류','S-14 가까운 쉼터']},
     unknown:{b1:'날씨를 불러오지 못했어요',b2:'[구·군] · 확인 중 ▾',tone:'grey',cta:['가까운 쉼터 보기','날씨를 확인할 수 없어 길을 권하지 않아요 [임시]','S-14 가까운 쉼터'],q1:'코스 전체',bub:'{이름} 님, [확인 불가 대사]',cards:[],msg:'날씨를 확인할 수 없어요. 추측하지 않고 쉼터 안내만 보여 드려요 [임시 문구]',note:'',st:[3,'최근 한 장 · 도장 3/3 [임시]'],today:0},
     outside:{b1:'맑음 · 체감 [○]℃',b2:'[구·군] · [기준 시각] 기준 ▾',tone:'',cta:['중구 코스 둘러보기','지금은 중구만 안내해요 [임시]','S-04 중구 코스'],q1:'코스 전체',bub:'{이름} 님, [중구 안내 대사]',cards:['C01'],note:'중구 코스만 (MVP)',st:[3,'최근 한 장 · 도장 3/3 [임시]'],today:0,banner:['n','지금 계신 곳은 중구가 아니에요. 중구 코스를 안내해요 [임시 문구]','S-14 구·군 선택']},
-    empty:  {b1:'맑음 · 체감 [○]℃',b2:'[구·군] · [기준 시각] 기준 ▾',tone:'',cta:['오늘의 길 확인','날씨에 맞는 길을 찾아봐요 [임시]','S-14 오늘의 길'],q1:'코스 전체',bub:'{이름} 님, [갸웃 대사]',cards:[],msg:'지금 보여 드릴 코스가 없어요 [임시 문구]',note:'',st:[3,'최근 한 장 · 도장 3/3 [임시]'],today:0}
+    empty:  {b1:'맑음 · 체감 [○]℃',b2:'[구·군] · [기준 시각] 기준 ▾',tone:'',cta:['오늘의 길 고르기','날씨에 맞는 길을 찾아봐요 [임시]','S-14 오늘의 길'],q1:'코스 전체',bub:'{이름} 님, [갸웃 대사]',cards:[],msg:'지금 보여 드릴 코스가 없어요 [임시 문구]',note:'',st:[3,'최근 한 장 · 도장 3/3 [임시]'],today:0}
   };
-  function stopName(k,i){var r=C.C01.routes[routeOf(k)];return r.stops[i]||('[스팟 '+(i+1)+']')}
+  function stopName(k,i){var r=cc().routes[routeOf(k)];return r.stops[i]||('[스팟 '+(i+1)+']')}
   function toast(t){var el=$('#toast');el.textContent=t+' (자리)';el.classList.add('on');clearTimeout(toastT);toastT=_realST(function(){el.classList.remove('on')},1800)}
   function stampImgs(n,cls){var h='';for(var i=0;i<3;i++)h+='<img'+(i>=n?' class="e"':'')+' src="'+STAMP+'" alt="'+(i<n?'받은 도장':'빈 도장 자리')+'">';return h}
   function render(){
     var k=$('#state').value, s=S[k];
-    scene.className='scene '+s.tone;
+    scene.className='scene '+s.tone+(scene.classList.contains('going')?' going':'')+(scene.classList.contains('ready')?' ready':'');
     $('#badgeTx').innerHTML=s.b1+'<small>'+s.b2+'</small>';
     $('#bubbleTx').textContent=s.bub;
     $('#bubbleA').hidden=!$('#optA').checked || k!=='none';
     $('#ctaT').textContent=s.cta[0]; $('#ctaS').textContent=s.cta[1]; $('#cta').dataset.go=s.cta[2];
+    $('#cta').dataset.nav=({none:'picks',outside:'picks',active:'travel',notice:'travel'})[k]||'';
     $('#q1t').textContent=s.q1; $('#q1').dataset.go = s.q1==='오늘의 길' ? 'S-14 오늘의 길 (진행 중에도 보기, D-08)' : 'S-04 코스 전체';
     var sb=$('#sbanner'); if(s.banner){sb.hidden=false;sb.className='sbanner'+(s.banner[0]==='n'?' n':'');sb.textContent=s.banner[1];sb.dataset.go=s.banner[2]}else{sb.hidden=true}
+    sb.dataset.nav=(s.banner&&s.banner[2]==='S-07 경로 변경')?'reroute':'';
     $('#listNote').textContent=s.note||'';
     var L=$('#list'); L.innerHTML='';
     s.cards.forEach(function(id){var c=C[id], r=c.routes[routeOf(k)];var b=document.createElement('button');b.className='card px';b.dataset.c=id;
       b.innerHTML='<div class="th">[코스<br>썸네일]</div><div class="tx">'+c.t+'<small>'+c.m+'</small>'+r.chips+'<div class="route">'+r.stops.join(' → ')+'</div>'+(r.caution?'<div class="why">'+r.caution+'</div>':'')+'<div class="why">[사유: 승인 대사 빈칸 채우기]</div></div>';
-      b.addEventListener('click',startRoute);L.appendChild(b)});
+      b.addEventListener('click',function(){nav('course',id)});L.appendChild(b)});
     if(!s.cards.length){var m=document.createElement('div');m.className='msg px';m.textContent=s.msg;L.appendChild(m)}
     var sx=$('#stampBox'); sx.innerHTML=stampImgs(s.st[0])+'<span>'+s.st[1]+'</span>'; sx.hidden=!$('#optB').checked;
     // 오늘 페이지
@@ -356,41 +583,190 @@
     var T=$('#todayCells'); T.innerHTML='';
     for(var i=0;i<3;i++){var done=i<s.today;T.insertAdjacentHTML('beforeend','<div class="cell px"><div class="l"><b>'+stopName(k,i)+' · [미션 종류]</b>[상태 한 줄: 검수된 정보 요약]<small>'+(done?'내가 채운 칸 · 미션 완료':'아직 비어 있어요')+'</small></div>'+(done?'<img src="'+STAMP+'" alt="내 도장">':'<div class="slot"></div>')+'</div>')}
   }
-  // 진행 중인 여행이 있으면 경고창을 먼저 띄우고, [새로 시작]을 눌러야 외출 연출로 넘어간다 (D-08 결정)
+  /* 여행 흐름 (S-04 → 외출 → S-05 → S-06 → S-08). 목업용 임시 값이며 실제 진행 데이터가 아님.
+     화면 전환은 클릭으로만 일어난다 (자동 전환 없음, ?lock 모드와 맞춤). */
+  var TRIP={on:false,route:'explore',done:0,names:[]}, cur=0, phase='mission';
+  // 이미 도장을 받은 장소는 이름을 고정한다 (경로를 바꿔도 지난 장소는 그대로)
+  function stopAt(i){ if(TRIP.names[i]) return TRIP.names[i]; var r=cc().routes[TRIP.route]; return r.stops[i]||('[스팟 '+(i+1)+']') }
+  function ensureTrip(){ if(!TRIP.on){ var k=$('#state').value; TRIP={on:true,route:routeOf(k),done:(k==='active'||k==='notice')?2:0,names:[]} } }
+  function renderCourse(){
+    var r=cc().routes[routeOf($('#state').value)];
+    $('#crsT').textContent=cc().t;
+    $('#crsChips').innerHTML=r.chips;
+    $('#crsStops').innerHTML=r.stops.map(function(n,i){return '<div class="row px"><div class="tx" style="flex:1"><b>'+(i+1)+'. '+n+'</b><small>[미션 종류] · [검수된 정보 요약]</small></div></div>'}).join('');
+    $('#crsCaution').innerHTML=r.caution?'<div class="msg px">'+r.caution+'</div>':'';
+  }
+  function renderTravel(){
+    var n=TRIP.done, X=[40,150,262], Y=[120,60,130];
+    $('#trvSub').textContent=n>=3?'3곳을 모두 걸었어요':'3곳 중 '+n+'곳 걸었어요 · 다음: '+stopAt(n);
+    // 미션을 마친 장소에는 능금 도장이 찍힌다 (오늘의 여행 지도)
+    $('#trvPins').innerHTML=[0,1,2].map(function(i){var pos='left:'+X[i]+'px;top:'+Y[i]+'px'; return i<n?'<img class="pinst" src="'+STAMP+'" alt="도장 찍힘" style="'+pos+'">':'<span class="pin" style="'+pos+'">'+(i+1)+'</span>'}).join('');
+    $('#trvList').innerHTML=[0,1,2].map(function(i){var st=i<n?'도장 받음':(i===n?'다음 장소':'아직'); return '<button class="row px" data-nav="place" data-idx="'+i+'"'+(i>n?' disabled':'')+'><div class="tx" style="flex:1"><b>'+(i+1)+'. '+stopAt(i)+'</b><small>'+st+'</small></div></button>'}).join('');
+    var b=$('#trvBtn'); b.dataset.nav=n>=3?'done':'place'; b.dataset.idx=n; b.textContent=n>=3?'완주 한 장 보기':'다음 장소 보기';
+  }
+  var justStamped=false;
+  // 장부 지도: 대구 전역을 구역으로 나눠 길 완주율을 보여 준다 (능금 도장은 오늘의 여행 지도에 찍힘)
+  // 완주율 수치는 예시이고 계산 기준은 [정의 확인 필요]. MVP는 중구만 안내
+  var DISTS=[{n:'군위군',c:0,r:0},{n:'북구',c:1,r:0},{n:'동구',c:2,r:0},{n:'서구',c:0,r:1},{n:'중구',c:1,r:1,on:1,rate:33},{n:'수성구',c:2,r:1},{n:'달서구',c:0,r:2},{n:'남구',c:1,r:2},{n:'달성군',c:2,r:2}];
+  // 내 완주율 = 내가 완주한 길 수 ÷ 전체 길 수 (기준은 [확인 필요]). 내 여행 목록의 완주 1회를 기본값으로 둠
+  var MY_DONE={C01:true};
+  function mineRate(){ return Math.round(Object.keys(MY_DONE).length/POOL.length*100) }
+  // 오늘의 길 3개 보기: 새로고침하면 다음 3개 (목업은 6개를 번갈아 보여 줌)
+  var POOL=['C01','C02','C03','C04','C05','C06'], PAGE=0;
+  function renderPicks(){
+    var k=$('#state').value, ids=[0,1,2].map(function(j){return POOL[(PAGE*3+j)%POOL.length]});
+    $('#pickList').innerHTML=ids.map(function(id){var c=C[id], r=c.routes[routeOf(k)];
+      return '<button class="card px" data-nav="course" data-idx="'+id+'"><div class="th">[코스<br>썸네일]</div><div class="tx">'+c.t+'<small>'+c.m+'</small>'+r.chips+'<div class="route">'+r.stops.join(' → ')+'</div></div></button>'}).join('');
+    $('#pickNote').textContent=PAGE?'새로 불러온 길 '+(PAGE+1)+'번째 묶음':'날씨에 맞는 길 3개';
+  }
+  function renderMap(){
+    $('#mapPins').innerHTML=DISTS.map(function(d){return '<span class="dist'+(d.on?' on':'')+'" style="left:'+(6+d.c*118)+'px;top:'+(6+d.r*64)+'px"><b>'+d.n+'</b>'+(d.on?'<small>내 완주율 [예시] '+mineRate()+'%</small>':'<small>준비 중</small>')+'</span>'}).join('');
+  }
+  // 장소 → 소개 → 도착했어요 → GPS 확인·미션 안내 → 미션 달성 시 능금 도장
+  function renderStop(){
+    $('#stpSub').textContent=(cur+1)+'번째 장소';
+    var h='<div class="h3">'+stopAt(cur)+'</div>', anim=justStamped; justStamped=false;
+    if(phase==='intro'){
+      h+='<div class="pic px"><span>[장소 사진 자리]</span></div>';
+      h+='<div class="row px"><div>[장소 소개 자리 · 검수된 문구. 민감한 역사 소재면 [주의] 표시]</div></div>';
+      h+='<button class="cta px" data-nav="arrive" style="height:56px">도착했어요</button>';
+      h+='<button class="row px" data-nav="travel" style="justify-content:center;font-weight:800">여행 지도로 돌아가기</button>';
+    } else if(phase==='mission'){
+      h+='<div class="row px"><div class="tx" style="flex:1"><b>GPS 확인 완료</b><small>장소 반경 안에 들어왔어요 [반경·정확도는 현장 시험 후 정함, D-05]</small></div></div>';
+      h+='<div class="row px"><div class="tx" style="flex:1"><b>미션 안내 · [미션 종류]</b><small>[미션 내용 자리] · [승인 대사 대기]</small></div></div>';
+      h+='<button class="cta px" data-nav="mission" style="height:56px">미션 마치기</button>';
+      h+='<button class="row px" data-nav="travel" style="justify-content:center;font-weight:800">여행 지도로 돌아가기</button>';
+    } else if(phase==='failed'){
+      h+='<div class="msg px">아직 미션을 마치지 못했어요. 다시 해 볼까요? [임시 문구]</div>';
+      h+='<button class="cta px" data-nav="mission" style="height:56px">다시 하기</button>';
+    } else {
+      var last=cur>=2;
+      h+='<div class="stampRow"><img class="'+(anim?'slam':'')+'" src="'+STAMP+'" alt="받은 도장"><span>'+(cur+1)+'번째 도장을 받았어요 [임시 문구]</span></div>';
+      h+='<button class="cta px" data-nav="'+(last?'done':'travel')+'" style="height:56px">'+(last?'완주 한 장 보기':'다음 장소로')+'</button>';
+    }
+    $('#stpBody').innerHTML=h;
+  }
+  function mission(){
+    if(phase==='mission' && $('#optMiss').checked){ phase='failed' }
+    else { phase='passed'; TRIP.names[cur]=stopAt(cur); TRIP.times[cur]=hhmm(new Date()); TRIP.done=cur+1; justStamped=true }
+    renderStop();
+  }
+  // 완주 카드(SNS 4:5): 오늘 날짜, 날씨, 장소별 방문 시각 (시각은 도장을 찍은 실제 시계 시각)
+  var WD=['일','월','화','수','목','금','토'];
+  function hhmm(d){ return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0') }
+  function snapHTML(){
+    var d=new Date(), ds=d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0')+' ('+WD[d.getDay()]+')';
+    var rows=[0,1,2].map(function(i){return '<div class="snaprow"><b>'+(TRIP.times[i]||'--:--')+'</b><span>'+stopAt(i)+'</span><img src="'+STAMP+'" alt="도장"></div>'}).join('');
+    return '<div class="snaptop"><span>하랑이와 걸은 오늘</span><span>'+ds+'</span></div>'
+      +'<div class="snapw">'+(TRIP.weather||'')+'</div>'
+      +'<div class="snapphoto"><span>[오늘의 여행 사진 자리]</span></div>'
+      +'<div class="snapcap"><b>'+cc().t+'</b>'+rows+'</div>'
+      +'<div class="snapfoot"><span>[하랑이 마무리 대사 · 승인 대기]</span><span>도장 3/3</span></div>';
+  }
+  function renderDone(){
+    $('#snapCard').innerHTML=snapHTML();
+    if(!TRIP.counted){ MY_DONE[CUR]=true; TRIP.counted=true; renderMap() }
+  }
+  // S-07: 조건이 바뀌면 대체 길을 제안만 하고 자동으로 바꾸지 않는다 (game_flow_story_v1.md 7절)
+  function renderReroute(){
+    var alt=!$('#optNoAlt').checked, h='';
+    h+='<div class="row px"><div class="tx" style="flex:1"><b>[변경 사유 자리]</b><small>[날씨·특보 종류] · [기준 시각] 기준 [확인 필요]</small></div></div>';
+    h+='<div class="row px"><div><b>하랑이</b>[승인 대사 대기] · 놀람 표정 [그림 없음]</div></div>';
+    if(alt){
+      var r=cc().routes.indoor;
+      h+='<div class="h3">대체 길 <span>검수된 길만 제안해요 [임시 이름]</span></div>';
+      h+='<div class="row px" style="flex-direction:column;align-items:flex-start"><div>'+r.chips+'</div><small style="color:var(--muted);font-size:10px;margin-top:6px">'+r.stops.join(' → ')+'</small></div>';
+      h+='<button class="cta px" data-nav="reroute-accept" style="height:56px">대체 길로 계속</button>';
+      h+='<button class="row px" data-nav="reroute-keep" style="justify-content:center;font-weight:800">원래대로 계속</button>';
+      h+='<button class="row px" data-nav="reroute-later" style="justify-content:center;font-weight:800">나중에 이어하기</button>';
+    } else {
+      h+='<div class="msg px">대체 길이 없어요. 여행을 보류하고 확인된 쉼터를 안내해요 [임시 문구]</div>';
+      h+='<div class="row px"><div class="tx" style="flex:1"><b>가까운 쉼터 [이름]</b><small>운영 [시간]까지 · [기준 시각] 기준 · AWS 여부 [확인 필요]</small></div></div>';
+      h+='<button class="cta px" data-go="S-14 가까운 쉼터 (확인된 곳만)" style="height:56px">쉼터 보기</button>';
+      h+='<button class="row px" data-nav="reroute" style="justify-content:center;font-weight:800">다시 확인</button>';
+      h+='<button class="row px" data-nav="reroute-later" style="justify-content:center;font-weight:800">나중에 이어하기</button>';
+    }
+    $('#rrBody').innerHTML=h;
+  }
+  function nav(name,idx){
+    if(name==='picks'){ PAGE=0; renderPicks(); show('picks'); return }
+    if(name==='reroll'){ PAGE++; renderPicks(); return }
+    if(name==='fullsnap'){ $('#snapFull').innerHTML=(idx==='trip'?$('#snapTrip'):$('#snapCard')).innerHTML; $('#fsv').hidden=false; return }
+    if(name==='briefback'){ show('course'); return }
+    if(name==='cancelready'){ scene.classList.remove('ready'); return }
+    if(name==='closefull'){ $('#fsv').hidden=true; return }
+    if(name==='share'){ toast('SNS 공유는 다음 단계 (자리)'); return }
+    if(name==='course' && idx){ CUR=idx }
+    if(name==='reroute'){ ensureTrip(); renderReroute(); show('reroute') }
+    else if(name==='reroute-accept'){ TRIP.route='indoor'; renderTravel(); show('travel') }
+    else if(name==='reroute-keep'){ renderTravel(); show('travel') }
+    else if(name==='reroute-later'){ show('home'); toast('여행을 장부에 접어 뒀어요') }
+    else if(name==='course'){ renderCourse(); show('course') }
+    else if(name==='depart'){ startRoute() }
+    else if(name==='walkout'){ walkout() }
+    else if(name==='briefdone'){ readyHome() }
+    else if(name==='tripdetail'){ show('tripdetail') }
+    else if(name==='travel'){ scene.classList.remove('going','ready'); ensureTrip(); renderTravel(); show('travel') }
+    else if(name==='place'){ cur=+idx; phase=cur<TRIP.done?'passed':'intro'; renderStop(); show('stop') }
+    else if(name==='arrive'){ phase='mission'; renderStop() }
+    else if(name==='mission'){ mission() }
+    else if(name==='done'){ renderDone(); show('done') }
+  }
+  // 진행 중인 여행이 있으면 경고창을 먼저 띄우고, [새로 시작]을 눌러야 출발한다 (D-08 결정)
   function startRoute(){
     var k=$('#state').value;
     if(k==='active'||k==='notice'){ $('#modal').hidden=false; $('#mKeep').focus(); return }
-    go();
+    depart();
   }
-  $('#mKeep').addEventListener('click',function(){ $('#modal').hidden=true; toast('→ S-05 이어하기') });
-  $('#mNew').addEventListener('click',function(){ $('#modal').hidden=true; go() });
+  // 출발: 코스 브리핑 씬 → [좋아요] → 홈(출발 준비: 대사 + 현관문 화살표)
+  function depart(){
+    var k=$('#state').value, r=routeOf(k);
+    TRIP={on:true,route:r,done:0,names:[],times:[],weather:S[k].b1,counted:false};
+    $('#briefT').textContent=cc().t;
+    $('#briefTx').innerHTML='오늘은 이 길로 걸어요.<br>장소에서 미션을 완수하면 도장이 찍혀요.';
+    renderBrief(r);
+    $('#briefWx').textContent='현재 날씨 · '+(TRIP.weather||'');
+    show('brief');
+  }
+  // 장소를 세로로 잇고, 장소 사이에 도보 시간을 표시 (도보 시간은 예시)
+  function renderBrief(r){
+    var names=cc().routes[r].stops, walk=[8,6], h='';
+    names.forEach(function(n,i){
+      h+='<div class="bstop"><img src="../brand/character/images/stamp_nungeum.webp" alt=""><div class="bt"><b>'+(i+1)+'. '+n+'</b><small>[장소 특징 한 줄 · 검수 문구 필요]</small></div></div>';
+      if(i<names.length-1) h+='<div class="bwalk">↓ 도보 약 '+walk[i]+'분 [예시]</div>';
+    });
+    $('#briefList').innerHTML=h;
+    $('#briefChips').innerHTML=cc().routes[r].chips+' <span class="chip t">60분</span>';
+  }
+  function readyHome(){
+    show('home');
+    scene.classList.remove('going'); scene.classList.add('ready');
+    $('#dBubTx').textContent='오늘은 '+cc().t+'('+(TRIP.route==='indoor'?'실내':'야외')+') 길로 가 볼까요?';
+  }
+  // 문을 누르면: 대사 → 몸 돌리기 → 옆모습으로 문 쪽 걷기 → 문 밖으로 사라짐
+  function walkout(){
+    scene.classList.remove('ready'); scene.classList.remove('going');
+    $('#dBubTx').textContent='자, 이제 진짜 출발!';
+    void scene.offsetWidth; scene.classList.add('going');
+  }
+  $('#mKeep').addEventListener('click',function(){ $('#modal').hidden=true; nav('travel') });
+  $('#mNew').addEventListener('click',function(){ $('#modal').hidden=true; depart() });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') $('#modal').hidden=true });
-  var going=false;
-  function go(){
-    if(going)return; going=true;
-    var reduce=matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if(!reduce) scene.classList.add('going');
-    setTimeout(function(){toast('외출 연출 후 S-04 코스 상세로 이동')},reduce?0:1700);
-    setTimeout(function(){scene.classList.remove('going');going=false},reduce?1200:3200);
-  }
-  var TABOF={home:'home',today:'home',pouch:'home',ledger:'ledger',me:'me'};
+  var TABOF={home:'home',today:'home',pouch:'home',course:'home',travel:'home',stop:'home',done:'home',reroute:'home',tripdetail:'ledger',brief:'home',picks:'home',ledger:'ledger',me:'me'};
   function show(name){
-    ['home','ledger','today','pouch','me'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
+    $('#phone').classList.toggle('fullscreen',name==='brief');
+    ['home','ledger','today','pouch','me','course','travel','stop','done','reroute','tripdetail','brief','picks'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
     var cur=TABOF[name];
     $$('.tab button').forEach(function(b){var t=b.dataset.tab||b.dataset.view; if(t===cur)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   }
   function bm(name){
-    ['cells','trips','album'].forEach(function(n){$('#bm-'+n).hidden=n!==name});
+    ['map','trips','album'].forEach(function(n){$('#bm-'+n).hidden=n!==name});
     $$('.seg button').forEach(function(b){b.setAttribute('aria-selected',b.dataset.bm===name)});
   }
-  function mine(on){
-    $('#fMine').setAttribute('aria-pressed',on);
-    $$('#bm-cells .cell.other').forEach(function(c){c.hidden=on});
-  }
   document.addEventListener('click',function(e){
+    var nv=e.target.closest('[data-nav]'); if(nv&&nv.dataset.nav){nav(nv.dataset.nav,nv.dataset.idx);return}
     var sg=e.target.closest('.seg button'); if(sg){bm(sg.dataset.bm);return}
-    var tg=e.target.closest('#fMine'); if(tg){mine(tg.getAttribute('aria-pressed')!=='true');return}
-    var t=e.target.closest('[data-tab]'); if(t){show(t.dataset.tab); if(t.dataset.bm){bm(t.dataset.bm); mine(!!t.dataset.mine)} return}
+    var t=e.target.closest('[data-tab]'); if(t){show(t.dataset.tab); if(t.dataset.bm){bm(t.dataset.bm)} return}
     var v=e.target.closest('[data-view]'); if(v){show(v.dataset.view);return}
     var g=e.target.closest('[data-go]'); if(g && !g.classList.contains('card')){toast('→ '+g.dataset.go)}
   });
@@ -412,7 +788,7 @@
     if(typeof d.optA==='boolean')$('#optA').checked=d.optA;
     if(typeof d.optB==='boolean')$('#optB').checked=d.optB;
     render();report();});
-  window.addEventListener('resize',fit); fit(); render();
+  window.addEventListener('resize',fit); fit(); render(); renderMap();
   report();
 })();
 </script>
