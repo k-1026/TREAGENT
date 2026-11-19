@@ -1,0 +1,401 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>코스 추천과 AI 역할</title>
+<style>
+/* 레이아웃: 위에서 아래로 읽는 한 장짜리 설명. 입력 → 탈락 → 점수 → 3곳 고르기 → 결과 */
+:root {
+  --bg: #f6f5f1;
+  --surface: #ffffff;
+  --fg: #1d1f1c;
+  --muted: #3d423a;
+  --line: #dcdcd3;
+  --accent: #2f6b4f;
+  --accent-soft: #e2efe8;
+  --warn: #9a4a1f;
+  --warn-soft: #f7e7dc;
+  --bar: #2f6b4f;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #15171a;
+    --surface: #1f2226;
+    --fg: #ecece6;
+    --muted: #d3d7ce;
+    --line: #353a40;
+    --accent: #7fc5a1;
+    --accent-soft: #1f3a2e;
+    --warn: #f0a57c;
+    --warn-soft: #3b2a20;
+    --bar: #7fc5a1;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #15171a;
+  --surface: #1f2226;
+  --fg: #ecece6;
+  --muted: #d3d7ce;
+  --line: #353a40;
+  --accent: #7fc5a1;
+  --accent-soft: #1f3a2e;
+  --warn: #f0a57c;
+  --warn-soft: #3b2a20;
+  --bar: #7fc5a1;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Pretendard", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.7;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.wrap { max-width: 760px; margin: 0 auto; padding-block: 32px 56px; }
+h1 { font-size: 26px; line-height: 1.3; margin: 0 0 8px; text-wrap: balance; }
+h2 { font-size: 19px; margin: 40px 0 12px; text-wrap: balance; }
+p { margin: 0 0 12px; }
+.lead { color: var(--muted); margin-bottom: 24px; }
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 18px 18px;
+}
+.muted { color: var(--muted); font-size: 14px; }
+.seg td:first-child { font-weight: 700; white-space: nowrap; }
+.tag {
+  display: inline-block;
+  font-size: 12px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent);
+  font-weight: 600;
+}
+.tag.warn { background: var(--warn-soft); color: var(--warn); }
+
+/* 1. 입력 3개 */
+.inputs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+.inputs .card h3 { margin: 0 0 6px; font-size: 16px; }
+.inputs .card ul { margin: 0; padding-left: 18px; }
+
+/* 2~5. 처리 순서 */
+.flow { display: grid; gap: 12px; margin: 0; padding: 0; list-style: none; counter-reset: step; }
+.flow > li {
+  display: grid;
+  grid-template-columns: 36px minmax(0, 1fr);
+  gap: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px;
+}
+.flow .num {
+  width: 36px; height: 36px; border-radius: 50%;
+  display: grid; place-items: center;
+  background: var(--accent); color: var(--bg);
+  font-weight: 700;
+}
+.flow h3 { margin: 0 0 4px; font-size: 16px; }
+.flow ul { margin: 6px 0 0; padding-left: 18px; }
+.flow > li.stop .num { background: var(--warn); }
+.flow ol, .flow ul { margin: 6px 0 0; padding-left: 18px; }
+.flow ol li { display: list-item; background: none; border: 0; padding: 0; }
+
+/* 점수 막대 */
+.bars { display: grid; gap: 10px; }
+.bar-row { display: grid; grid-template-columns: minmax(0, 120px) minmax(0, 1fr) 44px; gap: 10px; align-items: center; font-size: 14px; }
+.track { height: 12px; background: var(--accent-soft); border-radius: 999px; overflow: hidden; }
+.fill { height: 100%; background: var(--bar); border-radius: 999px; }
+.bar-row .w { text-align: right; font-variant-numeric: tabular-nums; color: var(--muted); }
+
+/* 표 */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+th, td { text-align: left; padding: 10px 8px; border-bottom: 1px solid var(--line); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; }
+td.num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* 예시 결과 */
+.result { display: grid; gap: 10px; }
+.pick {
+  display: grid; grid-template-columns: 28px minmax(0, 1fr); gap: 10px; align-items: start;
+  padding: 12px 0; border-bottom: 1px dashed var(--line);
+}
+.pick:last-child { border-bottom: 0; }
+.pick .n { font-weight: 700; color: var(--accent); }
+.pick .why { color: var(--muted); font-size: 14px; margin-top: 2px; }
+.out { background: var(--warn-soft); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+.out strong { color: var(--warn); }
+
+/* 주의 문구 */
+.rule {
+  border-left: 4px solid var(--accent);
+  background: var(--accent-soft);
+  border-radius: 8px;
+  padding: 12px 14px;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+.check { margin: 0; padding-left: 20px; }
+.check li { margin-bottom: 6px; }
+
+/* 0. AI 역할 흐름도 */
+.who { display:inline-block; font-size:12px; font-weight:700; padding:2px 8px; border-radius:6px; margin-left:6px; vertical-align:2px; }
+.who.code { background: var(--line); color: var(--fg); }
+.who.ai { background: var(--warn-soft); color: var(--warn); }
+.pipe { display:grid; gap:8px; margin:0; padding:0; list-style:none; }
+.pipe li { display:grid; grid-template-columns: 28px minmax(0,1fr); gap:10px; align-items:start; background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:12px 14px; }
+.pipe li.ai-step { border-color: var(--warn); }
+.pipe .n { font-weight:700; color: var(--accent); }
+.pipe li.ai-step .n { color: var(--warn); }
+.pipe p { margin:2px 0 0; font-size:14px; color: var(--muted); }
+
+@media (max-width: 640px) {
+  .inputs { grid-template-columns: minmax(0, 1fr); }
+  h1 { font-size: 22px; }
+  .bar-row { grid-template-columns: minmax(0, 96px) minmax(0, 1fr) 40px; }
+}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>코스 추천: 장소는 코드가 고르고, AI는 이유를 써요</h1>
+  <p class="lead">AI는 장소를 <strong>고르지 않고</strong>, 고른 장소의 <strong>문장과 이유</strong>만 씁니다. 발표 피드백의 "AI Agent를 어디에 쓰나"(plan/feedback/20261113_presentation_feedback_v1.md 9절)에 답하는 흐름도와, 장소를 고르는 기준을 한 장으로 정리했어요.</p>
+
+  <!-- 0 -->
+  <h2>1. AI 작동 방식 (흐름도에 넣을 내용)</h2>
+  <ol class="pipe">
+    <li><span class="n">1</span><div><strong>입력</strong><span class="who code">앱</span><p>날씨(예: 폭염), 시간대, 연령대, 테마. 권역은 순위 조정에만 씁니다.</p></div></li>
+    <li><span class="n">2</span><div><strong>규칙 판정</strong><span class="who code">코드</span><p>폭염이면 야외를 빼고 실내 모드로 정합니다.</p></div></li>
+    <li><span class="n">3</span><div><strong>장소 필터</strong><span class="who code">코드</span><p>검수된 장소 DB에서 모드와 연령대에 맞는 장소만 남깁니다.</p></div></li>
+    <li><span class="n">4</span><div><strong>장소 선택</strong><span class="who code">코드</span><p>남은 장소 중 3곳을 정해진 기준으로 고릅니다. 기준은 아래 3절.</p></div></li>
+    <li class="ai-step"><span class="n">5</span><div><strong>문장 생성</strong><span class="who ai">AI</span><p>고른 3곳의 제목, 설명, 이유 문장을 씁니다. 장소를 바꾸거나 더하지 않습니다.</p></div></li>
+    <li><span class="n">6</span><div><strong>검수</strong><span class="who code">코드</span><p>허용된 키워드와 길이 규칙을 통과하는지 확인합니다. 통과하지 못하면 승인된 기본 문장을 씁니다 <span class="tag warn">결정 필요</span></p></div></li>
+  </ol>
+  <div class="rule">
+    <strong>이렇게 설명합니다:</strong> "AI가 코스를 마음대로 만든다"는 걱정이 줄어듭니다. 안전 규칙(폭염·운영시간·계단)은 코드에 있어서 AI가 바꿀 수 없습니다.
+  </div>
+
+  <!-- 1 -->
+  <h2>2. 입력은 세 가지</h2>
+  <div class="inputs">
+    <div class="card">
+      <h3>날씨</h3>
+      <span class="tag">실내·야외 비율 결정</span>
+      <ul style="margin-top:10px">
+        <li>맑음 · 폭염 · 비</li>
+        <li>연령과 무관</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>권역</h3>
+      <span class="tag">어디서 고르나</span>
+      <ul style="margin-top:10px">
+        <li>동성로권, 서문권 등</li>
+        <li>제외하지 않고 순위만 조정</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>연령대</h3>
+      <span class="tag">점수 기준 결정</span>
+      <ul style="margin-top:10px">
+        <li>20~30대 / 40~50대 / 60대 이상</li>
+        <li>날씨·권역과 무관하게 적용</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 2~5 -->
+  <h2>3. 장소 고르는 순서 (흐름도 2~4단계, 코드)</h2>
+  <ol class="flow">
+    <li class="stop">
+      <span class="num">1</span>
+      <div>
+        <h3>탈락시키기</h3>
+        <p class="muted">점수를 매기기 전에 아래 조건에 걸리면 바로 뺍니다.</p>
+        <ul>
+          <li>문을 닫았거나 지금 시각에 운영하지 않음</li>
+          <li>폭염·비인데 야외 장소뿐</li>
+          <li>60대 이상인데 계단만 있음</li>
+          <li>이동 허브나 쉼터처럼 방문 장소가 아님</li>
+        </ul>
+      </div>
+    </li>
+    <li>
+      <span class="num">2</span>
+      <div>
+        <h3>점수 매기기 (100점 만점)</h3>
+        <p class="muted">아래 막대 길이는 가중치 예시예요. 팀이 정하면 바꿉니다.</p>
+        <div class="bars" style="margin-top:12px">
+          <div class="bar-row"><span>날씨 적합도</span><div class="track"><div class="fill" style="width:30%"></div></div><span class="w">30</span></div>
+          <div class="bar-row"><span>연령 적합도</span><div class="track"><div class="fill" style="width:25%"></div></div><span class="w">25</span></div>
+          <div class="bar-row"><span>권역 순위</span><div class="track"><div class="fill" style="width:20%"></div></div><span class="w">20</span></div>
+          <div class="bar-row"><span>이동 부담</span><div class="track"><div class="fill" style="width:15%"></div></div><span class="w">15</span></div>
+          <div class="bar-row"><span>정보 신뢰도</span><div class="track"><div class="fill" style="width:10%"></div></div><span class="w">10</span></div>
+        </div>
+        <p class="muted" style="margin-top:10px">연령 적합도는 4번 섹션의 코스 특징을 기준으로 채점합니다.</p>
+      </div>
+    </li>
+    <li>
+      <span class="num">3</span>
+      <div>
+        <h3>점수 높은 순서로 뽑되, 이상한 조합은 빼기</h3>
+        <p class="muted">점심 메뉴 3개를 고르는 것과 같아요. 맛있는 순서대로 보되, 짜장면·짬뽕·울면처럼 같은 종류만 모이면 식사가 단조로우니까 규칙을 둡니다.</p>
+        <ol>
+          <li>점수가 높은 장소부터 하나씩 봅니다.</li>
+          <li>규칙에 걸리면 이번에는 건너뛰고 다음 장소를 봅니다.</li>
+          <li>3곳이 채워지면 멈춥니다.</li>
+        </ol>
+        <p style="margin-top:12px"><strong>쉽게 풀은 규칙</strong></p>
+        <ul>
+          <li><strong>같은 종류 최대 2곳:</strong> 카페만 3곳이 나오지 않게 해요.</li>
+          <li><strong>비·폭염이면 실내 최소 2곳:</strong> 밖에서만 돌면 힘드니까요.</li>
+          <li><strong>같은 동네 최대 2곳:</strong> 한 곳에만 몰리지 않게 해요.</li>
+          <li><strong>걷는 거리 상한:</strong> 2030 3km · 40~50 2km · 60대 이상 1.5km (가정).</li>
+          <li><strong>억지로 채우지 않기:</strong> 조건에 맞는 곳이 3곳보다 적으면 부족한 이유를 씁니다.</li>
+        </ul>
+        <p style="margin-top:12px"><strong>예시 (가상, 비 오는 날)</strong> · 카페 3곳이 한꺼번에 나오면 안 되는 경우</p>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>점수 순위</th><th>장소</th><th>결과</th><th>이유</th></tr></thead>
+            <tbody>
+              <tr><td>1위</td><td>카페 A (실내)</td><td><span class="tag">선택</span></td><td>첫 장소</td></tr>
+              <tr><td>2위</td><td>카페 B (실내)</td><td><span class="tag">선택</span></td><td>카페 2곳째, 허용</td></tr>
+              <tr><td>3위</td><td>카페 C (실내)</td><td><span class="tag warn">건너뜀</span></td><td>카페가 3곳째가 되어 규칙 위반</td></tr>
+              <tr><td>4위</td><td>미술관 D (실내)</td><td><span class="tag">선택</span></td><td>3곳 완성, 여기서 멈춤</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="muted" style="margin-top:10px">3곳을 다 고르고 나면 마지막으로 총 걷는 거리와 시간이 상한 안에 드는지 한 번 더 확인합니다.</p>
+      </div>
+    </li>
+    <li>
+      <span class="num">4</span>
+      <div>
+        <h3>결과와 이유 보여 주기 <span class="who ai">AI</span></h3>
+        <ul>
+          <li>여기서부터 AI가 씁니다(흐름도 5~6단계). 장소마다 이유를 한 문장으로, 데이터 항목을 근거로 씁니다.</li>
+          <li>데이터가 없는 항목(계단, 운영시간 등)은 "확인 필요"로 표시합니다.</li>
+          <li>탈락한 상위 후보 한 곳과 이유도 함께 보여 줍니다.</li>
+        </ul>
+      </div>
+    </li>
+  </ol>
+
+  <!-- 세그먼트 -->
+  <h2>4. 고객 세그먼트: 3개 + 테마 1축</h2>
+  <div class="card">
+    <p>나이대를 5개로 나누면 콘텐츠를 채우기 어려워서 <strong>3개 세그먼트 + 테마 1축</strong>으로 줄입니다. 첫 발표에서는 <strong>핵심 고객 1명</strong>을 정하고 나머지는 "확장 세그먼트"로 말합니다. 이 문서의 추천은 <strong>20~30대</strong>(혼자 또는 친구)이고, 40~50대 가족도 후보입니다 <span class="tag warn">결정 필요</span></p>
+    <div class="table-wrap">
+      <table class="seg">
+        <thead>
+          <tr><th>세그먼트</th><th>구분</th><th>핵심 테마</th><th>코스 특징 (점수 기준)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>20~30대<br><span class="muted">혼자 또는 친구와</span></td><td><span class="tag">핵심</span></td><td>활동·데이트·친구</td><td>도보 중심, 골목·상권 가점, 사진 미션. 혼자는 1인이 편한 곳, 친구는 여럿이 머물 곳도 가점</td></tr>
+          <tr><td>40~50대<br><span class="muted">아이 동반 가족 포함</span></td><td><span class="tag warn">확장</span></td><td>체험·가족</td><td>실내 체험 중심, 이동 짧게. 화장실·쉼터 확인은 필수 조건</td></tr>
+          <tr><td>60대 이상</td><td><span class="tag warn">확장</span></td><td>역사·쉬운 코스</td><td>이동 거리 짧게, 실내 역사관 중심, 쉼터 연결</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <h3 style="margin:24px 0 8px;font-size:17px">테마 1축: 활동 · 체험 · 역사</h3>
+  <p class="muted">테마는 장소에 태그로 붙이고, 세그먼트 점수와 함께 씁니다.</p>
+  <div class="inputs">
+    <div class="card">
+      <h3>활동</h3>
+      <span class="tag">20~30대 중심</span>
+      <ul style="margin-top:10px">
+        <li>골목 걷기, 미술 감상, 사진</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>체험</h3>
+      <span class="tag">40~50대 가족</span>
+      <ul style="margin-top:10px">
+        <li>전시 + 체험 프로그램</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3>역사</h3>
+      <span class="tag">60대 이상 중심</span>
+      <ul style="margin-top:10px">
+        <li>역사·기념 전시, 실내 관람</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- 전시 -->
+  <h2>5. 전시는 어디에 들어가나</h2>
+  <div class="card">
+    <p>전시는 <strong>장소 유형</strong>(실내 · 전시)이에요. 테마는 전시 내용을 보고 태그로 붙입니다.</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>테마</th><th>전시 기준</th><th>중구 예 (데이터 기준)</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>활동</td><td>미술·문화 감상</td><td>보이드 갤러리(J24), 동원화랑(J25), 갤러리 신라(J26), 리안갤러리(J27), 봉산문화회관(J23)</td></tr>
+          <tr><td>체험</td><td>전시 + 체험 프로그램</td><td><span class="tag warn">확인 필요</span> 프로그램 여부 확인 전까지 근거 없음</td></tr>
+          <tr><td>역사</td><td>역사·기념 전시</td><td>대구근대역사관(J14, 월요일 휴관), 관덕정 순교 기념관(J30)</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- 주의 -->
+  <div class="rule">
+    <strong>설명할 때 주의할 점:</strong> "60대라서 골랐다"처럼 나이를 직접 이유로 쓰지 않아요. "평지이고 쉼터가 가까워서"처럼 이동 조건으로 말합니다.
+  </div>
+
+  <!-- 예시 -->
+  <h2>6. 예시로 따라가 보기 <span class="tag warn">가상 예시</span></h2>
+  <div class="card">
+    <p class="muted" style="margin-bottom:12px">조건: 평일 오후 2시 · 폭염 · 60대 이상 · 기본 권역은 남산권</p>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>장소</th><th>결과</th><th>이유</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>중구노인복지관도서관</td><td><span class="tag">선택</span></td><td>실내, 평일 9~17시라 14시에 운영 중. 남산권.</td></tr>
+          <tr><td>남산작은도서관</td><td><span class="tag">선택</span></td><td>실내, 평일 9~18시. 남산권이고 이동 짧음.</td></tr>
+          <tr><td>남산휴먼시아 마을도서관</td><td><span class="tag warn">탈락</span></td><td>운영 시작이 15시라 14시에는 닫혀 있음.</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="out" style="margin-top:14px">
+      <strong>남산권 후보가 2곳뿐이에요.</strong> 규칙에 따라 3번째를 억지로 채우지 않고, 인접 권역의 실내 장소를 다음 후보로 올리고 "확인 필요"를 붙입니다.
+    </div>
+  </div>
+
+  <!-- 확인 -->
+  <h2>7. 팀에서 같이 정할 것</h2>
+  <div class="card">
+    <ol class="check">
+      <li>점수 가중치(날씨 30 · 연령 25 · 권역 20 · 이동 15 · 신뢰도 10)를 확정합니다.</li>
+      <li>연령별 이동 거리 상한(2030 3km · 40~50 2km · 60대 이상 1.5km)을 확정합니다.</li>
+      <li>권역 이름을 정합니다. 생활권 이름으로 쓰고 대표 도로를 병기하는 방식을 추천합니다.</li>
+      <li>첫 발표의 핵심 고객 1명을 정합니다. 후보는 20~30대(혼자·친구, 이 문서의 추천)와 40~50대 가족입니다.</li>
+      <li>AI 문장 검수 규칙을 정합니다: 허용 키워드 목록, 문장 길이, 검수에 떨어졌을 때 쓸 기본 문장.</li>
+      <li><strong>데이터 공백 보완:</strong> 장소마다 세그먼트 적합도와 테마 태그를 붙입니다. 현재 코스 데이터는 2개 루트뿐이라 세그먼트별 코스가 아직 없습니다. 세그먼트당 데모 코스 1개씩(총 3개)을 목표로 합니다.</li>
+    </ol>
+  </div>
+
+  <p class="muted" style="margin-top:28px">모든 수치와 권역 묶음은 가정이에요. 실제 장소의 운영시간·주소·계단 여부는 확인 전입니다.</p>
+</div>
+</body>
+</html>
