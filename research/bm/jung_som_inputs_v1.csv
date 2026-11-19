@@ -36,7 +36,7 @@ A1_m_2025_10,"중구 방문객 수 (데이터랩 방문자 수(연인원) 추이
 A1_m_2025_11,"중구 방문객 수 (데이터랩 방문자 수(연인원) 추이, 외지인)",5880098,명,2025-11,https://datalab.visitkorea.or.kr/datalab/portal/loc/getAreaDataForm.do?SGG_CD=27110,2026-11-18,사실 (데이터랩 다운로드 파일 2024-07~2025-12),방문자수 값만 사용. 전년동월·증감률 열은 조회 기간마다 값이 달라 사용하지 않음 (2023-01 전년동월: 3971412 vs 4717944)
 A1_m_2025_12,"중구 방문객 수 (데이터랩 방문자 수(연인원) 추이, 외지인)",6171669,명,2025-12,https://datalab.visitkorea.or.kr/datalab/portal/loc/getAreaDataForm.do?SGG_CD=27110,2026-11-18,사실 (데이터랩 다운로드 파일 2024-07~2025-12),방문자수 값만 사용. 전년동월·증감률 열은 조회 기간마다 값이 달라 사용하지 않음 (2023-01 전년동월: 3971412 vs 4717944)
 A3_offshore_ratio_summer,여름(6~9월) 중구 도보·야외 관광 비율,,%,2025,,,자료 없음,대체 지표로 데이터랩 여름 방문율 사용 가능
-A4_bid_01,나라장터 낙찰 건 1 (발주처·사업명·추정가·낙찰금액·기간),,원,2024~2026,https://www.g2b.go.kr,,자료 없음 (로그인 후 입력),검색 키워드: 대구 중구 관광 / 관광 코스 / 스탬프 투어
+A4_bid_01,나라장터 낙찰 건 1 (발주처·사업명·추정가·낙찰금액·기간),,원,2024~2026,https://www.g2b.go.kr,,자료 없음 (로그인 후 입력),검색 키워드: 대구 중구 관광 / 관광 코스 / 스탬프 투어. 동구·북구 수의계약은 R_daegu_* 행 참조
 A4_bid_02,나라장터 낙찰 건 2,,원,,https://www.g2b.go.kr,,자료 없음 (로그인 후 입력),
 A4_bid_03,나라장터 낙찰 건 3,,원,,https://www.g2b.go.kr,,자료 없음 (로그인 후 입력),
 A4_bid_04,나라장터 낙찰 건 4,,원,,https://www.g2b.go.kr,,자료 없음 (로그인 후 입력),
@@ -48,4 +48,40 @@ C2_supabase_pro_usd,Supabase Pro 월 요금,25,USD,2026-11,https://supabase.com/
 C2_vercel_pro_usd,Vercel Pro 월 요금,20,USD,2026-11,https://vercel.com/pricing,2026-11-18,사실,
 C1_card_fee_public,카드 결제수수료율 (17개사 공시 평균),1.97,%,2025.8~10,https://www.fsc.go.kr/po010101/86029,2026-11-18,사실 (보도자료 페이지),PDF 원문 미열람
 C1_card_fee_toss,토스페이먼츠 카드 수수료,,%,,,,충돌 (3.4는 비공식 블로그),공식 요율 확인 후 입력
-P_price,팀권 판매가 (가설),14900,원,,,,가정,
+P_price,팀권 판매가 (가설),14900,원,,,,가정 (보류),수익 구조가 지자체 협업만이라 매출 계산에 쓰지 않음 (v3 노트 6장)
+R_participation_rate,참여율 (방문 연인원 중 코스 이용),0.5,%,,,,가정,시나리오 0.1 / 0.5 / 1.0. 이용자 규모(시장 근거)에만 사용. 매출에 곱하지 않음
+R_contract_price,지자체 계약 단가 (코스 1건),,원,,https://www.g2b.go.kr,,자료 없음,A4_bid 낙찰가 확인 후 입력. 참고: 큐알스탬프 정액 100만~ / 퀘스투어 개발 1500만~3000만~ (타사 시작가) / 공공 계약 사례 R_case_01·02 (약 2000만 원)
+R_contract_count,연간 계약 건수,,건,,,,가정,근거 없음. 예시 계산은 1~3건 (목표 아님)
+R_ops_monthly_price,운영 월 단가 (과업에 운영 포함 시),,원,,https://www.dong.daegu.kr/contract/ehojo/contract/list.do?searchCtrtType=OPT&mid=0302000000,2026-11-19,참고값 있음 (계산),"값은 비워 둠. 참고: 동구 2026 약 196만/월 (10,800,000 ÷ 5.5개월), 북구 2026 약 244만/월 (11,000,000 ÷ 4.5개월). 운영 기간은 경북도민일보 2026-06-11·대구MBC 2026-07-14"
+R_ops_months,운영 개월,,개월,,,,자료 없음,과업지시서 확인 후 입력
+R_case_01,평창군 미탄 아웃도어 챌린지 기획 및 운영 용역 계약금액,18200000,원,2025-05-22~2025-07-20,https://www.pc.go.kr/contract/payment/payservice?ctrtAcctBookMngNo=202500211329,2026-11-19,사실 (계약 공개 페이지),수의1인견적. 대구 밖 사례. 미션형 여부는 계약명만 확인
+R_case_02,태안군 펫니스태안 미션투어 운영 용역 계약금액,20710000,원,2026-04-15~2026-06-20,https://www.taean.go.kr/prog/ctrt01/contract/sub04_05_03_02/2/202600211167/view.do?pageIndex=37,2026-11-19,사실 (계약 공개 페이지),수의1인견적. 대구 밖 사례
+R_case_03,울산 중구 도장찍기 여행 추경안 (운영비 5000만 포함),110000000,원,2024,https://www.ksilbo.co.kr/news/articleView.html?idxno=999576,2026-11-19,사실 (기사),예산 편성안이며 계약가 아님. 운영비 5000만 / 기념품 5000만 / 스탬프함 1000만
+R_fx_usd_krw,원/달러 환율 (클라우드 비용 환산),1333.6,원,2026-11-11,https://biz.kebhana.com/cont/hanafx/file/Daily261112.pdf,2026-11-19,사실 (하나은행 Daily),주간 거래 마감 값. 야간장 마감 1337.5는 사용 안 함
+R_reach_smartphone,스마트폰 보유율 (도달 가능 비율),96.0,%,2025,https://www.kmcc.go.kr/download.do?fileSeq=62354,2026-11-19,사실 (방미통위 보도자료),"13세 이상 개인. 전년 95.3 / 70세 이상 76.3. 기존 98.8 대체 (98.8은 2025 인터넷이용실태조사 언론 인용이라 했으나 원문 수치 미확인, 2026-11-19 재확인)"
+R_case_04,창원시 투어패스 운영 용역 과업예산 (부가세 포함),69993000,원,착수일~2026-12-24,https://www.g2b.go.kr/pn/pnp/pnpe/UntyAtchFile/downloadFile.do?bidPbancNo=R26BK01327880&bidPbancOrd=000&fileType=&fileSeq=7&prcmBsneSeCd=03,2026-11-19,사실 (제안요청서),운영형. 코스 제작 없음. 착수일 미확인
+R_ref_imsil_participants,임실군 모바일 스탬프투어 참여자,630,명,2026-09~2026-10-28,https://www.betanews.net/article/view/beta202610280075,2026-11-19,사실 (기사),분모 없음. 참여율 계산 불가
+R_ref_gunsan_completers,군산 스탬프투어 완주자,8083,명,2025-08 기준,https://v.daum.net/v/20250828110400557,2026-11-19,사실 (기사),2019년 14103명. 참여자 수 아님
+R_daegu_dong_2023,동구 모바일 스탬프 투어 운영 용역,9450000,원,2023,https://www.dong.daegu.kr/contract/ehojo/contract/list.do?searchCtrtType=OPT&mid=0302000000,2026-11-19,사실 (동구 수의계약현황),댓츠잇 주식회사
+R_daegu_dong_2024,동구 모바일 스탬프 투어 운영 용역,10845000,원,2024,https://www.dong.daegu.kr/contract/ehojo/contract/list.do?searchCtrtType=OPT&mid=0302000000,2026-11-19,사실 (동구 수의계약현황),댓츠잇 주식회사
+R_daegu_dong_2025,동구 모바일 스탬프 투어 운영 용역,10800000,원,2025,https://www.dong.daegu.kr/contract/ehojo/contract/list.do?searchCtrtType=OPT&mid=0302000000,2026-11-19,사실 (동구 수의계약현황),댓츠잇 주식회사
+R_daegu_dong_2026,동구 모바일 스탬프 투어 운영 용역,10800000,원,2026-06-15~2026-11-30,https://www.dong.daegu.kr/contract/ehojo/contract/list.do?searchCtrtType=OPT&mid=0302000000,2026-11-19,사실 (동구 수의계약현황),댓츠잇 주식회사. 월 약 196만 원 (5.5개월 계산)
+R_daegu_dong_2026_goods,동구 스탬프 투어 기념품·리플릿 (2026 합계),13780000,원,2026,https://www.dong.daegu.kr/contract/ehojo/contract/list.do?searchCtrtType=OPT&mid=0302000000,2026-11-19,사실 + 합계 계산,에코백 3900000 + 방향제 4975000 + 리플릿 4905000
+R_daegu_buk_2025,북구 관광명소 모바일 스탬프투어 운영 용역 (수정),13000000,원,2025,https://www.buk.daegu.kr/index.do?menu_id=00000809,2026-11-19,사실 (북구 수의계약현황),댓츠잇소프트 주식회사
+R_daegu_buk_2026,북구 관광명소 모바일 스탬프투어 운영 용역,11000000,원,2026-07-15~2026-11-30,https://www.buk.daegu.kr/index.do?menu_id=00000809,2026-11-19,사실 (북구 수의계약현황),댓츠잇소프트 주식회사. 월 약 244만 원 (4.5개월 계산)
+R_daegu_buk_2024_goods,북구 스탬프 투어 운영물품·기념품,14084000,원,2024,https://www.buk.daegu.kr/index.do?menu_id=00000809,2026-11-19,사실 (북구 수의계약현황),
+R_ref_gunsan_visitors_2024,군산 방문자 수 (관광데이터랩),25621809,명,2024,http://www.jjn.co.kr/news/articleView.html?idxno=996387,2026-11-19,사실 (기사 인용),완주 8083명과 나눈 참여율 근사 0.047% (8/12 기간 보정은 가정)
+R_daegu_rpg_2016,대구시 도심문화RPG 행사대행 용역비 지출 (목록 날짜는 지급일일 수 있음),20700000,원,2016-09-20,https://www.daegu.go.kr/index.do?menu_id=00936653,2026-11-19,사실 (대구시 계약현황),주식회사 휴먼아이엠씨. 대구정체성 찾기 사업
+R_daegu_rpg_2026_participants,2026 청년도심 RPG 참가 인원,120,명,2026-10-03,https://www.job-post.co.kr/news/articleView.html?idxno=230602,2026-11-19,사실 (기사),4인 팀. 중구 북성로·국채보상운동 일대. 예산·운영사 미확인 (공개 계약 목록에 없음. 2026-11-19)
+R_seg_20s,중구 외지인 방문자 중 20대 구성비 (2025년 6~9월),22.52,%,2025-06~09,https://datalab.visitkorea.or.kr/datalab/portal/bda/getInquiryBySexAndAge.do,2026-11-19,사실 (데이터랩 화면),대구광역시·시군구 단위·월간 202506~202509·성별 전체. 대구 9개 구·군 중 1위. 성·연령 식별 데이터만 포함
+R_seg_30s,중구 외지인 방문자 중 30대 구성비 (2025년 6~9월),17.67,%,2025-06~09,https://datalab.visitkorea.or.kr/datalab/portal/bda/getInquiryBySexAndAge.do,2026-11-19,사실 (데이터랩 화면),같은 조회. 대구 2위 (1위 수성구 18.23)
+R_seg_2030,세그먼트 비율 (20~30대),40.19,%,2025-06~09,,2026-11-19,계산,R_seg_20s + R_seg_30s. SAM = TAM × 이 값
+R_agency_fee_ref,기획사 대행료 비율 (팀 참고),10~15,%,,https://ai.bznav.com/contents/3353212,2026-11-19,가정 (미검증),"1억 원 행사 기준으로 팀이 들은 업계 관행. 민간 사례 1건: 크몽 행사 대행 서비스 ""행사 전체 금액의 10%"" (https://kmong.com/gig/336881). 15% 근거 없음. 비교 근거: 국가계약 시행규칙 제8조 일반관리비 상한 행사관리 용역 8% + 이윤 상한 10% (2차 자료, 법령 원문 미열람)"
+R_outsource_ratio,계약 금액 중 외부 업체 지급 비율,,%,,,2026-11-19,가정 (값 미정),우리 몫 = 계약 금액 × (1 − 이 값). 과업 범위에 따라 정함
+R_tam_annual_2025,중구 외지인 방문 연인원 2025년 연간 (TAM 연간),69024662,명,2025-01~12,https://datalab.visitkorea.or.kr/datalab/portal/loc/getAreaDataForm.do?SGG_CD=27110,2026-11-19,계산 (사실 값 합산),"A1_m_2025_01~12 합계. 발표의 ""연간 6,902만"" 원천"
+R_seg_20s_annual,중구 외지인 방문자 중 20대 구성비 (2025년 연간),22.77,%,2025-01~12,https://datalab.visitkorea.or.kr/datalab/portal/bda/getInquiryBySexAndAge.do,2026-11-19,사실 (데이터랩 화면),대구 1위. 시군구 단위·월간 202501~202512
+R_seg_30s_annual,중구 외지인 방문자 중 30대 구성비 (2025년 연간),17.6,%,2025-01~12,https://datalab.visitkorea.or.kr/datalab/portal/bda/getInquiryBySexAndAge.do,2026-11-19,사실 (데이터랩 화면),대구 3위 (1위 수성구 18.31·2위 동구 17.67)
+R_seg_2030_annual,세그먼트 비율 (20~30대 연간),40.37,%,2025-01~12,,2026-11-19,계산,R_seg_20s_annual + R_seg_30s_annual
+R_daegu_jung_2026_goods,대구 중구 2026 스탬프 투어 물품 계약 합계,12582500,원,2026,https://www.jung.daegu.kr/new/pages/administration/page.html?mc=2377,2026-11-19,사실 + 합계 계산,"약령시 한방로드 기념품 4,455,000 + 3,527,500 (2026-07-21) + 골목투어 스탬프북 4,600,000 (2026-03-31). 앱 운영 용역 없음 (스탬프 검색 33건)"
+R_ref_pyeongchang_participants,평창 미탄 아웃도어 챌린지 참가 인원 (2025 파일럿),140,명,2025-06-07~08,https://www.fnnews.com/news/202506091449596845,2026-11-19,사실 (기사),사전 신청 454명. 로컬 미션·트레킹 코스·SNS 인증 미션. R_case_01 계약의 행사
+R_daegu_rpg_2016_youth,2016 대구청년주간 청년 RPG 참가 인원,100,명,2016-10-29,https://m.go.seoul.co.kr/news/2016/10/24/20161024014002,2026-11-19,사실 (기사),동성로. R_daegu_rpg_2016(목록 날짜 9/20)과 같은 사업인지는 확인 필요. 9/20이 지급일이면 e-Fun 도심 RPG(9/2~4) 쪽이 더 맞음
