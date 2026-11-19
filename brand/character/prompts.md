@@ -65,3 +65,80 @@ Set of 6 pixel-art sticker emoji of the same character as the reference sheet (H
 - 수정 기록: 생성 결과는 팀 검토 후 채택합니다. 채택 시 `brand/character/images/`에 `brief_scene_v1.webp`로 저장하고 목업 브리핑 씬에 연결합니다.
 - 수정 기록 (2026-11-19): 하랑이를 배경 그림에 넣지 않습니다. 앱은 하랑이를 별도 스프라이트로 올리므로 그림에 같이 그리면 캐릭터가 두 명 보입니다. 배경만 그리는 아래 프롬프트를 씁니다.
 - 수정 프롬프트(영문): "Pixel-art RPG style interior of a cozy Korean-style room, same palette and style as the reference room image (warm wood floor, cream walls, a round arched wooden door on the left, a low wooden table with an open ledger book on the right, a window showing a traditional alley). Empty room, no people, no animals. Keep the upper-left wall area plain cream for a speech bubble. Leave open floor space in the center-right for a character to stand. Clean pixel outlines, flat colors, warm light. Aspect ratio 3:2, 1536x1024 px, crisp pixel grid. No text, no letters, no logos, no brand marks, no speech bubble."
+
+## P6 · 폭염 날씨 배경 (2026-11-19, 목업용)
+
+용도: 홈 방 배경의 폭염 버전. 현재 목업은 밝기 필터로만 바꾸므로, 실제 그림이 필요합니다. 기본 방(`brand/home/home_room_day_v1.webp`)과 같은 구도와 팔레트를 유지합니다.
+
+참고 이미지: `brand/home/home_room_day_v1.webp`
+
+영문 프롬프트:
+"Pixel-art RPG style interior of the same cozy Korean-style room as the reference image, same layout, same palette family, same composition (door on the left, window on the upper right, low table with an open book on the right). Hot summer afternoon: warm strong sunlight through the window, a folding paper fan on the wall, the window shows a bright sky and a quiet alley with no people. Slightly washed-out, heat-hazy warm tones. Calm and cozy, not threatening, no fire, no danger imagery. Empty room, no people, no animals. Aspect ratio 3:2, 1536x1024 px, crisp pixel grid. No text, no letters, no logos, no brand marks."
+
+한국어 참고: 같은 방 구도. 여름 오후 햇빛이 창으로 들어오고, 벽에 부채. 창밖은 밝은 하늘과 사람 없는 골목. 살짝 바랜 따뜻한 색. 위협적인 장면, 불꽃, 재난 이미지는 넣지 않음.
+
+## P7 · 호우 날씨 배경 (2026-11-19, 목업용)
+
+용도: 홈 방 배경의 호우 버전. 이동 보류 상태에서 실내 안내가 나오는 화면에 씁니다.
+
+참고 이미지: `brand/home/home_room_day_v1.webp`
+
+영문 프롬프트:
+"Pixel-art RPG style interior of the same cozy Korean-style room as the reference image, same layout and composition (door on the left, window on the upper right, low table with an open book on the right). Rainy day, cool blue-grey light from the window, gentle rain streaks on the window glass, the alley outside is quiet with no people, the room feels safe and warm with a lit paper lantern. Calm mood, no lightning, no flood, no danger imagery. Empty room, no people, no animals. Aspect ratio 3:2, 1536x1024 px, crisp pixel grid. No text, no letters, no logos, no brand marks."
+
+한국어 참고: 같은 방 구도. 비 오는 날, 창에 빗줄기, 차분한 푸른빛 회색 조명. 방 안은 등불로 따뜻하게. 번개, 침수, 위험 장면은 넣지 않음 (CLAUDE.md 민감한 소재 규칙).
+
+- 수정 기록: 생성 결과는 팀 검토 후 채택합니다. 채택하면 `brand/home/`에 `home_room_heat_v1.webp`, `home_room_storm_v1.webp`로 저장하고 목업 배경을 교체합니다.
+
+## P8 · 기본 방: 바닥 햇빛 위치 수정 (2026-11-19, 편집용)
+
+용도: 기본 방 배경(`brand/home/home_room_day_v1.webp`)에서 바닥의 햇빛 자국이 창문 위치와 맞지 않는 문제를 고칩니다. 원본 그림을 참고 이미지로 첨부하고, 햇빛 자국만 바꾸도록 요청합니다. 폭염·호우 버전은 이 결과물을 기준으로 만듭니다.
+
+영문 프롬프트:
+"Edit this pixel-art room image. Only change the sunlight patches on the wooden floor. Redraw them so they are cast directly from the window on the upper right: the bright patches should start at the base of the wall just below the window (from about the window's left edge to its right edge) and spread toward the viewer, slightly leftward, with the same pixel grid and the same warm light color. Remove the current patches that fall in front of the cushion on the right. Keep everything else exactly the same: the door, window, wall, fan, table, open book, apples, rug, cushion, floor planks, colors, pixel size, and composition. No people, no animals, no text, no logos. Output the same size, 1536x1024 px, crisp pixel grid."
+
+한국어 참고: 이 이미지를 편집합니다. 바닥의 햇빛 자국만 바꿉니다. 햇빛은 오른쪽 위 창문에서 바로 떨어지는 모양으로 다시 그립니다. 빛은 벽 밑선 바로 아래, 창문의 왼쪽 끝부터 오른쪽 끝까지에서 시작해 화면 앞쪽으로 조금 왼쪽으로 퍼지게 합니다. 지금 방석 앞쪽에 있는 자국은 지웁니다. 나머지 요소와 색, 구도, 크기는 그대로 둡니다.
+
+- 확인할 것: 결과에서 창문 폭과 햇빛 시작 위치가 맞는지, 다른 가구가 바뀌지 않았는지 봅니다. 가구가 바뀌었으면 다시 요청합니다.
+- 수정 기록: 이 결과물이 채택되면 `brand/home/home_room_day_v2.webp`로 저장하고, 폭염·호우 변형의 기준 그림으로 씁니다.
+
+## P9 · 폭염 배경 (2026-11-19, 편집용, 기준 그림: `brand/home/home_room_day_v2.webp`)
+
+용도: 기준 방(v2)을 폭염 날씨 버전으로 바꿉니다. 방의 구도, 가구 위치, 팔레트 계열은 그대로 두고, 빛의 세기와 색, 그림자만 바꿉니다.
+
+영문 프롬프트:
+"Edit this pixel-art room image into a hot summer afternoon version. Keep the exact same layout, furniture, objects, and composition (door on the left, window on the upper right, fan on the right wall, low table with open book and apples, rug, cushion, floor planks). Lighting: strong, bright direct sunlight streaming through the window; the sunlight patches on the floor are brighter and more saturated, with sharper, slightly longer shadows cast by the window frame and table legs. Colors: warmer and slightly washed-out, golden-orange hazy tones. The window shows a bright, clear blue sky and sunny alley with no people. Calm and cozy, not threatening, no fire, no smoke, no danger imagery. No people, no animals, no text, no logos. Output 1536x1024 px, crisp pixel grid, same pixel size."
+
+한국어 참고: 같은 방, 같은 구도. 햇빛이 강하고 밝게 들어와 바닥 햇빛 자국이 더 선명합니다. 창틀과 탁자 다리의 그림자가 조금 더 짙고 길어집니다. 색은 따뜻하고 살짝 바랜 황금빛. 창밖은 맑은 파란 하늘. 불, 연기, 위험 장면은 넣지 않음.
+
+## P10 · 호우 배경 (2026-11-19, 편집용, 기준 그림: `brand/home/home_room_day_v2.webp`)
+
+용도: 기준 방(v2)을 호우 날씨 버전으로 바꿉니다. 비 오는 날에는 직사광선이 거의 없으므로, 바닥 햇빛 자국은 없애고 그림자는 옅고 부드럽게 바꿉니다. 방 안은 차분하게 어둡고, 등불이나 실내 조명이 따뜻한 빛을 냅니다.
+
+영문 프롬프트:
+"Edit this pixel-art room image into a rainy day version. Keep the exact same layout, furniture, objects, and composition (door on the left, window on the upper right, fan on the right wall, low table with open book and apples, rug, cushion, floor planks). Remove the sunlight patches on the floor completely. Lighting: soft, diffuse, overcast cool light from the window, with very faint and soft shadows, no hard shadows. Overall room slightly darker and cooler blue-grey tint, balanced by a warm soft glow from a paper lantern on the right wall. The window shows gray rainy sky with gentle rain streaks on the glass, a wet alley with puddles and no people. Calm, cozy, safe mood, no lightning, no flood, no danger imagery. No people, no animals, no text, no logos. Output 1536x1024 px, crisp pixel grid, same pixel size."
+
+한국어 참고: 같은 방, 같은 구도. 바닥 햇빛 자국은 없앱니다. 흐린 날의 부드러운 빛이고, 그림자는 아주 옅고 흐릿합니다. 방은 조금 어둡고 푸른 회색 톤이며, 오른쪽 벽의 등불이 따뜻한 빛을 줍니다. 창에는 빗줄기, 골목에는 물웅덩이. 번개, 침수, 위험 장면은 넣지 않음.
+
+- 확인할 것: 두 버전 모두 가구와 구도가 v2와 같은지 봅니다. 그림자 방향은 창문 기준으로 같은 쪽이어야 합니다.
+- 수정 기록: P6, P7(전체 새로 그리기)은 폐기합니다. 채택된 결과는 `brand/home/home_room_heat_v1.webp`, `brand/home/home_room_storm_v1.webp`로 저장합니다.
+
+## P11 · 폭염 배경 수정: 부채 복원 (2026-11-19, 편집용)
+
+참고 이미지: `brand/home/home_room_heat_v1.webp` (폭염 후보 12번)
+
+영문 프롬프트:
+"Edit this pixel-art room image. Only one change: on the right wall, replace the wall lantern with the folding paper fan on a small wooden shelf, exactly as in the reference room (white and red folding fan, same shelf, same position on the right wall). Keep everything else exactly the same: the light beams, shadows, floor, window, door, table, book, apples, rug, cushion, colors, pixel size, and composition. No people, no animals, no text, no logos. Output 1536x1024 px, crisp pixel grid."
+
+한국어 참고: 오른쪽 벽의 등불을 지우고, 기준 방과 같은 자리에 부채(흰색과 빨간색 접부채)와 작은 나무 선반을 다시 그립니다. 나머지는 그대로 둡니다.
+
+## P12 · 호우 배경 수정: 천장 등불 제거 (2026-11-19, 편집용)
+
+참고 이미지: `brand/home/home_room_storm_v1.webp` (호우 후보 10번)
+
+영문 프롬프트:
+"Edit this pixel-art room image. Only one change: remove the paper lantern hanging from the ceiling in the upper right corner (the hanging cord and lantern). Keep the warm glow on the right wall but move it to be a soft light around the existing fan on the right wall. Keep everything else exactly the same: the fan, cushion, rug, table, book, apples, window with rain, floor, door, colors, pixel size, and composition. No people, no animals, no text, no logos. Output 1536x1024 px, crisp pixel grid."
+
+한국어 참고: 천장에 매달린 등불과 줄만 지웁니다. 따뜻한 빛은 그대로 두되 오른쪽 벽의 부채 근처로 옮깁니다. 나머지는 그대로 둡니다.
+
+- 수정 기록: 두 프롬프트는 `brand/character/prompts.md`의 P11, P12에 기록했습니다.
