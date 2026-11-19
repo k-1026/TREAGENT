@@ -37,4 +37,28 @@ export const ERROR_LABEL: Record<string, string> = {
   NOT_FOUND: '코스를 찾을 수 없어요',
   INVALID: '요청이 올바르지 않아요',
   SERVER: '서버에 문제가 있어요',
+  RATE_LIMIT: '새로고침을 너무 많이 했어요. 잠시 뒤 다시 해 주세요',
 };
+
+
+// 오늘의 길 선택지. value는 서버가 받는 코드다.
+export const AGE_OPTIONS = [
+  { value: '10s', label: '10대' },
+  { value: '20s', label: '20대' },
+  { value: '30s', label: '30대' },
+  { value: '40s', label: '40대' },
+  { value: '50s', label: '50대' },
+  { value: '60s', label: '60대 이상' },
+] as const;
+
+export const THEME_OPTIONS = [
+  { value: 'history', label: '역사' },
+  { value: 'culture', label: '문화' },
+  { value: 'nature', label: '자연' },
+] as const;
+
+export const COMPANION_OPTIONS = [
+  { value: 'solo', label: '혼자' },
+  { value: 'friends', label: '친구와' },
+  { value: 'kids', label: '아이와 함께' },
+] as const;

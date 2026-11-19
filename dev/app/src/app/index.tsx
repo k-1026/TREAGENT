@@ -44,7 +44,7 @@ export default function LocationScreen() {
   // 위치를 읽었으면 그 좌표, 아니면 구·군 기준점(코스가 있는 지역만)을 쓴다.
   const canGoCourses = location?.status === 'ok' || !!selectedDistrict?.center;
 
-  const onPressCourses = () => {
+  const goWithPlace = (path: '/courses' | '/today') => {
     if (location?.status === 'ok') {
       setPlace({ kind: 'gps', latitude: location.latitude, longitude: location.longitude });
     } else if (selectedDistrict?.center) {
@@ -52,7 +52,7 @@ export default function LocationScreen() {
     } else {
       return;
     }
-    router.push('/courses');
+    router.push(path);
   };
   const onPressLocation = async () => {
     setLoading(true);
@@ -114,10 +114,17 @@ export default function LocationScreen() {
 
         <Pressable
           disabled={!canGoCourses}
-          onPress={onPressCourses}
+          onPress={() => goWithPlace('/courses')}
           style={{ backgroundColor: '#2b2118', paddingVertical: 14, borderRadius: 12, alignItems: 'center', opacity: canGoCourses ? 1 : 0.4 }}
         >
           <Text style={{ color: '#fff', fontWeight: '700' }}>오늘의 길 보기</Text>
+        </Pressable>
+        <Pressable
+          disabled={!canGoCourses}
+          onPress={() => goWithPlace('/today')}
+          style={{ backgroundColor: '#a8242a', paddingVertical: 14, borderRadius: 12, alignItems: 'center', opacity: canGoCourses ? 1 : 0.4 }}
+        >
+          <Text style={{ color: '#fff', fontWeight: '700' }}>AI 오늘의 길 받기</Text>
         </Pressable>
       </View>
     </SafeAreaView>
