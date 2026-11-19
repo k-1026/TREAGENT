@@ -31,10 +31,10 @@ jobs:
           \`${HEAD}\` → \`${BASE}\`
           확인 부탁해요: ${URL}"
             fi
-          elif [ "$ACTION" = "closed" ] && [ "$MERGED" = "true" ] && [ "$BASE" = "main" ]; then
-            MSG=":white_check_mark: *main 반영* — ${TITLE}
-          ${MERGER}님이 main에 병합했어요. 작업 시작 전에 main을 받아 가세요.
-          \`git switch main && git pull\`
+          elif [ "$ACTION" = "closed" ] && [ "$MERGED" = "true" ] && { [ "$BASE" = "main" ] || [ "$BASE" = "dev" ] || [ "$BASE" = "presentation" ]; }; then
+            MSG=":white_check_mark: *${BASE} 반영* — ${TITLE}
+          ${MERGER}님이 ${BASE}에 병합했어요. 작업 시작 전에 ${BASE}를 받아 가세요.
+          \`git switch ${BASE} && git pull\`
           ${URL}"
           fi
           {

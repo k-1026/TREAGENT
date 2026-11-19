@@ -8,8 +8,8 @@ description: 새 작업을 시작할 때, 그리고 "커밋해 줘", "PR 올려 
 기준: 루트 `git-convention.md`, `.github/pull_request_template.md`.
 
 ## 0. 새 작업 시작
-- 파일을 고치기 전에 반드시 최신 `main`에서 `<타입>/<영역>-<설명>` 브랜치를 만든다 (`git fetch origin` → `git switch -c <브랜치> origin/main`).
-- 현재 `main`이거나 다른 작업 브랜치에 있으면 수정하지 말고 새 브랜치부터 만든다.
+- 파일을 고치기 전에 반드시 최신 `dev`에서 `<타입>/<영역>-<설명>` 브랜치를 만든다 (`git fetch origin` → `git switch -c <브랜치> origin/dev`). 발표 자료(`presentation/`) 작업은 `origin/presentation`에서 만든다.
+- 장수 브랜치나 다른 작업 브랜치에 있으면 수정하지 말고 새 브랜치부터 만든다.
 
 ## 1. 확인
 - `git status --short`, `git branch --show-current`, `git diff`로 변경을 모두 확인한다.
@@ -17,16 +17,16 @@ description: 새 작업을 시작할 때, 그리고 "커밋해 줘", "PR 올려 
 - 관련 없는 파일, 남의 미커밋 변경, 민감정보(개인정보·키·EXIF)는 빼고 이유를 알린다.
 
 ## 2. 작업별 브랜치와 커밋
-- 작업이 섞여 있으면 작업마다 최신 `main`에서 브랜치를 따로 만든다. `main`에 직접 커밋하지 않는다.
+- 작업이 섞여 있으면 작업마다 최신 `dev`에서 브랜치를 따로 만든다. `dev`·`main`·`presentation`에 직접 커밋하지 않는다.
 - 해당 작업 파일만 `git add -- <파일>`로 올린다. `git add -A`를 쓰지 않는다.
 - 커밋 제목은 `<타입>/<영역>: <내용>` 한 줄로 쓴다 (예: `fix/개발부분: 발표 자료 이미지 경로 수정`).
 - 커밋 전 `git diff --cached --stat`으로 범위를 다시 확인한다.
 
 ## 3. 작업별 PR
-- 브랜치를 푸시하고 `gh pr create --base main`으로 작업마다 PR을 하나씩 연다.
-- 제목은 커밋 제목과 같게, 본문은 PR 템플릿 항목을 모두 채운다.
-- 수용 기준 검증에는 실제로 실행한 확인만 `통과`로 쓰고, 나머지는 `미확인`으로 쓴다.
-- 이슈 번호를 찾아 `Closes #번호`(전부 완료) 또는 `관련 이슈 #번호`(일부)로 연결한다.
+- 브랜치를 푸시하고 `gh pr create --base dev`(발표 자료는 `--base presentation`)로 작업마다 PR을 하나씩 연다.
+- `dev → main` PR은 사용자가 요청할 때만 연다. 본문에 앱 실행·개인정보·html 빌드 확인 결과를 적고, 병합은 사람이 `Create a merge commit`으로 한다.
+- 제목은 커밋 제목과 같게, 본문은 PR 템플릿을 채운다. 실제로 실행한 확인만 `통과`, 나머지는 `미확인`으로 쓴다.
+- 이슈를 따로 만든 작업만 `Closes #번호`(전부 완료) 또는 `관련 이슈 #번호`(일부)로 연결한다. 이슈를 새로 만들지 않는다.
 - PR 링크와 Slack에 붙일 리뷰 요청 문구를 사용자에게 준다.
 
 ## 4. 병합
@@ -34,7 +34,7 @@ description: 새 작업을 시작할 때, 그리고 "커밋해 줘", "PR 올려 
 - 승인(APPROVED)과 필수 검사 통과가 확인될 때만 `gh pr merge --squash --delete-branch`로 병합한다.
 - 승인이 없으면 병합하지 않고 리뷰 대기라고 알린다. 사용자가 리뷰 없이 병합하라고 명시하면 그 사실을 PR 댓글에 남기고 병합한다.
 - 충돌이 나면 멈추고 충돌 파일을 보고한다. 강제 푸시하지 않는다.
-- 병합 후 `git switch main` → `git pull` → `git branch -d <브랜치>`로 로컬 브랜치를 지운다. 원격 브랜치가 남아 있으면 `git push origin --delete <브랜치>`로 지운다.
+- 병합 후 `git switch dev` → `git pull` → `git branch -d <브랜치>`로 로컬 브랜치를 지운다. 원격 브랜치가 남아 있으면 `git push origin --delete <브랜치>`로 지운다.
 
 ## 5. 보고
 - 작업별로 브랜치, 커밋, PR 링크, 병합 여부, 미확인 항목을 표로 정리한다.
