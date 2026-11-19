@@ -180,6 +180,7 @@
   <label><input type="checkbox" id="optA" checked> 오늘의 빈 칸 한 줄(A)</label>
   <label><input type="checkbox" id="optB" checked> 도장 미리보기(B)</label>
   <label><input type="checkbox" id="optMiss"> 미션 첫 시도 실패로 시뮬레이션 (S-06)</label>
+  <label><input type="checkbox" id="optNoAlt"> 대체 길 없음으로 시뮬레이션 (S-07)</label>
 </div>
 
 <div class="stagebox" id="box"><div class="stage" id="stage">
@@ -319,7 +320,7 @@
       <div class="h3">장소 <span>도장은 미션을 마쳐야 찍혀요</span></div>
       <div id="trvList" class="segp"></div>
       <button class="cta px" id="trvBtn" data-nav="stop" style="height:56px"></button>
-      <div class="row px"><div>날씨가 바뀌면 여기서 경로 변경을 알려요 (S-07, 다음 단계) [임시]</div></div>
+      <button class="row px" data-nav="reroute" style="justify-content:center;font-weight:800">날씨가 바뀌었다고 가정하고 보기 (S-07)</button>
     </div>
   </section>
 
@@ -337,6 +338,12 @@
       <div class="row px"><div>하랑이의 한 줄 [승인 대사 대기]</div></div>
       <button class="cta px" data-tab="ledger" data-bm="trips" style="height:56px">내 여행에서 보기</button>
     </div>
+  </section>
+
+  <!-- S-07 경로 변경·보류 (S-05에서 날씨·특보·운영 상태가 바뀌었을 때) -->
+  <section class="view" id="v-reroute" aria-label="경로 변경">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">여행 중에 조건이 바뀌었어요</div><div class="t">경로 변경</div><button class="back px" data-nav="travel">‹ 여행</button></div>
+    <div class="scroll" id="rrBody"></div>
   </section>
 
   <div class="modal" id="modal" role="alertdialog" aria-modal="true" aria-labelledby="modalT" hidden>
@@ -360,7 +367,7 @@
   <b>배치 확인용 목업입니다.</b> 390 x 844 기준이고, 문구는 모두 임시이며 대사는 <b>[승인 대사 대기]</b>입니다.
   <b>역할 구분</b>: 하단 <b>장부 탭</b> = 장부 전체(칸·내 여행·앨범), 방 안 <b>책상 위 장부 그림</b> = 오늘 페이지(오늘 조건의 칸), 홈 <b>주머니 버튼</b> = 받은 물건.
   한 코스의 도장은 3개이고, 장소 3곳을 방문해 미션을 마칠 때마다 1개씩 받습니다.
-  흐름: 추천 길 카드 → 코스 상세(S-04) → [이 길로 출발] → 외출 연출(옆모습 걷기 프레임 4장) → [여행 지도 보기] → 여행 지도(S-05) → [도착 확인] → 방문 확인·미션(S-06) → 도장 → 3곳을 마치면 완주 한 장(S-08). 화면 전환은 클릭으로만 일어납니다. GPS 도착과 미션 판정은 임시 버튼입니다. 상단 "미션 첫 시도 실패" 체크를 켜면 첫 시도가 실패합니다.
+  흐름: 추천 길 카드 → 코스 상세(S-04) → [이 길로 출발] → 외출 연출(옆모습 걷기 프레임 4장) → [여행 지도 보기] → 여행 지도(S-05) → [도착 확인] → 방문 확인·미션(S-06) → 도장 → 3곳을 마치면 완주 한 장(S-08). 여행 중 조건이 바뀌면 경로 변경(S-07)에서 검수된 대체 길을 제안만 하고 자동으로 바꾸지 않습니다. 화면 전환은 클릭으로만 일어납니다. GPS 도착과 미션 판정은 임시 버튼입니다. 상단 "미션 첫 시도 실패" 체크를 켜면 첫 시도가 실패합니다.
   글꼴은 기기 기본 한글 글꼴입니다. 폭염·호우 배경은 변형 이미지가 없어 필터로 대신했습니다.
   근거: storyboard/app_home_screen_v1.md, storyboard/app_screen_storyboard_v1.md (S-04~S-08), storyboard/game_flow_story_v1.md (6-1, 8, 9-2), brand/worldview.md 5-1, brand/game_concept.md 7, plan/spec/treagent_tech_spec_v1.md (F-10, F-11, F-17).
 </p>
@@ -401,6 +408,7 @@
     $('#cta').dataset.nav=({none:'course',outside:'course',active:'travel',notice:'travel'})[k]||'';
     $('#q1t').textContent=s.q1; $('#q1').dataset.go = s.q1==='오늘의 길' ? 'S-14 오늘의 길 (진행 중에도 보기, D-08)' : 'S-04 코스 전체';
     var sb=$('#sbanner'); if(s.banner){sb.hidden=false;sb.className='sbanner'+(s.banner[0]==='n'?' n':'');sb.textContent=s.banner[1];sb.dataset.go=s.banner[2]}else{sb.hidden=true}
+    sb.dataset.nav=(s.banner&&s.banner[2]==='S-07 경로 변경')?'reroute':'';
     $('#listNote').textContent=s.note||'';
     var L=$('#list'); L.innerHTML='';
     s.cards.forEach(function(id){var c=C[id], r=c.routes[routeOf(k)];var b=document.createElement('button');b.className='card px';b.dataset.c=id;
@@ -415,9 +423,10 @@
   }
   /* 여행 흐름 (S-04 → 외출 → S-05 → S-06 → S-08). 목업용 임시 값이며 실제 진행 데이터가 아님.
      화면 전환은 클릭으로만 일어난다 (자동 전환 없음, ?lock 모드와 맞춤). */
-  var TRIP={on:false,route:'explore',done:0}, cur=0, phase='mission';
-  function stopAt(i){var r=C.C01.routes[TRIP.route];return r.stops[i]||('[스팟 '+(i+1)+']')}
-  function ensureTrip(){ if(!TRIP.on){ var k=$('#state').value; TRIP={on:true,route:routeOf(k),done:(k==='active'||k==='notice')?2:0} } }
+  var TRIP={on:false,route:'explore',done:0,names:[]}, cur=0, phase='mission';
+  // 이미 도장을 받은 장소는 이름을 고정한다 (경로를 바꿔도 지난 장소는 그대로)
+  function stopAt(i){ if(TRIP.names[i]) return TRIP.names[i]; var r=C.C01.routes[TRIP.route]; return r.stops[i]||('[스팟 '+(i+1)+']') }
+  function ensureTrip(){ if(!TRIP.on){ var k=$('#state').value; TRIP={on:true,route:routeOf(k),done:(k==='active'||k==='notice')?2:0,names:[]} } }
   function renderCourse(){
     var r=C.C01.routes[routeOf($('#state').value)];
     $('#crsChips').innerHTML=r.chips;
@@ -441,15 +450,40 @@
     $('#stpBody').innerHTML=h;
   }
   function mission(){
-    if(phase==='mission' && $('#optMiss').checked){ phase='failed' } else { phase='passed'; TRIP.done=cur+1 }
+    if(phase==='mission' && $('#optMiss').checked){ phase='failed' } else { phase='passed'; TRIP.names[cur]=stopAt(cur); TRIP.done=cur+1 }
     renderStop();
   }
   function renderDone(){
     $('#dnSub').textContent='[날짜] · 3곳 · 도장 3/3 · 완주';
     $('#dnStamps').innerHTML=[0,1,2].map(function(i){return '<img src="'+STAMP+'" alt="도장 '+(i+1)+'">'}).join('');
   }
+  // S-07: 조건이 바뀌면 대체 길을 제안만 하고 자동으로 바꾸지 않는다 (game_flow_story_v1.md 7절)
+  function renderReroute(){
+    var alt=!$('#optNoAlt').checked, h='';
+    h+='<div class="row px"><div class="tx" style="flex:1"><b>[변경 사유 자리]</b><small>[날씨·특보 종류] · [기준 시각] 기준 [확인 필요]</small></div></div>';
+    h+='<div class="row px"><div><b>하랑이</b>[승인 대사 대기] · 놀람 표정 [그림 없음]</div></div>';
+    if(alt){
+      var r=C.C01.routes.indoor;
+      h+='<div class="h3">대체 길 <span>검수된 길만 제안해요 [임시 이름]</span></div>';
+      h+='<div class="row px" style="flex-direction:column;align-items:flex-start"><div>'+r.chips+'</div><small style="color:var(--muted);font-size:10px;margin-top:6px">'+r.stops.join(' → ')+'</small></div>';
+      h+='<button class="cta px" data-nav="reroute-accept" style="height:56px">대체 길로 계속</button>';
+      h+='<button class="row px" data-nav="reroute-keep" style="justify-content:center;font-weight:800">원래대로 계속</button>';
+      h+='<button class="row px" data-nav="reroute-later" style="justify-content:center;font-weight:800">나중에 이어하기</button>';
+    } else {
+      h+='<div class="msg px">대체 길이 없어요. 여행을 보류하고 확인된 쉼터를 안내해요 [임시 문구]</div>';
+      h+='<div class="row px"><div class="tx" style="flex:1"><b>가까운 쉼터 [이름]</b><small>운영 [시간]까지 · [기준 시각] 기준 · AWS 여부 [확인 필요]</small></div></div>';
+      h+='<button class="cta px" data-go="S-14 가까운 쉼터 (확인된 곳만)" style="height:56px">쉼터 보기</button>';
+      h+='<button class="row px" data-nav="reroute" style="justify-content:center;font-weight:800">다시 확인</button>';
+      h+='<button class="row px" data-nav="reroute-later" style="justify-content:center;font-weight:800">나중에 이어하기</button>';
+    }
+    $('#rrBody').innerHTML=h;
+  }
   function nav(name){
-    if(name==='course'){ renderCourse(); show('course') }
+    if(name==='reroute'){ ensureTrip(); renderReroute(); show('reroute') }
+    else if(name==='reroute-accept'){ TRIP.route='indoor'; renderTravel(); show('travel') }
+    else if(name==='reroute-keep'){ renderTravel(); show('travel') }
+    else if(name==='reroute-later'){ show('home'); toast('여행을 장부에 접어 뒀어요') }
+    else if(name==='course'){ renderCourse(); show('course') }
     else if(name==='depart'){ startRoute() }
     else if(name==='travel'){ scene.classList.remove('going'); ensureTrip(); renderTravel(); show('travel') }
     else if(name==='stop'){ cur=TRIP.done; phase='mission'; renderStop(); show('stop') }
@@ -463,16 +497,16 @@
     depart();
   }
   function depart(){
-    TRIP={on:true,route:routeOf($('#state').value),done:0};
+    TRIP={on:true,route:routeOf($('#state').value),done:0,names:[]};
     show('home');
     scene.classList.remove('going'); void scene.offsetWidth; scene.classList.add('going');
   }
   $('#mKeep').addEventListener('click',function(){ $('#modal').hidden=true; nav('travel') });
   $('#mNew').addEventListener('click',function(){ $('#modal').hidden=true; depart() });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') $('#modal').hidden=true });
-  var TABOF={home:'home',today:'home',pouch:'home',course:'home',travel:'home',stop:'home',done:'home',ledger:'ledger',me:'me'};
+  var TABOF={home:'home',today:'home',pouch:'home',course:'home',travel:'home',stop:'home',done:'home',reroute:'home',ledger:'ledger',me:'me'};
   function show(name){
-    ['home','ledger','today','pouch','me','course','travel','stop','done'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
+    ['home','ledger','today','pouch','me','course','travel','stop','done','reroute'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
     var cur=TABOF[name];
     $$('.tab button').forEach(function(b){var t=b.dataset.tab||b.dataset.view; if(t===cur)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   }
