@@ -27,3 +27,6 @@ export function pxBox(fill: string = COLOR.paper, shade: string = COLOR.shade): 
     borderBottomColor: shade,
   };
 }
+
+// 버튼 빨강 (목업 contrast_compare_v1 권장값). 앱 전체 빨강(COLOR.red)은 팀 결정 전까지 그대로 둔다.
+export const BTN_RED = '#d03a2f';
