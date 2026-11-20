@@ -57,7 +57,8 @@ Claude Code가 이 저장소에서 작업할 때 따르는 규칙입니다.
 - 작업 브랜치는 최신 `dev`에서 `<타입>/<영역>-<설명>` 형식으로 만듭니다 (예: `fix/pitch-asset-path`). 발표 자료 작업은 `presentation`에서 만듭니다. 작업 하나 = 브랜치 하나 = PR 하나.
 - 이슈는 자동으로 만들지 않습니다. 필요할 때만 사람이 직접 만듭니다.
 - `main`, `dev`, `presentation`에 직접 푸시하지 않습니다. 작업 PR은 `dev`로(발표 자료는 `presentation`으로) 엽니다. 병합은 팀원 1명 승인 후 사람이 합니다.
-- `dev → main`은 자동으로 하지 않습니다. 사람이 PR을 열고 승인한 뒤 `Create a merge commit`으로 병합하고, 병합 직후 `main`을 `dev`에 합칩니다. 절차는 git-convention.md의 "`dev` → `main` 올리기"를 따릅니다.
+- `dev → main`은 `.github/workflows/promote-dev-to-main.yml`이 정해진 시간에 자동으로 합니다 (PR 생성 → `Create a merge commit` 병합 → `main`을 `dev`에 합치기 → Pages 재배포). 이 경로에는 사람의 승인이 없고, 병합되면 Vercel·Railway가 바로 다시 배포됩니다. 멈출 때는 저장소 변수 `AUTO_PROMOTE`를 `false`로 둡니다. 절차는 git-convention.md의 "`dev` → `main` 올리기"를 따릅니다.
+- 자동 승격 외에 `main`으로 가는 변경(`presentation → main`, `hotfix`)은 사람이 PR을 열고 승인한 뒤 병합합니다. `dev`는 `main`에 병합할 때 삭제하지 않습니다.
 - 커밋 제목은 `<타입>/<영역>: <내용>` 형식입니다 (예: `fix/개발부분: 발표 자료 이미지 경로 수정`).
 - 커밋과 푸시는 사용자가 요청했을 때만 합니다.
 - 새 작업은 파일을 고치기 전에 반드시 최신 `dev`(발표 자료는 `presentation`)에서 브랜치를 만들고 시작합니다. 병합이 끝나면 로컬과 원격 작업 브랜치를 지웁니다.

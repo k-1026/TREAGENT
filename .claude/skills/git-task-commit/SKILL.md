@@ -24,7 +24,7 @@ description: 새 작업을 시작할 때, 그리고 "커밋해 줘", "PR 올려 
 
 ## 3. 작업별 PR
 - 브랜치를 푸시하고 `gh pr create --base dev`(발표 자료는 `--base presentation`)로 작업마다 PR을 하나씩 연다.
-- `dev → main` PR은 사용자가 요청할 때만 연다. 본문에 앱 실행·개인정보·html 빌드 확인 결과를 적고, 병합은 사람이 `Create a merge commit`으로 한다.
+- `dev → main`은 `promote-dev-to-main.yml`이 자동으로 한다. 직접 열지 않는다. 멈추려면 저장소 변수 `AUTO_PROMOTE=false`.
 - 제목은 커밋 제목과 같게, 본문은 PR 템플릿을 채운다. 실제로 실행한 확인만 `통과`, 나머지는 `미확인`으로 쓴다.
 - 이슈를 따로 만든 작업만 `Closes #번호`(전부 완료) 또는 `관련 이슈 #번호`(일부)로 연결한다. 이슈를 새로 만들지 않는다.
 - PR 링크와 Slack에 붙일 리뷰 요청 문구를 사용자에게 준다.
