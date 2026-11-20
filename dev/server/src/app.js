@@ -3,10 +3,17 @@ import express from 'express';
 import { createWeatherRouter } from './routes/weather.js';
 import { createWeatherService } from './weather/index.js';
 import { createRecommendRouter } from './routes/recommend.js';
+import { createHarangiLine } from './ai/harangi_line.js';
+import { createHarangiFactoryFromEnv } from './ai/harangi_gemini.js';
+import { createPartiesRouter } from './routes/parties.js';
+import { createPgPartyStore } from './party/party_store.js';
+import { createTokenVerifierFromEnv } from './auth/verify_token.js';
+import { createComposeRoute } from './ai/compose_route.js';
+import { createRouteCache } from './ai/route_cache.js';
+import { createLlmFromEnv } from './ai/gemini_llm.js';
 import { createPlaceLoader, createPgQuery } from './places/load_places.js';
 import { createCoursesRouter } from './routes/courses.js';
 import { createCourseLoader } from './courses/load_courses.js';
-
 // ① 요청 로그: 요청 한 건이 끝나면 딱 한 줄만 남긴다.
 function requestLogger(req, res, next) {
   // 요청이 들어온 시각을 기억한다 (걸린 시간 계산용)
@@ -50,13 +57,24 @@ export function createApp({
   weatherService = createWeatherService(),
   placeLoader,
   courseLoader,
+  composeRoute,
+  harangiLine,
+  partyStore,
+  tokenVerifier,
   now = () => new Date(),
 } = {}) {
   // 두 로더가 DB 연결 하나를 같이 쓴다. 처음 쓸 때 만든다.
   let sharedQuery;
-  const query = (text) => (sharedQuery ??= createPgQuery())(text);
+    const query = (text, params) => (sharedQuery ??= createPgQuery())(text, params);
   placeLoader ??= createPlaceLoader({ query });
   courseLoader ??= createCourseLoader({ query });
+    // AI 길 구성: GOOGLE_API_KEY와 GEMINI_MODEL이 .env에 없으면 llm이 null이라 규칙 결과만 쓴다.
+  composeRoute ??= createComposeRoute({ llm: createLlmFromEnv(), cache: createRouteCache() });
+  // 하랑이 대사와 오늘의 길 브리핑: 키와 모델이 없으면 makeModel이 null이라 고정 문장만 쓴다.
+  harangiLine ??= createHarangiLine({ makeModel: createHarangiFactoryFromEnv(), cache: createRouteCache() });
+  // 일행 저장소와 Supabase 로그인 확인. SUPABASE_URL 등이 .env에 없으면 tokenVerifier가 null이라 일행 API는 503으로 답한다.
+  partyStore ??= createPgPartyStore({ query });
+  tokenVerifier = tokenVerifier === undefined ? createTokenVerifierFromEnv() : tokenVerifier;
 
   const app = express();
   // 응답 헤더에서 "Express를 쓴다"는 정보를 숨긴다.
@@ -73,8 +91,12 @@ export function createApp({
     res.json({ status: 'ok' });
   });
   app.use('/weather', createWeatherRouter(weatherService));
-  app.use('/recommend', createRecommendRouter({ weatherService, placeLoader, now }));
-    app.use('/courses', createCoursesRouter({ weatherService, placeLoader, courseLoader, now }));
+    app.use('/recommend', createRecommendRouter({ weatherService, placeLoader, composeRoute, harangiLine, now }));
+  app.use(
+    '/parties',
+    createPartiesRouter({ store: partyStore, verifier: tokenVerifier, weatherService, placeLoader, composeRoute, harangiLine, now }),
+  );
+  app.use('/courses', createCoursesRouter({ weatherService, placeLoader, courseLoader, now }));
   
   // ④ 위 라우트에 안 걸린 모든 요청은 404
   app.use((req, res) => {
