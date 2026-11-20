@@ -7,15 +7,43 @@
 ## 한눈에 보기
 
 ```mermaid
-flowchart LR
-    Phone["휴대폰 (Expo Go)"] -->|"EXPO_PUBLIC_SERVER_URL"| Server
-    Web["웹 (Vercel)"] -->|"EXPO_PUBLIC_SERVER_URL"| Server["서버 (Railway, Docker 이미지)"]
-    Phone -->|"EXPO_PUBLIC_SUPABASE_*"| Auth["Supabase 인증"]
-    Web -->|"EXPO_PUBLIC_SUPABASE_*"| Auth
-    Server --> DB["Supabase DB"]
-    Server --> KMA["기상청 API"]
-    Server --> LLM["Gemini (하랑이 대사)"]
+flowchart TB
+    subgraph APP["앱 · 폰은 Expo Go, 웹은 Vercel"]
+        SCR["화면<br/>login · signup · district · today · courses · course"]
+        SB["supabase.ts<br/>로그인·가입만"]
+        API["server_api.ts<br/>그 밖의 모든 요청"]
+        LOC["location.ts<br/>위치 확인"]
+    end
+    subgraph SUPA["Supabase"]
+        AUTH["Auth<br/>이메일 · 비밀번호"]
+        DB["PostgreSQL<br/>places · place_mode_fit · courses · course_routes<br/>parties · party_members · party_routes"]
+    end
+    subgraph SRV["서버 · Railway (Express)"]
+        MW["미들웨어<br/>로그 · CORS · 토큰 · 호출 제한"]
+        RT["라우트<br/>/weather /recommend /courses /parties /health"]
+        RULE["규칙 decide_mode<br/>날씨 → 모드 판정"]
+        WX["날씨 어댑터<br/>호출 · 정리 · 캐시"]
+        AI["AI (LangGraph)<br/>compose → validate → fallback<br/>agent ↔ tools → validate"]
+    end
+    subgraph EXT["외부 서비스"]
+        KMA["기상청 API"]
+        GEM["Gemini API"]
+    end
+    SCR --> SB
+    SCR --> API
+    SCR --> LOC
+    SB --> AUTH
+    API --> MW --> RT
+    RT --> RULE
+    RT --> WX
+    RT --> AI
+    RT -->|SQL| DB
+    WX --> KMA
+    AI --> GEM
 ```
+
+- 세팅 순서(키를 받는 곳, 폴더별 실행, 결과 확인)는 [team_setup_guide_v1.md](team_setup_guide_v1.md)의 "세팅 순서" 그림을 봅니다.
+- `location.ts`가 하는 일은 파일 이름만 보고 적었습니다 `[확인 필요]`.
 
 - 앱은 DB와 외부 API에 직접 접속하지 않고 서버만 호출합니다. 로그인(인증)만 Supabase에 직접 요청합니다 (`dev/app/src/lib/supabase.ts`).
 - 비밀 키(`service role`, DB 주소, 기상청, LLM)는 서버 쪽(`Railway Variables` 또는 `dev/server/.env`)에만 둡니다.
