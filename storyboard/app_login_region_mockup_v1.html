@@ -127,6 +127,7 @@
     <option value="signup">③ 가입</option>
     <option value="loc">④ 위치 확인</option>
     <option value="dist">⑤ 구·군 선택</option>
+    <option value="welcome">⑥ 처음 만나요 (로그인 뒤 프로필)</option>
   </select></label>
   <label>상태 <select id="stateSel"></select></label>
   <label><input type="checkbox" id="optB"> 버튼 문구 후보 B ([로그인]/[시작하기])</label>
@@ -216,6 +217,31 @@
     </div>
   </section>
 
+  <!-- ⑥ 처음 만나요 (앱 welcome: 로그인 뒤 프로필이 없을 때 한 번만) -->
+  <section class="view" id="v-welcome" aria-label="처음 만나요">
+    <div class="art"><div class="status"><span>9:41</span><span>●●● ▮</span></div>
+      <h2>처음 만나요<small>프로필 한 번 정하기</small></h2></div>
+    <div class="form" style="overflow:auto">
+      <p class="note" style="font-size:13px;color:var(--ink);margin-bottom:10px">하랑이가 뭐라고 부르면 좋을까요? 닉네임과 나이대는 꼭 정해야 시작할 수 있어요. [임시 문구]</p>
+      <div style="font-size:13px;font-weight:800;margin-bottom:2px">닉네임 (필수)</div>
+      <p class="note" style="margin-bottom:6px">한 번 정하면 바꿀 수 없어요. 다른 사람과 같은 이름은 못 써요. 2~10자 [임시 문구]</p>
+      <div style="display:flex;gap:8px;align-items:center;margin-bottom:6px">
+        <input class="field px" id="wNick" type="text" placeholder="10자까지" maxlength="10" autocomplete="off" style="margin-bottom:0;flex:1">
+        <button class="px" id="wCheck" style="background:var(--paper);border:0;padding:12px 10px;font-size:12px;font-weight:800;color:var(--ink);cursor:pointer;white-space:nowrap">중복 확인</button>
+      </div>
+      <p class="note" id="wNote" style="min-height:18px;color:var(--ink);font-size:12px;margin-bottom:12px"></p>
+      <div style="font-size:13px;font-weight:800;margin-bottom:2px">나이대</div>
+      <p class="note" style="margin-bottom:8px">걷는 시간을 맞추는 데 써요. 한 번만 받아요. [임시 문구]</p>
+      <div id="wAges" style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:12px">
+        <button class="agechip px" data-age="10s">10대</button><button class="agechip px" data-age="20s">20대</button><button class="agechip px" data-age="30s">30대</button>
+        <button class="agechip px" data-age="40s">40대</button><button class="agechip px" data-age="50s">50대</button><button class="agechip px" data-age="60s">60대 이상</button>
+      </div>
+      <div class="msg px" id="wErr" hidden>나이대를 골라 주세요</div>
+      <div class="msg px" id="wErrN" hidden>닉네임을 정해 주세요</div>
+      <button class="btn px" id="wStart">시작하기</button>
+    </div>
+  </section>
+
   <div class="toast" id="toast"></div>
 </div>
 </div></div>
@@ -239,11 +265,12 @@
     login:[['default','기본 (입력 전)'],['filled','입력함'],['error','로그인 실패'],['loading','로그인 중'],['success','로그인 성공 (열쇠 돌리기)']],
     signup:[['default','기본'],['short','비밀번호 8자 미만'],['mismatch','비밀번호 불일치'],['fail','가입 실패'],['loading','가입 중'],['mail','가입 메일 안내']],
     loc:[['default','기본'],['loading','위치 읽는 중'],['ok','위치 확인됨 (중구 안)'],['out','위치 확인됨 (중구 밖)'],['denied','권한 꺼짐 (다시 물을 수 있음)'],['denied2','권한 꺼짐 (설정에서만 가능)'],['unavail','위치를 읽지 못함'],['picked','구·군 선택함 (중구)']],
-    dist:[['default','기본']]
+    dist:[['default','기본']],
+    welcome:[['default','기본 (입력 전)'],['noage','나이대를 안 고름'],['noname','닉네임을 안 정함'],['badname','닉네임 형식이 틀림']]
   };
   function toast(t){var el=$('#toast');el.textContent=t+' (자리)';el.classList.add('on');clearTimeout(toastT);toastT=_realST(function(){el.classList.remove('on')},1800)}
   function show(name){
-    ['title','login','signup','loc','dist'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
+    ['title','login','signup','loc','dist','welcome'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
     $('#screen').value=name;
     var sel=$('#stateSel'); sel.innerHTML=''; STATES[name].forEach(function(s){var o=document.createElement('option');o.value=s[0];o.textContent=s[1];sel.appendChild(o)});
     state('default');
@@ -257,6 +284,7 @@
   function state(s){
     $('#stateSel').value=s;
     var cur=$('#screen').value;
+    if(cur==='welcome'){ $('#wErr').hidden=s!=='noage'; $('#wErrN').hidden=s!=='noname'; $('#wNote').textContent=s==='badname'?'닉네임은 한글·영문·숫자·밑줄로 2~10자까지 쓸 수 있어요':''; }
     if(cur==='title'){var t=$('#v-title'); t.classList.remove('go'); void t.offsetWidth; t.classList.add('go')}
     if(cur==='login'){
       var e=$('#lEmail'), p=$('#lPw');
@@ -304,6 +332,11 @@
     if(a!==c){state('mismatch');return}
     state('loading'); setTimeout(function(){state($('#optFail').checked?'fail':'mail')},700);
   });
+  // 처음 만나요: 나이대 선택, 중복 확인, 시작/건너뛰기 (앱 welcome.tsx와 같은 흐름)
+  var wAge=null;
+  document.querySelectorAll('#wAges .agechip').forEach(function(b){b.addEventListener('click',function(){wAge=b.dataset.age;document.querySelectorAll('#wAges .agechip').forEach(function(x){x.style.background=x===b?'var(--ink)':'var(--paper)';x.style.color=x===b?'#fff':'var(--ink)'});$('#wErr').hidden=true})});
+  $('#wCheck').addEventListener('click',function(){var t=$('#wNick').value.trim();if(!t){$('#wNote').textContent='닉네임을 먼저 입력해 주세요';return}$('#wNote').textContent=/^[가-힣A-Za-z0-9_]{2,10}$/.test(t)?'사용할 수 있는 이름이에요 [임시]':'닉네임은 한글·영문·숫자·밑줄로 2~10자까지 쓸 수 있어요'});
+  $('#wStart').addEventListener('click',function(){var t=$('#wNick').value.trim();$('#wErrN').hidden=!!t;$('#wErr').hidden=!!wAge;if(!t||!wAge)return;toast('→ 홈(S-03)')});
   $('#tOpen').addEventListener('click',function(){show('login')});
   $('#tNew').addEventListener('click',function(){show('signup')});
   $('#lToSign').addEventListener('click',function(){show('signup')});
