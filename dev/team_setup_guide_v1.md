@@ -33,9 +33,13 @@
 
 | 내가 하는 일 | 필요한 것 | 서버를 띄워야 하나 |
 |---|---|---|
-| 앱 화면만 개발 | Git, Node 22 이상, `dev/app/.env` | 아니요. Railway 서버를 그대로 씁니다 |
-| 서버 코드 수정·시험 | 위 + `dev/server/.env`, (Docker 또는 Node 22.9 이상) | 예 |
+| 앱 화면 개발 (`dev` 기준) | Git, Node 22.9 이상, `dev/app/.env`, `dev/server/.env` | **예.** Railway는 `main`을 배포해서, `dev`에만 있는 서버 API(프로필, 후보 길 `count`)가 아직 없을 수 있습니다 |
+| 앱 화면만 개발 (서버 변경이 전부 `main`에 반영된 때) | Git, Node 22 이상, `dev/app/.env` | 아니요. Railway 서버를 그대로 씁니다 |
+| 서버 코드 수정·시험 | 위 + `dev/server/.env` | 예 |
 | PC 브라우저로 앱 개발 | 위 + 로컬 서버 | 예 (CORS 때문, 아래 "PC 브라우저" 참고) |
+
+- 판단 기준: `git log origin/main..origin/dev -- dev/server dev/supabase`에 커밋이 나오면 로컬 서버를 띄웁니다. 아무것도 안 나오면 Railway를 써도 됩니다.
+- 서버는 `npm start`로 띄웁니다. Docker는 필수가 아닙니다.
 
 ## 1. 공통 준비
 
@@ -81,7 +85,7 @@ npx expo start -c
 - 앱 `.env`에는 서버용 키(`SUPABASE_SERVICE_ROLE_KEY`, `DATABASE_URL`, `KMA_SERVICE_KEY`, `GOOGLE_API_KEY`)를 넣지 않습니다.
 - `.env`를 고친 뒤에는 Expo를 끄고 `npx expo start -c`로 다시 시작합니다.
 
-## 3. 서버 세팅 (서버를 직접 띄울 때만)
+## 3. 서버 세팅 (`dev` 코드로 앱을 개발할 때 필요)
 
 1. `.env`를 만듭니다. 실행 위치는 `dev/server`입니다.
 
@@ -108,7 +112,8 @@ cd dev/server; copy .env.example .env
 
 4. 확인: 브라우저에서 `http://localhost:3000/health` → `{"status":"ok"}`.
 
-- Docker는 선택입니다. 켜지지 않는 PC는 `npm start`를 씁니다.
+- Docker는 선택입니다. CPU 가상화가 안 되는 PC는 설치하지 말고 `npm start`를 씁니다.
+- `profiles` 표 SQL(`dev/supabase/migrations/create_profiles.sql`)이 Supabase에 실행돼 있어야 프로필 API가 동작합니다. 공유 프로젝트면 한 번만 실행하면 됩니다.
 - 로컬 서버를 쓰면 `dev/app/.env`의 `EXPO_PUBLIC_SERVER_URL`을 `http://localhost:3000`(같은 컴퓨터) 또는 `http://<서버 컴퓨터 Wi-Fi IP>:3000`(폰)으로 바꿉니다. 다 쓴 뒤에는 Railway 주소로 되돌립니다.
 
 ## 4. PC 브라우저로 개발할 때
