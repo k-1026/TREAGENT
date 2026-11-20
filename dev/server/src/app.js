@@ -6,7 +6,9 @@ import { createRecommendRouter } from './routes/recommend.js';
 import { createHarangiLine } from './ai/harangi_line.js';
 import { createHarangiFactoryFromEnv } from './ai/harangi_gemini.js';
 import { createPartiesRouter } from './routes/parties.js';
+import { createProfileRouter } from './routes/profile.js';
 import { createPgPartyStore } from './party/party_store.js';
+import { createPgProfileStore } from './profile/profile_store.js';
 import { createTokenVerifierFromEnv } from './auth/verify_token.js';
 import { createComposeRoute } from './ai/compose_route.js';
 import { createRouteCache } from './ai/route_cache.js';
@@ -31,8 +33,8 @@ function devCors(req, res, next) {
   const allowed = process.env.CORS_ORIGIN;
   if (allowed && req.headers.origin === allowed) {
     res.setHeader('Access-Control-Allow-Origin', allowed);
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,OPTIONS');
   }
   // 브라우저가 POST 전에 보내는 사전 확인(OPTIONS)에는 바로 답한다.
   if (req.method === 'OPTIONS') {
@@ -60,6 +62,7 @@ export function createApp({
   composeRoute,
   harangiLine,
   partyStore,
+  profileStore,
   tokenVerifier,
   now = () => new Date(),
 } = {}) {
@@ -74,6 +77,7 @@ export function createApp({
   harangiLine ??= createHarangiLine({ makeModel: createHarangiFactoryFromEnv(), cache: createRouteCache() });
   // 일행 저장소와 Supabase 로그인 확인. SUPABASE_URL 등이 .env에 없으면 tokenVerifier가 null이라 일행 API는 503으로 답한다.
   partyStore ??= createPgPartyStore({ query });
+  profileStore ??= createPgProfileStore({ query });
   tokenVerifier = tokenVerifier === undefined ? createTokenVerifierFromEnv() : tokenVerifier;
 
   const app = express();
@@ -96,8 +100,9 @@ export function createApp({
     '/parties',
     createPartiesRouter({ store: partyStore, verifier: tokenVerifier, weatherService, placeLoader, composeRoute, harangiLine, now }),
   );
+  app.use('/profile', createProfileRouter({ store: profileStore, verifier: tokenVerifier, now }));
   app.use('/courses', createCoursesRouter({ weatherService, placeLoader, courseLoader, now }));
-  
+
   // ④ 위 라우트에 안 걸린 모든 요청은 404
   app.use((req, res) => {
     res.status(404).json({ error: 'NOT_FOUND' });
