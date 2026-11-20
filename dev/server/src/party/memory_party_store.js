@@ -7,7 +7,8 @@ export function createMemoryPartyStore({ now = () => new Date() } = {}) {
   const parties = new Map(); // id → party
   const members = new Map(); // partyId → [{ userId, ageGroup, role }]
   const routes = new Map(); // `${partyId}|${mode}` → [길 버전들]
-
+  const candidateSets = new Map(); // `${partyId}|${mode}` → [후보 묶음들 { setNo, candidates }]
+  
   return {
     async createParty({ hostUserId, inviteCode, ageGroup, companion, theme, zone, variant, expiresAt }) {
       // DB의 unique 제약과 같게, 코드가 겹치면 코드 23505 오류를 던진다.
@@ -66,6 +67,42 @@ export function createMemoryPartyStore({ now = () => new Date() } = {}) {
       versions.push({ version, title, reason: reason ?? null, picker, placeIds: [...placeIds] });
       versions.sort((a, b) => a.version - b.version);
       routes.set(key, versions);
+      return true;
+    },
+
+    async hasRoute(partyId) {
+      for (const [key, versions] of routes) if (key.startsWith(`${partyId}|`) && versions.length > 0) return true;
+      return false;
+    },
+
+    async hasCandidates(partyId) {
+      for (const key of candidateSets.keys()) if (key.startsWith(`${partyId}|`)) return true;
+      return false;
+    },
+
+    async latestCandidates(partyId, mode) {
+      const sets = candidateSets.get(`${partyId}|${mode}`) ?? [];
+      const last = sets[sets.length - 1];
+      return last
+        ? { setNo: last.setNo, candidates: last.candidates.map((c) => ({ ...c, placeIds: [...c.placeIds] })) }
+        : null;
+    },
+
+    async saveCandidates({ partyId, mode, setNo, candidates }) {
+      const key = `${partyId}|${mode}`;
+      const sets = candidateSets.get(key) ?? [];
+      if (sets.some((s) => s.setNo === setNo)) return false;
+      sets.push({
+        setNo,
+        candidates: candidates.map((c) => ({
+          title: c.title,
+          reason: c.reason ?? null,
+          picker: c.picker,
+          placeIds: [...c.placeIds],
+        })),
+      });
+      sets.sort((a, b) => a.setNo - b.setNo);
+      candidateSets.set(key, sets);
       return true;
     },
 

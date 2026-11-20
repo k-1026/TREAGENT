@@ -92,6 +92,56 @@ export function createPgPartyStore({ query }) {
       );
       return rows.length > 0;
     },
+    // 일행이 길을 하나라도 정했는가 (어떤 모드든)
+    async hasRoute(partyId) {
+      const rows = await query(`select 1 from public.party_routes where party_id = $1::uuid limit 1`, [partyId]);
+      return rows.length > 0;
+    },
+
+    // 일행에 후보 길이 하나라도 있는가 (있으면 팀원이 길을 먼저 만들지 못하게 막는 데 쓴다)
+    async hasCandidates(partyId) {
+      const rows = await query(`select 1 from public.party_route_candidates where party_id = $1::uuid limit 1`, [partyId]);
+      return rows.length > 0;
+    },
+
+    // 그 모드의 가장 최신 후보 묶음. 없으면 null. 결과: { setNo, candidates: [{ title, reason, picker, placeIds }] } (순번 순서)
+    async latestCandidates(partyId, mode) {
+      const rows = await query(
+        `select set_no as "setNo", idx, title, reason, picker, place_ids as "placeIds"
+         from public.party_route_candidates
+         where party_id = $1::uuid and mode = $2::text
+           and set_no = (select max(set_no) from public.party_route_candidates where party_id = $1::uuid and mode = $2::text)
+         order by idx`,
+        [partyId, mode],
+      );
+      if (rows.length === 0) return null;
+      return {
+        setNo: rows[0].setNo,
+        candidates: rows.map(({ title, reason, picker, placeIds }) => ({ title, reason, picker, placeIds })),
+      };
+    },
+
+    // 새 후보 묶음을 추가한다. 같은 (일행, 모드, 묶음 번호)가 이미 있으면 넣지 않고 false.
+    // 장소 id는 쉼표로 이어 한 글자열로 넘기고 DB에서 다시 나눈다(id는 영문·숫자·밑줄·하이픈만 쓴다).
+    async saveCandidates({ partyId, mode, setNo, candidates }) {
+      const rows = await query(
+        `insert into public.party_route_candidates (party_id, mode, set_no, idx, title, reason, picker, place_ids)
+         select $1::uuid, $2::text, $3::int, t.n - 1, t.title, nullif(t.reason, ''), t.picker, string_to_array(t.ids, ',')
+         from unnest($4::text[], $5::text[], $6::text[], $7::text[]) with ordinality as t(title, reason, picker, ids, n)
+         on conflict (party_id, mode, set_no, idx) do nothing
+         returning id`,
+        [
+          partyId,
+          mode,
+          setNo,
+          candidates.map((c) => c.title),
+          candidates.map((c) => c.reason ?? ''),
+          candidates.map((c) => c.picker),
+          candidates.map((c) => c.placeIds.join(',')),
+        ],
+      );
+      return rows.length === candidates.length;
+    },
 
     // 시작 처리. 이미 시작했으면 처음 시각을 그대로 돌려준다.
     async markStarted(partyId) {

@@ -98,7 +98,7 @@ export function createApp({
     app.use('/recommend', createRecommendRouter({ weatherService, placeLoader, composeRoute, harangiLine, now }));
   app.use(
     '/parties',
-    createPartiesRouter({ store: partyStore, verifier: tokenVerifier, weatherService, placeLoader, composeRoute, harangiLine, now }),
+    createPartiesRouter({ store: partyStore, verifier: tokenVerifier, weatherService, placeLoader, composeRoute, harangiLine, profileStore, now }),
   );
   app.use('/profile', createProfileRouter({ store: profileStore, verifier: tokenVerifier, now }));
   app.use('/courses', createCoursesRouter({ weatherService, placeLoader, courseLoader, now }));

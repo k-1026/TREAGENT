@@ -42,7 +42,7 @@ export default function LocationScreen() {
   // 위치를 읽었으면 그 좌표, 아니면 구·군 기준점(코스가 있는 지역만)을 쓴다.
   const canGoCourses = location?.status === 'ok' || !!selectedDistrict?.center;
 
-  const goWithPlace = (path: '/courses' | '/today') => {
+  const goWithPlace = (path: '/courses' | '/today' | '/team') => {
     if (location?.status === 'ok') {
       setPlace({ kind: 'gps', latitude: location.latitude, longitude: location.longitude });
     } else if (selectedDistrict?.center) {
@@ -130,6 +130,7 @@ export default function LocationScreen() {
         <View style={styles.goBox}>
           <PxButton label="오늘의 길 보기" onPress={() => goWithPlace('/courses')} disabled={!canGoCourses} />
           <PxButton label="AI 오늘의 길 받기" variant="sub" onPress={() => goWithPlace('/today')} disabled={!canGoCourses} />
+          <PxButton label="친구와 함께" variant="sub" onPress={() => goWithPlace('/team')} disabled={!canGoCourses} />
         </View>
 
       </ScrollView>

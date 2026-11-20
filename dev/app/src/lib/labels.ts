@@ -41,6 +41,14 @@ export const ERROR_LABEL: Record<string, string> = {
   UNAUTHORIZED: '로그인이 만료됐어요. 다시 로그인해 주세요',
   NICKNAME_TAKEN: '이미 쓰고 있는 이름이에요. 다른 이름을 써 주세요',
   NICKNAME_LOCKED: '닉네임은 한 번 정하면 바꿀 수 없어요',
+  NOT_HOST: '방장만 할 수 있어요',
+  PARTY_EXPIRED: '팀이 끝났어요. 새로 만들어 주세요',
+  ALREADY_STARTED: '이미 출발한 팀이에요',
+  PARTY_FULL: '팀이 가득 찼어요',
+  STALE_CANDIDATES: '후보가 바뀌었어요. 화면을 새로 불러왔어요',
+  STALE_ROUTE: '길이 바뀌었어요. 다시 해 주세요',
+  REFRESH_LIMIT: '다른 길 새로 받기는 더 할 수 없어요',
+  NO_CANDIDATES: '먼저 후보 길을 받아 주세요',
 };
 
 
