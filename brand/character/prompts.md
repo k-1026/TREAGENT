@@ -142,3 +142,34 @@ Set of 6 pixel-art sticker emoji of the same character as the reference sheet (H
 한국어 참고: 천장에 매달린 등불과 줄만 지웁니다. 따뜻한 빛은 그대로 두되 오른쪽 벽의 부채 근처로 옮깁니다. 나머지는 그대로 둡니다.
 
 - 수정 기록: 두 프롬프트는 `brand/character/prompts.md`의 P11, P12에 기록했습니다.
+
+## P13 · 준비물 아이콘 시트 (2026-11-20, 목업·앱용 소품 아이콘, 생성 전 초안)
+
+용도: 홈 "오늘 챙길 것" 목록의 준비물 아이콘. 한 장에 9개를 그린 뒤 칸별로 잘라 `brand/character/images/`에 저장합니다.
+
+항목 (9개, 2026-11-20 확정 목록): 생수, 캡모자, 양산, 선크림, 쿨토시, 우산, 여벌 양말, 운동화, 겉옷
+
+영문 프롬프트:
+"Pixel-art RPG style icon sheet of 9 simple travel items on a single transparent background, arranged in a clean grid (3 columns, 3 rows). Same pixel grid, same thick dark brown outline (#5b2a22), flat warm colors matching a cozy Korean-inspired palette (cream, red apple red, wood brown, sage green, soft blue). Items, one per cell, each fully visible and centered: a plastic water bottle, a red baseball cap, a folding parasol, sunscreen tube, cool arm sleeves, a folded umbrella, a pair of rolled socks, a pair of white sneakers, a light jacket. Each cell is 96 by 96 pixels and each icon fills about 80 by 80 pixels of its cell, centered, no shadows, no text, no labels, no logos, no brand marks, no people. Output 1024x1024 px."
+
+한국어 참고: 같은 도트 스타일의 준비물 11개를 한 장에 3열 3행으로 그립니다. 항목마다 글자나 상표 없이 한 칸에 하나씩, 가운데에 둡니다. 테두리는 진한 갈색, 색은 크림, 능금 빨강, 나무 갈색, 세이지 초록, 연한 파랑 계열. 배경은 투명.
+
+- 크기 규칙: 원본은 칸 96x96px로 그리고, 목업과 앱에서는 48px로 줄여 표시합니다 (정수 배율 1/2, 픽셀이 깨지지 않음). 줄일 때는 최근접 이웃 방식을 씁니다.
+- 확인할 것: 같은 굵기의 테두리, 칸마다 크기가 비슷한지, 항목이 서로 구분되는지 (양산과 우산)
+- 수정 기록: 장화, 우비, 방수 팩은 목록에서 뺐습니다. 호우 준비물은 우산, 여벌 양말, 운동화입니다.
+
+### P13-2 · 준비물 아이콘 시트 수정본 (2026-11-20, P13 1차 결과 반영)
+
+영문 프롬프트:
+"Pixel-art RPG style icon sheet of 9 simple travel items on a fully transparent background (no white background), arranged in a clean 3 by 3 grid. Same pixel grid for all items, same thick dark brown outline (#5b2a22) around every item, flat warm colors on a cozy Korean-inspired palette (cream, apple red, wood brown, sage green, soft blue). Add one small apple-red accent detail to each item (for example the bottle cap, the cap is already red and white so skip its accent, the parasol's handle strap, the sunscreen cap, the socks' stripe, the umbrella's strap, the jacket's zipper pull), so the sheet feels unified in red without making every item red. Each item fills about 80 by 80 pixels of a 96 by 96 cell, centered in its cell, with the same visual size across the sheet. Items in order, left to right, top to bottom: a plastic water bottle, a red trucker cap in the style of the reference (red mesh back panel, white front panel, red curved brim, a small red button on top), a folding parasol with cream panels, a sunscreen tube with a sun mark, a pair of cool arm sleeves with a ribbed wrist cuff, a folded umbrella, a pair of rolled socks, a pair of white sneakers with visible laces and a clear heel counter, a light green zip jacket. No shadows, no text, no labels, no logos, no brand marks, no people. Output 1024 by 1024 px."
+
+한국어 참고:
+- 배경은 완전 투명 (흰 배경 금지).
+- 항목마다 능금 빨강 포인트를 하나씩 넣습니다. 예: 생수 뚜껑, 캡모자 챙 띠, 양산 손잡이 끈, 선크림 뚜껑, 양말 줄무늬, 우산 끈, 겉옷 지퍼 손잡이.
+- 운동화는 끈과 뒤꿈치를 분명히 그려서 슬리퍼로 보이지 않게 합니다.
+- 쿨토시는 손목 쪽 고무 밴드를 강조해서 팔 토시로 읽히게 합니다.
+- 모든 항목은 칸(96x96) 안에서 약 80x80 크기로, 가운데에 같은 크기감으로 둡니다.
+- 순서: 1행 생수, 캡모자, 양산 / 2행 선크림, 쿨토시, 우산 / 3행 여벌 양말, 운동화, 겉옷.
+
+- 캡모자: 트러커 캡 배색 (빨간 메시 뒷판, 흰 앞판, 빨간 챙, 정수리 단추). 참고 이미지: 빨강·흰 메시 트러커 캡 사진. 빨강이 이미 많아 포인트를 따로 넣지 않습니다.
+- 수정 기록 (2026-11-20): 1차 결과의 문제를 반영했습니다. 색은 전체 빨강이 아니라 빨강 포인트 1곳, 운동화 끈과 쿨토시 밴드 추가, 크기와 가운데 정렬 통일, 투명 배경 명시. 1차 결과는 채택하지 않습니다.
