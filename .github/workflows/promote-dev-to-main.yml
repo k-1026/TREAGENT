@@ -10,8 +10,8 @@ name: dev → main 자동 승격
 # 스케줄 워크플로는 기본 브랜치(main)에 있는 파일만 실행됩니다. 이 파일이 main에 올라간 뒤부터 동작합니다.
 on:
   schedule:
-    # [결정 필요] 시각: 지금은 매주 금요일 18:00 (한국 시간) = UTC 09:00
-    - cron: '0 9 * * 5'
+    # 매일 18:00 (한국 시간) = UTC 09:00. GitHub 스케줄은 몇 분 늦게 시작할 수 있습니다.
+    - cron: '0 9 * * *'
   workflow_dispatch:
 
 permissions:

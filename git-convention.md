@@ -23,7 +23,7 @@
 
 ## `dev` → `main` 올리기
 
-- `.github/workflows/promote-dev-to-main.yml`이 정해진 시간에 자동으로 올립니다 (지금은 매주 금요일 18:00 한국 시간 `[결정 필요]`). 손으로 실행하려면 Actions 탭에서 이 워크플로를 `Run workflow` 합니다.
+- `.github/workflows/promote-dev-to-main.yml`이 정해진 시간에 자동으로 올립니다 (매일 18:00 한국 시간, 2026-11-20 결정). 손으로 실행하려면 Actions 탭에서 이 워크플로를 `Run workflow` 합니다.
 - 순서: `dev`가 `main`보다 앞섰는지 확인 → `build_site.py` 점검 → `dev → main` PR 생성 → **`Create a merge commit`** 으로 병합 → `main`을 `dev`에 합치기 → Pages 다시 배포. 병합되면 Vercel(웹)과 Railway(서버)가 자동으로 다시 배포됩니다.
 - **사람의 승인이 없습니다.** 자동 검사는 html 빌드 점검뿐이므로, 앱 실행·개인정보·사진 위치 정보(EXIF)·허가받지 않은 실존 인물·가게 이름은 `dev`에 병합하는 작업 PR 단계에서 확인합니다.
 - 멈추기: 저장소 Settings > Secrets and variables > Actions > Variables에서 `AUTO_PROMOTE`를 `false`로 둡니다. 시연 직전처럼 `main`을 고정하고 싶을 때 씁니다.
