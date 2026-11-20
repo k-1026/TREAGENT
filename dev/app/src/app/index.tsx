@@ -47,8 +47,7 @@ export default function LocationScreen() {
   // 위치를 읽었으면 그 좌표, 아니면 구·군 기준점(코스가 있는 지역만)을 쓴다.
   const canGoCourses = location?.status === 'ok' || !!selectedDistrict?.center;
 
-  const goWithPlace = (path: '/courses' | '/today') => {
-    if (location?.status === 'ok') {
+  const goWithPlace = (path: '/courses' | '/today' | '/team') => {    if (location?.status === 'ok') {
       setPlace({ kind: 'gps', latitude: location.latitude, longitude: location.longitude });
     } else if (selectedDistrict?.center) {
       setPlace({ kind: 'district', code: selectedDistrict.code, ...selectedDistrict.center });
@@ -129,6 +128,13 @@ export default function LocationScreen() {
           style={{ backgroundColor: '#a8242a', paddingVertical: 14, borderRadius: 12, alignItems: 'center', opacity: canGoCourses ? 1 : 0.4 }}
         >
           <Text style={{ color: '#fff', fontWeight: '700' }}>AI 오늘의 길 받기</Text>
+        </Pressable>
+        <Pressable
+          disabled={!canGoCourses}
+          onPress={() => goWithPlace('/team')}
+          style={{ borderWidth: 1.5, borderColor: '#a8242a', paddingVertical: 14, borderRadius: 12, alignItems: 'center', opacity: canGoCourses ? 1 : 0.4 }}
+        >
+          <Text style={{ color: '#a8242a', fontWeight: '700' }}>친구와 함께</Text>
         </Pressable>
       </View>
     </SafeAreaView>

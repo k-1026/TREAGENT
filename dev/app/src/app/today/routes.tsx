@@ -1,10 +1,10 @@
 // 오늘의 길 후보 (주소: /today/routes) — 목업 "오늘의 길 3개". 카드를 누르면 하랑이 브리핑(/today/route/N)으로 간다.
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
-import { Tag } from '../../components/chip';
+import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text } from 'react-native';
+import { RouteCard } from '../../components/route_card';
 import { ScreenHead } from '../../components/screen_head';
-import { ERROR_LABEL, TYPE_LABEL } from '../../lib/labels';
+import { ERROR_LABEL } from '../../lib/labels';
 import { usePlace } from '../../lib/place_context';
 import { getTodayRoutes } from '../../lib/server_api';
 import { COLOR, pxBox } from '../../lib/theme';
@@ -61,28 +61,12 @@ export default function RoutesScreen() {
       />
       <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
         {routes.map((r, i) => (
-          <Pressable
+          <RouteCard
             key={`${i}-${r.places.map((p) => p.id).join('-')}`}
+            route={r}
+            index={i}
             onPress={() => router.push(`/today/route/${i}`)}
-            style={[pxBox(), { flexDirection: 'row', gap: 10, padding: 8, minHeight: 76 }]}
-          >
-            <View style={{ width: 58, height: 58, backgroundColor: COLOR.cream2, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 22, fontWeight: '800', color: COLOR.muted }}>{i + 1}</Text>
-            </View>
-            <View style={{ flex: 1, gap: 3 }}>
-              <Text style={{ fontSize: 12, fontWeight: '800', color: COLOR.ink }}>{r.title}</Text>
-              <Text style={{ fontSize: 10, color: COLOR.muted }}>
-                {r.places.length}곳 · {r.durationMin ? `약 ${r.durationMin}분` : '소요시간 확인 필요'}
-              </Text>
-              <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4 }}>
-                {[...new Set(r.places.map((p) => p.type))].map((t) => (
-                  <Tag key={t} label={TYPE_LABEL[t] ?? t} tone={t === 'indoor' || t === 'exhibit' ? 'blue' : 'sage'} />
-                ))}
-              </View>
-              <Text style={{ fontSize: 10, color: COLOR.ink, lineHeight: 14 }}>{r.places.map((p) => p.name).join(' → ')}</Text>
-              <Text style={{ fontSize: 10, color: COLOR.redDark }}>{r.reason}</Text>
-            </View>
-          </Pressable>
+          />
         ))}
 
         {notice && <Text style={{ color: COLOR.muted, fontSize: 12 }}>{notice}</Text>}
