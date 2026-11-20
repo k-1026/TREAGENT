@@ -9,6 +9,10 @@ export function createMemoryProfileStore() {
       return p ? { ...p } : null;
     },
 
+    async findNicknames(userIds) {
+      return new Map(userIds.filter((id) => profiles.has(id)).map((id) => [id, profiles.get(id).nickname]));
+    },
+
     async isNicknameTaken(nickname, exceptUserId) {
       for (const [id, p] of profiles) {
         if (id !== exceptUserId && p.nickname?.toLowerCase() === nickname.toLowerCase()) return true;

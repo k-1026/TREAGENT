@@ -19,7 +19,15 @@ export function createPgProfileStore({ query }) {
       return rows.length > 0;
     },
 
-    // 프로필을 만들거나 고친다.
+    // 여러 사람의 닉네임을 한 번에 읽는다. 결과: Map(userId → 닉네임 또는 null). 프로필이 없는 사람은 들어 있지 않다.
+    async findNicknames(userIds) {
+      if (userIds.length === 0) return new Map();
+      const rows = await query(
+        `select user_id as "userId", nickname from public.profiles where user_id = any($1::uuid[])`,
+        [userIds],
+      );
+      return new Map(rows.map((r) => [r.userId, r.nickname]));
+    },
 
     // 프로필을 만들거나 고친다. 닉네임이 이미 있으면 DB가 그대로 둔다(coalesce).
     // 다른 사람이 쓰는 닉네임이면 DB가 unique 오류(코드 23505)를 던진다. 호출한 쪽이 409로 바꾼다.
