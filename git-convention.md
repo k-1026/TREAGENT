@@ -11,7 +11,7 @@
 | `presentation` | 발표 자료(`presentation/`의 html, pdf, 대본)만 다루는 곳 | 발표 작업 브랜치 → `presentation` PR |
 
 - 폴더 `dev/`와 브랜치 `dev`는 다릅니다. 말할 때 "dev 브랜치", "dev/ 폴더"로 구분합니다.
-- `main`은 자동으로 바뀌지 않습니다. 사람이 PR을 열고 승인한 뒤 사람이 병합합니다.
+- `dev → main`은 정해진 시간에 자동으로 올라갑니다 (아래 "`dev` → `main` 올리기"). 그 밖의 `main` 변경(`presentation → main`, `hotfix`)은 사람이 PR을 열고 승인한 뒤 병합합니다.
 
 ## 흐름
 
@@ -23,13 +23,12 @@
 
 ## `dev` → `main` 올리기
 
-- 시연 직전이나 한 단계가 끝났을 때 `dev → main` PR을 하나 엽니다. 자동으로 올리지 않습니다.
-- PR 본문에 아래 확인 결과를 적습니다. 실행하지 않은 것은 `미확인`으로 적습니다.
-  - 앱이 켜지고(`dev/app/`에서 `npx expo start`) 시연 흐름이 끝까지 되는지
-  - 개인정보, 사진 위치 정보(EXIF), 허가받지 않은 실존 인물·가게 이름이 없는지
-  - html이 있으면 `python3 .github/scripts/build_site.py`에 경고가 없는지
-- 팀원 1명이 승인하면 사람이 병합합니다. 병합 방식은 **`Create a merge commit`** 입니다. Squash로 하면 `dev`와 `main` 이력이 어긋나 다음 PR에 충돌이 납니다.
-- 병합 직후 `main`을 `dev`에 합쳐 맞춥니다 (`git switch dev && git pull && git merge origin/main && git push`).
+- `.github/workflows/promote-dev-to-main.yml`이 정해진 시간에 자동으로 올립니다 (지금은 매주 금요일 18:00 한국 시간 `[결정 필요]`). 손으로 실행하려면 Actions 탭에서 이 워크플로를 `Run workflow` 합니다.
+- 순서: `dev`가 `main`보다 앞섰는지 확인 → `build_site.py` 점검 → `dev → main` PR 생성 → **`Create a merge commit`** 으로 병합 → `main`을 `dev`에 합치기 → Pages 다시 배포. 병합되면 Vercel(웹)과 Railway(서버)가 자동으로 다시 배포됩니다.
+- **사람의 승인이 없습니다.** 자동 검사는 html 빌드 점검뿐이므로, 앱 실행·개인정보·사진 위치 정보(EXIF)·허가받지 않은 실존 인물·가게 이름은 `dev`에 병합하는 작업 PR 단계에서 확인합니다.
+- 멈추기: 저장소 Settings > Secrets and variables > Actions > Variables에서 `AUTO_PROMOTE`를 `false`로 둡니다. 시연 직전처럼 `main`을 고정하고 싶을 때 씁니다.
+- 필요한 설정(저장소 관리자가 1회): Settings > Actions > General에서 "Allow GitHub Actions to create and approve pull requests"를 켭니다. 꺼져 있으면 워크플로가 PR을 만들지 못합니다.
+- `dev`는 `main`에 병합할 때 삭제하지 않습니다. Settings > Rules에서 `dev`의 삭제 금지(Restrict deletions)를 `Active`로 켜 둡니다.
 - `dev` 전체가 아니라 일부만 올려야 하면 `main`에서 새 브랜치를 따고 필요한 커밋만 `git cherry-pick` 해서 `main`으로 PR을 엽니다. 이 경우 이력이 어긋나므로 되도록 자주 올려서 차이를 작게 둡니다.
 - 시연 직전 `main`의 오류는 `main`에서 `hotfix/...` 브랜치를 따서 `main`으로 PR을 열고, 병합 직후 `dev`에도 합칩니다.
 
@@ -101,7 +100,7 @@
 ## 금지 사항
 
 - `main`, `dev`, `presentation`에 직접 푸시, 강제 푸시(`git push --force`) 금지
-- `dev → main`을 자동화하거나 승인 없이 병합하지 않음
+- `dev → main` 자동 승격(`promote-dev-to-main.yml`) 외의 방법으로 승인 없이 `main`에 병합하지 않음
 - 다른 사람의 미커밋 변경을 덮어쓰거나 지우지 않음
 - 민감 정보(개인정보, 키, 토큰)를 커밋하지 않음
 
