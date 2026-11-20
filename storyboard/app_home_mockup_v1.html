@@ -4,11 +4,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>앱 홈 화면(S-03) 목업 v1 (도트)</title>
-<meta name="description" content="홈·장부(칸·내 여행·앨범)·주머니·오늘 페이지·내 정보 배치 확인용 목업. 상태 7종과 탭 이동, 외출 연출 자리를 바꿔 볼 수 있습니다 (임시 문구, 창작).">
+<meta name="description" content="홈·장부(지도·내 여행·앨범)·주머니·오늘 페이지·내 정보 배치 확인용 목업. 상태 7종과 탭 이동, 외출 연출 자리를 바꿔 볼 수 있습니다 (임시 문구, 창작).">
 <style>
   :root{
     --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#c9763a;
-    --red:#dc3b30; --red-d:#9c2420; --sage:#9fb58a; --paper:#fffaf1; --muted:#8a6a5c; --shade:#d9bf98;
+    --red:#dc3b30; --red-d:#9c2420; --sage:#9fb58a; --paper:#fffaf1; --muted:#7a5a4c; --shade:#d9bf98;
     --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   }
   *{box-sizing:border-box}
@@ -32,11 +32,13 @@
 
   /* ---------- home: scene ---------- */
   .scene{position:absolute;left:0;top:0;width:390px;height:316px;background:var(--beam);overflow:hidden}
+  .scene .status{color:#fff3e0}
+  .scene{background-color:#a85a24}
   .scene img.bg{position:absolute;left:0;top:56px;width:390px;height:260px;image-rendering:pixelated;display:block}
   .status{position:absolute;left:0;top:0;width:390px;height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:12px;color:#fff3e0;font-weight:700}
   .badge{position:absolute;left:12px;top:50px;z-index:4;padding:5px 8px;background:var(--cream);font-size:11px;font-weight:700;display:flex;gap:6px;align-items:center;--shade:#b98d62;max-width:250px;line-height:1.25;border:0;text-align:left;cursor:pointer}
   .badge i{width:11px;height:11px;background:#f5b82e;box-shadow:0 0 0 2px var(--ink);display:block;flex:none}
-  .badge small{font-weight:400;color:var(--muted);display:block;font-size:10px}
+  .badge small{font-weight:400;color:var(--muted);display:block;font-size:11px}
   .warn .badge{background:#ffe1d6;--shade:#c58a7a}
   .warn .badge i{background:var(--red)}
   .storm .badge{background:#dfe7f0;--shade:#8fa3b8}
@@ -47,10 +49,10 @@
   .hot{position:absolute;z-index:6;background:transparent;border:0;padding:0;cursor:pointer}
   .hot:focus-visible{outline:3px solid var(--red)}
   .mark.wxmark{left:242px;top:62px}
-  .mark{position:absolute;z-index:6;left:222px;top:166px;padding:1px 5px;font-size:10px;font-weight:800;background:var(--cream);box-shadow:0 0 0 2px var(--ink);pointer-events:none;animation:bob 1s steps(2) infinite;white-space:nowrap}
+  .mark{position:absolute;z-index:6;left:222px;top:166px;padding:1px 5px;font-size:11px;font-weight:800;background:var(--cream);box-shadow:0 0 0 2px var(--ink);pointer-events:none;animation:bob 1s steps(2) infinite;white-space:nowrap}
   @keyframes bob{50%{transform:translateY(-3px)}}
   @media (prefers-reduced-motion:reduce){.mark{animation:none}}
-  .bubble b{display:block;font-size:10px;color:var(--muted);font-weight:400;margin-top:3px}
+  .bubble b{display:block;font-size:11px;color:var(--muted);font-weight:400;margin-top:3px}
   .bubble .a{display:block;margin-top:4px;padding-top:4px;border-top:2px dotted #b9825a;color:var(--red-d)}
   .spr{position:absolute;left:88px;top:206px;width:80px;height:110px;z-index:3;overflow:hidden;transform-origin:50% 100%}
   .spr img{position:absolute;left:-34px;top:-5px;width:358px;height:119px;max-width:none;image-rendering:pixelated;display:block}
@@ -80,7 +82,14 @@
   /* ---------- home: body ---------- */
   .body{position:absolute;left:0;top:316px;width:390px;bottom:0;padding:16px 16px 0;background:var(--cream);overflow:hidden;display:flex;flex-direction:column;gap:12px}
   .body:before{content:"";position:absolute;left:0;top:0;right:0;height:6px;background:var(--ink)}
-  .cta{display:block;width:100%;height:68px;padding:10px 14px;background:var(--red);color:#fff;font-weight:800;font-size:16px;text-align:left;border:0;cursor:pointer;--shade:var(--red-d);margin:2px 0 4px}
+  .wxcard{background:var(--paper);padding:14px 16px;font-size:14px;line-height:1.5;flex:1;display:flex;flex-direction:column;gap:10px;margin-bottom:12px}
+  .wxcard>b{font-size:15px}
+  .tiplist{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;font-size:14px}
+  .tiplist li{position:relative;padding-left:22px}
+  .tiplist li:before{content:"";position:absolute;left:0;top:5px;width:10px;height:10px;background:var(--red);box-shadow:0 0 0 2px var(--ink)}
+  .wxcard b{display:block;font-size:14px;margin-bottom:2px}
+  .wxcard small{display:block;font-size:12px;color:var(--muted)}
+  .cta{display:block;width:100%;height:68px;padding:10px 14px;background:#d03a2f;color:#fff;font-weight:800;font-size:16px;text-align:left;border:0;cursor:pointer;--shade:var(--red-d);margin:2px 0 4px}
   .cta small{display:block;font-weight:400;font-size:11px;opacity:.92;margin-top:3px}
   .quick{display:flex;gap:10px;margin:0 0 4px}
   .quick button{flex:1;height:54px;background:var(--paper);border:0;font-size:11px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer}
@@ -89,15 +98,15 @@
   .qi.rest{clip-path:polygon(50% 0,100% 55%,64% 55%,64% 100%,36% 100%,36% 55%,0 55%)}
   .qi.pouch{clip-path:polygon(30% 0,70% 0,64% 22%,90% 40%,100% 75%,80% 100%,20% 100%,0 75%,10% 40%,36% 22%)}
   .sec{display:flex;justify-content:space-between;align-items:baseline;font-size:13px;font-weight:800;margin:2px 0 -2px}
-  .sec span{font-size:10px;font-weight:400;color:var(--muted)}
+  .sec span{font-size:11px;font-weight:400;color:var(--muted)}
   .list{display:flex;flex-direction:column;gap:12px;margin-bottom:4px}
   .card{display:flex;gap:10px;width:100%;background:var(--paper);border:0;padding:8px;text-align:left;cursor:pointer;min-height:76px}
-  .card .th{flex:none;width:58px;height:58px;background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--muted);text-align:center}
+  .card .th{flex:none;width:58px;height:58px;background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);text-align:center}
   .card .tx{font-size:12px;font-weight:800;line-height:1.3;min-width:0}
-  .card .tx small{display:block;font-weight:400;color:var(--muted);font-size:10px;margin-top:1px}
-  .card .route{font-weight:400;font-size:10px;color:var(--ink);margin-top:3px;line-height:1.4}
-  .card .why{font-weight:400;font-size:10px;color:var(--red-d);margin-top:3px}
-  .chip{display:inline-block;margin-top:3px;padding:1px 5px;font-size:10px;font-weight:700;background:var(--sage);color:#2d3d22}
+  .card .tx small{display:block;font-weight:400;color:var(--muted);font-size:11px;margin-top:1px}
+  .card .route{font-weight:400;font-size:11px;color:var(--ink);margin-top:3px;line-height:1.4}
+  .card .why{font-weight:400;font-size:11px;color:var(--red-d);margin-top:3px}
+  .chip{display:inline-block;margin-top:3px;padding:1px 5px;font-size:11px;font-weight:700;background:var(--sage);color:#2d3d22}
   .chip.i{background:#bcd3e6;color:#27425a}
   .msg{padding:14px 12px;background:var(--paper);font-size:12px;line-height:1.5;color:var(--muted);text-align:center;margin-bottom:4px}
   .stamps{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--paper);border:0;width:100%;text-align:left;font-size:11px;cursor:pointer}
@@ -121,10 +130,10 @@
   .head .back{position:absolute;right:14px;bottom:12px;border:0;background:var(--cream);padding:5px 10px;font-size:12px;font-weight:700;cursor:pointer}
   .scroll{position:absolute;left:0;right:0;top:104px;bottom:0;overflow:auto;padding:14px 16px 16px;background:var(--cream);display:flex;flex-direction:column;gap:12px}
   .h3{font-size:13px;font-weight:800;margin:4px 0 0}
-  .h3 span{font-size:10px;font-weight:400;color:var(--muted);margin-left:6px}
+  .h3 span{font-size:11px;font-weight:400;color:var(--muted);margin-left:6px}
   .row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--paper);font-size:12px;border:0;width:100%;text-align:left;line-height:1.45}
   .row b{font-size:13px;display:block;margin-bottom:6px}
-  .row small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+  .row small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
   .seg{display:flex;gap:8px}
   .seg button{flex:1;padding:9px 4px;border:0;background:var(--paper);font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink)}
   .seg button[aria-selected=true]{background:var(--ink);color:#fff}
@@ -134,16 +143,16 @@
   .reg .n b{font-size:12px;display:block}
   .reg img{width:24px;height:24px;display:block;image-rendering:pixelated;flex:none}
   .reg .pct{flex:none;font-weight:800;font-size:12px;width:42px;text-align:right}
-  .reg .tag{display:inline-block;margin-left:4px;padding:0 4px;background:#fff0b8;font-size:9px;font-weight:700}
+  .reg .tag{display:inline-block;margin-left:4px;padding:0 4px;background:#fff0b8;font-size:11px;font-weight:700}
   .tog{align-self:flex-start;border:0;background:var(--paper);padding:7px 10px;font-size:11px;font-weight:700;cursor:pointer}
   .tog[aria-pressed=true]{background:var(--ink);color:#fff}
   .cell{display:flex;gap:10px;align-items:center;padding:10px 12px;background:var(--paper);font-size:11px;line-height:1.4;width:100%}
   .cell .l{flex:1;min-width:0}
   .cell b{font-size:12px;display:block}
-  .cell small{display:block;color:var(--muted);font-size:10px;margin-top:2px}
+  .cell small{display:block;color:var(--muted);font-size:11px;margin-top:2px}
   .cell img{width:34px;height:34px;display:block;image-rendering:pixelated;flex:none}
   .cell .slot{width:34px;height:34px;flex:none;background:var(--cream2);box-shadow:0 0 0 2px var(--muted)}
-  .thumb{flex:none;width:64px;height:48px;background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px);display:flex;align-items:center;justify-content:center;font-size:9px;color:var(--muted);text-align:center}
+  .thumb{flex:none;width:64px;height:48px;background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);text-align:center}
   .mini{display:flex;gap:4px;margin-top:4px}
   .mini img{width:20px;height:20px;image-rendering:pixelated}
   .ico{flex:none;width:48px;height:48px;display:block;image-rendering:pixelated}
@@ -166,7 +175,7 @@
   .spot{position:absolute;width:0;height:0}
   .spot img{position:absolute;left:-13px;top:-13px;width:26px;height:26px;image-rendering:pixelated}
   .spotempty{position:absolute;left:-7px;top:-7px;width:14px;height:14px;background:var(--paper);box-shadow:0 0 0 2px var(--muted)}
-  .spot em{position:absolute;left:0;top:14px;transform:translateX(-50%);white-space:nowrap;font-style:normal;font-size:9px;font-weight:800;background:var(--paper);padding:0 3px}
+  .spot em{position:absolute;left:0;top:14px;transform:translateX(-50%);white-space:nowrap;font-style:normal;font-size:11px;font-weight:800;background:var(--paper);padding:0 3px}
   .pic{height:170px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted);background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px)}
   .slam{animation:slam .35s ease-out both}
   .stampRow img.slam{width:84px;height:84px}
@@ -176,7 +185,7 @@
   .pin,.pinst{transform:translate(-50%,-50%)}
   .pinst{position:absolute;width:30px;height:30px;image-rendering:pixelated}
   /* 코스 브리핑 씬 */
-  /* 코스 브리핑: 전체 화면(탭 바 숨김). 위: 날씨 → 코스 설명 한 칸(구역 나눔) → 말풍선 → 하랑이(화면 맨 아래 가운데) → 버튼 */
+  /* 코스 브리핑: 전체 화면(탭 바 숨김). 위: 날씨 → 코스 설명 한 박스(구역 나눔) → 말풍선 → 하랑이(화면 맨 아래 가운데) → 버튼 */
   .phone.fullscreen .tab{display:none}
   #v-brief{background:var(--cream);bottom:0}
   .briefhead{position:absolute;left:24px;right:24px;top:44px;display:flex;flex-direction:column;gap:4px}
@@ -213,14 +222,14 @@
   /* 대구 지도 구역 (예시) */
   .dist{position:absolute;width:110px;height:58px;padding:5px 6px;background:rgba(255,250,241,.8);box-shadow:0 0 0 2px var(--ink);font-size:11px}
   .dist b{display:block;font-size:12px}
-  .dist small{display:block;font-size:10px;color:var(--muted)}
+  .dist small{display:block;font-size:11px;color:var(--muted)}
   .dist.on{background:var(--paper)}
   .dist.on small{color:var(--red-d);font-weight:800}
   /* 오늘의 여행 사진 (완주 카드) */
   .photo{background:#fff;padding:12px;display:flex;flex-direction:column;gap:10px}
   .photoin{height:220px;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-size:11px;color:var(--muted);background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px)}
   .photocap b{display:block;font-size:14px}
-  .photocap small{display:block;font-size:10px;color:var(--muted);margin-top:2px}
+  .photocap small{display:block;font-size:11px;color:var(--muted);margin-top:2px}
   /* SNS 완주 카드: 4:5 비율 (인스타 피드 기준), 전체 화면 보기는 같은 카드를 크게 */
   .snap{aspect-ratio:4/5;width:100%;box-sizing:border-box;background:var(--paper);box-shadow:0 0 0 3px var(--ink);padding:14px;display:flex;flex-direction:column;gap:8px;font-size:12px}
   .snaptop,.snapfoot{display:flex;justify-content:space-between;font-size:11px;color:var(--muted)}
@@ -240,7 +249,7 @@
   .scene.ready #dBub{display:block}
   .scene.ready #mainBub,.scene.going #mainBub{display:none}
   .map{position:relative;height:200px;margin-bottom:4px;background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px);box-shadow:0 0 0 2px var(--ink)}
-  .maptx{position:absolute;left:10px;bottom:10px;padding:3px 6px;background:var(--paper);font-size:10px;color:var(--muted)}
+  .maptx{position:absolute;left:10px;bottom:10px;padding:3px 6px;background:var(--paper);font-size:11px;color:var(--muted)}
   .pin{position:absolute;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--paper);box-shadow:0 0 0 2px var(--ink);font-size:11px;font-weight:800}
   .pin.on{background:var(--red);color:#fff}
   .stampRow{display:flex;gap:12px;align-items:center;padding:10px 12px;background:var(--paper);font-size:12px}
@@ -248,6 +257,10 @@
   .dnst{display:flex;gap:6px;margin-top:8px}
   @keyframes stampin{0%{transform:scale(2.2);opacity:0}100%{transform:scale(1);opacity:1}}
   .stamp-in{animation:stampin .4s steps(4) both}
+  /* 움직임 줄이기 설정 (prefers-reduced-motion): 걷기·몸 돌리기·도장 찍힘 등을 끝 장면으로 바로 보여 줌 */
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-delay:0s!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  }
   [hidden]{display:none!important}
 </style>
 </head>
@@ -263,7 +276,7 @@
     <option value="outside">중구 밖 (MVP는 중구만)</option>
     <option value="empty">코스 없음</option>
   </select></label>
-  <label><input type="checkbox" id="optA" checked> 오늘의 빈 칸 한 줄(A)</label>
+  <label><input type="checkbox" id="optA" checked> 오늘의 빈 장소 한 줄(A)</label>
   <label><input type="checkbox" id="optB" checked> 도장 미리보기(B)</label>
   <label><input type="checkbox" id="optMiss"> 미션 첫 시도 실패로 시뮬레이션 (S-06)</label>
   <label><input type="checkbox" id="optNoAlt"> 대체 길 없음으로 시뮬레이션 (S-07)</label>
@@ -284,9 +297,9 @@
       <span class="mark">오늘 페이지 ▾</span>
       <button class="hot" style="left:193px;top:86px;width:140px;height:92px" data-nav="weather" title="날씨 보기" aria-label="날씨 보기"></button>
       <span class="mark wxmark">날씨 ▾</span>
-      <button class="hot" style="left:92px;top:210px;width:66px;height:104px" data-go="하랑이 반응 (대사 넘기기)" title="하랑이" aria-label="하랑이 누르기"></button>
-      <button class="badge px" id="badge" data-go="S-14 지역(구·군) 변경"><i></i><span id="badgeTx"></span></button>
-      <div class="bubble px" id="mainBub"><span id="bubbleTx"></span><b>[승인 대사 대기]</b><span class="a" id="bubbleA">오늘 비어 있는 칸이 있어요 [임시]</span>
+      <button class="hot" style="left:92px;top:210px;width:66px;height:104px" data-nav="todo" data-idx="하랑이 반응 (대사 넘기기)" title="하랑이" aria-label="하랑이 누르기"></button>
+      <button class="badge px" id="badge" data-nav="todo" data-idx="S-14 지역(구·군) 변경"><i></i><span id="badgeTx"></span></button>
+      <div class="bubble px" id="mainBub"><span id="bubbleTx"></span><b>[승인 대사 대기]</b><span class="a" id="bubbleA">오늘 비어 있는 장소가 있어요 [임시]</span>
         <svg class="tail" width="21" height="21" viewBox="0 0 21 21" shape-rendering="crispEdges" aria-hidden="true"><polygon fill="#5b2a22" points="0,0 21,0 21,3 18,3 18,6 15,6 15,9 12,9 12,12 9,12 9,15 6,15 6,18 3,18 3,21 0,21"/><polygon fill="#fffaf1" points="3,0 18,0 18,3 15,3 15,6 12,6 12,9 9,9 9,12 6,12 6,15 3,15"/></svg></div>
       <div class="bubble px" id="dBub"><span id="dBubTx"></span><b>[승인 대사 대기 · 창작 후보 A]</b>
         <svg class="tail" width="21" height="21" viewBox="0 0 21 21" shape-rendering="crispEdges" aria-hidden="true"><polygon fill="#5b2a22" points="0,0 21,0 21,3 18,3 18,6 15,6 15,9 12,9 12,12 9,12 9,15 6,15 6,18 3,18 3,21 0,21"/><polygon fill="#fffaf1" points="3,0 18,0 18,3 15,3 15,6 12,6 12,9 9,9 9,12 6,12 6,15 3,15"/></svg></div>
@@ -299,17 +312,16 @@
     <div class="body">
       <button class="cta px" id="cta"><span id="ctaT"></span><small id="ctaS"></small></button>
       <div class="quick">
-        <button class="px" id="q1"><i class="qi list"></i><span id="q1t">코스 전체</span></button>
+        <button class="px" id="q1"><i class="qi list"></i><span id="q1t">모든 길</span></button>
         <button class="px" data-nav="shelter"><i class="qi rest"></i>쉼터</button>
         <button class="px" data-view="pouch"><i class="qi pouch"></i>주머니</button>
       </div>
-      <div class="sec">지금 추천 미리보기 <span id="listNote"></span></div>
+      <div class="wxcard px" id="wxCard"><b>오늘 챙길 것</b><ul class="tiplist" id="tipList"></ul></div>
       <div class="list" id="list"></div>
-      <button class="stamps px" id="stampBox" data-tab="ledger" data-bm="map"></button>
     </div>
   </section>
 
-  <!-- 장부 (S-09): 책갈피 [칸] [내 여행] [앨범] -->
+  <!-- 장부 (S-09): 책갈피 [지도] [내 여행] [앨범] -->
   <section class="view" id="v-ledger" aria-label="장부">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">하랑이와 함께 걸어 확인한 기록 · 지도, 내 여행, 앨범</div><div class="t">장부</div></div>
     <div class="scroll">
@@ -337,7 +349,7 @@
 
       <div class="segp" id="bm-album" hidden>
         <div class="h3">앨범 <span>하랑이의 이야기</span></div>
-        <button class="row px" data-go="컷씬 ① 다시 보기 (건너뛰기 가능)"><div class="thumb">[컷씬 ①<br>썸네일]</div><div style="flex:1"><b>[컷씬 ① 제목]</b><small>[해금한 날짜] · 눌러서 다시 보기</small></div></button>
+        <button class="row px" data-nav="todo" data-idx="컷씬 ① 다시 보기"><div class="thumb">[컷씬 ①<br>썸네일]</div><div style="flex:1"><b>[컷씬 ① 제목]</b><small>[해금한 날짜] · 눌러서 다시 보기</small></div></button>
       </div>
     </div>
   </section>
@@ -346,10 +358,10 @@
   <section class="view" id="v-today" aria-label="오늘 페이지">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">펼친 장부의 오늘 페이지</div><div class="t">오늘 페이지</div><button class="back px" data-view="home">‹ 홈</button></div>
     <div class="scroll">
-      <div class="row px"><div><b>[요일] · [시간대] · [날씨]</b>이 조건으로 걸을 장소 3곳이에요. [승인 대사 대기]</div></div>
-      <div class="h3">오늘 걸을 칸 <span id="todayCnt"></span></div>
+      <div class="row px"><div><b>추천 길 · [요일] · [시간대] · [날씨]</b>날씨와 시간대에 맞춰 고른 추천 길이에요. 장소 3곳을 걸어요. [승인 대사 대기]</div></div>
+      <div class="h3">오늘 걸을 장소 <span id="todayCnt"></span></div>
       <div id="todayCells" class="segp"></div>
-      <button class="cta px" data-nav="course" data-idx="C01" style="height:56px">이 길 확인하기<small>칸을 채우라는 재촉은 하지 않아요 [임시]</small></button>
+      <button class="cta px" data-nav="course" data-idx="C01" style="height:52px">이 길 확인하기<small>장소를 채우라는 재촉은 하지 않아요 [임시]</small></button>
     </div>
   </section>
 
@@ -357,7 +369,7 @@
   <section class="view" id="v-pouch" aria-label="주머니">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">내가 받은 물건</div><div class="t">주머니</div><button class="back px" data-view="home">‹ 홈</button></div>
     <div class="scroll">
-      <button class="row px" data-go="열쇠 하랑이 한마디 (7-13)">
+      <button class="row px" data-nav="todo" data-idx="열쇠 하랑이 한마디 (7-13)">
         <svg class="ico" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><g transform="translate(0 3)"><polygon fill="#5b2a22" points="3,0 6,0 8,2 8,5 6,7 3,7 1,5 1,2"/><polygon fill="#e8b230" points="4,1 5,1 7,3 7,4 5,6 4,6 2,4 2,3"/><rect fill="#f7d774" x="3" y="1" width="2" height="1"/><rect fill="#fffaf1" x="4" y="3" width="2" height="2"/><rect fill="#5b2a22" x="8" y="2" width="7" height="4"/><rect fill="#e8b230" x="8" y="3" width="6" height="2"/><rect fill="#b9791e" x="8" y="4" width="6" height="1"/><rect fill="#5b2a22" x="10" y="6" width="2" height="4"/><rect fill="#e8b230" x="10" y="6" width="1" height="3"/><rect fill="#5b2a22" x="13" y="6" width="2" height="3"/><rect fill="#e8b230" x="13" y="6" width="1" height="2"/></g></svg>
         <div class="tx"><b>열쇠</b>[날짜]에 처음 열렸어요 (눌러 보기)<small>상징 1개, 모으는 재화가 아니에요</small></div></button>
       <div class="row px">
@@ -377,26 +389,26 @@
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">계정과 안내</div><div class="t">내 정보</div></div>
     <div class="scroll">
       <div class="h3">호칭</div>
-      <div class="row px"><div style="flex:1"><b>{이름}</b><small>건너뛰면 "길동무"로 불러요</small></div><button class="px" style="border:0;background:var(--cream);padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer" data-go="닉네임 수정">수정</button></div>
+      <div class="row px"><div style="flex:1"><b>{이름}</b><small>건너뛰면 "길동무"로 불러요</small></div><button class="px" style="border:0;background:var(--cream);padding:8px 12px;font-size:12px;font-weight:700;cursor:pointer" data-nav="todo" data-idx="닉네임 수정">수정</button></div>
       <div class="h3">위치 안내</div>
       <div class="row px"><div>위치는 앱을 쓰는 동안만 써요. 좌표는 저장하지 않아요 [임시 문구, 확인 필요]</div></div>
       <div class="h3">알림 <span>보류</span></div>
       <div class="row px"><div>알림 방식은 아직 정하지 않았어요 [결정 D-21]</div></div>
-      <button class="row px" style="justify-content:center;font-weight:800" data-go="로그아웃 (F-12)">로그아웃</button>
+      <button class="row px" style="justify-content:center;font-weight:800" data-nav="todo" data-idx="로그아웃 (F-12)">로그아웃</button>
     </div>
   </section>
 
   <!-- S-04 코스 상세·오늘의 길 (추천 길 카드·홈 버튼에서 들어옴) -->
   <section class="view" id="v-course" aria-label="코스 상세">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">날씨에 맞춘 길 · [기준 시각] 기준</div><div class="t" id="crsT">코스</div><button class="back px" data-nav="picks">‹ 오늘의 길</button></div>
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">날씨에 맞춘 길 · [기준 시각] 기준</div><div class="t" id="crsT">코스</div></div>
     <div class="scroll">
-      <div class="row px" style="flex-direction:column;align-items:flex-start"><div id="crsChips"></div><small style="color:var(--muted);font-size:10px;margin-top:6px">중구 · 3곳 · 약 60분 [확인 필요]</small></div>
+      <div class="row px" style="flex-direction:column;align-items:flex-start"><div id="crsChips"></div><small style="color:var(--muted);font-size:11px;margin-top:6px">중구 · 3곳 · 약 60분 [확인 필요]</small></div>
       <div class="h3">걷는 순서 <span>순서는 안내일 뿐이에요 [임시]</span></div>
       <div id="crsStops" class="segp"></div>
       <div id="crsCaution"></div>
       <div class="row px"><div>출발하면 하랑이가 먼저 나가요. 길에서 날씨가 바뀌면 알려 드릴게요 [임시 문구]</div></div>
-      <button class="cta px" data-nav="depart" style="height:56px">이 길로 출발</button>
-      <button class="row px" data-nav="picks" style="justify-content:center;font-weight:800">다른 길 보기</button>
+      <button class="cta px" data-nav="depart" style="height:52px;text-align:center">이 길로 출발</button>
+      <button class="row px" data-nav="picks" style="justify-content:center;font-weight:800;font-size:16px;padding:16px 12px">다른 길 보기</button>
     </div>
   </section>
 
@@ -407,7 +419,7 @@
       <div class="map px"><span class="maptx">[지도 이미지 자리 · 아직 안 그렸어요]</span><div id="trvPins"></div></div>
       <div class="h3">장소 <span>도장은 미션을 마쳐야 찍혀요</span></div>
       <div id="trvList" class="segp"></div>
-      <button class="cta px" id="trvBtn" data-nav="place" data-idx="0" style="height:56px"></button>
+      <button class="cta px" id="trvBtn" data-nav="place" data-idx="0" style="height:52px"></button>
       <button class="row px" data-nav="reroute" style="justify-content:center;font-weight:800">날씨가 바뀌었다고 가정하고 보기 (S-07)</button>
     </div>
   </section>
@@ -435,6 +447,14 @@
     <button class="row px" data-nav="closefull" style="justify-content:center;font-weight:800;width:auto;padding:10px 24px">닫기</button>
   </div>
 
+  <!-- 모든 길: 중구 코스 전체 목록 -->
+  <section class="view" id="v-all" aria-label="모든 길">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">중구 안의 모든 길</div><div class="t">모든 길</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="scroll">
+      <div id="allList" class="list"></div>
+    </div>
+  </section>
+
   <!-- 오늘의 길: 3개 보기, 새로고침으로 다른 3개 -->
   <section class="view" id="v-picks" aria-label="오늘의 길 3개">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="pickNote"></div><div class="t">오늘의 길</div><button class="back px" data-view="home">‹ 홈</button></div>
@@ -452,6 +472,15 @@
       <div class="h3">측정 <span>AWS 여부 확인 필요</span></div>
       <div class="row px"><div><b>측정 방식</b><small>[AWS 여부 · 확인 필요] · 측정 시각 [기준 시각]</small></div></div>
       <div class="row px"><div><b>이 날씨에 할 수 있는 것</b><small>야외 코스는 [모드 규칙에 따라 숨김 또는 표시]. 쉼터는 [운영 시간]까지 [확인 필요]</small></div></div>
+    </div>
+  </section>
+
+  <!-- 준비 중 (아직 만들지 않은 기능의 자리) -->
+  <section class="view" id="v-todo" aria-label="준비 중">
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">다음 단계에서 만듭니다</div><div class="t" id="todoT">준비 중</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="scroll">
+      <div class="row px"><div><b>준비 중인 화면입니다</b><small id="todoSpec"></small></div></div>
+      <button class="row px" data-view="home" style="justify-content:center;font-weight:800">홈으로 돌아가기</button>
     </div>
   </section>
 
@@ -523,7 +552,7 @@
 
 <p class="note">
   <b>배치 확인용 목업입니다.</b> 390 x 844 기준이고, 문구는 모두 임시이며 대사는 <b>[승인 대사 대기]</b>입니다.
-  <b>역할 구분</b>: 하단 <b>장부 탭</b> = 장부 전체(칸·내 여행·앨범), 방 안 <b>책상 위 장부 그림</b> = 오늘 페이지(오늘 조건의 칸), 홈 <b>주머니 버튼</b> = 받은 물건.
+  <b>역할 구분</b>: 하단 <b>장부 탭</b> = 장부 전체(지도·내 여행·앨범), 방 안 <b>책상 위 장부 그림</b> = 오늘 페이지(오늘 조건의 장소), 홈 <b>주머니 버튼</b> = 받은 물건.
   한 코스의 도장은 3개이고, 장소 3곳을 방문해 미션을 마칠 때마다 1개씩 받습니다.
   흐름: 추천 길 카드 → 코스 상세(S-04) → [이 길로 출발] → 하랑이 브리핑 → 홈 출발 준비 → 현관문 화살표 → 대사 → 몸 돌리기·옆모습 걷기(4장)로 문 밖 외출 → [여행 지도 보기] → 여행 지도(S-05) → [도착 확인] → 방문 확인·미션(S-06) → 도장 → 3곳을 마치면 완주 한 장(S-08). 여행 중 조건이 바뀌면 경로 변경(S-07)에서 검수된 대체 길을 제안만 하고 자동으로 바꾸지 않습니다. 화면 전환은 클릭으로만 일어납니다. GPS 도착과 미션 판정은 임시 버튼입니다. 상단 "미션 첫 시도 실패" 체크를 켜면 첫 시도가 실패합니다.
   글꼴은 기기 기본 한글 글꼴입니다. 폭염·호우 배경은 변형 이미지가 없어 필터로 대신했습니다.
@@ -593,21 +622,19 @@
     $('#bubbleTx').textContent=s.bub;
     $('#bubbleA').hidden=!$('#optA').checked || k!=='none';
     $('#ctaT').textContent=s.cta[0]; $('#ctaS').textContent=s.cta[1]; $('#cta').dataset.go=s.cta[2];
-    $('#cta').dataset.nav=({none:'picks',outside:'picks',active:'travel',notice:'travel',heat:'shelter',storm:'shelter',unknown:'shelter'})[k]||'';
-    $('#q1t').textContent=s.q1; $('#q1').dataset.go = s.q1==='오늘의 길' ? 'S-14 오늘의 길 (진행 중에도 보기, D-08)' : 'S-04 코스 전체';
+    $('#cta').dataset.nav=({none:'picks',outside:'picks',active:'travel',notice:'travel',heat:'shelter',storm:'shelter',unknown:'shelter'})[k]||'todo';
+    $('#cta').dataset.idx=s.cta[2];
+    $('#tipList').innerHTML=(TIPS[k]||TIPS.none).map(function(t){return '<li>'+t+'</li>'}).join('');
+    $('#q1t').textContent='모든 길';
+    $('#q1').dataset.nav='all';
     var sb=$('#sbanner'); if(s.banner){sb.hidden=false;sb.className='sbanner'+(s.banner[0]==='n'?' n':'');sb.textContent=s.banner[1];sb.dataset.go=s.banner[2]}else{sb.hidden=true}
     sb.dataset.nav=(s.banner&&s.banner[2]==='S-07 경로 변경')?'reroute':(s.banner&&s.banner[2]==='S-14 가까운 쉼터')?'shelter':'';
-    $('#listNote').textContent=s.note||'';
     var L=$('#list'); L.innerHTML='';
-    s.cards.forEach(function(id){var c=C[id], r=c.routes[routeOf(k)];var b=document.createElement('button');b.className='card px';b.dataset.c=id;
-      b.innerHTML='<div class="th">[코스<br>썸네일]</div><div class="tx">'+c.t+'<small>'+c.m+'</small>'+r.chips+'<div class="route">'+r.stops.join(' → ')+'</div>'+(r.caution?'<div class="why">'+r.caution+'</div>':'')+'<div class="why">[사유: 승인 대사 빈칸 채우기]</div></div>';
-      b.addEventListener('click',function(){nav('course',id)});L.appendChild(b)});
     if(!s.cards.length){var m=document.createElement('div');m.className='msg px';m.textContent=s.msg;L.appendChild(m)}
-    var sx=$('#stampBox'); sx.innerHTML=stampImgs(s.st[0])+'<span>'+s.st[1]+'</span>'; sx.hidden=!$('#optB').checked;
     // 오늘 페이지
-    $('#todayCnt').textContent='도장 '+s.today+'/3 · 칸마다 도장 1개';
+    $('#todayCnt').textContent='도장 '+s.today+'/3 · 장소마다 도장 1개';
     var T=$('#todayCells'); T.innerHTML='';
-    for(var i=0;i<3;i++){var done=i<s.today;T.insertAdjacentHTML('beforeend','<div class="cell px"><div class="l"><b>'+stopName(k,i)+' · [미션 종류]</b>[상태 한 줄: 검수된 정보 요약]<small>'+(done?'내가 채운 칸 · 미션 완료':'아직 비어 있어요')+'</small></div>'+(done?'<img src="'+STAMP+'" alt="내 도장">':'<div class="slot"></div>')+'</div>')}
+    for(var i=0;i<3;i++){var done=i<s.today;T.insertAdjacentHTML('beforeend','<div class="cell px"><div class="l"><b>'+stopName(k,i)+' · [미션 종류]</b>[상태 한 줄: 검수된 정보 요약]<small>'+(done?'내가 채운 장소 · 미션 완료':'아직 비어 있어요')+'</small></div>'+(done?'<img src="'+STAMP+'" alt="내 도장">':'<div class="slot"></div>')+'</div>')}
   }
   /* 여행 흐름 (S-04 → 외출 → S-05 → S-06 → S-08). 목업용 임시 값이며 실제 진행 데이터가 아님.
      화면 전환은 클릭으로만 일어난다 (자동 전환 없음, ?lock 모드와 맞춤). */
@@ -655,20 +682,20 @@
     if(phase==='intro'){
       h+='<div class="pic px"><span>[장소 사진 자리]</span></div>';
       h+='<div class="row px"><div>[장소 소개 자리 · 검수된 문구. 민감한 역사 소재면 [주의] 표시]</div></div>';
-      h+='<button class="cta px" data-nav="arrive" style="height:56px">도착했어요</button>';
+      h+='<button class="cta px" data-nav="arrive" style="height:52px">도착했어요</button>';
       h+='<button class="row px" data-nav="travel" style="justify-content:center;font-weight:800">여행 지도로 돌아가기</button>';
     } else if(phase==='mission'){
       h+='<div class="row px"><div class="tx" style="flex:1"><b>GPS 확인 완료</b><small>장소 반경 안에 들어왔어요 [반경·정확도는 현장 시험 후 정함, D-05]</small></div></div>';
       h+='<div class="row px"><div class="tx" style="flex:1"><b>미션 안내 · [미션 종류]</b><small>[미션 내용 자리] · [승인 대사 대기]</small></div></div>';
-      h+='<button class="cta px" data-nav="mission" style="height:56px">미션 마치기</button>';
+      h+='<button class="cta px" data-nav="mission" style="height:52px">미션 마치기</button>';
       h+='<button class="row px" data-nav="travel" style="justify-content:center;font-weight:800">여행 지도로 돌아가기</button>';
     } else if(phase==='failed'){
       h+='<div class="msg px">아직 미션을 마치지 못했어요. 다시 해 볼까요? [임시 문구]</div>';
-      h+='<button class="cta px" data-nav="mission" style="height:56px">다시 하기</button>';
+      h+='<button class="cta px" data-nav="mission" style="height:52px">다시 하기</button>';
     } else {
       var last=cur>=2;
       h+='<div class="stampRow"><img class="'+(anim?'slam':'')+'" src="'+STAMP+'" alt="받은 도장"><span>'+(cur+1)+'번째 도장을 받았어요 [임시 문구]</span></div>';
-      h+='<button class="cta px" data-nav="'+(last?'done':'travel')+'" style="height:56px">'+(last?'완주 한 장 보기':'다음 장소로')+'</button>';
+      h+='<button class="cta px" data-nav="'+(last?'done':'travel')+'" style="height:52px">'+(last?'완주 한 장 보기':'다음 장소로')+'</button>';
     }
     $('#stpBody').innerHTML=h;
   }
@@ -701,20 +728,22 @@
     if(alt){
       var r=cc().routes.indoor;
       h+='<div class="h3">대체 길 <span>검수된 길만 제안해요 [임시 이름]</span></div>';
-      h+='<div class="row px" style="flex-direction:column;align-items:flex-start"><div>'+r.chips+'</div><small style="color:var(--muted);font-size:10px;margin-top:6px">'+r.stops.join(' → ')+'</small></div>';
-      h+='<button class="cta px" data-nav="reroute-accept" style="height:56px">대체 길로 계속</button>';
+      h+='<div class="row px" style="flex-direction:column;align-items:flex-start"><div>'+r.chips+'</div><small style="color:var(--muted);font-size:11px;margin-top:6px">'+r.stops.join(' → ')+'</small></div>';
+      h+='<button class="cta px" data-nav="reroute-accept" style="height:52px">대체 길로 계속</button>';
       h+='<button class="row px" data-nav="reroute-keep" style="justify-content:center;font-weight:800">원래대로 계속</button>';
       h+='<button class="row px" data-nav="reroute-later" style="justify-content:center;font-weight:800">나중에 이어하기</button>';
     } else {
       h+='<div class="msg px">대체 길이 없어요. 여행을 보류하고 확인된 쉼터를 안내해요 [임시 문구]</div>';
       h+='<div class="row px"><div class="tx" style="flex:1"><b>가까운 쉼터 [이름]</b><small>운영 [시간]까지 · [기준 시각] 기준 · AWS 여부 [확인 필요]</small></div></div>';
-      h+='<button class="cta px" data-nav="shelter" style="height:56px">쉼터 보기</button>';
+      h+='<button class="cta px" data-nav="shelter" style="height:52px">쉼터 보기</button>';
       h+='<button class="row px" data-nav="reroute" style="justify-content:center;font-weight:800">다시 확인</button>';
       h+='<button class="row px" data-nav="reroute-later" style="justify-content:center;font-weight:800">나중에 이어하기</button>';
     }
     $('#rrBody').innerHTML=h;
   }
   // 쉼터 (S-14 쉼터 안내): 폭염·호우·날씨 확인 불가일 때 보여 줌. 기준 시각, 운영 시간, AWS 여부를 함께 적음 (CLAUDE.md 안전 정보 규칙)
+  // 오늘 챙길 것: 날씨 수치는 쓰지 않고 행동만 안내. 문구는 창작 항목(후보 2개 중 확정은 팀)
+  var TIPS={none:['생수','운동화','겉옷'],outside:['운동화','생수','캡모자'],heat:['생수','캡모자','쿨토시'],storm:['우산','여벌 양말','운동화'],unknown:['날씨를 확인하지 못했어요','나가기 전에 다시 확인','길은 권하지 않아요'],active:['생수','운동화','겉옷'],notice:['경로가 바뀌었어요','생수','운동화'],empty:['오늘은 안내할 길이 없어요','쉬어 가요','내일 다시 확인해요']};
   function renderShelter(k){
     var t={heat:['폭염이에요, 잠깐 쉬어 가요','야외 길 안내는 멈췄어요 [임시]'],storm:['호우예요, 실내에서 기다려요','신규 이동은 보류했어요 [임시]'],unknown:['날씨를 확인하지 못했어요','날씨를 모르면 길을 권하지 않아요 [임시]']}[k]||['가까운 쉼터','지금 쉬어 갈 곳이에요 [임시]'];
     $('#shTitle').textContent=t[0]; $('#shTitle').style.fontSize='18px'; $('#shSub').textContent=t[1];
@@ -726,7 +755,21 @@
     $('#wxNow').textContent=st.b1;
     $('#wxWhere').textContent=st.b2;
   }
+  // 준비 중 화면: 아직 만들지 않은 기능의 자리. 기획 근거를 함께 보여 줌
+  var TODO_SPEC={'하랑이 반응 (대사 넘기기)':'승인 대사 규칙 (F-13, 대사는 승인 후 표시)','S-14 지역(구·군) 변경':'구·군 선택 (F-23, MVP는 중구만)','컷씬 ① 다시 보기 (건너뛰기 가능)':'앨범 해금 컷씬 (S-19)','열쇠 하랑이 한마디 (7-13)':'열쇠 한마디 (game_flow_story_v1.md 7-13)','닉네임 수정':'호칭 규칙 (F-02)','로그아웃 (F-12)':'로그아웃 (F-12)'};
+  function renderTodo(label){
+    $('#todoT').textContent=label;
+    $('#todoSpec').textContent='기획 근거: '+(TODO_SPEC[label]||'[확인 필요]')+' · 목업에서는 자리만 둡니다.';
+  }
+  // 모든 길: 중구의 모든 코스 목록 (날씨 추천 3개는 '오늘의 길 고르기')
+  function renderAll(){
+    var k=$('#state').value;
+    $('#allList').innerHTML=POOL.map(function(id){var c=C[id], r=c.routes[routeOf(k)];
+      return '<button class="card px" data-nav="course" data-idx="'+id+'"><div class="th">[코스<br>썸네일]</div><div class="tx">'+c.t+'<small>'+c.m+'</small>'+r.chips+'<div class="route">'+r.stops.join(' → ')+'</div></div></button>'}).join('');
+  }
   function nav(name,idx){
+    if(name==='all'){ renderAll(); show('all'); return }
+    if(name==='todo'){ renderTodo(idx||'준비 중'); show('todo'); return }
     if(name==='weather'){ renderWeather($('#state').value); show('weather'); return }
     if(name==='shelter'){ renderShelter($('#state').value); show('shelter'); return }
     if(name==='picks'){ PAGE=0; renderPicks(); show('picks'); return }
@@ -792,10 +835,10 @@
   $('#mKeep').addEventListener('click',function(){ $('#modal').hidden=true; nav('travel') });
   $('#mNew').addEventListener('click',function(){ $('#modal').hidden=true; depart() });
   document.addEventListener('keydown',function(e){ if(e.key==='Escape') $('#modal').hidden=true });
-  var TABOF={weather:'home',shelter:'home',home:'home',today:'home',pouch:'home',course:'home',travel:'home',stop:'home',done:'home',reroute:'home',tripdetail:'ledger',brief:'home',picks:'home',ledger:'ledger',me:'me'};
+  var TABOF={all:'home',todo:'home',weather:'home',shelter:'home',home:'home',today:'home',pouch:'home',course:'home',travel:'home',stop:'home',done:'home',reroute:'home',tripdetail:'ledger',brief:'home',picks:'home',ledger:'ledger',me:'me'};
   function show(name){
     $('#phone').classList.toggle('fullscreen',name==='brief');
-    ['home','ledger','today','pouch','me','course','travel','stop','done','reroute','tripdetail','brief','picks','shelter','weather'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
+    ['home','ledger','today','pouch','me','course','travel','stop','done','reroute','tripdetail','brief','picks','shelter','weather','todo','all'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
     var cur=TABOF[name];
     $$('.tab button').forEach(function(b){var t=b.dataset.tab||b.dataset.view; if(t===cur)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   }

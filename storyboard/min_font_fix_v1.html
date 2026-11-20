@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>최소 글자 크기 수정 시안 v1</title>
+<meta name="description" content="홈 목업에 남은 9px 글자 4곳을 11px 기준으로 올리는 방법을 기존과 수정안으로 비교합니다. 기준은 디자인 기준 문서 15절의 최소 글자 크기 11px입니다.">
+<style>
+  :root{--ink:#5b2a22;--cream:#fbefdc;--cream2:#f3dfc0;--paper:#fffaf1;--muted:#7a5a4c;--red:#d03a2f;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;padding:20px 16px 48px;background:#e9e4dc;color:var(--ink);font-family:var(--font)}
+  h1{font-size:20px;margin:0 0 6px}
+  .lead{font-size:13px;line-height:1.6;margin:0 0 18px;max-width:760px}
+  h2{font-size:16px;margin:24px 0 8px;max-width:760px}
+  .sub{font-size:12px;color:var(--muted);margin:0 0 10px;max-width:760px;line-height:1.5}
+  .grid{display:grid;grid-template-columns:1fr;gap:12px;max-width:760px}
+  @media (min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+  .opt{background:var(--paper);box-shadow:0 0 0 2px var(--ink);padding:12px}
+  .tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 6px;background:var(--cream);box-shadow:0 0 0 2px var(--ink);margin-bottom:8px}
+  .note{font-size:12px;color:var(--muted);line-height:1.5;margin:8px 0 0}
+  .code{font-family:Consolas,monospace;font-size:12px;background:var(--cream);padding:6px 8px;margin:6px 0;line-height:1.5;word-break:break-all}
+  .del{text-decoration:line-through;color:#9c2420}
+  .add{color:#1f5a2a;font-weight:700}
+  table{border-collapse:collapse;width:100%;max-width:760px;background:var(--paper);box-shadow:0 0 0 2px var(--ink);font-size:12px}
+  th,td{padding:6px 8px;text-align:left;vertical-align:top;border-bottom:1px solid var(--cream2)}
+  th{background:var(--cream);font-size:12px}
+  .ok{color:#1f5a2a;font-weight:700} .no{color:#9c2420;font-weight:700}
+</style>
+</head>
+<body>
+<h1>최소 글자 크기 수정 시안 v1 (3번)</h1>
+<p class="lead">목업의 10px 글자는 이미 11px로 올렸습니다. 남은 것은 9px 글자 4곳입니다. 기준은 디자인 기준 문서 15절의 "최소 11px"입니다. 아래는 수정 전과 수정 후 모습, 고칠 위치, 확인 방법입니다.</p>
+
+<h2>1. 9px이 쓰인 곳 4곳</h2>
+<table>
+  <tr><th>위치 (목업 파일 줄)</th><th>무엇인가</th><th>현재</th><th>수정</th></tr>
+  <tr><td>.card .th (97행)</td><td>코스 썸네일 자리의 안내 글자</td><td class="no">9px</td><td class="ok">11px</td></tr>
+  <tr><td>.reg .tag (139행)</td><td>권역 "완주 배지" 태그</td><td class="no">9px</td><td class="ok">11px</td></tr>
+  <tr><td>.thumb (148행)</td><td>앨범·내 여행 썸네일 자리 글자</td><td class="no">9px</td><td class="ok">11px</td></tr>
+  <tr><td>.spot em (171행)</td><td>지도 장소 이름표</td><td class="no">9px</td><td class="ok">11px (이름이 길어 지도 칸이 넓어질 수 있음)</td></tr>
+</table>
+
+<h2>2. 수정 전후 모습</h2>
+<div class="grid">
+  <div class="opt">
+    <span class="tag">수정 전 · 9px</span>
+    <p style="font-size:9px;margin:4px 0;background:#fff0b8;display:inline-block;padding:0 4px">완주 배지</p>
+    <p style="font-size:9px;margin:4px 0;color:#9c2420">썸네일 자리 · 도보 시간 예시</p>
+    <p class="note">글자가 너무 작아 읽기 어렵습니다. 발표 화면에서는 거의 보이지 않습니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">수정 후 · 11px</span>
+    <p style="font-size:11px;margin:4px 0;background:#fff0b8;display:inline-block;padding:0 4px">완주 배지</p>
+    <p style="font-size:11px;margin:4px 0;color:#9c2420">썸네일 자리 · 도보 시간 예시</p>
+    <p class="note">같은 자리에서 읽힙니다. 태그 가로 길이가 조금 늘어나는지 확인합니다.</p>
+  </div>
+</div>
+
+<h2>3. 고치는 방법 (CSS 한 줄씩)</h2>
+<p class="sub">각 규칙에서 <span class="del">font-size:9px</span>를 <span class="add">font-size:11px</span>로 바꿉니다. 다른 속성은 건드리지 않습니다.</p>
+<div class="grid">
+  <div class="opt">
+    <span class="tag">97행 · .card .th</span>
+    <div class="code"><span class="del">font-size:9px</span> → <span class="add">font-size:11px</span></div>
+    <p class="note">썸네일 자리 한 칸(58px)에 글자가 들어가므로, 줄바꿈 후 높이가 넘치는지 확인합니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">139행 · .reg .tag</span>
+    <div class="code"><span class="del">font-size:9px</span> → <span class="add">font-size:11px</span></div>
+    <p class="note">태그는 세로 여백이 좁습니다. 높이가 커지면 패딩 0을 유지합니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">148행 · .thumb</span>
+    <div class="code"><span class="del">font-size:9px</span> → <span class="add">font-size:11px</span></div>
+    <p class="note">64 x 48 자리 안에 글자가 두 줄로 들어갑니다. 줄 수를 확인합니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">171행 · .spot em</span>
+    <div class="code"><span class="del">font-size:9px</span> → <span class="add">font-size:11px</span></div>
+    <p class="note">장소 이름이 길면 지도에서 서로 겹칠 수 있습니다. 긴 이름은 줄여서 쓰거나 위치를 조정합니다.</p>
+  </div>
+</div>
+
+<h2>4. 확인 방법</h2>
+<div class="opt" style="max-width:760px">
+  <p class="note" style="color:var(--ink);margin:0">수정 후 아래 명령으로 9px과 10px이 없는지 확인합니다.</p>
+  <div class="code">grep -n "font-size:9px\|font-size:10px" storyboard/app_home_mockup_v1.html</div>
+  <p class="note">결과가 없으면 통과입니다. 목업 화면에서 긴 글자가 잘리는지는 브라우저로 한 번 더 봅니다 (특히 지도 장소 이름과 썸네일).</p>
+</div>
+
+<h2>5. 한눈에 보기</h2>
+<table>
+  <tr><th>항목</th><th>현재</th><th>수정 후</th></tr>
+  <tr><td>10px 글자</td><td class="ok">0곳 (11px로 올림)</td><td class="ok">0곳</td></tr>
+  <tr><td>9px 글자</td><td class="no">4곳</td><td class="ok">0곳</td></tr>
+  <tr><td>확인 방법</td><td>없음</td><td>grep 한 줄 + 브라우저 확인</td></tr>
+</table>
+</body>
+</html>

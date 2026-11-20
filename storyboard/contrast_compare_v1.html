@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>색 대비 기존·개선 비교 v1</title>
+<meta name="description" content="홈 목업의 미달 색 조합 3가지를 기존과 개선 후보로 나란히 비교합니다. 대비 비율은 WCAG 공식으로 계산한 값입니다.">
+<style>
+  :root{--ink:#5b2a22;--cream:#fbefdc;--beam:#c9763a;--red:#dc3b30;--paper:#fffaf1;--muted:#8a6a5c;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;padding:20px 16px 40px;background:#e9e4dc;color:var(--ink);font-family:var(--font)}
+  h1{font-size:20px;margin:0 0 6px}
+  .lead{font-size:13px;line-height:1.6;margin:0 0 18px;max-width:720px}
+  .grid{display:grid;grid-template-columns:1fr;gap:14px;max-width:720px}
+  @media (min-width:640px){.grid{grid-template-columns:1fr 1fr}}
+  .card{background:var(--paper);box-shadow:0 0 0 2px var(--ink);padding:14px}
+  .card h2{font-size:15px;margin:0 0 4px}
+  .card .why{font-size:12px;color:var(--muted);margin:0 0 10px;line-height:1.5}
+  .tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 6px;margin-bottom:8px;background:var(--cream);box-shadow:0 0 0 2px var(--ink)}
+  .sample{padding:12px;margin-bottom:8px;font-size:14px;line-height:1.5}
+  .ratio{font-size:12px;font-weight:700;margin-top:6px}
+  .pass{color:#1f5a2a}
+  .fail{color:#9c2420}
+  .sample.bar{font-size:12px;font-weight:700;padding:8px 10px}
+  .sample.btn{font-size:16px;font-weight:800;text-align:center;padding:14px 10px}
+  .sample.txt{background:var(--cream);font-size:12px;padding:10px}
+  .label{font-size:11px;color:var(--ink);margin:6px 0 2px;font-weight:700}
+  .cand{font-size:12px;color:var(--ink);margin-top:4px;line-height:1.5}
+</style>
+</head>
+<body>
+<h1>색 대비 기존·개선 비교 v1</h1>
+<p class="lead">홈 목업에서 기준(WCAG)에 못 미치는 3곳을 기존 색과 개선 후보로 나란히 보여 줍니다. 대비 비율은 디자인 기준 문서 14절과 같은 방식으로 계산했습니다. 기준: 본문 4.5 이상, 16px 굵은 글씨도 4.5 이상이 필요합니다. 최종 색은 팀이 정합니다.</p>
+
+<div class="grid">
+
+  <section class="card">
+    <span class="tag">1. 상단 상태 줄</span>
+    <h2>흰 글씨 / 주황 바탕</h2>
+    <p class="why">작은 글씨(12px)라서 대비가 가장 중요합니다. 목업 상단의 9:41 시간과 신호 표시에 쓰입니다.</p>
+    <div class="label">기존</div>
+    <div class="sample bar" style="background:#c9763a;color:#fff3e0">9:41 &nbsp; ●●● ▮</div>
+    <div class="ratio fail">대비 3.12 · 미달</div>
+    <div class="label" style="margin-top:10px">개선 후보 A (기존과 개선 A의 중간, 권장)</div>
+    <div class="sample bar" style="background:#b9682f;color:#fff3e0">9:41 &nbsp; ●●● ▮</div>
+    <div class="ratio fail">대비 3.77 · 아직 미달 (12px 글씨 기준 4.5 필요)</div>
+    <div class="cand">바탕 #b9682f, 글씨 #fff3e0. 톤은 기존에 가깝고, 대비는 조금 올라갑니다. 4.5를 넘기려면 글씨를 13px 이상 굵게 하거나, 글씨 색을 #ffffff로 바꾸는 방법을 검토합니다.</div>
+  </section>
+
+  <section class="card">
+    <span class="tag">2. 주요 버튼 (빨강)</span>
+    <h2>흰 글씨 / 빨강 바탕</h2>
+    <p class="why">16px 굵은 글씨는 큰 글씨 기준에 들어가지 않아서 4.5 이상이 필요합니다. 모든 주요 행동 버튼에 쓰입니다.</p>
+    <div class="label">기존</div>
+    <div class="sample btn" style="background:#dc3b30;color:#fff">출발하기</div>
+    <div class="ratio fail">대비 4.46 · 미달</div>
+    <div class="label" style="margin-top:10px">개선 후보 B (권장)</div>
+    <div class="sample btn" style="background:#d03a2f;color:#fff">출발하기</div>
+    <div class="ratio pass">대비 4.85 · 통과 (기존과 거의 같은 빨강)</div>
+  </section>
+
+  <section class="card">
+    <span class="tag">3. 보조 설명 글씨</span>
+    <h2>연한 갈색 글씨 / 크림 바탕</h2>
+    <p class="why">장소 특징, 도보 시간 설명, 날씨 보조 문장 등 작은 설명 글씨입니다. 종이색 카드 위에서는 통과하지만, 크림 바탕에서는 미달입니다.</p>
+    <div class="label">기존</div>
+    <div class="sample txt" style="color:#8a6a5c">장소 특징 한 줄 · 검수 문구 필요</div>
+    <div class="ratio fail">대비 4.30 · 미달 (크림 바탕)</div>
+    <div class="label" style="margin-top:10px">개선 후보 D (권장)</div>
+    <div class="sample txt" style="color:#7a5a4c">장소 특징 한 줄 · 검수 문구 필요</div>
+    <div class="ratio pass">대비 5.44 · 통과</div>
+    <div class="cand">글씨 #7a5a4c. 기존 #8a6a5c보다 한 단계 진합니다.</div>
+  </section>
+
+  <section class="card">
+    <span class="tag">요약</span>
+    <h2>고를 조합</h2>
+    <p class="why">권장 조합: 상단은 기존과 개선 A의 중간, 빨강은 후보 B, 설명 글씨는 D입니다. 상단 줄은 아직 4.5에 못 미칩니다.</p>
+    <div class="sample bar" style="background:#b9682f;color:#fff3e0">9:41 &nbsp; ●●● ▮</div>
+    <div class="sample btn" style="background:#d03a2f;color:#fff;margin-top:8px">출발하기</div>
+    <div class="sample txt" style="color:#7a5a4c;margin-top:8px;background:var(--cream)">장소 특징 한 줄 · 검수 문구 필요</div>
+    <div class="cand">결정 필요: 상단 줄의 대비(3.77)를 어떻게 맞출지 (글씨 크기 또는 글씨 색) 정해 주세요.</div>
+  </section>
+
+</div>
+</body>
+</html>

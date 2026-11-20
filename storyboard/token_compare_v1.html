@@ -1,0 +1,167 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>디자인 토큰 시안 비교 v1</title>
+<meta name="description" content="이식 전 확정할 토큰 5가지(상단 줄 대비, 최소 글자 크기, 버튼 높이, 간격, 테두리, 용어)를 시안으로 나란히 비교합니다. 대비 비율은 WCAG 공식으로 계산했습니다.">
+<style>
+  :root{--ink:#5b2a22;--cream:#fbefdc;--cream2:#f3dfc0;--paper:#fffaf1;--muted:#7a5a4c;--red:#d03a2f;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+  *{box-sizing:border-box}
+  body{margin:0;padding:20px 16px 48px;background:#e9e4dc;color:var(--ink);font-family:var(--font)}
+  h1{font-size:20px;margin:0 0 6px}
+  .lead{font-size:13px;line-height:1.6;margin:0 0 20px;max-width:760px}
+  h2{font-size:16px;margin:26px 0 8px;max-width:760px}
+  .sub{font-size:12px;color:var(--muted);margin:0 0 10px;max-width:760px;line-height:1.5}
+  .grid{display:grid;grid-template-columns:1fr;gap:12px;max-width:760px}
+  @media (min-width:640px){.grid{grid-template-columns:1fr 1fr 1fr}}
+  .opt{background:var(--paper);box-shadow:0 0 0 2px var(--ink);padding:12px}
+  .opt .name{font-size:13px;font-weight:800;margin:0 0 6px}
+  .opt .note{font-size:12px;color:var(--muted);line-height:1.5;margin:6px 0 0}
+  .ratio{font-size:12px;font-weight:700;margin-top:6px}
+  .pass{color:#1f5a2a} .fail{color:#9c2420}
+  .bar{padding:8px 10px;font-weight:700;font-size:12px}
+  .btn{text-align:center;font-weight:800;font-size:16px;color:#fff;background:var(--red);padding:0 12px;display:flex;align-items:center;justify-content:center}
+  .small{font-size:11px}
+  .tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 6px;background:var(--cream);box-shadow:0 0 0 2px var(--ink);margin-bottom:6px}
+  .row{display:flex;align-items:center;gap:10px;margin:6px 0}
+  .gap{background:var(--cream2);height:12px}
+  .rect{background:var(--cream2);box-shadow:0 0 0 2px var(--ink);height:44px;display:flex;align-items:center;padding:0 10px;font-size:13px}
+</style>
+</head>
+<body>
+<h1>디자인 토큰 시안 비교 v1</h1>
+<p class="lead">이식 전에 확정할 토큰 6가지를 시안으로 나란히 보여 줍니다. 기준: 본문 4.5 이상, 큰 글씨(18.66px 굵은 글씨 또는 24px 이상) 3 이상. 최종 값은 팀이 정합니다.</p>
+
+<h2>1. 상단 상태 줄 대비 (보완 방식 3가지)</h2>
+<p class="sub">현재 결정값(바탕 #b9682f, 글씨 #fff3e0)은 대비 3.77로 12px 글씨 기준에 못 미칩니다. 보완 방법 세 가지를 비교합니다.</p>
+<div class="grid">
+  <div class="opt">
+    <span class="tag">안 1 · 색 유지, 글씨 흰색</span>
+    <div class="bar" style="background:#b9682f;color:#ffffff">9:41 &nbsp; ●●● ▮</div>
+    <div class="ratio fail">대비 4.13 · 12px 기준 미달 (근접)</div>
+    <p class="note">톤은 가장 가깝습니다. 글씨를 13px 굵게 해도 큰 글씨 기준(18.66px)에는 들지 않으므로 4.5에 못 미칩니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">안 2 · 바탕을 조금 진하게</span>
+    <div class="bar" style="background:#a85a24;color:#fff3e0">9:41 &nbsp; ●●● ▮</div>
+    <div class="ratio pass">대비 4.61 · 통과</div>
+    <p class="note">바탕 #a85a24, 글씨 #fff3e0. 통과하지만 이전에 톤이 낮다고 하신 색에 가깝습니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">안 3 · 바탕을 더 진하게</span>
+    <div class="bar" style="background:#9c4a22;color:#fff3e0">9:41 &nbsp; ●●● ▮</div>
+    <div class="ratio pass">대비 5.61 · 통과 (여유 있음)</div>
+    <p class="note">바탕 #9c4a22, 글씨 #fff3e0. 가장 안전하지만 상단이 많이 어두워집니다.</p>
+  </div>
+</div>
+
+<h2>2. 최소 글자 크기</h2>
+<p class="sub">현재 목업에 10px 글자가 35곳 있습니다. 설명 글자 기준(11px 이상)을 최소값으로 둘지 비교합니다.</p>
+<div class="grid">
+  <div class="opt">
+    <span class="tag">안 1 · 최소 10px (현재)</span>
+    <p style="font-size:10px;margin:6px 0">장소 특징 한 줄 · 도보 약 8분 [예시]</p>
+    <p class="note">읽기 어렵습니다. 모바일 기준으로 권장하지 않습니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">안 2 · 최소 11px (권장)</span>
+    <p style="font-size:11px;margin:6px 0">장소 특징 한 줄 · 도보 약 8분 [예시]</p>
+    <p class="note">설명 글자 최소값으로 쓰기 좋습니다. 대부분의 10px을 여기로 올립니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">안 3 · 최소 12px</span>
+    <p style="font-size:12px;margin:6px 0">장소 특징 한 줄 · 도보 약 8분 [예시]</p>
+    <p class="note">가장 읽기 쉽지만 한 줄에 들어가는 글자가 줄어 칸이 늘어납니다.</p>
+  </div>
+</div>
+
+<h2>3. 버튼 높이</h2>
+<p class="sub">같은 줄에 있는 버튼은 높이가 같아야 합니다. 홈의 큰 행동 버튼만 예외로 둘지 비교합니다.</p>
+<div class="grid">
+  <div class="opt">
+    <span class="tag">안 1 · 52px 통일 (현재 적용)</span>
+    <div class="row"><div class="btn" style="height:52px;flex:1">확인</div><div class="rect small" style="height:52px;flex:1;justify-content:center;font-weight:800;font-size:16px;background:var(--paper)">이전으로</div></div>
+    <p class="note">같은 줄 버튼이 모두 같은 높이입니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">안 2 · 56px 통일</span>
+    <div class="row"><div class="btn" style="height:56px;flex:1">확인</div><div class="rect small" style="height:56px;flex:1;justify-content:center;font-weight:800;font-size:16px;background:var(--paper)">이전으로</div></div>
+    <p class="note">누르기 쉽지만 화면이 조금 답답해집니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">안 3 · 홈 큰 버튼 68px 예외</span>
+    <div class="btn" style="height:68px;width:100%">오늘의 길 고르기</div>
+    <p class="note">첫 화면의 중심 행동만 크게 둡니다. 나머지 화면은 52px입니다.</p>
+  </div>
+</div>
+
+<h2>4. 간격 단계</h2>
+<p class="sub">여백은 4의 배수로 두고 단계를 줄입니다. 현재는 12, 14, 16, 18, 20, 24 등 여러 값이 섞여 있습니다.</p>
+<div class="grid">
+  <div class="opt">
+    <span class="tag">안 1 · 4단계 (8 / 12 / 16 / 24)</span>
+    <div class="row"><span class="small" style="width:44px">8px</span><div style="width:8px;height:12px;background:var(--red)"></div></div>
+    <div class="row"><span class="small" style="width:44px">12px</span><div style="width:12px;height:12px;background:var(--red)"></div></div>
+    <div class="row"><span class="small" style="width:44px">16px</span><div style="width:16px;height:12px;background:var(--red)"></div></div>
+    <div class="row"><span class="small" style="width:44px">24px</span><div style="width:24px;height:12px;background:var(--red)"></div></div>
+    <p class="note">단계가 적어 외우기 쉽습니다. 권장.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">안 2 · 촘촘하게 (4 / 8 / 12 / 16 / 20 / 24)</span>
+    <div class="row"><span class="small" style="width:44px">4px</span><div style="width:4px;height:12px;background:var(--red)"></div></div>
+    <div class="row"><span class="small" style="width:44px">12px</span><div style="width:12px;height:12px;background:var(--red)"></div></div>
+    <div class="row"><span class="small" style="width:44px">20px</span><div style="width:20px;height:12px;background:var(--red)"></div></div>
+    <p class="note">세밀하지만 단계가 많아 일관성이 떨어질 수 있습니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">안 3 · 3단계 (8 / 16 / 24)</span>
+    <div class="row"><span class="small" style="width:44px">8px</span><div style="width:8px;height:12px;background:var(--red)"></div></div>
+    <div class="row"><span class="small" style="width:44px">16px</span><div style="width:16px;height:12px;background:var(--red)"></div></div>
+    <div class="row"><span class="small" style="width:44px">24px</span><div style="width:24px;height:12px;background:var(--red)"></div></div>
+    <p class="note">가장 단순합니다. 카드 안 여백이 부족할 수 있습니다.</p>
+  </div>
+</div>
+
+<h2>5. 테두리 굵기</h2>
+<p class="sub">픽셀 느낌의 테두리 굵기를 두 가지로 정할지 비교합니다.</p>
+<div class="grid">
+  <div class="opt">
+    <span class="tag">안 1 · 2px (작은 카드·태그)</span>
+    <div class="rect" style="box-shadow:0 0 0 2px var(--ink)">장소 한 줄</div>
+    <p class="note">태그, 말풍선, 구분선에 씁니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">안 2 · 3px (큰 카드·버튼)</span>
+    <div class="rect" style="box-shadow:0 0 0 3px var(--ink)">장소 한 줄</div>
+    <p class="note">화면의 주요 카드와 버튼에 씁니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">안 3 · 두 굵기 혼용 (현재)</span>
+    <div class="rect" style="box-shadow:0 0 0 2px var(--ink), 0 0 0 3px var(--cream2)">장소 한 줄</div>
+    <p class="note">현재 목업은 위치마다 굵기가 달라 보입니다. 두 굵기를 역할별로 나누는 것이 좋습니다.</p>
+  </div>
+</div>
+
+<h2>6. 용어 (화면에 보이는 이름)</h2>
+<p class="sub">장부 탭과 장소 목록의 이름을 정합니다. '칸'은 화면에서 뜻이 흐려서 바꾸는 것이 낫습니다.</p>
+<div class="grid">
+  <div class="opt">
+    <span class="tag">안 1 · 칸 (현재 일부 남음)</span>
+    <div class="rect">칸 · 내 여행 · 앨범</div>
+    <p class="note">뜻이 추상적입니다. 권장하지 않습니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">안 2 · 장소 (통일 후보)</span>
+    <div class="rect">장소 · 내 여행 · 앨범</div>
+    <p class="note">장소 목록과 뜻이 같아 일관성이 좋습니다.</p>
+  </div>
+  <div class="opt">
+    <span class="tag">안 3 · 지도 (장부 탭 후보)</span>
+    <div class="rect">지도 · 내 여행 · 앨범</div>
+    <p class="note">장부 지도 화면과 맞습니다. 창작 후보이므로 팀이 확정합니다.</p>
+  </div>
+</div>
+</body>
+</html>
