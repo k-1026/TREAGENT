@@ -20,8 +20,9 @@ import { useState } from 'react';
 import { ActivityIndicator, Linking, Pressable, SafeAreaView, Text, View } from 'react-native';
 import { findDistrict } from '../lib/districts';
 import { getCurrentLocation, LocationResult } from '../lib/location';
-import { supabase } from '../lib/supabase';
 import { usePlace } from '../lib/place_context';
+import { useProfile } from '../lib/profile_context';
+import { displayName } from '../lib/profile';
 // "구·군 선택하기" 버튼 (구·군 선택 화면으로 이동). 위치 버튼 옆에 항상 같이 보여 준다
 function DistrictButton() {
   return (
@@ -35,6 +36,8 @@ function DistrictButton() {
 }
 
 export default function LocationScreen() {
+  const { profile } = useProfile();
+  const name = displayName(profile);
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState<LocationResult | null>(null);
   // /district에서 넘어온 값 (없으면 undefined)
@@ -63,10 +66,11 @@ export default function LocationScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fbf6ee' }}>
       <View style={{ padding: 20, gap: 12 }}>
-        <Pressable onPress={() => supabase.auth.signOut()} style={{ alignSelf: 'flex-end'}}>
-          <Text style={{ color: '#a8242a', fontSize: 14, fontWeight: '600' }}>로그아웃</Text>
+        <Pressable onPress={() => router.push('/me')} style={{ alignSelf: 'flex-end' }}>
+          <Text style={{ color: '#a8242a', fontSize: 14, fontWeight: '600' }}>내 정보</Text>
         </Pressable>
 
+        <Text style={{ color: '#7a6a5a' }}>{name} 님, 안녕하세요</Text>
         <Text style={{ fontSize: 22, fontWeight: '700', color: '#2b2118' }}>내 위치 확인</Text>
         <Text style={{ color: '#7a6a5a' }}>앱을 쓰는 동안만 현재 위치를 사용하고, 좌표는 저장하지 않아요.</Text>
 

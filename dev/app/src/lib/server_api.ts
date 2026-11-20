@@ -5,7 +5,8 @@ const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_URL;
 const TIMEOUT_MS = 10000;
 
 export type ApiError =
-  | 'NO_SERVER_URL' | 'NETWORK' | 'TIMEOUT' | 'UNAVAILABLE' | 'NOT_FOUND' | 'INVALID' | 'RATE_LIMIT' | 'SERVER';
+  | 'NO_SERVER_URL' | 'NETWORK' | 'TIMEOUT' | 'UNAVAILABLE' | 'NOT_FOUND' | 'INVALID' | 'RATE_LIMIT' | 'SERVER'
+  | 'UNAUTHORIZED' | 'NICKNAME_TAKEN' | 'NICKNAME_LOCKED';
   export type ApiResult<T> = { ok: true; data: T } | { ok: false; error: ApiError };
 
 export type CourseCard = {
@@ -46,15 +47,20 @@ export type RouteResult = {
     | { status: 'unavailable' };
 };
 
-async function request<T>(path: string, init?: RequestInit): Promise<ApiResult<T>> {
+async function request<T>(path: string, init?: RequestInit, timeoutMs: number = TIMEOUT_MS): Promise<ApiResult<T>> {
   if (!SERVER_URL) return { ok: false, error: 'NO_SERVER_URL' };
   const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), TIMEOUT_MS);
+  const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
     const res = await fetch(`${SERVER_URL}${path}`, { ...init, signal: controller.signal });
     if (res.ok) return { ok: true, data: (await res.json()) as T };
     if (res.status === 404) return { ok: false, error: 'NOT_FOUND' };
     if (res.status === 400) return { ok: false, error: 'INVALID' };
+    if (res.status === 401) return { ok: false, error: 'UNAUTHORIZED' };
+    if (res.status === 409) {
+      const body = (await res.json().catch(() => null)) as { error?: string } | null;
+      return { ok: false, error: body?.error === 'NICKNAME_LOCKED' ? 'NICKNAME_LOCKED' : 'NICKNAME_TAKEN' };
+    }
     if (res.status === 503) return { ok: false, error: 'UNAVAILABLE' };
     if (res.status === 429) return { ok: false, error: 'RATE_LIMIT' };
     return { ok: false, error: 'SERVER' };
@@ -107,10 +113,32 @@ export type TodayRoute = {
 export type TodayResult = {
   mode: string;
   reason: string;
-  route: TodayRoute | null;
+  route: TodayRoute | null; // routes[0]과 같다 (예전 응답 호환)
+  routes?: TodayRoute[]; // 후보 길들 (count를 보냈을 때)
   routeReason?: string;
+  weather?: { status: 'ok'; temperatureC: number; apparentTemperatureC: number | null } | { status: 'unavailable' };
 };
 
+// 후보 길 3개를 한 번에 받는다. AI를 여러 번 부르므로 시간 제한을 길게 둔다.
+// refreshFrom을 주면 "다른 길 새로 불러오기": 지금 보여 준 장소 id들을 빼고 새 조합을 받는다.
+export function getTodayRoutes(latitude: number, longitude: number, prefs: TodayPrefs, refreshFrom?: string[]) {
+  return request<TodayResult>(
+    '/recommend',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        latitude,
+        longitude,
+        ...prefs,
+        count: 3,
+        briefing: true,
+        ...(refreshFrom ? { refresh: true, excludePlaceIds: refreshFrom.slice(0, 12) } : {}),
+      }),
+    },
+    45000,
+  );
+}
 // refreshFrom을 주면 "새로고침". 지금 보고 있는 장소 id를 excludePlaceIds로 보내 다른 조합을 받는다.
 export function getTodayRoute(latitude: number, longitude: number, prefs: TodayPrefs, refreshFrom?: string[]) {
   return request<TodayResult>('/recommend', {
@@ -123,5 +151,32 @@ export function getTodayRoute(latitude: number, longitude: number, prefs: TodayP
       briefing: true,
       ...(refreshFrom ? { refresh: true, excludePlaceIds: refreshFrom } : {}),
     }),
+  });
+}
+
+// ---- 프로필 ----
+export type ProfileData = { nickname: string | null; ageGroup: AgeGroup };
+
+const authHeaders = (accessToken: string) => ({
+  'Content-Type': 'application/json',
+  Authorization: `Bearer ${accessToken}`,
+});
+
+// 내 프로필. 아직 없으면 NOT_FOUND
+export function getProfile(accessToken: string) {
+  return request<ProfileData>('/profile', { headers: authHeaders(accessToken) });
+}
+
+// 프로필 저장. 닉네임이 겹치면 NICKNAME_TAKEN, 이미 정한 닉네임을 바꾸려 하면 NICKNAME_LOCKED
+export function saveProfile(accessToken: string, p: { nickname: string | null; ageGroup: AgeGroup }) {
+  return request<ProfileData>('/profile', { method: 'PUT', headers: authHeaders(accessToken), body: JSON.stringify(p) });
+}
+
+// 닉네임이 비어 있는지 미리 확인한다. 저장할 때 서버가 한 번 더 막으므로 참고용이다.
+export function checkNicknameAvailable(accessToken: string, nickname: string) {
+  return request<{ available: boolean }>('/profile/check', {
+    method: 'POST',
+    headers: authHeaders(accessToken),
+    body: JSON.stringify({ nickname }),
   });
 }
