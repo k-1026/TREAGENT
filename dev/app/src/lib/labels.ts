@@ -38,6 +38,9 @@ export const ERROR_LABEL: Record<string, string> = {
   INVALID: '요청이 올바르지 않아요',
   SERVER: '서버에 문제가 있어요',
   RATE_LIMIT: '새로고침을 너무 많이 했어요. 잠시 뒤 다시 해 주세요',
+  UNAUTHORIZED: '로그인이 만료됐어요. 다시 로그인해 주세요',
+  NICKNAME_TAKEN: '이미 쓰고 있는 이름이에요. 다른 이름을 써 주세요',
+  NICKNAME_LOCKED: '닉네임은 한 번 정하면 바꿀 수 없어요',
 };
 
 
