@@ -16,10 +16,13 @@
 
 ## 기술 스택
 
-- 앱: React Native + Expo SDK 58 (`dev/app/package.json` 기준). 백그라운드 위치는 개발 빌드(development build) 기준이며 Expo Go는 쓰지 않습니다.
-- 서버: Node.js + Express + JavaScript(ESM). 각자 자기 컴퓨터에서 실행합니다 (2026-11-16 결정, 팀 확인 전).
+- 앱: React Native + Expo SDK 58 (`dev/app/package.json` 기준). 지금 화면은 Expo Go와 웹으로 열립니다. 백그라운드 위치(H 단계)는 개발 빌드(development build)가 필요합니다.
+- 서버: Node.js + Express + JavaScript(ESM). 배포는 Railway(`dev/server/Dockerfile`, Root Directory `dev/server`)이고, 로컬에서 돌릴 때는 `npm start` 또는 `docker compose up --build`입니다 (2026-11-20 확인, 팀 확인 전).
+- 웹: Vercel(`dev/app`을 `npx expo export --platform web`으로 빌드, 출력 `dist`, `dev/app/vercel.json`). `EXPO_PUBLIC_*` 값은 빌드 때 번들에 들어가므로 바꾸면 다시 배포합니다 (2026-11-20 확인, 팀 확인 전).
+- 배포 반영: `main`에 병합되면 Railway와 Vercel이 자동으로 다시 배포합니다. `dev → main`은 `.github/workflows/promote-dev-to-main.yml`이 매일 18:00(한국 시간)에 올립니다.
 - DB: Supabase PostgreSQL. 팀원마다 자기 프로젝트(무료 플랜)를 쓰는 안과 팀 공유 프로젝트 안 중 하나는 `[결정 필요]` (`dev/supabase/README.md`는 공유 프로젝트 전제).
-- Docker는 쓴다. 단, 도입은 나중이고 각자 자기 컴퓨터에서 실행하는 용도다. PR 0~H는 Docker 없이 `npm start`로 돌아가야 하고, Docker 파일(`Dockerfile`, `compose`)은 별도 PR로 추가한다. 시점은 `[결정 필요]`.
+- Docker: `dev/server/Dockerfile`, `docker-compose.yml`로 서버를 컨테이너로 실행합니다 (PR #179). Docker는 선택이고, 서버는 `npm start`로도 돌아가야 합니다. CPU 가상화가 안 되는 PC가 있을 수 있어서 Docker를 필수로 만들지 않습니다. 앱은 컨테이너화하지 않습니다.
+- 환경변수: 앱(`dev/app/.env`, Vercel)은 `EXPO_PUBLIC_*` 3개만 둡니다. 서버 비밀 값은 Railway Variables와 `dev/server/.env`에만 둡니다. `CORS_ORIGIN`은 주소 하나를 글자 그대로 적습니다 (쉼표 목록은 지원하지 않음).
 - 비용 0원 조건. 유료가 필요한 제안은 하지 말고, 필요하면 먼저 알린 뒤 대안을 냅니다. LLM API는 호출 비용이 생길 수 있으므로 제공자·무료 한도를 `[확인 필요]`로 먼저 알립니다.
 - AI 스택(서버에서만): LLM, LangChain, LangGraph, 하랑이 페르소나, tool calling. 아래 "AI(하랑이 대사)" 절을 따릅니다.
 
@@ -101,7 +104,9 @@
 - 체감온도 계산식과 기준 출처
 - 도착 판정 위치, 길 안내 방식, 날씨 확인 주기, 이탈 기준(N미터, M초)
 - AI: LLM 제공자·모델(D-13), LangGraph 사용(D-14), LLM에 보낼 개인 정보 범위(D-17), 페르소나 확정(D-18), 시간 제한
-- Docker 도입 시점
+- 개발용과 배포용 Supabase 분리 여부, 폰 앱 인증 메일의 복귀 주소
+- Railway·Vercel 요금과 무료 한도 `[확인 필요]`
+- 로컬 웹 개발을 위한 서버의 CORS 다중 주소 허용
 
 ## 출처
 
