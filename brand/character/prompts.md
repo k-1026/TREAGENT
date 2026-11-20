@@ -23,7 +23,7 @@
 
 ## v3 이미지 프롬프트 (2026-11-10, 발표 자료용)
 
-공통 조건: 동물형 SD 다람쥐 "하랑이"(가칭). 몸 색은 능금 빨강, 꼬리와 얼굴 배는 크림색, 머리 위에 사과 이파리. 도트 RPG 스타일, 배경은 단색. 캐릭터 시트(`brand/character/images/harangi_sheet.webp`)를 참고 이미지로 함께 첨부.
+공통 조건: 동물형 SD 다람쥐 "하랑이"(가칭). 몸 색은 능금 빨강. 꼬리는 몸과 같은 능금 빨강이고 끝 3분의 1만 크림색. 얼굴 배는 크림색. 머리 위에 사과 이파리. 도트 RPG 스타일, 배경은 단색. 캐릭터 시트(`brand/character/images/harangi_sheet.webp`)를 참고 이미지로 함께 첨부.
 
 ### P1 · 표정 3종 (행복 / 차분 / 놀람)
 Chibi SD-style squirrel mascot named Harangi, apple-red fur like a neunggeum fruit, cream-colored face and belly, a green apple leaf on top of the head, dark blue eyes, pixel-art RPG style with clean outlines, three expressions side by side: happy closed-eye smile, calm gentle look, surprised open mouth. Plain light background. Keep accessories to a fan and a small bag only.
@@ -175,3 +175,43 @@ Set of 6 pixel-art sticker emoji of the same character as the reference sheet (H
 - 수정 기록 (2026-11-20): 1차 결과의 문제를 반영했습니다. 색은 전체 빨강이 아니라 빨강 포인트 1곳, 운동화 끈과 쿨토시 밴드 추가, 크기와 가운데 정렬 통일, 투명 배경 명시. 1차 결과는 채택하지 않습니다.
 
 - 채택 기록 (2026-11-20): 최종 시트를 `brand/character/images/travel_items_sheet_v1.webp`로 저장했습니다. 9개 항목 (생수, 캡모자, 양산, 선크림, 쿨토시, 우산, 여벌 양말, 운동화, 겉옷), 3열 3행. 칸별 잘라 쓰기는 아직 하지 않았습니다 (96x96 칸, 목업과 앱에서 48px 표시).
+
+## P14 · 장부 스프라이트 (2026-11-20, 생성 전 초안)
+
+용도: 최초 로그인 후 메인 화면에 놓이는 하랑이의 장부(펼쳐진 책). 홈 탁자 위 펼쳐진 장부와 같은 물건으로 보이게 합니다.
+
+영문 프롬프트:
+"Pixel-art RPG style sprite of a single open ledger book, a worn notebook lying open, cream paper pages with faint ruled lines and no readable writing, dark brown leather cover edges, a small red ribbon bookmark. Same thick dark brown outline (#5b2a22) and flat warm palette as the room art (cream, apple red, wood brown). Front-facing three-quarter view, centered, fully visible, background fully transparent (alpha 0 everywhere outside the book; true alpha-channel PNG; no white, cream, or checkerboard fill), no ground shadow, no text, no logos, no brand marks, no people. Output 512x512 px PNG with alpha, book centered with about 16 px margin."
+
+한국어 참고: 펼친 장부 한 권. 종이에 글자는 넣지 않습니다. 가죽 테두리 갈색, 붉은 책갈피 끈. 배경은 투명, 바닥 그림자 없음.
+
+- 확인할 것: 탁자 위 장부와 같은 굵기의 테두리인지, 방 그림 크기 기준으로 너무 크지 않은지 봅니다. 축척 기준은 `brand/home/home_room_day_v2.webp`의 탁자 장부 크기 [확인 필요].
+- 채택 기록 (2026-11-20): 생성 결과를 채택했습니다. 투명 배경은 팀 확인으로 통과했습니다. 저장 위치 `brand/character/images/ledger_sprite_v1.webp`. 페이지에 글자 없음, 테두리·색은 기준 방과 맞음. 방 그림 축척과의 비교는 아직 하지 않았습니다.
+
+## P15 · 능금 스프라이트 (2026-11-20, 생성 전 초안)
+
+용도: 메인 화면의 능금 한 알. 능금은 하랑이의 핵심 모티프 중 하나입니다 (`brand/decision_nunggeum_motif_v1.md`).
+
+영문 프롬프트:
+"Pixel-art RPG style sprite of a single small round neunggeum fruit, a Korean wild apple that is smaller than a standard apple, with deep apple-red skin, a faint cream highlight on one side, a small green-brown leaf and a short stem. Same thick dark brown outline (#5b2a22) and flat warm palette as the room art. One fruit only, not cut, not bitten, centered, fully visible, background fully transparent (alpha 0 everywhere outside the fruit; true alpha-channel PNG; no white, cream, or checkerboard fill), no ground shadow, no text, no logos, no brand marks, no people. Output 256x256 px PNG with alpha, fruit about 160 px tall, centered."
+
+한국어 참고: 한 알만, 자르거나 베어 먹은 모양 없이. 표면은 능금 빨강, 한쪽에 크림색 빛 한 점. 잎은 작게. 배경은 투명.
+
+- 확인할 것: 사과와 헷갈리지 않게 작고 둥근 모양인지 봅니다. 사과 모양의 "능금" 로고나 상표처럼 보이면 안 됩니다 (`brand/character/profile/harangi_squirrel.md` 금기).
+- 사용 허가: 능금 모티프 시각 자산 사용 허가는 확인이 필요합니다 (`brand/decision_nunggeum_motif_v1.md` 55~56행, `archive/metadata.csv` 36행 스탬프 이미지와 함께 확인).
+- 채택 기록 (2026-11-20): 생성 결과를 채택했습니다. 저장 위치 `brand/character/images/nunggeum_sprite_v1.png`. 투명 배경은 팀 확인으로 통과했습니다. 사과와 비슷하다는 점은 참고합니다. 능금 모티프 사용 허가는 여전히 [확인 필요]입니다 (`brand/decision_nunggeum_motif_v1.md` 55~56행).
+
+## P16 · 하랑이 꼬리 스프라이트 (2026-11-20, 생성 전 초안)
+
+용도: 하랑이 몸 뒤에 겹치는 꼬리. 가볍게 흔드는 3프레임으로, 같은 자리에 겹쳐 재생합니다.
+참고 이미지: `brand/character/images/harangi_sheet.webp` (하랑이 기준 시트) 첨부.
+
+영문 프롬프트:
+"Pixel-art sprite sheet of only the tail of a chubby SD squirrel mascot, a fluffy bushy squirrel tail shaped like a teardrop plume (not a blob), mostly apple-red fur matching the body (#dc3b30 range, with two tones of red shading), and only the outer tip of the tail (the last third, farthest from the body) in cream fur with soft cream shading. Three frames for a gentle wag: frame 1 tail curved upward, frame 2 tilted slightly left, frame 3 tilted slightly right. Same thick dark brown outline (#5b2a22) and flat warm palette as the reference character. Tail only: no body, no head, no legs, no ground shadow. Each frame is a 128x128 px cell, all three cells in one row, and every tail's base sits at the bottom-center of its cell so the frames overlay at the same spot. Background fully transparent (alpha 0 everywhere outside the three tails; true alpha-channel PNG; no white, cream, or checkerboard fill). Output 384x128 px PNG with alpha. No text, no logos, no brand marks, no people."
+
+한국어 참고: 꼬리만 세 칸. 가운데 아래가 몸과 붙는 자리입니다. 1칸은 위로 굽음, 2칸은 왼쪽으로 살짝, 3칸은 오른쪽으로 살짝. 꼬리 전체는 몸과 같은 능금 빨강이고, 끝 3분의 1만 크림색입니다. 테두리 진한 갈색. 몸, 머리, 다리, 그림자 없음.
+
+- 확인할 것: 세 칸의 뿌리 위치가 같은지, 몸 뒤로 겹칠 때 몸 색(능금 빨강)과 뒤섞이지 않는지 봅니다. 기준 시트의 몸 색과 맞는지 확인합니다.
+- 수정 기록 (2026-11-20): 1차 결과(크림색 덩어리, 꼬리 모양 없음)는 채택하지 않습니다. 꼬리 색을 "전체 크림"에서 "전체 빨강, 끝 3분의 1 크림"으로 바꿨습니다. 참고 이미지 `brand/character/images/harangi_sheet.webp`와 캐릭터 참고 그림(빨간 꼬리 끝 크림)과 맞추세요.
+- 채택 기록 (2026-11-20): 두 번째 생성본 중 1번 결과(5번 파일)를 채택했습니다. 저장 위치 `brand/character/images/harangi_tail_sprite_v1.webp`. 꼬리 끝 크림색, 몸과 같은 빨강, 3프레임 흔들림. 투명 배경은 팀 확인으로 통과했습니다. 실루엣이 물방울에 가까운 점은 참고합니다.
+- 충돌 확인 필요: 이 파일의 공통 조건(약 26행)은 "꼬리와 얼굴 배는 크림색"이라고 적혀 있어, 이번 꼬리 조건과 어긋납니다. 팀이 꼬리 색을 정하면 공통 조건을 함께 고칩니다 [확인 필요].
