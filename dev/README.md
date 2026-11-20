@@ -6,41 +6,7 @@
 
 ## 한눈에 보기
 
-```mermaid
-flowchart TB
-    subgraph APP["앱 · 폰은 Expo Go, 웹은 Vercel"]
-        SCR["화면<br/>login · signup · district · today · courses · course"]
-        SB["supabase.ts<br/>로그인·가입만"]
-        API["server_api.ts<br/>그 밖의 모든 요청"]
-        LOC["location.ts<br/>위치 확인"]
-    end
-    subgraph SUPA["Supabase"]
-        AUTH["Auth<br/>이메일 · 비밀번호"]
-        DB["PostgreSQL<br/>places · place_mode_fit · courses · course_routes<br/>parties · party_members · party_routes"]
-    end
-    subgraph SRV["서버 · Railway (Express)"]
-        MW["미들웨어<br/>로그 · CORS · 토큰 · 호출 제한"]
-        RT["라우트<br/>/weather /recommend /courses /parties /health"]
-        RULE["규칙 decide_mode<br/>날씨 → 모드 판정"]
-        WX["날씨 어댑터<br/>호출 · 정리 · 캐시"]
-        AI["AI (LangGraph)<br/>compose → validate → fallback<br/>agent ↔ tools → validate"]
-    end
-    subgraph EXT["외부 서비스"]
-        KMA["기상청 API"]
-        GEM["Gemini API"]
-    end
-    SCR --> SB
-    SCR --> API
-    SCR --> LOC
-    SB --> AUTH
-    API --> MW --> RT
-    RT --> RULE
-    RT --> WX
-    RT --> AI
-    RT -->|SQL| DB
-    WX --> KMA
-    AI --> GEM
-```
+![서비스 구조도: 앱, Supabase, 서버, 외부 서비스](images/service_architecture.svg)
 
 - 세팅 순서(키를 받는 곳, 폴더별 실행, 결과 확인)는 [team_setup_guide_v1.md](team_setup_guide_v1.md)의 "세팅 순서" 그림을 봅니다.
 - `location.ts`가 하는 일은 파일 이름만 보고 적었습니다 `[확인 필요]`.

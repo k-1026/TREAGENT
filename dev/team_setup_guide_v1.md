@@ -8,41 +8,7 @@
 
 ### 1. 서비스 구조
 
-```mermaid
-flowchart TB
-    subgraph APP["앱 · 폰은 Expo Go, 웹은 Vercel"]
-        SCR["화면<br/>login · signup · district · today · courses · course"]
-        SB["supabase.ts<br/>로그인·가입만"]
-        API["server_api.ts<br/>그 밖의 모든 요청"]
-        LOC["location.ts<br/>위치 확인"]
-    end
-    subgraph SUPA["Supabase"]
-        AUTH["Auth<br/>이메일 · 비밀번호"]
-        DB["PostgreSQL<br/>places · place_mode_fit · courses · course_routes<br/>parties · party_members · party_routes"]
-    end
-    subgraph SRV["서버 · Railway (Express)"]
-        MW["미들웨어<br/>로그 · CORS · 토큰 · 호출 제한"]
-        RT["라우트<br/>/weather /recommend /courses /parties /health"]
-        RULE["규칙 decide_mode<br/>날씨 → 모드 판정"]
-        WX["날씨 어댑터<br/>호출 · 정리 · 캐시"]
-        AI["AI (LangGraph)<br/>compose → validate → fallback<br/>agent ↔ tools → validate"]
-    end
-    subgraph EXT["외부 서비스"]
-        KMA["기상청 API"]
-        GEM["Gemini API"]
-    end
-    SCR --> SB
-    SCR --> API
-    SCR --> LOC
-    SB --> AUTH
-    API --> MW --> RT
-    RT --> RULE
-    RT --> WX
-    RT --> AI
-    RT -->|SQL| DB
-    WX --> KMA
-    AI --> GEM
-```
+![서비스 구조도: 앱, Supabase, 서버, 외부 서비스](images/service_architecture.svg)
 
 - 앱은 DB에 직접 접속하지 않습니다. 로그인(Auth)만 Supabase에 직접 요청하고, 나머지는 모두 서버를 거칩니다.
 - DB 접속 정보와 service role 키, Google 키, 기상청 키는 서버에만 둡니다.
@@ -50,47 +16,14 @@ flowchart TB
 
 ### 2. 세팅 순서
 
-```mermaid
-flowchart LR
-    GH["GitHub dev<br/>코드 · package.json · lock"] -->|"clone · checkout dev"| APPD
-    subgraph KEYS["키 받는 곳"]
-        K1["Supabase<br/>URL · anon 키"]
-        K2["Supabase<br/>service role · DB 주소"]
-        K3["Google<br/>GOOGLE_API_KEY"]
-        K4["기상청<br/>KMA 키 (mock이면 생략)"]
-    end
-    subgraph PC["내 컴퓨터"]
-        APPD["dev/app · 모든 팀원<br/>1 .env 복사, 값 3개 채우기<br/>2 npm install<br/>3 npx expo start -c"]
-        SRVD["dev/server · 서버를 띄울 때만<br/>1 .env 복사, 값 채우기<br/>2 Node: npm install (Docker는 불필요)<br/>3 Node: npm start<br/>Docker: docker compose up --build"]
-    end
-    subgraph OUT["결과 확인"]
-        PHONE["폰 (Expo Go)<br/>QR · 같은 Wi-Fi"]
-        HEALTH["서버 확인<br/>localhost:3000/health → ok"]
-        WEB["PC 웹 (선택)<br/>서버도 로컬로 + CORS_ORIGIN"]
-    end
-    K1 --> APPD
-    K2 -.-> SRVD
-    K3 -.-> SRVD
-    K4 -.-> SRVD
-    APPD --> PHONE
-    SRVD -.-> HEALTH
-    SRVD -.-> WEB
-```
+![세팅 순서도: 키 받는 곳, 폴더별 실행, 결과 확인](images/setup_overview.svg)
 
 - 실선은 앱 개발에 필수인 길이고, 점선은 서버를 직접 띄울 때만 쓰는 길입니다.
 - Google 키를 어디서 발급받는지는 확인하지 못했습니다 `[확인 필요]`. 팀에서 받습니다.
 
 ### 3. 코드와 비밀 값이 옮겨지는 길
 
-```mermaid
-flowchart LR
-    A["내 컴퓨터<br/>수정 후 push"] --> G["GitHub dev<br/>코드, package.json, lock"]
-    G --> B["다른 컴퓨터<br/>pull"]
-    A -. "손으로 전달" .-> E[".env 2개<br/>(git에 안 올라감)"]
-    E -.-> B
-    B --> App["앱<br/>npm install, expo start"]
-    B --> Srv["서버 (선택)<br/>Docker 또는 npm start"]
-```
+![코드는 GitHub로, .env는 손으로 옮기는 길](images/code_and_env_flow.svg)
 
 - 코드와 패키지 목록(`package.json`, `package-lock.json`)은 GitHub로 갑니다.
 - 패키지 본체(`node_modules/`)는 올라가지 않습니다. 각자 컴퓨터(또는 Docker 이미지)에서 목록을 보고 설치합니다.
