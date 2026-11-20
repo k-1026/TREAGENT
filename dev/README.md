@@ -2,6 +2,7 @@
 
 - 앱·서버·DB 개발 폴더입니다. 작업 규칙은 [CLAUDE.md](CLAUDE.md)를 따릅니다.
 - 서버는 Railway, 웹은 Vercel에 배포돼 있습니다. **앱만 개발한다면 서버를 직접 띄울 필요가 없습니다.**
+- 새 컴퓨터나 새 팀원은 [team_setup_guide_v1.md](team_setup_guide_v1.md)의 순서대로 세팅합니다 (패키지를 새로 설치했을 때 전달 방법 포함).
 
 ## 한눈에 보기
 
