@@ -3,6 +3,7 @@
  *
  * 역할
  *  - 이메일과 비밀번호를 받아 Supabase에 로그인을 요청한다.
+ *  - 모양은 목업(storyboard/app_login_region_mockup_v1.html ②)을 따른다. (auth_ui.tsx 부품 사용)
  *
  * 상태
  *  - email, password : 입력값
@@ -20,9 +21,11 @@
  *  - 오류 문구는 이메일/비밀번호 중 어느 쪽이 틀렸는지 알려 주지 않는다.
  */
 import { useState } from 'react';
-import { Pressable, SafeAreaView, StyleSheet, Text, TextInput, View } from 'react-native';
-import { supabase } from '../lib/supabase';
 import { Link } from 'expo-router';
+import { StyleSheet, Text } from 'react-native';
+import { supabase } from '../lib/supabase';
+import { COLOR } from '../lib/theme';
+import { AuthFrame, PxButton, PxInput, PxMessage } from '../components/auth_ui';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
@@ -45,56 +48,37 @@ export default function LoginScreen() {
   const disabled = submitting || email.length === 0 || password.length === 0;
 
   return (
-    <SafeAreaView style={styles.safe}>
-      <View style={styles.card}>
-        <Text style={styles.title}>로그인</Text>
+    <AuthFrame title="바람 장부 열기" subtitle="로그인">
+      <PxInput
+        placeholder="이메일"
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
+        autoCorrect={false}
+      />
+      <PxInput
+        placeholder="비밀번호"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        autoCapitalize="none"
+      />
 
-        <TextInput
-          style={styles.input}
-          placeholder="이메일"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoCorrect={false}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="비밀번호"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          autoCapitalize="none"
-        />
+      {errorMessage !== '' && <PxMessage tone="error">{errorMessage}</PxMessage>}
 
-        {errorMessage !== '' && <Text style={styles.error}>{errorMessage}</Text>}
+      <PxButton label={submitting ? '로그인 중...' : '로그인'} onPress={onLogin} disabled={disabled} />
 
-        <Pressable
-          style={[styles.button, disabled && styles.buttonOff]}
-          onPress={onLogin}
-          disabled={disabled}
-        >
-          <Text style={styles.buttonText}>{submitting ? '로그인 중...' : '로그인'}</Text>
-        </Pressable>
+      <Link href="/signup" style={styles.link}>
+        계정이 없어요
+      </Link>
 
-        <Link href="/signup" style={{ color: '#a8242a', textAlign: 'center' }}>
-          계정이 없어요
-        </Link>
-      </View>
-    </SafeAreaView>
+      <Text style={styles.note}>이메일과 비밀번호만 받아요. 입력한 값은 기록하지 않아요.</Text>
+    </AuthFrame>
   );
 }
 
-const RED = '#a8242a';
-const BG = '#fbf6ee';
-
 const styles = StyleSheet.create({
-  safe: { flex: 1, backgroundColor: BG, justifyContent: 'center', padding: 20 },
-  card: { backgroundColor: '#fff', borderRadius: 16, padding: 20, gap: 12, maxWidth: 480, width: '100%', alignSelf: 'center' },
-  title: { fontSize: 24, fontWeight: '700', color: '#2b2118' },
-  input: { borderWidth: 1.5, borderColor: '#e6dccd', borderRadius: 12, padding: 14, fontSize: 16 },
-  error: { color: RED, fontSize: 14 },
-  button: { backgroundColor: RED, paddingVertical: 14, borderRadius: 12, alignItems: 'center' },
-  buttonOff: { opacity: 0.5 },
-  buttonText: { color: '#fff', fontSize: 16, fontWeight: '600' },
+  link: { color: COLOR.redDark, fontWeight: '700', fontSize: 13, textAlign: 'center', padding: 8 },
+  note: { fontSize: 11, color: COLOR.muted, lineHeight: 16 },
 });

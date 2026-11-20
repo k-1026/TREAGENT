@@ -3,6 +3,7 @@
  *
  * 역할
  *  - 이메일과 비밀번호로 새 계정을 만든다. (supabase.auth.signUp)
+ *  - 모양은 목업(storyboard/app_login_region_mockup_v1.html ③)을 따른다. (auth_ui.tsx 부품 사용)
  *
  * 상태
  *  - email, password, confirm : 입력값 (confirm은 비밀번호 확인)
@@ -21,8 +22,10 @@
  */
 import { useState } from 'react';
 import { Link } from 'expo-router';
-import { Pressable, SafeAreaView, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { supabase } from '../lib/supabase';
+import { COLOR } from '../lib/theme';
+import { AuthFrame, PxButton, PxInput, PxMessage } from '../components/auth_ui';
 
 const MIN_PASSWORD = 8; // 우리 앱의 최소 길이 규칙
 
@@ -58,53 +61,48 @@ export default function SignupScreen() {
 
   const disabled = submitting || email.length === 0 || password.length === 0 || confirm.length === 0;
 
+  // 메일 안내(세션 없음)는 연두색 안내 상자, 나머지 오류는 분홍 상자
+  const isMailNotice = message.startsWith('가입 메일을 보냈어요');
+
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fbf6ee', justifyContent: 'center', padding: 20 }}>
-      <View style={{ backgroundColor: '#fff', borderRadius: 16, padding: 20, gap: 12, maxWidth: 480, width: '100%', alignSelf: 'center' }}>
-        <Text style={{ fontSize: 24, fontWeight: '700', color: '#2b2118' }}>회원가입</Text>
+    <AuthFrame title="처음이에요" subtitle="가입">
+      <Text style={styles.lead}>하랑이와 걷기 전에 이메일과 비밀번호를 정해요</Text>
 
-        <TextInput
-          style={{ borderWidth: 1.5, borderColor: '#e6dccd', borderRadius: 12, padding: 14, fontSize: 16 }}
-          placeholder="이메일"
-          value={email}
-          onChangeText={setEmail}
-          autoCapitalize="none"
-          keyboardType="email-address"
-          autoCorrect={false}
-        />
-        <TextInput
-          style={{ borderWidth: 1.5, borderColor: '#e6dccd', borderRadius: 12, padding: 14, fontSize: 16 }}
-          placeholder={`비밀번호 (${MIN_PASSWORD}자 이상)`}
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          autoCapitalize="none"
-        />
-        <TextInput
-          style={{ borderWidth: 1.5, borderColor: '#e6dccd', borderRadius: 12, padding: 14, fontSize: 16 }}
-          placeholder="비밀번호 확인"
-          value={confirm}
-          onChangeText={setConfirm}
-          secureTextEntry
-          autoCapitalize="none"
-        />
+      <PxInput
+        placeholder="이메일"
+        value={email}
+        onChangeText={setEmail}
+        autoCapitalize="none"
+        keyboardType="email-address"
+        autoCorrect={false}
+      />
+      <PxInput
+        placeholder={`비밀번호 (${MIN_PASSWORD}자 이상)`}
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        autoCapitalize="none"
+      />
+      <PxInput
+        placeholder="비밀번호 확인"
+        value={confirm}
+        onChangeText={setConfirm}
+        secureTextEntry
+        autoCapitalize="none"
+      />
 
-        {message !== '' && <Text style={{ color: '#a8242a', fontSize: 14 }}>{message}</Text>}
+      {message !== '' && <PxMessage tone={isMailNotice ? 'ok' : 'error'}>{message}</PxMessage>}
 
-        <Pressable
-          style={{ backgroundColor: '#a8242a', paddingVertical: 14, borderRadius: 12, alignItems: 'center', opacity: disabled ? 0.5 : 1 }}
-          onPress={onSignup}
-          disabled={disabled}
-        >
-          <Text style={{ color: '#fff', fontSize: 16, fontWeight: '600' }}>
-            {submitting ? '가입 중...' : '가입하기'}
-          </Text>
-        </Pressable>
+      <PxButton label={submitting ? '가입 중...' : '가입하기'} onPress={onSignup} disabled={disabled} />
 
-        <Link href="/login" style={{ color: '#a8242a', textAlign: 'center' }}>
-          이미 계정이 있어요
-        </Link>
-      </View>
-    </SafeAreaView>
+      <Link href="/login" style={styles.link}>
+        이미 계정이 있어요
+      </Link>
+    </AuthFrame>
   );
 }
+
+const styles = StyleSheet.create({
+  lead: { fontSize: 12, color: COLOR.ink, lineHeight: 18 },
+  link: { color: COLOR.redDark, fontWeight: '700', fontSize: 13, textAlign: 'center', padding: 8 },
+});
