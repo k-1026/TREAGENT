@@ -75,7 +75,8 @@
   .modal .box{background:var(--paper);padding:16px 16px 14px;width:100%;font-size:14px;line-height:1.5}
   .modal .box b{display:block;font-size:16px;margin-bottom:8px}
   .modal .box small{display:block;color:var(--muted);font-size:12px;margin-top:6px}
-  .modal .acts{display:flex;gap:10px;margin-top:14px}
+  .agechoice{padding:16px 8px;font-size:16px;font-weight:800;border:0;cursor:pointer;background:var(--paper);color:var(--ink);min-height:56px}
+  .modal .acts{display:flex;gap:10px;margin-top:26px}
   .modal .acts button{flex:1;padding:11px 6px;border:0;font-size:14px;font-weight:800;cursor:pointer;background:var(--cream)}
   .modal .acts button.go{background:var(--red);color:#fff}
 
@@ -388,13 +389,15 @@
   <section class="view" id="v-me" aria-label="내 정보">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">계정과 안내</div><div class="t">내 정보</div></div>
     <div class="scroll">
-      <div class="h3">호칭</div>
-      <div class="row px"><div style="flex:1"><b>{이름}</b><small>건너뛰면 "길동무"로 불러요</small></div><button class="px" style="border:0;background:var(--cream);padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer" data-nav="todo" data-idx="닉네임 수정">수정</button></div>
+      <div class="h3">닉네임</div>
+      <div class="row px"><div style="flex:1"><b>[내 닉네임]</b><small>한 번 정하면 바꿀 수 없어요.<br>다른 사람과 같은 이름은 못 써요 [임시 문구]</small></div><span style="font-size:12px;font-weight:800;color:var(--muted)">잠김</span></div>
+      <div class="h3">나이대</div>
+      <div class="row px"><div style="flex:1"><b id="ageCur">20대</b><small>걷는 시간, 경사, 계단 등 길을 고르는 데 써요</small></div><button class="px" id="ageOpen" style="border:0;background:var(--cream);padding:8px 12px;font-size:13px;font-weight:700;cursor:pointer">변경</button></div>
       <div class="h3">위치 안내</div>
       <div class="row px"><div>위치는 앱을 쓰는 동안만 써요. 좌표는 저장하지 않아요 [임시 문구, 확인 필요]</div></div>
       <div class="h3">알림 <span>보류</span></div>
       <div class="row px"><div>알림 방식은 아직 정하지 않았어요 [결정 D-21]</div></div>
-      <button class="row px" style="justify-content:center;font-weight:800" data-nav="todo" data-idx="로그아웃 (F-12)">로그아웃</button>
+      <button class="row px" style="justify-content:center;font-weight:800" data-go="로그아웃 → 로그인 화면">로그아웃</button>
     </div>
   </section>
 
@@ -532,6 +535,21 @@
       <button class="row px" data-tab="ledger" data-bm="trips" style="justify-content:center;font-weight:800">내 여행 목록으로</button>
     </div>
   </section>
+
+  <!-- 나이대 변경 (내 정보의 변경 버튼으로만 열림) -->
+  <div class="modal" id="ageModal" role="dialog" aria-modal="true" aria-labelledby="ageT" hidden>
+    <div class="box px">
+      <b id="ageT">나이대 고르기</b>
+      <small>걷는 시간, 경사, 계단 등 길을 고르는 데 써요.<br>필수 항목이라 하나는 꼭 골라야 해요.</small>
+      <div id="ageChoices" style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
+        <button class="agechoice px" data-age="10s" data-label="10대">10대</button><button class="agechoice px" data-age="20s" data-label="20대">20대</button>
+        <button class="agechoice px" data-age="30s" data-label="30대">30대</button><button class="agechoice px" data-age="40s" data-label="40대">40대</button>
+        <button class="agechoice px" data-age="50s" data-label="50대">50대</button><button class="agechoice px" data-age="60s" data-label="60대 이상">60대 이상</button>
+      </div>
+      <small id="ageErr" hidden style="color:var(--red-d)">나이대를 골라 주세요</small>
+      <div class="acts"><button class="px" id="ageCancel">취소</button><button class="px go" id="ageSave">저장</button></div>
+    </div>
+  </div>
 
   <div class="modal" id="modal" role="alertdialog" aria-modal="true" aria-labelledby="modalT" hidden>
     <div class="box px">
@@ -671,6 +689,7 @@
     $('#pickList').innerHTML=ids.map(function(id){var c=C[id], r=c.routes[routeOf(k)];
       return '<button class="card px" data-nav="course" data-idx="'+id+'"><div class="th">[코스<br>썸네일]</div><div class="tx">'+c.t+'<small>'+c.m+'</small>'+r.chips+'<div class="route">'+r.stops.join(' → ')+'</div></div></button>'}).join('');
     $('#pickNote').textContent=PAGE?'새로 불러온 길 '+(PAGE+1)+'번째 묶음':'날씨에 맞는 길 3개';
+    $('#pickList').querySelectorAll('.card').forEach(function(b){var w=document.createElement('div');w.className='why';w.textContent='[추천 이유 · 승인 대사 대기]';b.querySelector('.tx').appendChild(w)});
   }
   function renderMap(){
     $('#mapPins').innerHTML=DISTS.map(function(d){return '<span class="dist'+(d.on?' on':'')+'" style="left:'+(6+d.c*118)+'px;top:'+(6+d.r*64)+'px"><b>'+d.n+'</b>'+(d.on?'<small>내 완주율 [예시] '+mineRate()+'%</small>':'<small>준비 중</small>')+'</span>'}).join('');
@@ -746,6 +765,12 @@
   // 준비물 아이콘 파일명 (brand/character/images/item_이름_v1.png, 원본 96px을 48px로 표시)
   var ICON={'생수':'water','캡모자':'cap','양산':'parasol','선크림':'sunscreen','쿨토시':'sleeves','우산':'umbrella','여벌 양말':'socks','운동화':'sneakers','겉옷':'jacket'};
   var TIPS={none:['생수','운동화','겉옷'],outside:['운동화','생수','캡모자'],heat:['생수','캡모자','쿨토시'],storm:['우산','여벌 양말','운동화'],unknown:['날씨를 확인하지 못했어요'],active:['생수','운동화','겉옷'],notice:['경로가 바뀌었어요','생수','운동화'],empty:['오늘은 안내할 길이 없어요.<br>내일 다시 확인해요.']};
+  // 내 정보: 현재 나이대를 보여 주고, 변경 버튼을 눌러야 선택 화면이 열린다 (앱 me.tsx)
+  var ageSel=null, ageNow='20s', ageLabel='20대';
+  $('#ageOpen').addEventListener('click',function(){ ageSel=ageNow; document.querySelectorAll('.agechoice').forEach(function(x){ var on=x.dataset.age===ageSel; x.style.background=on?'var(--ink)':'var(--paper)'; x.style.color=on?'#fff':'var(--ink)'; }); $('#ageErr').hidden=true; $('#ageModal').hidden=false; });
+  document.querySelectorAll('.agechoice').forEach(function(b){ b.addEventListener('click',function(){ ageSel=b.dataset.age; document.querySelectorAll('.agechoice').forEach(function(x){ var on=x===b; x.style.background=on?'var(--ink)':'var(--paper)'; x.style.color=on?'#fff':'var(--ink)'; }); $('#ageErr').hidden=true; }); });
+  $('#ageSave').addEventListener('click',function(){ if(!ageSel){ $('#ageErr').hidden=false; return } ageNow=ageSel; ageLabel=document.querySelector('.agechoice[data-age="'+ageSel+'"]').dataset.label; $('#ageCur').textContent=ageLabel; $('#ageModal').hidden=true; toast('나이대를 '+ageLabel+'(으)로 저장'); });
+  $('#ageCancel').addEventListener('click',function(){ $('#ageModal').hidden=true; });
   function renderShelter(k){
     var t={heat:['폭염이에요, 잠깐 쉬어 가요','야외 길 안내는 멈췄어요 [임시]'],storm:['호우예요, 실내에서 기다려요','신규 이동은 보류했어요 [임시]'],unknown:['날씨를 확인하지 못했어요','날씨를 모르면 길을 권하지 않아요 [임시]']}[k]||['가까운 쉼터','지금 쉬어 갈 곳이에요 [임시]'];
     $('#shTitle').textContent=t[0]; $('#shTitle').style.fontSize='18px'; $('#shSub').textContent=t[1];
@@ -775,7 +800,7 @@
     if(name==='weather'){ renderWeather($('#state').value); show('weather'); return }
     if(name==='shelter'){ renderShelter($('#state').value); show('shelter'); return }
     if(name==='picks'){ PAGE=0; renderPicks(); show('picks'); return }
-    if(name==='reroll'){ PAGE++; renderPicks(); return }
+    if(name==='reroll'){ if(PAGE>=1){ $('#pickNote').textContent='다른 길이 더 없어요. 지금 길 중에서 골라 주세요.'; return } PAGE++; renderPicks(); return }
     if(name==='fullsnap'){ $('#snapFull').innerHTML=(idx==='trip'?$('#snapTrip'):$('#snapCard')).innerHTML; $('#fsv').hidden=false; return }
     if(name==='briefback'){ show('course'); return }
     if(name==='cancelready'){ scene.classList.remove('ready'); return }
