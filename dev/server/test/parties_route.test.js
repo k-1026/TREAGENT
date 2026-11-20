@@ -4,6 +4,7 @@ import { createApp } from '../src/app.js';
 import { createWeatherService } from '../src/weather/index.js';
 import { createComposeRoute } from '../src/ai/compose_route.js';
 import { createMemoryPartyStore } from '../src/party/memory_party_store.js';
+import { createMemoryProfileStore } from '../src/profile/memory_profile_store.js';
 import { PARTY_MAX_MEMBERS, PARTY_REFRESH_LIMIT } from '../src/party/party_rules.js';
 
 const START_MS = Date.parse('2026-11-16T05:30:00Z'); // 한국 14:30, 월요일
@@ -57,7 +58,7 @@ function alternatingLlm() {
 
 // 서버를 띄우고 run(api)을 실행한다. api(n, method, path, body)는 tok-n 사용자로 요청한다.
 async function withServer(opts, run) {
-  const { scenario = 'ok', store = createMemoryPartyStore(), verifierOverride, llm = null, places = PLACES, clock = { t: START_MS }, placeLoader, composeRoute, harangiLine } = opts;
+  const { scenario = 'ok', store = createMemoryPartyStore(), profileStore = createMemoryProfileStore(), verifierOverride, llm = null, places = PLACES, clock = { t: START_MS }, placeLoader, composeRoute, harangiLine } = opts;
   const logs = [];
   const original = console.log;
   console.log = (...args) => logs.push(args.join(' '));
@@ -67,6 +68,7 @@ async function withServer(opts, run) {
     composeRoute: composeRoute ?? createComposeRoute({ llm }),
     harangiLine,
     partyStore: store,
+    profileStore,
     tokenVerifier: verifierOverride === undefined ? verifier : verifierOverride,
     now: () => new Date(clock.t),
   });
@@ -512,4 +514,177 @@ test('응답과 로그에 좌표, 토큰, 사용자 id가 없다', async () => {
   for (const secret of ['35.87', '128.6', 'tok-', uid(1), uid(2)]) {
     assert.ok(!all.includes(secret), `노출됨: ${secret}`);
   }
+});
+
+// ---- 후보 길 (방장이 후보 중에서 고르기) ----
+const twelvePlaces = () =>
+  'abcdefghijkl'.split('').map((id, i) => place({ id, name: `${id}장소`, zone: 'dongseongro', lat: 35.87, lng: 128.6 + i * 0.01 }));
+// 호출할 때마다 겹치지 않는 3곳씩 차례로 고르는 가짜 AI
+function sequenceLlm() {
+  const all = 'abcdefghijkl'.split('');
+  const calls = [];
+  const fn = async (prompt) => {
+    calls.push(prompt);
+    const n = (calls.length - 1) % 4;
+    return answer(all.slice(n * 3, n * 3 + 3));
+  };
+  fn.calls = calls;
+  return fn;
+}
+const CAND_BODY = { ...COORD };
+
+test('후보 만들기: host만, 시작 전만, 구성원만', async () => {
+  await withServer({ llm: sequenceLlm(), places: twelvePlaces }, async (api) => {
+    const { id } = await setup(api, { members: [{ n: 2, age: '30s' }] });
+    assert.equal((await api(2, 'POST', `/parties/${id}/candidates`, CAND_BODY)).status, 403);
+    assert.equal((await api(9, 'POST', `/parties/${id}/candidates`, CAND_BODY)).status, 404);
+    assert.equal((await api(1, 'POST', `/parties/${id}/candidates`, { ...CAND_BODY, more: 'yes' })).status, 400);
+    assert.equal((await api(1, 'POST', `/parties/${id}/candidates`, CAND_BODY)).status, 200);
+    await api(1, 'POST', `/parties/${id}/start`);
+    assert.equal((await api(1, 'POST', `/parties/${id}/candidates`, CAND_BODY)).status, 409);
+  });
+});
+
+test('후보 만들기: 겹치지 않는 후보 3개를 만들어 저장하고, 다시 요청하면 같은 묶음을 돌려준다(AI를 다시 부르지 않는다)', async () => {
+  const llm = sequenceLlm();
+  await withServer({ llm, places: twelvePlaces }, async (api) => {
+    const { id } = await setup(api);
+    const first = (await api(1, 'POST', `/parties/${id}/candidates`, CAND_BODY)).json;
+    assert.equal(first.setNo, 1);
+    assert.equal(first.refreshed, true);
+    assert.equal(first.routes.length, 3);
+    const all = first.routes.flatMap(ids);
+    assert.equal(new Set(all).size, all.length); // 후보끼리 장소가 겹치지 않는다
+    const calls = llm.calls.length;
+    const again = (await api(1, 'POST', `/parties/${id}/candidates`, CAND_BODY)).json;
+    assert.equal(again.setNo, 1);
+    assert.equal(again.refreshed, false);
+    assert.deepEqual(again.routes.map(ids), first.routes.map(ids));
+    assert.equal(llm.calls.length, calls);
+  });
+});
+
+test('후보 만들기: more로 새 묶음을 받으면 직전 묶음의 장소를 뺀다', async () => {
+  await withServer({ llm: sequenceLlm(), places: twelvePlaces }, async (api) => {
+    const { id } = await setup(api);
+    const first = (await api(1, 'POST', `/parties/${id}/candidates`, CAND_BODY)).json;
+    const second = (await api(1, 'POST', `/parties/${id}/candidates`, { ...CAND_BODY, more: true })).json;
+    assert.equal(second.setNo, 2);
+    assert.equal(second.refreshed, true);
+    const before = new Set(first.routes.flatMap(ids));
+    assert.ok(second.routes.flatMap(ids).every((p) => !before.has(p)));
+  });
+});
+
+test('후보 만들기: 새 조합이 없으면 새 묶음을 만들지 않고 지금 묶음을 돌려준다(refreshed false)', async () => {
+  await withServer({ llm: alternatingLlm() }, async (api) => {
+    const { id } = await setup(api);
+    const first = (await api(1, 'POST', `/parties/${id}/candidates`, CAND_BODY)).json; // 장소 6곳이라 후보는 2개
+    assert.equal(first.routes.length, 2);
+    const more = (await api(1, 'POST', `/parties/${id}/candidates`, { ...CAND_BODY, more: true })).json;
+    assert.equal(more.refreshed, false);
+    assert.equal(more.setNo, 1);
+  });
+});
+
+test('후보 고르기: 고른 후보가 일행의 길이 되고, 팀원은 같은 길을 본다', async () => {
+  await withServer({ llm: sequenceLlm(), places: twelvePlaces }, async (api) => {
+    const { id } = await setup(api, { members: [{ n: 2, age: '30s' }] });
+    const cand = (await api(1, 'POST', `/parties/${id}/candidates`, CAND_BODY)).json;
+    const picked = await api(1, 'POST', `/parties/${id}/route`, { mode: cand.mode, setNo: cand.setNo, index: 1 });
+    assert.equal(picked.status, 200);
+    assert.equal(picked.json.routeVersion, 1);
+    const info = (await api(2, 'GET', `/parties/${id}`)).json;
+    assert.equal(info.routeChosen, true);
+    const member = (await api(2, 'POST', `/parties/${id}/recommend`, COORD)).json;
+    assert.equal(member.routeVersion, 1);
+    assert.deepEqual(new Set(ids(member.route)), new Set(ids(cand.routes[1])));
+  });
+});
+
+test('후보 고르기: 고르기 전에는 팀원이 길을 만들지 못한다(NOT_CHOSEN, AI를 부르지 않는다)', async () => {
+  const llm = sequenceLlm();
+  await withServer({ llm, places: twelvePlaces }, async (api) => {
+    const { id } = await setup(api, { members: [{ n: 2, age: '30s' }] });
+    assert.equal((await api(2, 'GET', `/parties/${id}`)).json.routeChosen, false);
+    await api(1, 'POST', `/parties/${id}/candidates`, CAND_BODY);
+    const calls = llm.calls.length;
+    const member = (await api(2, 'POST', `/parties/${id}/recommend`, COORD)).json;
+    assert.equal(member.route, null);
+    assert.equal(member.routeReason, 'NOT_CHOSEN');
+    assert.equal(llm.calls.length, calls);
+  });
+});
+
+test('후보 고르기: host만, 오래된 묶음은 409 STALE_CANDIDATES, 후보가 없으면 409 NO_CANDIDATES, 이상한 입력은 400', async () => {
+  await withServer({ llm: sequenceLlm(), places: twelvePlaces }, async (api) => {
+    const { id } = await setup(api, { members: [{ n: 2, age: '30s' }] });
+    assert.equal((await api(1, 'POST', `/parties/${id}/route`, { mode: 'EXPLORE', setNo: 1, index: 0 })).status, 409); // NO_CANDIDATES
+    const first = (await api(1, 'POST', `/parties/${id}/candidates`, CAND_BODY)).json;
+    assert.equal((await api(2, 'POST', `/parties/${id}/route`, { mode: first.mode, setNo: 1, index: 0 })).status, 403);
+    await api(1, 'POST', `/parties/${id}/candidates`, { ...CAND_BODY, more: true });
+    const stale = await api(1, 'POST', `/parties/${id}/route`, { mode: first.mode, setNo: 1, index: 0 });
+    assert.equal(stale.status, 409);
+    assert.deepEqual(stale.json, { error: 'STALE_CANDIDATES', latestSetNo: 2 });
+    for (const body of [
+      {},
+      { mode: 'X', setNo: 2, index: 0 },
+      { mode: first.mode, setNo: 0, index: 0 },
+      { mode: first.mode, setNo: 2, index: 3 },
+      { mode: first.mode, setNo: 2, index: -1 },
+      { mode: first.mode, setNo: '2', index: 0 },
+    ]) {
+      assert.equal((await api(1, 'POST', `/parties/${id}/route`, body)).status, 400, JSON.stringify(body));
+    }
+  });
+});
+
+test('후보 만들기: 새 묶음 상한을 넘으면 409 REFRESH_LIMIT', async () => {
+  const many = () => Array.from({ length: 60 }, (_, i) => place({ id: `p${i}`, name: `p${i}장소`, zone: 'dongseongro', lat: 35.87, lng: 128.6 + i * 0.001 }));
+  let n = 0;
+  const llm = async () => {
+    const start = (n++ * 3) % 60;
+    return answer([`p${start}`, `p${start + 1}`, `p${start + 2}`]);
+  };
+  await withServer({ llm, places: many }, async (api) => {
+    const { id } = await setup(api);
+    assert.equal((await api(1, 'POST', `/parties/${id}/candidates`, CAND_BODY)).json.setNo, 1);
+    for (let i = 0; i < PARTY_REFRESH_LIMIT; i += 1) {
+      const r = await api(1, 'POST', `/parties/${id}/candidates`, { ...CAND_BODY, more: true });
+      assert.equal(r.status, 200);
+      assert.equal(r.json.setNo, i + 2);
+    }
+    const over = await api(1, 'POST', `/parties/${id}/candidates`, { ...CAND_BODY, more: true });
+    assert.equal(over.status, 409);
+    assert.deepEqual(over.json, { error: 'REFRESH_LIMIT' });
+  });
+});
+
+test('팀 정보: 구성원 닉네임(없으면 null)과 역할만 보이고, 사용자 id와 나이대는 보이지 않는다', async () => {
+  const profileStore = createMemoryProfileStore();
+  await profileStore.save({ userId: uid(1), nickname: 'Mina', ageGroup: '20s' });
+  const { texts } = await withServer({ profileStore }, async (api) => {
+    const { id } = await setup(api, { members: [{ n: 2, age: '60s' }] });
+    const info = (await api(2, 'GET', `/parties/${id}`)).json;
+    assert.deepEqual(info.members, [
+      { nickname: 'Mina', role: 'host', isMe: false },
+      { nickname: null, role: 'member', isMe: true },
+    ]);
+  });
+  assert.ok(!texts.join('\n').includes(uid(1)));
+});
+
+test('팀 정보: 닉네임을 읽지 못해도 정보는 그대로 나가고 에러는 숨긴다', async () => {
+  const broken = {
+    findNicknames: async () => {
+      throw new Error('db password=secret');
+    },
+  };
+  const { texts } = await withServer({ profileStore: broken }, async (api) => {
+    const { id } = await setup(api);
+    const info = await api(1, 'GET', `/parties/${id}`);
+    assert.equal(info.status, 200);
+    assert.equal(info.json.members[0].nickname, null);
+  });
+  assert.ok(!texts.join('').includes('secret'));
 });

@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { isValidCoordinate } from './weather.js';
-import { koreaClock, readOptions, composeSafely, briefingFor } from './recommend.js';
+import { koreaClock, readOptions, composeSafely, composeMany, briefingFor } from './recommend.js';
 import { decideMode } from '../rules/decide_mode.js';
+import { MODES } from '../rules/rule_config.js';
 import { readRouteOptions } from '../ai/read_route_options.js';
 import { AGE_GROUPS } from '../ai/route_options.js';
 import { rankCandidates } from '../ai/pick_by_rules.js';
@@ -21,6 +22,8 @@ import { createRateLimiter } from '../auth/rate_limiter.js';
 
 const UUID_PATTERN = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
 const CODE_RETRIES = 5; // 초대 코드가 겹치면 새 코드로 다시 시도하는 최대 횟수
+const MODE_VALUES = Object.values(MODES);
+const CANDIDATE_COUNT = 3; // 방장에게 한 번에 보여 주는 후보 길 개수
 
 // 일행 설정으로 추천 선택 입력(prefs)을 만든다. 나이대는 구성원 중 가장 엄격한 기준을 쓴다.
 function prefsOf(party, members) {
@@ -42,8 +45,9 @@ export function createPartiesRouter({
   placeLoader,
   composeRoute,
   harangiLine = null,
+  profileStore = null,
   now = () => new Date(),
-  joinLimiter = createRateLimiter({ ...JOIN_LIMIT, now: () => now().getTime() }),
+  joinLimiter= createRateLimiter({ ...JOIN_LIMIT, now: () => now().getTime() }),
 }) {
   const router = Router();
 
@@ -82,6 +86,16 @@ export function createPartiesRouter({
       return null;
     }
     return { party, members, me };
+  }
+
+  // 구성원의 닉네임(없으면 null)을 읽는다. 읽지 못해도 팀 정보 응답은 그대로 나가도록 빈 결과로 바꾼다. (에러 내용은 숨긴다)
+  async function nicknamesOf(members) {
+    if (!profileStore) return new Map();
+    try {
+      return await profileStore.findNicknames(members.map((m) => m.userId));
+    } catch {
+      return new Map();
+    }
   }
 
   // 날씨 → 모드, 장소 불러오기. 실패하면 응답을 보내고 null.
@@ -197,6 +211,7 @@ export function createPartiesRouter({
     const ctx = await memberContext(req, res);
     if (!ctx) return;
     const { party, members, me } = ctx;
+    const nicknames = await nicknamesOf(members);
     res.json({
       partyId: party.id,
       companion: party.companion ?? null,
@@ -207,6 +222,9 @@ export function createPartiesRouter({
       expiresAt: party.expiresAt,
       memberCount: members.length,
       ageGroups: members.map((m) => m.ageGroup).sort(),
+      // 다른 구성원에게는 닉네임(없으면 null)과 역할만 보여 준다. 사용자 id와 나이대는 알려 주지 않는다.
+      members: members.map((m) => ({ nickname: nicknames.get(m.userId) ?? null, role: m.role, isMe: m.userId === req.userId })),
+      routeChosen: await store.hasRoute(party.id),
       myRole: me.role,
       ...(me.role === 'host' ? { inviteCode: party.inviteCode } : {}),
     });
@@ -243,6 +261,11 @@ export function createPartiesRouter({
 
     // 1) 저장된 길이 있고 장소가 지금도 갈 수 있으면 그대로 쓴다.
     let route = await store.latestRoute(party.id, mode);
+    // 후보 방식(방장이 후보 중에서 고름)인 일행은 방장이 고르기 전에 팀원이 길을 새로 만들지 못하게 한다.
+    if (!route && (await store.hasCandidates(party.id))) {
+      res.json({ mode, route: null, routeReason: 'NOT_CHOSEN' });
+      return;
+    }
     if (!route || !route.placeIds.every((id) => candidateIds.has(id))) {
       // 2) 없거나 장소가 닫혔으면 새로 구성해서 다음 버전으로 저장한다.
       const previous = route;
@@ -271,7 +294,152 @@ export function createPartiesRouter({
     });
   });
 
-  // POST /parties/:id/start  → 시작 처리(host만). 이후에는 새로고침하거나 새로 참여할 수 없다.
+  // POST /parties/:id/candidates  (host만, 시작 전만)
+  //   본문: { latitude, longitude, district?, previousMode?, briefing?, more? }
+  //   후보 길 최대 3개를 만들어 저장하고 돌려준다. 이미 만든 후보가 있으면 그대로 돌려주고, more가 true일 때만 새 묶음을 만든다.
+  //   새 묶음은 직전 묶음의 장소를 뺀 조합이고, 묶음 수에는 상한(PARTY_REFRESH_LIMIT)이 있다.
+  //   새 조합이 없으면(후보가 부족) 새 묶음을 만들지 않고 지금 묶음을 돌려준다(refreshed: false).
+  router.post('/:id/candidates', async (req, res) => {
+    const ctx = await memberContext(req, res);
+    if (!ctx) return;
+    if (ctx.me.role !== 'host') {
+      res.status(403).json({ error: 'NOT_HOST' });
+      return;
+    }
+    if (ctx.party.startedAt) {
+      res.status(409).json({ error: 'ALREADY_STARTED' });
+      return;
+    }
+    const body = req.body ?? {};
+    const options = readOptions(body);
+    if (
+      !isValidCoordinate(body.latitude, body.longitude) ||
+      !options ||
+      (body.briefing !== undefined && typeof body.briefing !== 'boolean') ||
+      (body.more !== undefined && typeof body.more !== 'boolean')
+    ) {
+      res.status(400).json({ error: 'INVALID_INPUT' });
+      return;
+    }
+    const prep = await weatherAndPlaces(body, options, res);
+    if (!prep) return;
+
+    const { party, members } = ctx;
+    const { weather, decision, places } = prep;
+    const mode = decision.mode;
+    const context = { ...koreaClock(now()), district: options.district };
+    const prefs = prefsOf(party, members);
+    const temperatureC = weather.status === 'ok' ? (weather.apparentTemperatureC ?? weather.temperatureC) : undefined;
+    const start = { latitude: body.latitude, longitude: body.longitude };
+    const wantBriefing = body.briefing === true;
+    const show = async (set, refreshed) => ({
+      mode,
+      setNo: set.setNo,
+      refreshed,
+      routes: await Promise.all(
+        set.candidates.map((c) => present({ route: c, places, start, prefs, mode, hour: context.hour, temperatureC, wantBriefing })),
+      ),
+    });
+
+    const latest = await store.latestCandidates(party.id, mode);
+    if (latest && body.more !== true) {
+      res.json(await show(latest, false));
+      return;
+    }
+    if (latest && latest.setNo >= 1 + PARTY_REFRESH_LIMIT) {
+      res.status(409).json({ error: 'REFRESH_LIMIT' });
+      return;
+    }
+
+    const composed = await composeMany(
+      composeRoute,
+      {
+        mode,
+        places,
+        context,
+        prefs,
+        start,
+        temperatureC,
+        refresh: !!latest,
+        exclude: latest ? latest.candidates.flatMap((c) => c.placeIds) : [],
+      },
+      CANDIDATE_COUNT,
+    );
+    if (!composed.ok) {
+      res.json({ mode, routes: [], routeReason: composed.reason });
+      return;
+    }
+    if (latest && composed.routes.every((c) => c.isNew === false)) {
+      res.json(await show(latest, false));
+      return;
+    }
+    const candidates = composed.routes.map((c) => ({
+      title: c.title,
+      reason: c.reason,
+      picker: c.picker,
+      placeIds: c.places.map((p) => p.id),
+    }));
+    const setNo = (latest?.setNo ?? 0) + 1;
+    const saved = await store.saveCandidates({ partyId: party.id, mode, setNo, candidates });
+    if (!saved) {
+      const winner = await store.latestCandidates(party.id, mode);
+      res.status(409).json({ error: 'STALE_CANDIDATES', latestSetNo: winner?.setNo ?? null });
+      return;
+    }
+    res.json(await show({ setNo, candidates }, true));
+  });
+
+  // POST /parties/:id/route  (host만, 시작 전만)  본문: { mode, setNo, index }
+  //   방장이 가장 최신 후보 묶음에서 하나를 골라 일행의 길로 정한다. 장소 목록은 받지 않고, 저장된 후보의 번호만 받는다.
+  //   setNo가 최신이 아니면 409 STALE_CANDIDATES (오래된 화면에서 온 요청). 고른 길은 party_routes에 새 버전으로 저장된다.
+  router.post('/:id/route', async (req, res) => {
+    const ctx = await memberContext(req, res);
+    if (!ctx) return;
+    if (ctx.me.role !== 'host') {
+      res.status(403).json({ error: 'NOT_HOST' });
+      return;
+    }
+    if (ctx.party.startedAt) {
+      res.status(409).json({ error: 'ALREADY_STARTED' });
+      return;
+    }
+    const { mode, setNo, index } = req.body ?? {};
+    if (
+      !MODE_VALUES.includes(mode) ||
+      !Number.isInteger(setNo) ||
+      setNo < 1 ||
+      !Number.isInteger(index) ||
+      index < 0 ||
+      index >= CANDIDATE_COUNT
+    ) {
+      res.status(400).json({ error: 'INVALID_INPUT' });
+      return;
+    }
+    const latest = await store.latestCandidates(ctx.party.id, mode);
+    if (!latest) {
+      res.status(409).json({ error: 'NO_CANDIDATES' });
+      return;
+    }
+    if (latest.setNo !== setNo) {
+      res.status(409).json({ error: 'STALE_CANDIDATES', latestSetNo: latest.setNo });
+      return;
+    }
+    const picked = latest.candidates[index];
+    if (!picked) {
+      res.status(400).json({ error: 'INVALID_INPUT' });
+      return;
+    }
+    const current = await store.latestRoute(ctx.party.id, mode);
+    const version = (current?.version ?? 0) + 1;
+    const saved = await store.saveRoute({ partyId: ctx.party.id, mode, version, ...picked });
+    if (!saved) {
+      res.status(409).json({ error: 'STALE_ROUTE' });
+      return;
+    }
+    res.json({ mode, routeVersion: version });
+  });
+
+  // POST /parties/:id/start  → 시작 처리(host만).
   router.post('/:id/start', async (req, res) => {
     const ctx = await memberContext(req, res);
     if (!ctx) return;

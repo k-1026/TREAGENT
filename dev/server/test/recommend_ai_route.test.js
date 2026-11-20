@@ -162,6 +162,10 @@ test('허용 목록 밖의 선택 입력은 400 INVALID_INPUT', async () => {
       { variant: 'Z' },
       { refresh: 'yes' },
       { briefing: 1 },
+      { count: 0 },
+      { count: 4 },
+      { count: 1.5 },
+      { count: '3' },
       { excludePlaceIds: 'a' },
       { excludePlaceIds: ['a b'] },
       { excludePlaceIds: Array.from({ length: 13 }, (_, i) => `p${i}`) },
@@ -235,7 +239,49 @@ test('새로고침을 너무 자주 하면 429 (무료 한도 보호)', async ()
     assert.equal((await call(base, { ...COORD, theme: 'history' })).status, 200);
   });
 });
+// ---- 후보 길 여러 개 (count) ----
+test('count를 안 보내면 routes는 1개이고 route와 같다', async () => {
+  await withServer('ok', okLoader, createComposeRoute({ llm: alternatingLlm() }), async (base) => {
+    const json = await (await call(base, { ...COORD, theme: 'history' })).json();
+    assert.equal(json.routes.length, 1);
+    assert.deepEqual(json.routes[0], json.route);
+  });
+});
 
+test('count: 3 → 서로 겹치지 않는 길을 만들고, 새 조합이 없으면 거기서 멈춘다', async () => {
+  const llm = alternatingLlm();
+  await withServer('ok', okLoader, createComposeRoute({ llm }), async (base) => {
+    const json = await (await call(base, { ...COORD, theme: 'history', count: 3 })).json();
+    // 장소가 6곳뿐이라 겹치지 않는 길은 2개까지
+    assert.equal(json.routes.length, 2);
+    assert.deepEqual(ids(json.routes[0].places), ['a', 'b', 'c']);
+    assert.deepEqual(ids(json.routes[1].places), ['d', 'e', 'f']);
+    assert.deepEqual(json.route, json.routes[0]);
+  });
+});
+
+test('count: 3 + briefing → 길마다 하랑이 브리핑이 붙는다', async () => {
+  const lines = [];
+  const harangiLine = async (input) => {
+    lines.push(input);
+    return { ok: true, text: `${input.routeTitle} 이야기`, picker: 'rules' };
+  };
+  await withServer('ok', okLoader, createComposeRoute({ llm: alternatingLlm() }), async (base) => {
+    const json = await (await call(base, { ...COORD, theme: 'history', count: 3, briefing: true })).json();
+    assert.equal(lines.length, json.routes.length);
+    for (const r of json.routes) assert.equal(r.briefing.text, `${r.title} 이야기`);
+  }, harangiLine);
+});
+
+test('count: 3 → 후보가 없으면 routes는 빈 목록이고 사유를 준다', async () => {
+  const none = async () => ({ ok: true, places: [] });
+  await withServer('ok', none, createComposeRoute({ llm: null }), async (base) => {
+    const json = await (await call(base, { ...COORD, theme: 'history', count: 3 })).json();
+    assert.equal(json.route, null);
+    assert.deepEqual(json.routes, []);
+    assert.ok(json.routeReason);
+  });
+});
 // ---- 하랑이 브리핑 ----
 test('하랑이 브리핑: briefing을 요청했을 때만 호출하고, 테마·소요시간·장소를 넘긴다', async () => {
   const calls = [];

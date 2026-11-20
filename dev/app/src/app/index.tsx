@@ -20,8 +20,9 @@ import { useState } from 'react';
 import { ActivityIndicator, Linking, Pressable, SafeAreaView, Text, View } from 'react-native';
 import { findDistrict } from '../lib/districts';
 import { getCurrentLocation, LocationResult } from '../lib/location';
-import { supabase } from '../lib/supabase';
 import { usePlace } from '../lib/place_context';
+import { useProfile } from '../lib/profile_context';
+import { displayName } from '../lib/profile';
 // "구·군 선택하기" 버튼 (구·군 선택 화면으로 이동). 위치 버튼 옆에 항상 같이 보여 준다
 function DistrictButton() {
   return (
@@ -35,6 +36,8 @@ function DistrictButton() {
 }
 
 export default function LocationScreen() {
+  const { profile } = useProfile();
+  const name = displayName(profile);
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState<LocationResult | null>(null);
   // /district에서 넘어온 값 (없으면 undefined)
@@ -44,8 +47,7 @@ export default function LocationScreen() {
   // 위치를 읽었으면 그 좌표, 아니면 구·군 기준점(코스가 있는 지역만)을 쓴다.
   const canGoCourses = location?.status === 'ok' || !!selectedDistrict?.center;
 
-  const goWithPlace = (path: '/courses' | '/today') => {
-    if (location?.status === 'ok') {
+  const goWithPlace = (path: '/courses' | '/today' | '/team') => {    if (location?.status === 'ok') {
       setPlace({ kind: 'gps', latitude: location.latitude, longitude: location.longitude });
     } else if (selectedDistrict?.center) {
       setPlace({ kind: 'district', code: selectedDistrict.code, ...selectedDistrict.center });
@@ -63,10 +65,11 @@ export default function LocationScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fbf6ee' }}>
       <View style={{ padding: 20, gap: 12 }}>
-        <Pressable onPress={() => supabase.auth.signOut()} style={{ alignSelf: 'flex-end'}}>
-          <Text style={{ color: '#a8242a', fontSize: 14, fontWeight: '600' }}>로그아웃</Text>
+        <Pressable onPress={() => router.push('/me')} style={{ alignSelf: 'flex-end' }}>
+          <Text style={{ color: '#a8242a', fontSize: 14, fontWeight: '600' }}>내 정보</Text>
         </Pressable>
 
+        <Text style={{ color: '#7a6a5a' }}>{name} 님, 안녕하세요</Text>
         <Text style={{ fontSize: 22, fontWeight: '700', color: '#2b2118' }}>내 위치 확인</Text>
         <Text style={{ color: '#7a6a5a' }}>앱을 쓰는 동안만 현재 위치를 사용하고, 좌표는 저장하지 않아요.</Text>
 
@@ -125,6 +128,13 @@ export default function LocationScreen() {
           style={{ backgroundColor: '#a8242a', paddingVertical: 14, borderRadius: 12, alignItems: 'center', opacity: canGoCourses ? 1 : 0.4 }}
         >
           <Text style={{ color: '#fff', fontWeight: '700' }}>AI 오늘의 길 받기</Text>
+        </Pressable>
+        <Pressable
+          disabled={!canGoCourses}
+          onPress={() => goWithPlace('/team')}
+          style={{ borderWidth: 1.5, borderColor: '#a8242a', paddingVertical: 14, borderRadius: 12, alignItems: 'center', opacity: canGoCourses ? 1 : 0.4 }}
+        >
+          <Text style={{ color: '#a8242a', fontWeight: '700' }}>친구와 함께</Text>
         </Pressable>
       </View>
     </SafeAreaView>

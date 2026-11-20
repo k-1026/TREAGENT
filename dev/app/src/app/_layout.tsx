@@ -15,20 +15,48 @@
  *  - useAuth()는 <AuthProvider> 안쪽 컴포넌트에서만 쓸 수 있다.
  */
 import { Redirect, Stack, useSegments } from 'expo-router';
+import { Pressable, SafeAreaView, Text } from 'react-native';
 import { AuthProvider, useAuth } from '../lib/auth_context';
 import { PlaceProvider } from '../lib/place_context';
+import { ProfileProvider, useProfile } from '../lib/profile_context';
+import { supabase } from '../lib/supabase';
+import { COLOR } from '../lib/theme';
+import { TodayProvider } from '../lib/today_context';
+
+// 프로필을 불러오지 못했을 때. 첫 만남 화면으로 보내면 이미 있는 프로필을 덮어쓸 수 있어서, 다시 해 보기만 준다.
+function ProfileError({ onRetry }: { onRetry: () => void }) {
+  return (
+    <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream, padding: 20, gap: 12 }}>
+      <Text style={{ color: COLOR.ink }}>내 정보를 불러오지 못했어요.</Text>
+      <Pressable onPress={onRetry}>
+        <Text style={{ color: COLOR.red, fontWeight: '700' }}>다시 해 보기</Text>
+      </Pressable>
+      <Pressable onPress={() => supabase.auth.signOut()}>
+        <Text style={{ color: COLOR.muted }}>로그아웃</Text>
+      </Pressable>
+    </SafeAreaView>
+  );
+}
+
 function Gate() {
   const { session, loading } = useAuth();
+  const { status, retry } = useProfile();
   const segments = useSegments();
 
   if (loading) return null;
 
   const onLoginScreen = segments[0] === 'login' || segments[0] === 'signup';
+  const onWelcome = segments[0] === 'welcome';
+
+  if (session && status === 'loading') return null;
+  if (session && status === 'error') return <ProfileError onRetry={retry} />;
 
   return (
     <>
       {!session && !onLoginScreen && <Redirect href="/login" />}
-      {session && onLoginScreen && <Redirect href="/" />}
+      {session && onLoginScreen && <Redirect href={status === 'ready' ? '/' : '/welcome'} />}
+      {session && !onLoginScreen && status === 'none' && !onWelcome && <Redirect href="/welcome" />}
+      {session && status === 'ready' && onWelcome && <Redirect href="/" />}
       <Stack screenOptions={{ headerShown: false }} />
     </>
   );
@@ -37,9 +65,13 @@ function Gate() {
 export default function RootLayout() {
   return (
     <AuthProvider>
-      <PlaceProvider>
-        <Gate />
-      </PlaceProvider>
+      <ProfileProvider>
+        <PlaceProvider>
+          <TodayProvider>
+            <Gate />
+          </TodayProvider>
+        </PlaceProvider>
+      </ProfileProvider>
     </AuthProvider>
   );
 }
