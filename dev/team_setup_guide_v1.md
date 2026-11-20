@@ -6,15 +6,24 @@
 
 ## 한눈에 보기
 
-```mermaid
-flowchart LR
-    A["내 컴퓨터<br/>수정 후 push"] --> G["GitHub dev<br/>코드, package.json, lock"]
-    G --> B["다른 컴퓨터<br/>pull"]
-    A -. "손으로 전달" .-> E[".env 2개<br/>(git에 안 올라감)"]
-    E -.-> B
-    B --> App["앱<br/>npm install, expo start"]
-    B --> Srv["서버 (선택)<br/>Docker 또는 npm start"]
-```
+### 1. 서비스 구조
+
+![서비스 구조도: 앱, Supabase, 서버, 외부 서비스](images/service_architecture.svg)
+
+- 앱은 DB에 직접 접속하지 않습니다. 로그인(Auth)만 Supabase에 직접 요청하고, 나머지는 모두 서버를 거칩니다.
+- DB 접속 정보와 service role 키, Google 키, 기상청 키는 서버에만 둡니다.
+- `location.ts`가 하는 일은 파일 이름만 보고 적었습니다 `[확인 필요]`.
+
+### 2. 세팅 순서
+
+![세팅 순서도: 키 받는 곳, 폴더별 실행, 결과 확인](images/setup_overview.svg)
+
+- 실선은 앱 개발에 필수인 길이고, 점선은 서버를 직접 띄울 때만 쓰는 길입니다.
+- Google 키를 어디서 발급받는지는 확인하지 못했습니다 `[확인 필요]`. 팀에서 받습니다.
+
+### 3. 코드와 비밀 값이 옮겨지는 길
+
+![코드는 GitHub로, .env는 손으로 옮기는 길](images/code_and_env_flow.svg)
 
 - 코드와 패키지 목록(`package.json`, `package-lock.json`)은 GitHub로 갑니다.
 - 패키지 본체(`node_modules/`)는 올라가지 않습니다. 각자 컴퓨터(또는 Docker 이미지)에서 목록을 보고 설치합니다.

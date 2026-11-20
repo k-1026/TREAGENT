@@ -6,16 +6,10 @@
 
 ## 한눈에 보기
 
-```mermaid
-flowchart LR
-    Phone["휴대폰 (Expo Go)"] -->|"EXPO_PUBLIC_SERVER_URL"| Server
-    Web["웹 (Vercel)"] -->|"EXPO_PUBLIC_SERVER_URL"| Server["서버 (Railway, Docker 이미지)"]
-    Phone -->|"EXPO_PUBLIC_SUPABASE_*"| Auth["Supabase 인증"]
-    Web -->|"EXPO_PUBLIC_SUPABASE_*"| Auth
-    Server --> DB["Supabase DB"]
-    Server --> KMA["기상청 API"]
-    Server --> LLM["Gemini (하랑이 대사)"]
-```
+![서비스 구조도: 앱, Supabase, 서버, 외부 서비스](images/service_architecture.svg)
+
+- 세팅 순서(키를 받는 곳, 폴더별 실행, 결과 확인)는 [team_setup_guide_v1.md](team_setup_guide_v1.md)의 "세팅 순서" 그림을 봅니다.
+- `location.ts`가 하는 일은 파일 이름만 보고 적었습니다 `[확인 필요]`.
 
 - 앱은 DB와 외부 API에 직접 접속하지 않고 서버만 호출합니다. 로그인(인증)만 Supabase에 직접 요청합니다 (`dev/app/src/lib/supabase.ts`).
 - 비밀 키(`service role`, DB 주소, 기상청, LLM)는 서버 쪽(`Railway Variables` 또는 `dev/server/.env`)에만 둡니다.
