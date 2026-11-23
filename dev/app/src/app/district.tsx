@@ -8,7 +8,7 @@
  * 동작
  *  - DISTRICTS 목록을 2열 버튼으로 보여 준다.
  *  - 기준점(center)이 있는 구·군은 "안내해요"(빨강), 없는 구·군은 "준비 중"(흐리게)으로 보이고 누를 수 없다.
- *  - 하나를 누르면 위치 확인 화면(/)으로 돌아가며, 선택한 코드를 district 파라미터로 넘긴다.
+ *  - 하나를 누르면 위치 확인 화면(/location)으로 돌아가며, 선택한 코드를 district 파라미터로 넘긴다.
  *  - "닫기"는 선택 없이 이전 화면으로 돌아간다.
  *
  * 확인 필요
@@ -43,7 +43,7 @@ export default function DistrictScreen() {
               <Pressable
                 key={d.code}
                 disabled={!open}
-                onPress={() => router.navigate({ pathname: '/', params: { district: d.code } })}
+                onPress={() => router.dismissTo({ pathname: '/location', params: { district: d.code } })}
                 style={({ pressed }) => [
                   styles.tile,
                   open ? pxBox(BTN_RED, COLOR.redDark) : pxBox(COLOR.paper, COLOR.shade),
