@@ -37,6 +37,8 @@ export async function getWalkingRoute(from, to, via = []) {
 
   const path = [];
   const legs = [{ distance: 0, time: 0 }];
+  const legEnds = []; // 각 구간(경유지·도착지까지)이 끝나는 path 위치
+  const steps = []; // 안내 지점: 어디서 무엇을 하라는 문장
   for (const f of features) {
     const p = f.properties;
     if (f.geometry?.type === 'LineString') {
@@ -47,9 +49,16 @@ export async function getWalkingRoute(from, to, via = []) {
         const last = path[path.length - 1];
         if (!last || last.lat !== lat || last.lng !== lng) path.push({ lat, lng });
       }
-    } else if (/^PP/.test(p.pointType ?? '')) {
-      legs.push({ distance: 0, time: 0 }); // 경유지를 지나면 다음 구간으로
+    } else if (f.geometry?.type === 'Point') {
+      const [lng, lat] = f.geometry.coordinates;
+      const pathIndex = Math.max(0, path.length - 1); // 점은 앞 선이 끝난 자리에 있다
+      if (/^PP/.test(p.pointType ?? '')) {
+        legs.push({ distance: 0, time: 0 });
+        legEnds.push(pathIndex);
+      }
+      steps.push({ lat, lng, pathIndex, text: p.description ?? '', turn: p.turnType ?? null, type: p.pointType ?? 'GP' });
     }
   }
-  return { path, distance: start.properties.totalDistance, time: start.properties.totalTime, legs };
+  legEnds.push(Math.max(0, path.length - 1)); // 마지막 구간은 도착지에서 끝난다
+  return { path, distance: start.properties.totalDistance, time: start.properties.totalTime, legs, legEnds, steps };
 }

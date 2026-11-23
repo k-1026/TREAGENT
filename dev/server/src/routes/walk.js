@@ -74,6 +74,8 @@ export function createWalkRouter({ placeLoader, poiFinder, getRoute = getWalking
       time: route.time, // 초
       // legs: 구간별 거리·시간. 내 위치를 보냈으면 legs[0]이 "내 위치 → 첫 장소"
       legs: route.legs,
+    legEnds: route.legEnds, // 각 구간이 끝나는 path 위치
+      steps: route.steps, // 길 안내 지점
       startIncluded: hasStart,
     });
   });
