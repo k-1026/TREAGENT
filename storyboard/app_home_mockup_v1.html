@@ -450,24 +450,6 @@
     </div>
   </section>
 
-  <!-- S-05 여행 지도·진행 (이어하기·외출 후 진입) -->
-  <section class="view" id="v-travel" aria-label="여행 지도·진행">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="trvSub"></div><div class="t">여행 지도</div><button class="back px" data-view="home">‹ 홈</button></div>
-    <div class="scroll">
-      <div class="map px"><span class="maptx">[지도 이미지 자리 · 아직 안 그렸어요]</span><div id="trvPins"></div></div>
-      <div class="h3">장소 <span>도장은 미션을 마쳐야 찍혀요</span></div>
-      <div id="trvList" class="segp"></div>
-      <button class="cta px" id="trvBtn" data-nav="place" data-idx="0" style="height:52px"></button>
-      <button class="row px" data-nav="reroute" style="justify-content:center;font-weight:800">날씨가 바뀌었다고 가정하고 보기 (S-07)</button>
-    </div>
-  </section>
-
-  <!-- S-06 장소 상세·방문 확인 (도착 → 미션 → 도장) -->
-  <section class="view" id="v-stop" aria-label="장소 방문 확인">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="stpSub"></div><div class="t">방문 확인</div><button class="back px" data-nav="travel">‹ 여행</button></div>
-    <div class="scroll" id="stpBody"></div>
-  </section>
-
   <!-- S-08 완주 한 장 -->
   <section class="view" id="v-done" aria-label="오늘의 여행 사진">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">하랑이와 함께 끝까지 걸었어요</div><div class="t">완주</div><button class="back px" data-view="home">‹ 홈</button></div>
@@ -547,12 +529,6 @@
     <div class="briefbub px"><p id="briefTx"></p></div>
     <div class="briefstage"><div class="briefhara" role="img" aria-label="하랑이 기본 표정"></div></div>
     <div class="briefbtns"><button class="cta px" data-nav="briefdone">확인</button><button class="row px" data-nav="briefback">이전으로</button></div>
-  </section>
-
-  <!-- S-07 경로 변경·보류 (S-05에서 날씨·특보·운영 상태가 바뀌었을 때) -->
-  <section class="view" id="v-reroute" aria-label="경로 변경">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">여행 중에 조건이 바뀌었어요</div><div class="t">경로 변경</div><button class="back px" data-nav="travel">‹ 여행</button></div>
-    <div class="scroll" id="rrBody"></div>
   </section>
 
   <!-- 내 여행 상세: 장부 [내 여행]에서 지난 여행 한 장을 누르면 열림 (F-11, 본인 것만, 좌표 없음) -->
@@ -883,17 +859,17 @@
     if(name==='closefull'){ $('#fsv').hidden=true; return }
     if(name==='share'){ toast('SNS 공유는 다음 단계 (자리)'); return }
     if(name==='course' && idx){ CUR=idx }
-    if(name==='reroute'){ ensureTrip(); renderReroute(); show('reroute') }
-    else if(name==='reroute-accept'){ TRIP.route='indoor'; renderTravel(); show('travel') }
-    else if(name==='reroute-keep'){ renderTravel(); show('travel') }
+    if(name==='reroute'){ location.href='travel_map_mockup_v1.html?alert=1'; return }
+    else if(name==='reroute-accept'){ location.href='travel_map_mockup_v1.html'; return }
+    else if(name==='reroute-keep'){ location.href='travel_map_mockup_v1.html'; return }
     else if(name==='reroute-later'){ show('home'); toast('여행을 장부에 접어 뒀어요') }
     else if(name==='course'){ renderCourse(); show('course') }
     else if(name==='depart'){ startRoute() }
     else if(name==='walkout'){ walkout() }
     else if(name==='briefdone'){ readyHome() }
     else if(name==='tripdetail'){ show('tripdetail') }
-    else if(name==='travel'){ scene.classList.remove('going','ready'); ensureTrip(); renderTravel(); show('travel') }
-    else if(name==='place'){ cur=+idx; phase=cur<TRIP.done?'passed':'intro'; renderStop(); show('stop') }
+    else if(name==='travel'){ location.href='travel_map_mockup_v1.html'; return }
+    else if(name==='place'){ location.href='travel_map_mockup_v1.html'; return }
     else if(name==='arrive'){ phase=$('#gpsSel').value==='ok'?'mission':'gpsfail'; renderStop() }
     else if(name==='gpsretry'){ phase='mission'; renderStop() }
     else if(name==='mission'){ mission() }
@@ -942,7 +918,7 @@
   var TABOF={all:'home',todo:'home',region:'me',weather:'home',shelter:'home',home:'home',today:'home',pouch:'home',course:'home',travel:'home',stop:'home',done:'home',reroute:'home',tripdetail:'ledger',brief:'home',picks:'home',ledger:'ledger',me:'me'};
   function show(name){
     $('#phone').classList.toggle('fullscreen',name==='brief');
-    ['home','ledger','today','pouch','me','course','travel','stop','done','reroute','tripdetail','brief','picks','shelter','weather','todo','region','all'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
+    ['home','ledger','today','pouch','me','course','done','tripdetail','brief','picks','shelter','weather','todo','region','all'].forEach(function(n){$('#v-'+n).classList.toggle('on',n===name)});
     var cur=TABOF[name];
     $$('.tab button').forEach(function(b){var t=b.dataset.tab||b.dataset.view; if(t===cur)b.setAttribute('aria-current','page');else b.removeAttribute('aria-current')});
   }
