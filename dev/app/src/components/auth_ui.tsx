@@ -112,7 +112,8 @@ const styles = StyleSheet.create({
   },
 
   button: { paddingVertical: 14, alignItems: 'center' },
-  buttonOff: { opacity: 0.45 },
+  // 누를 수 없을 때도 글씨가 읽히도록 흐리기를 약하게 한다
+  buttonOff: { opacity: 0.6 },
   pressed: { opacity: 0.85 },
   buttonText: { color: '#fff', fontSize: 16, fontWeight: '800' },
 
