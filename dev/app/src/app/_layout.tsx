@@ -21,6 +21,7 @@ import { PlaceProvider } from '../lib/place_context';
 import { ProfileProvider, useProfile } from '../lib/profile_context';
 import { supabase } from '../lib/supabase';
 import { COLOR } from '../lib/theme';
+import { PhoneColumn } from '../components/phone_column';
 import { TodayProvider } from '../lib/today_context';
 
 // 프로필을 불러오지 못했을 때. 첫 만남 화면으로 보내면 이미 있는 프로필을 덮어쓸 수 있어서, 다시 해 보기만 준다.
@@ -69,7 +70,9 @@ export default function RootLayout() {
       <ProfileProvider>
         <PlaceProvider>
           <TodayProvider>
-            <Gate />
+            <PhoneColumn>
+              <Gate />
+            </PhoneColumn>
           </TodayProvider>
         </PlaceProvider>
       </ProfileProvider>

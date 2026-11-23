@@ -20,8 +20,8 @@
  */
 
 import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
-import { ActivityIndicator, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useState } from 'react';
+import { ActivityIndicator, Animated, Easing, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { findDistrict } from '../lib/districts';
 import { getCurrentLocation, LocationResult } from '../lib/location';
 import { usePlace } from '../lib/place_context';
@@ -30,10 +30,28 @@ import { displayName } from '../lib/profile';
 import { BTN_RED, COLOR } from '../lib/theme';
 import { PxButton, PxMessage } from '../components/auth_ui';
 
+// 하랑이 숨쉬기: 위아래로 4px을 0.9초마다 오간다. 화면을 떠나면 멈춘다.
+function createBob() {
+  const value = new Animated.Value(0);
+  return { value, y: value.interpolate({ inputRange: [0, 1], outputRange: [0, -4] }) };
+}
+
 export default function LocationScreen() {
   const { profile } = useProfile();
   const name = displayName(profile);
+  const [bob] = useState(createBob);
   const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(bob.value, { toValue: 1, duration: 900, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
+        Animated.timing(bob.value, { toValue: 0, duration: 900, easing: Easing.inOut(Easing.quad), useNativeDriver: true }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [bob]);
   const [location, setLocation] = useState<LocationResult | null>(null);
   // /district에서 넘어온 값 (없으면 undefined)
   const { district } = useLocalSearchParams<{ district?: string }>();
@@ -75,7 +93,11 @@ export default function LocationScreen() {
           <Text style={styles.bubbleText}>오늘의 길을 고르려면 어디쯤인지 알아야 해요. 위치는 앱 쓰는 동안만 쓰고 저장은 안 해요!</Text>
         </View>
 
-        <Image source={require('../../assets/harangi_pixel_idle_transparent.png')} style={styles.harangi} resizeMode="contain" />
+        <Animated.Image
+          source={require('../../assets/harangi_pixel_idle_transparent.png')}
+          style={[styles.harangi, { transform: [{ translateY: bob.y }] }]}
+          resizeMode="contain"
+        />
       </View>
 
       {/* 아래쪽 패널: 제목, 안내, 버튼, 상태 문구 */}
@@ -143,9 +165,10 @@ const styles = StyleSheet.create({
 
   // 위쪽 장면 (목업 .scene: 높이 316, 주황 바탕)
   scene: { height: 300, backgroundColor: COLOR.beam, overflow: 'hidden', borderBottomWidth: 0 },
-  room: { position: 'absolute', left: 0, right: 0, top: 40, height: 260 },
+  room: { position: 'absolute', left: 0, right: 0, top: 56, height: 260 },
   topRow: { position: 'absolute', left: 16, right: 16, top: 56, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  hello: { color: '#fff3e0', fontSize: 13, fontWeight: '700' },
+  // 인사말: 방 그림 위에서도 읽히도록 종이색 칸에 넣는다 (내 정보 버튼과 같은 모양)
+  hello: { backgroundColor: COLOR.paper, paddingVertical: 4, paddingHorizontal: 8, borderWidth: 2, borderColor: COLOR.ink, color: COLOR.ink, fontSize: 12, fontWeight: '800' },
   myPage: { backgroundColor: COLOR.paper, paddingVertical: 4, paddingHorizontal: 10, borderWidth: 2, borderColor: COLOR.ink },
   myPageText: { color: COLOR.ink, fontSize: 12, fontWeight: '800' },
 
