@@ -366,6 +366,8 @@
 
   setFull(false);
   render(-1);
+  // 홈의 경로 변경 진입(?alert=1): 알림창을 바로 띄움
+  if(new URLSearchParams(location.search).get('alert')){ document.querySelector('#dim').classList.add('on'); document.querySelector('#alert').classList.add('on'); }
 })();
 </script>
 </body>
