@@ -1,46 +1,81 @@
 /*
- * [index.tsx] 위치 확인 화면 (주소: /) — 로그인하면 가장 먼저 보이는 화면
+ * [index.tsx] 홈 화면 S-03 (주소: /) — 로그인하면 가장 먼저 보이는 화면
  *
  * 역할
- *  - 로그인하면 바로 이 화면이 열린다. (_layout.tsx가 로그인 후 / 로 보낸다)
- *  - 현재 위치를 읽거나, 구·군을 직접 골라 시작 위치를 정한다.
- *  - 모양은 목업(storyboard/app_login_region_mockup_v1.html ④ 위치 확인)을 따른다.
- *    위쪽 장면(방 그림, 하랑이, 말풍선) + 아래쪽 패널(버튼과 상태 문구).
+ *  - 목업 storyboard/app_home_mockup_v1.html의 홈(기본 상태 "진행 여행 없음")을 옮긴다.
+ *  - 흐름: 로그인하면 홈이 첫 화면이다 (2026-11-23 요청). 위치는 기본으로 중구(MVP 지역)를 쓰고,
+ *    왼쪽 위 날씨·지역 배지를 누르면 위치 확인 화면(/location)에서 바꾼다.
+ *    [확인 필요] 기획 흐름(storyboard/game_flow_story_v1.md 4절)은 위치 → 홈 순서다.
  *
- * 동작
- *  - [현재 위치 사용] → getCurrentLocation() 호출, 읽는 동안 로딩 표시
- *  - [구·군 선택하기]는 위치 버튼 옆에 항상 같이 보인다 (거부·실패를 기다리지 않는다)
- *  - ok          : 좌표와 오차를 표시 (화면 state에만 두고 저장·로그하지 않는다)
- *  - denied      : 안내 + (canAskAgain=false면 [설정 열기])
- *  - unavailable : 안내
- *  - /district에서 돌아오면 district 파라미터로 "선택한 구·군"을 표시한다.
+ * 배치 (목업 390 x 844 기준, 화면 폭에 맞춰 배율 k를 곱한다)
+ *  - 장면(높이 316): 방 그림(위 56), 날씨·지역 배지(12, 50), 하랑이, 말풍선, [오늘 페이지 ▾] 표시
+ *  - 본문: [오늘의 길 고르기] 큰 버튼 → 빠른 버튼 3개(모든 길·쉼터·주머니) → 오늘 챙길 것
+ *  - 하단 탭: 홈 · 장부 · 내 정보
  *
- * 확인 필요
- *  - 목업은 "좌표는 보이지 않아요"이지만, 기존 화면은 좌표를 보여 준다. 이번에는 기존 동작을 그대로 두었다. [결정 필요]
+ * 아직 연결하지 않은 것 (목업에 있으나 데이터·화면이 없음)
+ *  - 날씨 배지 값: 앱이 따로 받는 날씨 응답이 없어 목업 자리 표시를 그대로 둔다 [확인 필요: 날씨만 주는 서버 기능]
+ *  - 상태 7종(진행 중, 폭염, 호우, 확인 불가, 중구 밖, 코스 없음), 오늘 챙길 것의 날씨별 변경
+ *  - 쉼터·주머니·장부·오늘 페이지 화면 → 지금은 준비 중(/soon)
+ *  - 하랑이 대사: 승인 대사 대기. 목업 자리 표시를 그대로 둔다 [창작, 승인 필요]
  */
-
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Animated, Easing, Image, Linking, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
-import { findDistrict } from '../lib/districts';
-import { getCurrentLocation, LocationResult } from '../lib/location';
+import { Animated, Easing, Image, ImageSourcePropType, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { BottomTab } from '../components/bottom_tab';
+import { APP_MAX_WIDTH } from '../components/phone_column';
+import { PixelSprite } from '../components/pixel_book';
+import { PixelIcon, PixelIconName } from '../components/pixel_icons';
+import { DISTRICTS, findDistrict } from '../lib/districts';
 import { usePlace } from '../lib/place_context';
-import { useProfile } from '../lib/profile_context';
 import { displayName } from '../lib/profile';
-import { BTN_RED, COLOR } from '../lib/theme';
-import { PxButton, PxMessage } from '../components/auth_ui';
+import { useProfile } from '../lib/profile_context';
+import { COLOR, pxBox } from '../lib/theme';
 
-// 하랑이 숨쉬기: 위아래로 4px을 0.9초마다 오간다. 화면을 떠나면 멈춘다.
+// 오늘 챙길 것 (목업 TIPS.none). 날씨별 목록은 날씨 응답을 붙일 때 바꾼다.
+const TIPS: { label: string; icon: ImageSourcePropType }[] = [
+  { label: '생수', icon: require('../../assets/item_water_v1.png') },
+  { label: '운동화', icon: require('../../assets/item_sneakers_v1.png') },
+  { label: '겉옷', icon: require('../../assets/item_jacket_v1.png') },
+];
+
+// 하단 탭 높이, 본문 최소 높이(여백 32 + 큰 버튼 68 + 빠른 버튼 54 + 간격 24 + 챙길 것 최소 150)
+const TAB_HEIGHT = 84;
+const BODY_MIN = 32 + 68 + 54 + 24 + 150;
+const TIP_GAP = 8;
+
+// 말풍선 꼬리 7x7 (K 잉크 테두리, F 종이색 속)
+const BUBBLE_TAIL = ['KFFFFFK', 'KFFFFK.', 'KFFFK..', 'KFFK...', 'KFK....', 'KK.....', 'K......'];
+
+// 하랑이 숨쉬기: 위아래 4px (위치 확인 화면과 같은 움직임)
 function createBob() {
   const value = new Animated.Value(0);
   return { value, y: value.interpolate({ inputRange: [0, 1], outputRange: [0, -4] }) };
 }
 
-export default function LocationScreen() {
+const soon = (what: string) => router.push({ pathname: '/soon', params: { what } });
+
+export default function HomeScreen() {
+  const { place, setPlace } = usePlace();
   const { profile } = useProfile();
   const name = displayName(profile);
+  const { width: winWidth, height: winHeight } = useWindowDimensions();
+  const k = Math.min(winWidth, APP_MAX_WIDTH) / 390; // 목업 좌표 → 화면 좌표 배율
+
+  // 스크롤 없이 한 화면에 다 보이게 한다.
+  //  - 본문에 꼭 필요한 높이(BODY_MIN)와 하단 탭(84)을 먼저 빼고, 모자라면 장면 위쪽을 잘라 낸다 (그림은 키우거나 줄이지 않는다).
+  //  - 자르는 양은 최대 120 x k (천장 쪽). 하랑이·말풍선은 장면 아래쪽 기준이라 그대로 보인다.
+  const sceneFull = 316 * k;
+  const crop = Math.min(Math.max(sceneFull + TAB_HEIGHT + BODY_MIN - winHeight, 0), 120 * k);
+  const sceneH = sceneFull - crop;
+  // 오늘 챙길 것 아이콘: 카드에 남은 높이에 맞춰 28~48px
+  const [tipsAreaH, setTipsAreaH] = useState(0);
+  // 장면 위쪽을 잘라 내면 말풍선이 날씨 배지를 덮을 수 있다. 말풍선 높이를 재서 배지 아래로 내린다.
+  const badgeTop = Math.max(8, 50 * k - crop);
+  const [bubbleH, setBubbleH] = useState(0);
+  const BADGE_H = 44;
+  const bubbleBottom = Math.min(118 * k, sceneH - (badgeTop + BADGE_H + 6) - bubbleH);
+  const iconSize = tipsAreaH > 0 ? Math.max(28, Math.min(48, (tipsAreaH - 2 * TIP_GAP) / 3)) : 48;
   const [bob] = useState(createBob);
-  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -52,110 +87,104 @@ export default function LocationScreen() {
     loop.start();
     return () => loop.stop();
   }, [bob]);
-  const [location, setLocation] = useState<LocationResult | null>(null);
-  // /district에서 넘어온 값 (없으면 undefined)
-  const { district } = useLocalSearchParams<{ district?: string }>();
-  const selectedDistrict = findDistrict(district);
-  const { setPlace } = usePlace();
-  // 위치를 읽었으면 그 좌표, 아니면 구·군 기준점(코스가 있는 지역만)을 쓴다.
-  const canGoCourses = location?.status === 'ok' || !!selectedDistrict?.center;
 
-  const goWithPlace = (path: '/courses' | '/today' | '/team') => {
-    if (location?.status === 'ok') {
-      setPlace({ kind: 'gps', latitude: location.latitude, longitude: location.longitude });
-    } else if (selectedDistrict?.center) {
-      setPlace({ kind: 'district', code: selectedDistrict.code, ...selectedDistrict.center });
-    } else {
-      return;
-    }
-    router.push(path);
-  };
-  const onPressLocation = async () => {
-    setLoading(true);
-    setLocation(await getCurrentLocation());
-    setLoading(false);
-  };
+  // 위치를 아직 정하지 않았으면 기본 지역(중구 기준점)을 쓴다. MVP는 중구만 안내한다 (districts.ts).
+  useEffect(() => {
+    const jung = DISTRICTS.find((d) => d.code === 'jung');
+    if (!place && jung?.center) setPlace({ kind: 'district', code: jung.code, ...jung.center });
+  }, [place, setPlace]);
+
+  const areaName = !place ? '중구' : place.kind === 'district' ? (findDistrict(place.code)?.name ?? '선택한 동네') : '현재 위치';
 
   return (
     <View style={styles.safe}>
-      {/* 위쪽 장면: 방 그림, 하랑이, 말풍선 */}
-      <View style={styles.scene}>
-        <Image source={require('../../assets/home_room_day_v1.webp')} style={styles.room} resizeMode="cover" />
+      {/* 장면: 방 그림 · 배지 · 하랑이 · 말풍선 */}
+      <View style={[styles.scene, { height: sceneH }]}>
+        <Image
+          source={require('../../assets/home_room_day_v2.webp')}
+          style={{ position: 'absolute', left: 0, top: 56 * k - crop, width: 390 * k, height: 260 * k }}
+          resizeMode="cover"
+        />
 
-        <View style={styles.topRow}>
-          <Text style={styles.hello}>{name} 님, 안녕하세요</Text>
-          <Pressable onPress={() => router.push('/me')} style={styles.myPage}>
-            <Text style={styles.myPageText}>내 정보</Text>
-          </Pressable>
-        </View>
+        {/* 날씨·지역 배지 (목업 .badge). 누르면 위치를 다시 고른다 */}
+        <Pressable onPress={() => router.push('/location')} style={[styles.badge, { left: 12 * k, top: badgeTop }]}>
+          <View style={styles.badgeDot} />
+          <View>
+            <Text style={styles.badgeMain}>날씨 · 체감 [○]℃</Text>
+            <Text style={styles.badgeSub}>{`${areaName} · [기준 시각] 기준 ▾`}</Text>
+          </View>
+        </Pressable>
 
-        <View style={styles.bubble}>
-          <Text style={styles.bubbleText}>오늘의 길을 고르려면 어디쯤인지 알아야 해요. 위치는 앱 쓰는 동안만 쓰고 저장은 안 해요!</Text>
+        {/* 오늘 페이지 표시 (책상 위 장부) */}
+        <Pressable onPress={() => soon('오늘 페이지')} style={[styles.mark, { left: 222 * k, top: 166 * k - crop }]}>
+          <Text style={styles.markText}>오늘 페이지 ▾</Text>
+        </Pressable>
+
+        {/* 말풍선 (목업 .bubble: 왼쪽 40, 아래에서 118, 폭 172) */}
+        <View
+          style={[styles.bubble, { left: 40 * k, bottom: bubbleBottom, width: 172 * k }]}
+          onLayout={(e) => setBubbleH(e.nativeEvent.layout.height)}
+        >
+          <Text style={styles.bubbleText}>{`${name} 님, [대사 자리]`}</Text>
+          <Text style={styles.bubbleMuted}>[승인 대사 대기]</Text>
+          <Text style={styles.bubbleAlert}>오늘 비어 있는 장소가 있어요 [임시]</Text>
+          {/* 말풍선 꼬리 (목업 .tail: 왼쪽 120, 계단 모양) */}
+          <View style={[styles.tail, { left: 120 * k - 3 }]}>
+            <PixelSprite grid={BUBBLE_TAIL} cell={3} />
+          </View>
         </View>
 
         <Animated.Image
           source={require('../../assets/harangi_pixel_idle_transparent.png')}
-          style={[styles.harangi, { transform: [{ translateY: bob.y }] }]}
+          style={{
+            position: 'absolute',
+            left: 70 * k,
+            top: 210 * k - crop,
+            width: 92 * k,
+            height: 95 * k,
+            transform: [{ translateY: bob.y }],
+          }}
           resizeMode="contain"
         />
       </View>
 
-      {/* 아래쪽 패널: 제목, 안내, 버튼, 상태 문구 */}
-      <ScrollView style={styles.panel} contentContainerStyle={styles.panelContent}>
-        <Text style={styles.title}>어디서 시작할까요?</Text>
-        <Text style={styles.note}>앱을 쓰는 동안만 현재 위치를 사용하고, 좌표는 저장하지 않아요.</Text>
+      {/* 본문 (목업 .body: 위쪽 잉크색 6px 선, 안쪽 여백 16, 간격 12) */}
+      <View style={styles.body}>
+        <Pressable onPress={() => router.push('/today')} style={({ pressed }) => [styles.cta, pressed && styles.pressed]}>
+          <Text style={styles.ctaMain}>오늘의 길 고르기</Text>
+          <Text style={styles.ctaSub}>날씨에 맞는 길을 찾아봐요 [임시]</Text>
+        </Pressable>
 
-        <View style={styles.row}>
-          <View style={styles.flex}>
-            <PxButton label="현재 위치 사용" onPress={onPressLocation} disabled={loading} />
-          </View>
-          <View style={styles.flex}>
-            <PxButton label="구·군 선택하기" variant="sub" onPress={() => router.push('/district')} />
-          </View>
+        <View style={styles.quick}>
+          {(
+            [
+              { label: '모든 길', icon: 'list', go: () => router.push('/courses') },
+              { label: '쉼터', icon: 'rest', go: () => soon('쉼터') },
+              { label: '주머니', icon: 'pouch', go: () => soon('주머니') },
+            ] as { label: string; icon: PixelIconName; go: () => void }[]
+          ).map((q) => (
+            <Pressable key={q.label} onPress={q.go} style={({ pressed }) => [styles.quickButton, pressed && styles.pressed]}>
+              <PixelIcon name={q.icon} color={COLOR.ink} />
+              <Text style={styles.quickText}>{q.label}</Text>
+            </Pressable>
+          ))}
         </View>
 
-        {loading && (
-          <View style={styles.loading}>
-            <ActivityIndicator color={BTN_RED} />
-            <Text style={styles.note}>위치를 읽는 중이에요...</Text>
+        <View style={styles.tips}>
+          <Text style={styles.tipsTitle}>오늘 챙길 것</Text>
+          {/* 남은 높이에 세 줄을 고르게 놓는다 */}
+          <View style={styles.tipRows} onLayout={(e) => setTipsAreaH(e.nativeEvent.layout.height)}>
+            {TIPS.map((t) => (
+              <View key={t.label} style={styles.tipRow}>
+                <Image source={t.icon} style={{ width: iconSize, height: iconSize }} />
+                <Text style={styles.tipText}>{t.label}</Text>
+              </View>
+            ))}
           </View>
-        )}
-
-        {!loading && location?.status === 'ok' && (
-          <PxMessage tone="ok">
-            {`현재 위치로 안내해요. 위치 확인됨: ${location.latitude.toFixed(3)}, ${location.longitude.toFixed(3)}${
-              location.accuracy !== null ? ` (오차 약 ${Math.round(location.accuracy)}m)` : ''
-            }`}
-          </PxMessage>
-        )}
-
-        {!loading && location?.status === 'denied' && (
-          <PxMessage tone="info">위치 권한이 꺼져 있어요. 구·군을 골라도 괜찮아요.</PxMessage>
-        )}
-        {!loading && location?.status === 'denied' && !location.canAskAgain && (
-          <Pressable onPress={() => Linking.openSettings()}>
-            <Text style={styles.link}>설정 열기</Text>
-          </Pressable>
-        )}
-
-        {!loading && location?.status === 'unavailable' && (
-          <PxMessage tone="error">위치를 읽지 못했어요. 위치 서비스가 켜져 있는지 확인해 주세요.</PxMessage>
-        )}
-
-        {selectedDistrict && (
-          <PxMessage tone="ok">{`선택한 구·군: ${selectedDistrict.name}`}</PxMessage>
-        )}
-        {selectedDistrict && !selectedDistrict.center && location?.status !== 'ok' && (
-          <Text style={styles.note}>아직 준비 중이에요. 지금은 중구만 갈 수 있어요.</Text>
-        )}
-
-        <View style={styles.goBox}>
-          <PxButton label="오늘의 길 보기" onPress={() => goWithPlace('/courses')} disabled={!canGoCourses} />
-          <PxButton label="AI 오늘의 길 받기" variant="sub" onPress={() => goWithPlace('/today')} disabled={!canGoCourses} />
-          <PxButton label="친구와 함께" variant="sub" onPress={() => goWithPlace('/team')} disabled={!canGoCourses} />
         </View>
+      </View>
 
-      </ScrollView>
+      <BottomTab current="home" />
     </View>
   );
 }
@@ -163,40 +192,62 @@ export default function LocationScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLOR.cream },
 
-  // 위쪽 장면 (목업 .scene: 높이 316, 주황 바탕)
-  scene: { height: 300, backgroundColor: COLOR.beam, overflow: 'hidden', borderBottomWidth: 0 },
-  room: { position: 'absolute', left: 0, right: 0, top: 56, height: 260 },
-  topRow: { position: 'absolute', left: 16, right: 16, top: 56, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  // 인사말: 방 그림 위에서도 읽히도록 종이색 칸에 넣는다 (내 정보 버튼과 같은 모양)
-  hello: { backgroundColor: COLOR.paper, paddingVertical: 4, paddingHorizontal: 8, borderWidth: 2, borderColor: COLOR.ink, color: COLOR.ink, fontSize: 12, fontWeight: '800' },
-  myPage: { backgroundColor: COLOR.paper, paddingVertical: 4, paddingHorizontal: 10, borderWidth: 2, borderColor: COLOR.ink },
-  myPageText: { color: COLOR.ink, fontSize: 12, fontWeight: '800' },
+  // 장면 (목업 .scene 바탕 #a85a24)
+  scene: { backgroundColor: '#a85a24', overflow: 'hidden' },
 
-  // 말풍선 (목업 .bubble)
-  bubble: {
+  badge: {
     position: 'absolute',
-    left: 104,
-    top: 110,
-    width: 210,
-    backgroundColor: COLOR.paper,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
+    zIndex: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+    paddingVertical: 5,
+    paddingHorizontal: 8,
+    backgroundColor: COLOR.cream,
     borderWidth: 3,
     borderColor: COLOR.ink,
+    maxWidth: 250,
   },
-  bubbleText: { fontSize: 11, lineHeight: 16, color: COLOR.ink },
+  badgeDot: { width: 11, height: 11, backgroundColor: '#f5b82e', borderWidth: 2, borderColor: COLOR.ink },
+  badgeMain: { fontSize: 12, fontWeight: '700', color: COLOR.ink },
+  badgeSub: { fontSize: 12, color: COLOR.muted },
 
-  // 하랑이 (목업 .spr: 92x95, 왼쪽 84 / 위 222)
-  harangi: { position: 'absolute', left: 84, top: 200, width: 92, height: 95 },
+  mark: { position: 'absolute', zIndex: 6, paddingVertical: 1, paddingHorizontal: 5, backgroundColor: COLOR.cream, borderWidth: 2, borderColor: COLOR.ink },
+  markText: { fontSize: 12, fontWeight: '800', color: COLOR.ink },
 
-  // 아래쪽 패널 (목업 .panel: 위쪽 잉크색 선)
-  panel: { flex: 1, backgroundColor: COLOR.cream, borderTopWidth: 6, borderTopColor: COLOR.ink },
-  panelContent: { padding: 18, paddingHorizontal: 20, gap: 12 },
-  title: { fontSize: 18, fontWeight: '800', color: COLOR.ink },
-  note: { fontSize: 11, color: COLOR.muted, lineHeight: 16 },
-  row: { flexDirection: 'row', gap: 12 },
-  flex: { flex: 1 },
-  loading: { flexDirection: 'row', alignItems: 'center', gap: 8 },
-  link: { color: COLOR.redDark, fontWeight: '700', fontSize: 13, padding: 6 },
-  goBox: { gap: 10, marginTop: 6 },
+  bubble: { position: 'absolute', zIndex: 4, backgroundColor: COLOR.paper, paddingVertical: 7, paddingHorizontal: 8, borderWidth: 3, borderColor: COLOR.ink },
+  bubbleText: { fontSize: 12, lineHeight: 16, color: COLOR.ink },
+  tail: { position: 'absolute', top: '100%' },
+  bubbleMuted: { fontSize: 12, color: COLOR.muted, marginTop: 3 },
+  bubbleAlert: {
+    fontSize: 12,
+    color: COLOR.redDark,
+    marginTop: 4,
+    paddingTop: 4,
+    borderTopWidth: 2,
+    borderTopColor: '#b9825a',
+    borderStyle: 'dotted',
+  },
+
+  // 본문
+  // 스크롤 없는 본문: 남은 높이를 모두 쓰고, 넘치면 잘리지 않게 챙길 것 카드가 줄어든다
+  body: { flex: 1, backgroundColor: COLOR.cream, borderTopWidth: 6, borderTopColor: COLOR.ink, padding: 16, gap: 12, overflow: 'hidden' },
+  pressed: { opacity: 0.85 },
+
+  // 큰 버튼 (목업 .cta: 높이 68, 왼쪽 정렬)
+  cta: { ...pxBox(COLOR.red), height: 68, paddingHorizontal: 14, justifyContent: 'center' },
+  ctaMain: { color: '#fff', fontSize: 17, fontWeight: '800' },
+  ctaSub: { color: '#fff', fontSize: 12, opacity: 0.92, marginTop: 3 },
+
+  // 빠른 버튼 (목업 .quick: 높이 54, 간격 10)
+  quick: { flexDirection: 'row', gap: 10 },
+  quickButton: { ...pxBox(COLOR.paper), flex: 1, height: 54, alignItems: 'center', justifyContent: 'center', gap: 5 },
+  quickText: { fontSize: 12, fontWeight: '700', color: COLOR.ink },
+
+  // 오늘 챙길 것 (목업 .wxcard: 남은 높이를 채운다)
+  tips: { ...pxBox(COLOR.paper), flex: 1, paddingVertical: 12, paddingHorizontal: 16, gap: 8 },
+  tipRows: { flex: 1, justifyContent: 'space-evenly', gap: TIP_GAP },
+  tipsTitle: { fontSize: 15, fontWeight: '800', color: COLOR.ink },
+  tipRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
+  tipText: { fontSize: 15, color: COLOR.ink },
 });

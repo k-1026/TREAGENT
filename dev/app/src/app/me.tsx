@@ -10,6 +10,7 @@ import { useProfile } from '../lib/profile_context';
 import type { AgeGroup } from '../lib/server_api';
 import { supabase } from '../lib/supabase';
 import { COLOR, pxBox } from '../lib/theme';
+import { CONTENT } from '../components/phone_column';
 
 export default function MeScreen() {
   const { profile, save, check } = useProfile();
@@ -61,8 +62,8 @@ export default function MeScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
-      <ScreenHead title="내 정보" sub="한 번 정하면 계속 불러와요" backLabel="‹ 홈" onBack={() => router.back()} />
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
+      <ScreenHead title="내 정보" sub="한 번 정하면 계속 불러와요" backLabel="‹ 홈" onBack={() => (router.canGoBack() ? router.back() : router.replace('/'))} />
+      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
         <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.ink }}>닉네임</Text>
         <Text style={{ color: COLOR.muted, fontSize: 12 }}>
           {locked ? '정한 닉네임은 바꿀 수 없어요.' : '한 번 정하면 바꿀 수 없어요. 다른 사람과 같은 이름은 못 써요.'} [임시 문구]

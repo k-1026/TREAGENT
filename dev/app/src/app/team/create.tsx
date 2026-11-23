@@ -9,6 +9,7 @@ import { COMPANION_OPTIONS, ERROR_LABEL, THEME_OPTIONS } from '../../lib/labels'
 import { useProfile } from '../../lib/profile_context';
 import { Companion, createParty, Theme } from '../../lib/server_api';
 import { COLOR, pxBox } from '../../lib/theme';
+import { CONTENT } from '../../components/phone_column';
 
 export default function TeamCreateScreen() {
   const { session } = useAuth();
@@ -36,7 +37,7 @@ export default function TeamCreateScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead title="팀 만들기" sub="테마와 동행을 골라요" backLabel="‹ 뒤로" onBack={() => router.back()} />
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
+      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
         <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.ink }}>테마</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {THEME_OPTIONS.map((o) => (

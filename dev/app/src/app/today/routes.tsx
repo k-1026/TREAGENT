@@ -9,6 +9,7 @@ import { usePlace } from '../../lib/place_context';
 import { getTodayRoutes } from '../../lib/server_api';
 import { COLOR, pxBox } from '../../lib/theme';
 import { useToday } from '../../lib/today_context';
+import { CONTENT } from '../../components/phone_column';
 
 export default function RoutesScreen() {
   const { place } = usePlace();
@@ -59,7 +60,7 @@ export default function RoutesScreen() {
         backLabel="‹ 홈"
         onBack={() => router.dismissTo('/')}
       />
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
+      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
         {routes.map((r, i) => (
           <RouteCard
             key={`${i}-${r.places.map((p) => p.id).join('-')}`}
