@@ -13,6 +13,7 @@
 
 - 앱은 DB와 외부 API에 직접 접속하지 않고 서버만 호출합니다. 로그인(인증)만 Supabase에 직접 요청합니다 (`dev/app/src/lib/supabase.ts`).
 - 비밀 키(`service role`, DB 주소, 기상청, LLM)는 서버 쪽(`Railway Variables` 또는 `dev/server/.env`)에만 둡니다.
+- 서버는 `/health`만 로그인 없이 열려 있고, 나머지 API(`/weather`, `/recommend`, `/courses`, `/walk`, `/parties`, `/profile`)는 로그인 토큰(`Authorization: Bearer ...`)이 있어야 답합니다 (`dev/server/src/auth/require_login.js`). 토큰이 없으면 401, 서버에 `SUPABASE_URL`이 없으면 503 `AUTH_NOT_CONFIGURED`입니다. 앱은 `server_api.ts`가 로그인 세션의 토큰을 자동으로 붙입니다.
 
 ## 폴더
 
