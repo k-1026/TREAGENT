@@ -15,6 +15,7 @@ import { ReactNode } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
 import { BTN_RED, COLOR, pxBox } from '../lib/theme';
 import { PixelBook } from './pixel_book';
+import { CONTENT } from './phone_column';
 
 export function AuthFrame({ title, subtitle, children }: { title: string; subtitle: string; children: ReactNode }) {
   return (
@@ -28,7 +29,7 @@ export function AuthFrame({ title, subtitle, children }: { title: string; subtit
           <Text style={styles.artSub}>{subtitle}</Text>
         </View>
       </View>
-      <ScrollView style={styles.form} contentContainerStyle={styles.formContent} keyboardShouldPersistTaps="handled">
+      <ScrollView style={styles.form} contentContainerStyle={[styles.formContent, CONTENT]} keyboardShouldPersistTaps="handled">
         {children}
       </ScrollView>
     </View>

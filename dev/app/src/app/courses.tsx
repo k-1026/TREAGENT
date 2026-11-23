@@ -5,6 +5,7 @@ import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text } from 're
 import { ERROR_LABEL, TYPE_LABEL } from '../lib/labels';
 import { usePlace } from '../lib/place_context';
 import { CourseCard, getCourses } from '../lib/server_api';
+import { CONTENT } from '../components/phone_column';
 
 export default function CoursesScreen() {
   const { place } = usePlace();
@@ -47,7 +48,7 @@ export default function CoursesScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fbf6ee' }}>
-      <ScrollView contentContainerStyle={{ padding: 20, gap: 12 }}>
+      <ScrollView contentContainerStyle={[{ padding: 20, gap: 12 }, CONTENT]}>
         <Text style={{ fontSize: 22, fontWeight: '700', color: '#2b2118' }}>코스 둘러보기</Text>
 
         {loading && <ActivityIndicator color="#a8242a" />}

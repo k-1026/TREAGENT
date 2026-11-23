@@ -285,3 +285,30 @@ export function startParty(accessToken: string, partyId: string) {
     headers: authHeaders(accessToken),
   });
 }
+
+// ---- 도보 경로 (TMAP, 서버 경유) ----
+export type WalkPlace = { id: string; name: string; lat: number; lng: number; coordSource: 'db' | 'tmap_poi' };
+export type WalkStep = { lat: number; lng: number; pathIndex: number; text: string; turn: number | null; type: string };
+export type WalkResult = {
+  places: WalkPlace[];
+  path: { lat: number; lng: number }[];
+  distance: number; // 총 거리 (m)
+  time: number; // 총 시간 (초)
+  legs: { distance: number; time: number }[]; // 구간별. startIncluded면 legs[0]이 "내 위치 → 첫 장소"
+  legEnds: number[]; // 각 구간이 끝나는 path 위치
+  steps: WalkStep[]; // 길 안내 지점
+  startIncluded: boolean;
+};
+
+// 장소 순서대로 도보 경로를 받는다. start(내 위치)를 주면 내 위치부터 잡는다. 좌표는 본문으로만 보낸다.
+export function getWalk(placeIds: string[], start?: { latitude: number; longitude: number }) {
+  return request<WalkResult>(
+    '/walk',
+    {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ placeIds, ...(start ?? {}) }),
+    },
+    20000, // 좌표가 없는 장소는 TMAP 검색이 먼저 일어나서 시간 제한을 넉넉히 둔다
+  );
+}

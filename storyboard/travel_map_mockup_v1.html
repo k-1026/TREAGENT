@@ -1,0 +1,383 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>여행 지도 목업 v1 (S-05, 티맵 인앱)</title>
+<meta name="description" content="여행 지도(S-05) 목업. 구조: 헤더 1개, 하단 도크 1개(코스 현황·도장 확인·도착/미션), 오버레이(도장 카드, 미션, 코스 변경 알림). 기본 화면과 확대(전체 화면) 모두 같은 하단 도크를 씁니다.">
+<style>
+  :root{
+    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#a85a24; --paper:#fffaf1; --red:#d03a2f; --red-d:#9c2420;
+    --muted:#7a5a4c; --shade:#d9bf98; --sage:#9fb58a;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#e9e4dc;color:var(--ink);font-family:var(--font)}
+  body{display:flex;flex-direction:column;align-items:center;padding:12px 12px 28px;gap:10px}
+  .ctrl{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:center;font-size:14px;max-width:760px}
+  .ctrl select,.ctrl button{font:inherit;padding:5px 8px;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:0}
+  .ctrl button{cursor:pointer;font-weight:700;background:var(--paper)}
+  .phone{position:relative;width:390px;height:844px;background:var(--cream);overflow:hidden;box-shadow:0 0 0 3px var(--ink),0 14px 36px rgba(60,40,20,.28)}
+  button{font-family:inherit;color:var(--ink)}
+  .px{box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink),0 6px 0 0 var(--shade)}
+
+  /* 상태 바 + 헤더 (기본/확대 공통) */
+  .status{position:absolute;left:0;top:0;width:390px;height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:13px;font-weight:700;color:#fff3e0;background:var(--beam);z-index:20}
+  .top{position:absolute;left:0;top:40px;width:390px;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:var(--beam);border-bottom:3px solid var(--ink);z-index:19}
+  .top .ttl{color:#fff;text-align:center;line-height:1.2}
+  .top .ttl b{display:block;font-size:17px;text-shadow:2px 2px 0 var(--ink)}
+  .top .ttl small{font-size:12px;color:#fff3e0}
+  .navbtn{border:0;background:var(--cream);padding:6px 11px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 0 2px var(--ink)}
+
+  /* 지도 */
+  .map{position:absolute;left:16px;top:116px;width:358px;height:290px;background:var(--cream2);box-shadow:0 0 0 3px var(--ink);z-index:2;overflow:hidden}
+  .tmap{position:absolute;inset:0;background:#dfe6d2}
+  .tmap .lbl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--paper);padding:6px 10px;font-size:12px;color:var(--muted);box-shadow:0 0 0 2px var(--ink);text-align:center;white-space:nowrap}
+  .pin{position:absolute;width:28px;height:28px;background:var(--paper);box-shadow:0 0 0 2px var(--ink);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
+  .pin.done{background:var(--sage)}
+  .pin.next{background:var(--red);color:#fff}
+  .me{position:absolute;width:44px;height:auto;transform:translate(-50%,-100%);image-rendering:pixelated}
+  .expand{position:absolute;right:10px;bottom:10px;border:0;background:var(--ink);color:#fff3e0;padding:6px 9px;font-size:13px;font-weight:800;cursor:pointer;z-index:5}
+
+  /* 정보 패널 (기본 화면만) */
+  .panel{position:absolute;left:0;top:420px;width:390px;height:170px;overflow:auto;padding:12px 16px 0;display:flex;flex-direction:column;gap:8px;z-index:3;background:var(--cream)}
+  .banner{background:#ffe1d6;padding:9px 12px;font-size:13px;font-weight:700;color:var(--red-d);display:none}
+  .banner.on{display:block}
+  .banner button{margin-top:6px;border:0;background:var(--paper);padding:6px 10px;font-size:13px;font-weight:800;cursor:pointer}
+  .fallback{display:none;background:var(--paper);padding:9px 12px;font-size:13px;line-height:1.5}
+  .fallback.on{display:block}
+  .card{background:var(--paper);padding:10px 14px}
+  .card b{font-size:15px}
+  .card small{display:block;font-size:12px;color:var(--muted);margin-top:3px;line-height:1.4}
+  .tag{display:inline-block;padding:2px 7px;font-size:12px;font-weight:800;background:var(--cream);margin-left:6px}
+  .tag.run{background:#e4ecd9}
+  .tag.stop{background:#ffe1d6;color:var(--red-d)}
+
+  /* 하단 도크: 코스 현황 + 도장 확인 + 도착/미션. 기본과 확대 모두 같은 자리 */
+  .dock{position:absolute;left:0;bottom:84px;width:390px;padding:10px 14px 12px;background:var(--cream);z-index:12}
+  .strip{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;margin-bottom:10px;white-space:nowrap;overflow:hidden}
+  .strip .lbl{margin-right:2px}
+  .strip .now{margin-left:auto;font-size:13px;color:var(--red-d);overflow:hidden;text-overflow:ellipsis}
+  .stamp-img{width:34px;height:34px;object-fit:contain;image-rendering:pixelated;filter:grayscale(1) opacity(.35);flex:none}
+  .stamp-img.on{filter:none}
+  .slam{animation:slam .45s ease-out both}
+  @keyframes slam{0%{transform:scale(2.6);opacity:0}60%{transform:scale(.92);opacity:1}80%{transform:scale(1.04)}100%{transform:scale(1)}}
+  @media (prefers-reduced-motion:reduce){.slam{animation:none}}
+  .row2{display:grid;grid-template-columns:1fr 1.4fr;gap:8px}
+  .sub,.cta{display:block;height:52px;border:0;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 0 0 3px var(--ink)}
+  .sub{background:var(--paper)}
+  .cta{background:var(--red);color:#fff}
+  .cta:disabled,.sub:disabled{background:#b9b2a8;color:#fff;cursor:not-allowed}
+  .dock .note{font-size:12px;color:var(--muted);margin-top:6px;min-height:16px}
+
+  /* 확대(전체 화면) 모드: 지도가 폰 전체, 헤더와 도크만 위에 얹힘, 탭 바 숨김 */
+  .phone.full .map{left:0;top:0;width:390px;height:844px;box-shadow:none;z-index:1}
+  .phone.full .panel,.phone.full .tab{display:none}
+  .phone.full .dock{bottom:0}
+  .phone.full .expand{display:none}
+
+  /* 하단 탭 (기본 화면만) */
+  .tab{position:absolute;left:0;bottom:0;width:390px;height:84px;background:var(--paper);display:flex;padding-top:8px;z-index:11}
+  .tab:before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--ink)}
+  .tab button{flex:1;border:0;background:none;font-size:12px;font-weight:700;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:5px;padding-top:6px;cursor:pointer}
+  .tab button[aria-current="page"]{color:var(--ink)}
+  .tab button i{width:22px;height:22px;background:var(--shade);display:block}
+
+  /* 오버레이: 도장 카드, 미션, 코스 변경 알림 */
+  .dim{display:none;position:absolute;inset:0;background:rgba(60,40,20,.45);z-index:30}
+  .dim.on{display:block}
+  .sheet{display:none;position:absolute;background:var(--paper);z-index:31}
+  .sheet.on{display:block}
+  .sheet.center{left:50%;top:50%;transform:translate(-50%,-50%);width:330px;padding:16px;box-shadow:0 0 0 3px var(--ink)}
+  .sheet.bottom{left:0;bottom:0;width:390px;padding:18px 18px 26px;box-shadow:0 -3px 0 0 var(--ink)}
+  .sheet .ttl{font-size:17px;font-weight:800;margin-bottom:6px}
+  .sheet p{margin:0 0 8px;font-size:14px;line-height:1.5}
+  .hara{font-size:13px;background:var(--cream);padding:8px 10px;margin-bottom:12px}
+  .srow{display:flex;gap:10px;align-items:center;background:var(--cream);padding:8px 10px;margin-bottom:8px}
+  .srow .sn{width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--paper);box-shadow:0 0 0 2px var(--ink);font-size:12px;font-weight:800;flex:none}
+  .srow .sn.done{background:var(--sage)}
+  .srow .sn.cur{background:var(--red);color:#fff}
+  .srow .sbody{flex:1;font-size:13px;line-height:1.35}
+  .srow .sbody small{display:block;font-size:12px;color:var(--muted)}
+  .srow img{width:44px;height:44px;object-fit:contain;image-rendering:pixelated;flex:none}
+  .muted-s{font-size:12px;color:var(--muted)}
+
+  /* 전체 화면 페이지 (컷씬 자리, 완주 한 장) */
+  .vfull{display:none;position:absolute;inset:0;background:var(--cream);z-index:60}
+  .vfull.on{display:block}
+  .vfull .donebody{position:absolute;left:0;right:0;top:100px;bottom:0;padding:16px;overflow:auto}
+  .snapc{background:var(--paper);box-shadow:0 0 0 3px var(--ink);padding:14px}
+  .snaphead{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--cream2);padding-bottom:8px;margin-bottom:8px}
+  .snaphead b{font-size:16px}
+  .snaphead span{font-size:12px;color:var(--muted)}
+  .snaprow{display:flex;align-items:center;gap:10px;padding:6px 0;font-size:14px}
+  .snaprow b{font-size:13px;color:var(--muted);width:48px}
+  .snaprow span{flex:1}
+  .snaprow img{width:40px;height:40px;object-fit:contain;image-rendering:pixelated}
+  .snapfoot{margin-top:10px;font-size:13px;color:var(--muted);border-top:2px solid var(--cream2);padding-top:8px}
+  .cutbox{position:absolute;left:16px;right:16px;top:50%;transform:translateY(-50%);background:var(--paper);box-shadow:0 0 0 3px var(--ink);padding:18px;text-align:center}
+  .cutbox p{margin:0 0 14px;font-size:14px;line-height:1.5}
+
+  .toast{position:absolute;left:50%;transform:translateX(-50%);bottom:250px;background:var(--ink);color:#fff3e0;padding:8px 12px;font-size:13px;font-weight:700;opacity:0;transition:opacity .2s;pointer-events:none;z-index:40;white-space:nowrap}
+  .toast.on{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="ctrl" role="group" aria-label="목업 조작 (실제 화면에는 없음)">
+  <label>상태 <select id="st">
+    <option value="ok">기본 (다음 장소 운영 중)</option>
+    <option value="stop">다음 장소 일시 중단</option>
+    <option value="mapfail">외부 지도 열기 실패 (폴백 안내)</option>
+    <option value="reroute">날씨 변경 · 경로 변경 알림 띠</option>
+    <option value="arrivefail">도착 확인 실패 (방문 확인 카드로)</option>
+  </select></label>
+  <label>도장 <select id="stamps">
+    <option value="0">0/3</option>
+    <option value="1" selected>1/3</option>
+    <option value="2">2/3</option>
+    <option value="3">3/3 (모두 완료)</option>
+  </select></label>
+  <label>이동 상태 <select id="mv">
+    <option value="stop">출발 전·멈춤·도착 (정면)</option>
+    <option value="fwd">정방향 이동 (뒷모습)</option>
+    <option value="left">왼쪽 이동 (왼쪽 측면)</option>
+    <option value="right">오른쪽 이동 (오른쪽 측면)</option>
+  </select></label>
+  <button id="alertBtn">코스 변경 알림창 띄우기</button>
+</div>
+
+<main class="phone" id="phone">
+  <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+
+  <header class="top">
+    <button class="navbtn" id="back" aria-label="뒤로">‹ 뒤로</button>
+    <div class="ttl"><b>여행 지도</b><small id="sub"></small></div>
+    <button class="navbtn" data-go="홈 (S-03)" aria-label="홈으로">⌂ 홈</button>
+  </header>
+
+  <section class="map" id="map" aria-label="티맵 지도 영역">
+    <div class="tmap">
+      <div class="lbl">[티맵 API 지도 자리]<br><small>장소 핀과 내 위치는 티맵이 그립니다</small></div>
+      <span class="pin" id="pin1" style="left:70px;top:90px">1</span>
+      <span class="pin" id="pin2" style="left:230px;top:40px">2</span>
+      <span class="pin" id="pin3" style="left:290px;top:200px">3</span>
+      <img class="me" id="me" src="../brand/character/images/harangi_view_front_v1.png" alt="내 위치 (하랑이)" style="left:160px;top:230px">
+    </div>
+    <button class="expand" id="expand" aria-label="지도 확대">⤢ 확대</button>
+  </section>
+
+  <section class="panel" id="panel">
+    <div class="banner" id="banner"></div>
+    <div class="fallback" id="fallback">
+      지도 앱을 열 수 없어요. 대신 아래 정보로 찾아가 주세요.<br>
+      <b>주소</b>: [장소 주소 자리]<br>
+      <b>인증 지점</b>: [인증 지점 설명 자리]
+    </div>
+    <div class="card px">
+      <b>다음 장소 · <span id="pname">2번</span> <span class="tag run" id="ptag">운영 중</span></b>
+      <small>[장소 특징 한 줄] · 도보 약 8분 [예시]</small>
+    </div>
+  </section>
+
+  <footer class="dock" id="dock">
+    <div class="strip" id="strip"></div>
+    <div class="row2">
+      <button class="sub" id="stampbtn">도장 확인</button>
+      <button class="cta px" id="act">도착 확인하기</button>
+    </div>
+    <div class="note" id="note"></div>
+  </footer>
+
+  <nav class="tab" aria-label="하단 탭">
+    <button data-go="홈 (S-03)" aria-current="page"><i></i>홈</button>
+    <button data-go="장부"><i></i>장부</button>
+    <button data-go="내 정보"><i></i>내 정보</button>
+  </nav>
+
+  <!-- 오버레이 -->
+  <div class="dim" id="dim"></div>
+
+  <section class="sheet center" id="stampsheet" aria-label="도장 확인">
+    <div class="ttl">받은 도장 <span id="stampcount"></span></div>
+    <div class="muted-s" id="stampcourse" style="margin-bottom:10px"></div>
+    <div id="stamplist"></div>
+    <button class="sub" id="stampclose" style="width:100%;margin-top:4px">닫기</button>
+  </section>
+
+  <section class="sheet center" id="mission" aria-label="미션" style="width:320px">
+    <div class="ttl" id="mtitle">미션</div>
+    <p>[미션 종류] · [미션 내용 자리]</p>
+    <div class="hara"><b>하랑이</b> [승인 대사 대기 · 미션]</div>
+    <button class="cta px" id="mdone" style="width:100%">미션 마치기</button>
+    <button class="sub" id="mlater" style="width:100%;margin-top:8px">나중에 하기</button>
+  </section>
+
+  <section class="sheet center" id="alert" role="alertdialog" aria-label="코스 변경 알림" style="width:320px">
+    <div class="ttl">코스가 바뀌었어요</div>
+    <p>날씨가 바뀌어서 <b>[다음 장소 이름]</b>은 지금 야외 안내를 멈췄어요. 하랑이가 대체 길을 준비했어요.</p>
+    <div class="muted-s" style="margin-bottom:8px">사유: 날씨 변경 · 기준 시각 [확인 필요]</div>
+    <div class="hara"><b>하랑이</b> [승인 대사 대기 · 경로 변경]</div>
+    <button class="cta px" id="altgo" style="width:100%">대체 길로 계속</button>
+    <button class="sub" id="altlater" style="width:100%;margin-top:8px">나중에 하기 (보류)</button>
+  </section>
+
+  <!-- 첫 완주 때 컷씬 ② 자리 (재생 시점은 팀 결정 전, 건너뛰기 가능) -->
+  <section class="vfull" id="cut" aria-label="컷씬 ② 자리">
+    <div class="cutbox">
+      <p><b>컷씬 ② 자리</b><br>첫 완주일 때 한 번 나옵니다. 건너뛰어도 앨범에 저장돼요.</p>
+      <button class="cta px" id="cutskip" style="width:100%">건너뛰기</button>
+    </div>
+  </section>
+
+  <!-- 완주 한 장 (S-08 자리) -->
+  <section class="vfull" id="done" aria-label="완주 한 장">
+    <header class="top">
+      <button class="navbtn" id="doneBack">‹ 지도</button>
+      <div class="ttl"><b>완주 한 장</b></div>
+      <span style="width:62px"></span>
+    </header>
+    <div class="donebody">
+      <div class="snapc px">
+        <div class="snaphead"><b>[날짜 예시]</b><span>[날씨 한 줄 · 기준 시각]</span></div>
+        <div id="donerows"></div>
+        <div class="snapfoot">[하랑이 마무리 대사 · 승인 대기]</div>
+      </div>
+      <button class="cta px" id="doneLedger" style="width:100%;margin-top:16px">장부에서 보기</button>
+      <button class="sub" id="doneHome" style="width:100%;margin-top:8px">홈으로</button>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</main>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var phone=$('#phone');
+  var IMG='../brand/character/images/stamp_nungeum.webp';
+  var NAMES=['[장소 1 이름 예시]','[장소 2 이름 예시]','[장소 3 이름 예시]'];
+  var PIN_POS=['pin1','pin2','pin3'];
+  var toastT, phase='arrive';
+
+  function toast(t){var el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('on')},1600)}
+  function stampImg(on,pop){return '<img class="stamp-img'+(on?' on':'')+(pop?' slam':'')+'" src="'+IMG+'" alt="'+(on?'받은 능금 도장':'빈 도장 자리')+'">'}
+  function stState(){return $('#st').value}
+  function n(){return +$('#stamps').value}
+
+  // 한 곳에서 모든 화면 요소를 맞춤 (구조 단순화: 상태가 바뀌면 render 하나로 갱신)
+  function render(popIdx){
+    var k=n(), s=stState(), cur=k<3?k+1:0;
+    // 헤더
+    $('#sub').textContent='[코스 이름 예시] · 도장 '+k+'/3';
+    // 지도 핀
+    for(var i=0;i<3;i++){
+      var p=document.getElementById(PIN_POS[i]);
+      p.className='pin'+(i<k?' done':(i===k?' next':''));
+    }
+    // 코스 현황 줄
+    var stamps=''; for(var j=0;j<3;j++){ stamps+=stampImg(j<k, j===popIdx); }
+    var nowTxt = k>=3 ? '모두 완료' : ('지금 '+cur+'번 장소 · '+(s==='stop'?'일시 중단':'운영 중'));
+    $('#strip').innerHTML='<span class="lbl">코스</span>'+stamps+'<span class="now">'+nowTxt+'</span>';
+    // 패널: 다음 장소, 상태 띠, 폴백
+    var banner=$('#banner'), tag=$('#ptag'), fb=$('#fallback');
+    banner.classList.remove('on'); fb.classList.remove('on');
+    tag.className='tag run'; tag.textContent='운영 중';
+    $('#pname').textContent = k>=3 ? '완료' : (cur+'번');
+    if(s==='stop'){ tag.className='tag stop'; tag.textContent='일시 중단'; banner.classList.add('on'); banner.innerHTML='이 장소는 일시 중단 중이에요. 여행을 이어 가려면 대체 길을 확인해요.<br><button id="bannerAlt">대체 길 보기</button>'; }
+    if(s==='reroute'){ banner.classList.add('on'); banner.innerHTML='날씨가 바뀌어서 길을 다시 고를 수 있어요.<br><button id="bannerAlt">경로 변경 보기 (S-07)</button>'; }
+    if(s==='mapfail'){ fb.classList.add('on'); }
+    // 도착/미션 버튼과 안내 문구
+    var act=$('#act'), note=$('#note');
+    if(k>=3){ act.disabled=false; act.textContent='완주 한 장 보기 (S-08)'; note.textContent=''; }
+    else if(s==='stop'){ act.disabled=true; act.textContent='도착 확인하기'; note.textContent='일시 중단된 장소는 도착 확인을 할 수 없어요. 대체 길을 먼저 봐 주세요.'; }
+    else if(phase==='arrive'){ act.disabled=false; act.textContent='도착 확인하기'; note.textContent=''; }
+    else { act.disabled=false; act.textContent='미션 확인하기 · '+cur+'번 장소'; note.textContent='도착이 확인됐어요. 이 자리에서 미션을 할 수 있어요.'; }
+  }
+
+  function renderSheet(){
+    var k=n();
+    $('#stampcount').textContent=k+'/3';
+    $('#stampcourse').textContent='[코스 이름 예시] · 중구 · 3곳';
+    var list='';
+    for(var i=0;i<3;i++){
+      var st=i<k?'done':(i===k?'cur':'');
+      var line=i<k?'도장 받음 · 방문 [시각 예시]':(i===k?'지금 가는 중 · 도착하면 미션 후 도장':'아직 가지 않았어요');
+      list+='<div class="srow"><span class="sn '+st+'">'+(i+1)+'</span><div class="sbody"><b>'+NAMES[i]+'</b><small>'+line+'</small></div>'+stampImg(i<k,false)+'</div>';
+    }
+    $('#stamplist').innerHTML=list;
+  }
+  function openDim(id){ $('#dim').classList.add('on'); $(id).classList.add('on'); }
+  function closeAll(){ $('#dim').classList.remove('on'); ['#stampsheet','#mission','#alert'].forEach(function(s){$(s).classList.remove('on')}); }
+
+  function setFull(on){
+    phone.classList.toggle('full',on);
+    $('#expand').textContent= on ? '⤡ 줄이기' : '⤢ 확대';
+    $('#back').textContent='‹ 뒤로';
+  }
+
+  // 이벤트
+  document.addEventListener('click',function(e){
+    var g=e.target.closest('[data-go]'); if(g && g.dataset.go.indexOf('홈')===0){ location.href='app_home_mockup_v1.html'; return; } if(g){ toast('→ '+g.dataset.go+' (자리)'); return; }
+    if(e.target.closest('#back')){ if(phone.classList.contains('full')) setFull(false); else if(history.length>1) history.back(); else location.href='app_home_mockup_v1.html'; return; }
+    if(e.target.closest('#bannerAlt')){ toast('경로 변경 보기 (S-07)'); return; }
+  });
+  $('#expand').addEventListener('click',function(){ setFull(!phone.classList.contains('full')); });
+  $('#st').addEventListener('change',function(){ render(-1); });
+  $('#stamps').addEventListener('change',function(){ phase='arrive'; render(-1); });
+
+  // 완주: 첫 완주면 컷씬 ② 자리를 먼저, 그다음 완주 한 장
+  var cutShown=false;
+  function openDone(){
+    var rows='';
+    var names=['[장소 1 이름 예시]','[장소 2 이름 예시]','[장소 3 이름 예시]'];
+    for(var i=0;i<3;i++){ rows+='<div class="snaprow"><b>[시각]</b><span>'+names[i]+'</span>'+stampImg(true,false)+'</div>'; }
+    $('#donerows').innerHTML=rows;
+    $('#done').classList.add('on');
+  }
+  $('#cutskip').addEventListener('click',function(){ $('#cut').classList.remove('on'); openDone(); });
+  $('#doneBack').addEventListener('click',function(){ $('#done').classList.remove('on'); });
+  $('#doneLedger').addEventListener('click',function(){ toast('→ 장부 (자리)'); });
+  $('#doneHome').addEventListener('click',function(){ toast('→ 홈 (S-03, 자리)'); });
+
+  $('#act').addEventListener('click',function(){
+    if(n()>=3){
+      if(!cutShown){ cutShown=true; $('#cut').classList.add('on'); } else { openDone(); }
+      return;
+    }
+    if(phase==='arrive'){
+      if(stState()==='arrivefail'){ toast('도착 확인 실패 → 방문 확인 실패 카드 (S-06)'); return; }
+      phase='arrived'; toast('도착 확인됨 · 이제 미션을 할 수 있어요'); render(-1); return;
+    }
+    $('#mtitle').textContent='미션 · '+(n()+1)+'번 장소';
+    openDim('#mission'); $('#mission').classList.add('on');
+  });
+  $('#mlater').addEventListener('click',closeAll);
+  $('#dim').addEventListener('click',closeAll);
+  $('#mdone').addEventListener('click',function(){
+    var before=n();
+    closeAll();
+    $('#stamps').value=String(before+1);
+    phase='arrive';
+    render(before);
+    toast('능금 도장을 받았어요 ('+(before+1)+'/3)');
+  });
+
+  $('#stampbtn').addEventListener('click',function(){ renderSheet(); openDim('#stampsheet'); });
+  $('#stampclose').addEventListener('click',closeAll);
+
+  // 내 위치 마커: 이동 상태에 따라 하랑이 방향 시안을 바꿈
+  var MARK={stop:'harangi_view_front_v1.png',fwd:'harangi_view_back_v1.png',left:'harangi_view_left_v1.png',right:'harangi_view_right_v1.png'};
+  $('#mv').addEventListener('change',function(){ $('#me').src='../brand/character/images/'+MARK[$('#mv').value]; });
+  $('#alertBtn').addEventListener('click',function(){ openDim('#alert'); });
+  $('#altgo').addEventListener('click',function(){ closeAll(); toast('대체 길 안내 (S-07)'); });
+  $('#altlater').addEventListener('click',function(){ closeAll(); toast('보류했어요. 다음 재평가 때 다시 알려 드려요'); });
+
+  setFull(false);
+  render(-1);
+  // 홈의 경로 변경 진입(?alert=1): 알림창을 바로 띄움
+  if(new URLSearchParams(location.search).get('alert')){ document.querySelector('#dim').classList.add('on'); document.querySelector('#alert').classList.add('on'); }
+})();
+</script>
+</body>
+</html>

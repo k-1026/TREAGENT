@@ -16,6 +16,9 @@ import { createLlmFromEnv } from './ai/gemini_llm.js';
 import { createPlaceLoader, createPgQuery } from './places/load_places.js';
 import { createCoursesRouter } from './routes/courses.js';
 import { createCourseLoader } from './courses/load_courses.js';
+import { createWalkRouter } from './routes/walk.js';
+import { createPoiFinder } from './tmap/poi_search.js';
+
 // ① 요청 로그: 요청 한 건이 끝나면 딱 한 줄만 남긴다.
 function requestLogger(req, res, next) {
   // 요청이 들어온 시각을 기억한다 (걸린 시간 계산용)
@@ -102,7 +105,8 @@ export function createApp({
   );
   app.use('/profile', createProfileRouter({ store: profileStore, verifier: tokenVerifier, now }));
   app.use('/courses', createCoursesRouter({ weatherService, placeLoader, courseLoader, now }));
-
+  app.use('/walk', createWalkRouter({ placeLoader, poiFinder: createPoiFinder() }));
+  
   // ④ 위 라우트에 안 걸린 모든 요청은 404
   app.use((req, res) => {
     res.status(404).json({ error: 'NOT_FOUND' });

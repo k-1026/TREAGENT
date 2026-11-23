@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>빈 상태 목업 v1 (장부·앨범·주머니·오늘 페이지)</title>
+<meta name="description" content="기록이나 내용이 아직 없을 때의 빈 상태 화면 목업. 장부 기록 없음(S-09), 앨범 비어 있음(S-19), 주머니 비어 있음(S-20), 오늘 칸 없음(S-21). 일러스트 자리는 비워 두고 문구와 버튼만 둡니다.">
+<style>
+  :root{
+    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#a85a24; --paper:#fffaf1; --red:#d03a2f; --red-d:#9c2420;
+    --muted:#7a5a4c; --shade:#d9bf98;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#e9e4dc;color:var(--ink);font-family:var(--font)}
+  body{display:flex;flex-direction:column;align-items:center;padding:12px 12px 28px;gap:10px}
+  .ctrl{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:center;font-size:14px;max-width:760px}
+  .ctrl select{font:inherit;padding:5px 8px;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:0}
+  .phone{position:relative;width:390px;height:844px;background:var(--cream);overflow:hidden;box-shadow:0 0 0 3px var(--ink),0 14px 36px rgba(60,40,20,.28)}
+  .status{position:absolute;left:0;top:0;width:390px;height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:13px;font-weight:700;color:#fff3e0;background:var(--beam);z-index:20}
+  .top{position:absolute;left:0;top:40px;width:390px;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:var(--beam);border-bottom:3px solid var(--ink);z-index:19}
+  .top b{color:#fff;font-size:18px;text-shadow:2px 2px 0 var(--ink)}
+  .navbtn{border:0;background:var(--cream);padding:6px 11px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 0 2px var(--ink);color:var(--ink)}
+  .body{position:absolute;left:0;top:100px;width:390px;bottom:0;padding:24px 18px;display:flex;flex-direction:column;gap:16px;align-items:stretch}
+  .art{height:220px;background:var(--cream2);box-shadow:0 0 0 2px var(--ink);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--muted)}
+  .msg{background:var(--paper);padding:18px 18px;box-shadow:0 0 0 2px var(--ink)}
+  .msg b{display:block;font-size:18px;line-height:1.4}
+  .msg p{margin:8px 0 0;font-size:15px;line-height:1.6;color:var(--ink)}
+  .msg small{display:block;margin-top:8px;font-size:13px;color:var(--muted)}
+  .cta{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:56px;padding:0;line-height:1;border:0;background:var(--red);color:#fff;font-weight:800;font-size:17px;cursor:pointer;box-shadow:0 0 0 3px var(--ink)}
+  .sub{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:52px;padding:0;line-height:1;border:0;background:var(--paper);color:var(--ink);font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 0 0 3px var(--ink)}
+</style>
+</head>
+<body>
+
+<div class="ctrl" role="group" aria-label="목업 조작 (실제 화면에는 없음)">
+  <label>빈 상태 <select id="kind">
+    <option value="ledger">장부 기록 없음 (S-09)</option>
+    <option value="album">앨범 비어 있음 (S-19)</option>
+    <option value="pouch">주머니 비어 있음 (S-20)</option>
+    <option value="today">오늘 칸 없음 (S-21)</option>
+  </select></label>
+</div>
+
+<main class="phone" id="phone">
+  <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+  <header class="top">
+    <button class="navbtn" id="back" aria-label="뒤로">‹ 뒤로</button>
+    <b id="title">장부</b>
+    <span style="width:62px"></span>
+  </header>
+
+  <section class="body">
+    <div class="art" id="art">[빈 상태 일러스트 자리]</div>
+    <div class="msg">
+      <b id="head"></b>
+      <p id="line"></p>
+      <small id="note"></small>
+    </div>
+    <button class="cta" id="go"></button>
+    <button class="sub" id="back2">홈으로</button>
+  </section>
+
+  <div class="toast" id="toast" style="display:none"></div>
+</main>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var K={
+    ledger:{title:'장부', head:'아직 빈 칸뿐이에요', line:'첫 길을 걸으러 갈까요? 길을 마치면 여기 기록이 남아요.', note:'출처: 7-14 (기록이 하나도 없을 때)', go:'오늘의 길 고르기'},
+    album:{title:'앨범', head:'아직 앨범이 비어 있어요', line:'같이 걸으면 이야기가 생겨요.', note:'출처: 7-18, 컷씬 제목과 내용은 미리 보여 주지 않음', go:'길 걸으러 가기'},
+    pouch:{title:'주머니', head:'아직 받은 물건이 없어요', line:'[승인 대사 대기 · 주머니 비어 있음]', note:'출처: S-20 (비어 있음). 문구는 승인 후 채움', go:'길 걸으러 가기'},
+    today:{title:'오늘 페이지', head:'오늘은 안내할 칸이 없어요', line:'[승인 대사 대기 · 오늘 칸 없음] 내일 다시 확인해요.', note:'출처: S-21 (오늘 칸 없음). 문구는 승인 후 채움', go:'다른 길 보기'}
+  };
+  var toastT;
+  function toast(t){var el=$('#toast');el.textContent=t;el.style.display='block';clearTimeout(toastT);toastT=setTimeout(function(){el.style.display='none'},1600)}
+  function render(){
+    var k=K[$('#kind').value];
+    $('#title').textContent=k.title;
+    $('#head').textContent=k.head;
+    $('#line').textContent=k.line;
+    $('#note').textContent=k.note;
+    $('#go').textContent=k.go;
+  }
+  $('#kind').addEventListener('change',render);
+  $('#go').addEventListener('click',function(){ toast('→ '+$('#go').textContent+' (자리)'); });
+  $('#back2').addEventListener('click',function(){ toast('→ 홈 (S-03, 자리)'); });
+  $('#back').addEventListener('click',function(){ if(history.length>1){ history.back(); } else { toast('이전 화면 (자리)'); } });
+  render();
+})();
+</script>
+</body>
+</html>

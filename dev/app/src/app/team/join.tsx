@@ -8,6 +8,7 @@ import { ERROR_LABEL } from '../../lib/labels';
 import { useProfile } from '../../lib/profile_context';
 import { joinParty } from '../../lib/server_api';
 import { COLOR, pxBox } from '../../lib/theme';
+import { CONTENT } from '../../components/phone_column';
 
 // 들어가기 실패 문구. 코드를 못 찾는 경우(NOT_FOUND)는 코스 화면의 문구와 달라서 따로 안내한다.
 function joinMessage(error: string): string {
@@ -42,7 +43,7 @@ export default function TeamJoinScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead title="초대 코드" sub="친구가 알려 준 코드를 입력해요" backLabel="‹ 뒤로" onBack={() => router.back()} />
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
+      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
         <TextInput
           value={code}
           onChangeText={(t) => {
