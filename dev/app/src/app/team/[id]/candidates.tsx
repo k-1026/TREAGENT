@@ -9,6 +9,7 @@ import { ERROR_LABEL, REASON_LABEL } from '../../../lib/labels';
 import { usePlace } from '../../../lib/place_context';
 import { choosePartyRoute, getPartyCandidates, PartyCandidates } from '../../../lib/server_api';
 import { COLOR, pxBox } from '../../../lib/theme';
+import { CONTENT } from '../../../components/phone_column';
 
 export default function TeamCandidatesScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -91,7 +92,7 @@ export default function TeamCandidatesScreen() {
         backLabel="‹ 팀"
         onBack={() => router.back()}
       />
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
+      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
         {!place && <Text style={{ color: COLOR.ink }}>위치를 먼저 정해 주세요.</Text>}
         {(loading || busy) && <ActivityIndicator color={COLOR.red} />}
         {loading && <Text style={{ color: COLOR.muted, fontSize: 11 }}>하랑이가 후보 길을 고르는 중이에요. 조금 걸릴 수 있어요.</Text>}

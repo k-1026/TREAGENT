@@ -1,7 +1,17 @@
-import { Pressable, Text } from 'react-native';
+import { Pressable, Text, ViewStyle } from 'react-native';
 import { COLOR } from '../lib/theme';
 
-export function Chip({ label, selected, onPress }: { label: string; selected: boolean; onPress: () => void }) {
+export function Chip({
+  label,
+  selected,
+  onPress,
+  style,
+}: {
+  label: string;
+  selected: boolean;
+  onPress: () => void;
+  style?: ViewStyle;
+}) {
   return (
     <Pressable
       onPress={onPress}
@@ -11,6 +21,8 @@ export function Chip({ label, selected, onPress }: { label: string; selected: bo
         borderWidth: 3,
         borderColor: COLOR.ink,
         backgroundColor: selected ? COLOR.ink : COLOR.paper,
+        alignItems: 'center',
+        ...style,
       }}
     >
       <Text style={{ color: selected ? '#fff' : COLOR.muted, fontWeight: '700', fontSize: 12 }}>{label}</Text>

@@ -5,6 +5,7 @@ import { Tag } from '../../../components/chip';
 import { MODE_LABEL, TYPE_LABEL } from '../../../lib/labels';
 import { COLOR, pxBox } from '../../../lib/theme';
 import { useToday } from '../../../lib/today_context';
+import { CONTENT } from '../../../components/phone_column';
 
 const HARANGI = require('../../../../assets/harangi_expressions.webp');
 const STAMP = require('../../../../assets/stamp_nungeum.webp');
@@ -35,7 +36,7 @@ export default function RouteBriefScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 14 }}>
+      <ScrollView contentContainerStyle={[{ padding: 16, gap: 14 }, CONTENT]}>
         <View style={{ paddingHorizontal: 8, gap: 4 }}>
           <Text style={{ fontSize: 13, color: COLOR.muted, fontWeight: '700' }}>하랑이가 알려 줄게요</Text>
           {weatherText ? (

@@ -3,12 +3,13 @@ import { router } from 'expo-router';
 import { Pressable, SafeAreaView, ScrollView, Text } from 'react-native';
 import { ScreenHead } from '../../components/screen_head';
 import { COLOR, pxBox } from '../../lib/theme';
+import { CONTENT } from '../../components/phone_column';
 
 export default function TeamHomeScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead title="친구와 함께" sub="같은 길을 함께 걸어요" backLabel="‹ 홈" onBack={() => router.back()} />
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
+      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
         <Pressable onPress={() => router.push('/team/create')} style={[pxBox(COLOR.red, COLOR.redDark), { padding: 16, gap: 4 }]}>
           <Text style={{ color: '#fff', fontWeight: '800', fontSize: 16 }}>팀 만들기</Text>
           <Text style={{ color: '#fff', fontSize: 12 }}>내가 방장이 돼서 후보 길 중에서 골라요</Text>

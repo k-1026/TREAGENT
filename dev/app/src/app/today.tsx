@@ -10,6 +10,7 @@ import { useProfile } from '../lib/profile_context';
 import { COMPANION_OPTIONS, ERROR_LABEL, MODE_LABEL, REASON_LABEL, THEME_OPTIONS } from '../lib/labels';
 import { usePlace } from '../lib/place_context';
 import { Companion, getTodayRoutes, Theme } from '../lib/server_api';
+import { CONTENT } from '../components/phone_column';
 
 
 export default function TodayScreen() {
@@ -58,7 +59,7 @@ export default function TodayScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead title="오늘의 길" sub="AI가 오늘 날씨에 맞는 길 3개를 골라 줘요" backLabel="‹ 홈" onBack={() => router.back()} />
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
+      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
         <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.ink }}>테마</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {THEME_OPTIONS.map((o) => (
