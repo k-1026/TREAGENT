@@ -1,0 +1,111 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 700" width="680" height="700" role="img">
+<title>에이전트 전체 구조 (오케스트레이터 그래프)</title>
+<desc>시작에서 관문과 라우터를 거쳐 코스 설계, 장소 안내, 기록 정리 세 서브그래프 중 하나로 가고 결과를 저장해 보내는 최상위 그래프와, 세 에이전트가 함께 쓰는 공통 부품</desc>
+<style>
+text{font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.th{font-size:14px;font-weight:700;fill:#2C2C2A}
+.ts{font-size:12px;fill:#5F5E5A}
+.arr{stroke:#6B6A64;stroke-width:1.5;fill:none}
+.c-purple>rect,rect.c-purple{fill:#EEEDFE;stroke:#534AB7;stroke-width:1}
+.c-purple .th{fill:#3C3489}.c-purple .ts{fill:#534AB7}
+.c-teal>rect,rect.c-teal{fill:#E1F5EE;stroke:#0F6E56;stroke-width:1}
+.c-teal .th{fill:#085041}.c-teal .ts{fill:#0F6E56}
+.c-coral>rect,rect.c-coral{fill:#FAECE7;stroke:#993C1D;stroke-width:1}
+.c-coral .th{fill:#712B13}.c-coral .ts{fill:#993C1D}
+.c-gray>rect,rect.c-gray{fill:#F1EFE8;stroke:#5F5E5A;stroke-width:1}
+.c-gray .th{fill:#444441}.c-gray .ts{fill:#5F5E5A}
+.zone{fill:none;stroke:#B4B2A9;stroke-width:1;stroke-dasharray:4 4}
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#6B6A64" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect width="680" height="700" fill="#FFFFFF"/>
+<rect class="zone" x="20" y="14" width="640" height="490" rx="12"/>
+<text class="th" x="34" y="33">오케스트레이터 그래프 (LangGraph)</text>
+<g class="c-gray">
+<rect x="290" y="50" width="100" height="34" rx="8"/>
+<text class="th" x="340.0" y="67.0" text-anchor="middle" dominant-baseline="central">시작</text>
+</g>
+<g class="c-teal">
+<rect x="210" y="104" width="260" height="52" rx="8"/>
+<text class="th" x="340.0" y="121.0" text-anchor="middle" dominant-baseline="central">관문 (코드)</text>
+<text class="ts" x="340.0" y="140.0" text-anchor="middle" dominant-baseline="central">로그인 확인 · 비용 한도 · 진행 상태</text>
+</g>
+<g class="c-gray">
+<rect x="500" y="104" width="140" height="52" rx="8"/>
+<text class="th" x="570.0" y="121.0" text-anchor="middle" dominant-baseline="central">공유 상태</text>
+<text class="ts" x="570.0" y="140.0" text-anchor="middle" dominant-baseline="central">요청 · 결과 · 근거</text>
+</g>
+<g class="c-purple">
+<rect x="210" y="188" width="260" height="52" rx="8"/>
+<text class="th" x="340.0" y="205.0" text-anchor="middle" dominant-baseline="central">라우터 (LLM)</text>
+<text class="ts" x="340.0" y="224.0" text-anchor="middle" dominant-baseline="central">자유 입력만 분류 · 버튼은 코드</text>
+</g>
+<g class="c-purple">
+<rect x="40" y="286" width="190" height="56" rx="8"/>
+<text class="th" x="135.0" y="305.0" text-anchor="middle" dominant-baseline="central">코스 설계</text>
+<text class="ts" x="135.0" y="324.0" text-anchor="middle" dominant-baseline="central">에이전트 1 · 별도 그래프</text>
+</g>
+<g class="c-purple">
+<rect x="250" y="286" width="180" height="56" rx="8"/>
+<text class="th" x="340.0" y="305.0" text-anchor="middle" dominant-baseline="central">장소 안내</text>
+<text class="ts" x="340.0" y="324.0" text-anchor="middle" dominant-baseline="central">에이전트 2 · 별도 그래프</text>
+</g>
+<g class="c-purple">
+<rect x="450" y="286" width="190" height="56" rx="8"/>
+<text class="th" x="545.0" y="305.0" text-anchor="middle" dominant-baseline="central">기록 정리</text>
+<text class="ts" x="545.0" y="324.0" text-anchor="middle" dominant-baseline="central">에이전트 3 · 별도 그래프</text>
+</g>
+<g class="c-gray">
+<rect x="210" y="384" width="260" height="52" rx="8"/>
+<text class="th" x="340.0" y="401.0" text-anchor="middle" dominant-baseline="central">저장 · 전송</text>
+<text class="ts" x="340.0" y="420.0" text-anchor="middle" dominant-baseline="central">결과 저장 · 앱 화면에 표시</text>
+</g>
+<g class="c-gray">
+<rect x="290" y="452" width="100" height="34" rx="8"/>
+<text class="th" x="340.0" y="469.0" text-anchor="middle" dominant-baseline="central">끝</text>
+</g>
+<path d="M340 84 L340 102" class="arr" marker-end="url(#arrow)"/>
+<path d="M472 130 L498 130" class="arr" marker-start="url(#arrow)" marker-end="url(#arrow)"/>
+<path d="M340 156 L340 186" class="arr" marker-end="url(#arrow)"/>
+<path d="M340 240 L340 262 L135 262 L135 284" class="arr" marker-end="url(#arrow)"/>
+<path d="M340 240 L340 284" class="arr" marker-end="url(#arrow)"/>
+<path d="M340 262 L545 262 L545 284" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="235" y="252" text-anchor="middle" dominant-baseline="central">코스 요청</text>
+<text class="ts" x="348" y="274" text-anchor="start" dominant-baseline="central">안내 요청</text>
+<text class="ts" x="445" y="252" text-anchor="middle" dominant-baseline="central">기록 요청</text>
+<path d="M135 342 L135 364 L340 364 L340 382" class="arr" marker-end="url(#arrow)"/>
+<path d="M340 342 L340 382" class="arr" marker-end="url(#arrow)"/>
+<path d="M545 342 L545 364 L340 364" class="arr"/>
+<path d="M340 436 L340 450" class="arr" marker-end="url(#arrow)"/>
+<rect class="zone" x="20" y="524" width="640" height="112" rx="12"/>
+<text class="th" x="34" y="543">공통 부품 (세 에이전트가 함께 씀)</text>
+<g class="c-teal">
+<rect x="35" y="556" width="140" height="64" rx="8"/>
+<text class="th" x="105.0" y="570.0" text-anchor="middle" dominant-baseline="central">페르소나</text>
+<text class="ts" x="105.0" y="589.0" text-anchor="middle" dominant-baseline="central">하랑이 말투를</text>
+<text class="ts" x="105.0" y="607.0" text-anchor="middle" dominant-baseline="central">한 곳에서 관리</text>
+</g>
+<g class="c-teal">
+<rect x="190" y="556" width="140" height="64" rx="8"/>
+<text class="th" x="260.0" y="570.0" text-anchor="middle" dominant-baseline="central">검증 (코드)</text>
+<text class="ts" x="260.0" y="589.0" text-anchor="middle" dominant-baseline="central">사실 · 출처 · 안전</text>
+<text class="ts" x="260.0" y="607.0" text-anchor="middle" dominant-baseline="central">정답 노출 · 좌표</text>
+</g>
+<g class="c-purple">
+<rect x="345" y="556" width="140" height="64" rx="8"/>
+<text class="th" x="415.0" y="570.0" text-anchor="middle" dominant-baseline="central">평가자 (LLM)</text>
+<text class="ts" x="415.0" y="589.0" text-anchor="middle" dominant-baseline="central">말투 · 깊이 · 적합성</text>
+<text class="ts" x="415.0" y="607.0" text-anchor="middle" dominant-baseline="central">판정만 하고 안 고침</text>
+</g>
+<g class="c-teal">
+<rect x="500" y="556" width="140" height="64" rx="8"/>
+<text class="th" x="570.0" y="570.0" text-anchor="middle" dominant-baseline="central">웹 검색 · 정제</text>
+<text class="ts" x="570.0" y="589.0" text-anchor="middle" dominant-baseline="central">공식 출처 우선</text>
+<text class="ts" x="570.0" y="607.0" text-anchor="middle" dominant-baseline="central">지시문 제거</text>
+</g>
+<rect class="c-teal" x="40" y="660" width="12" height="12" rx="2"/>
+<text class="ts" x="58" y="666" dominant-baseline="central">코드 단계</text>
+<rect class="c-purple" x="130.64" y="660" width="12" height="12" rx="2"/>
+<text class="ts" x="148.64" y="666" dominant-baseline="central">LLM 단계</text>
+<rect class="c-gray" x="218.64" y="660" width="12" height="12" rx="2"/>
+<text class="ts" x="236.64" y="666" dominant-baseline="central">상태 · 시작 · 끝</text>
+</svg>
