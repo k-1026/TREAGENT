@@ -2,6 +2,19 @@
 
 팀 TREAGENT의 작업 저장소입니다. 기획·리서치는 거의 마무리됐고, 지금은 **앱 개발과 11/30 빌드 제출을 준비하는 단계**입니다 (2026-11-23 기준).
 
+## 바로 보기
+
+주소 확인일: 2026-11-23
+
+| 결과물 | 열기 |
+|---|---|
+| 앱 (웹 버전) | [treagent-web.vercel.app](https://treagent-web.vercel.app) |
+| html 자료 (발표·기획·리서치 목차) | [k-1026.github.io/TREAGENT](https://k-1026.github.io/TREAGENT/) |
+| 워크플로우 현황 | [워크플로우 현황 보드](https://k-1026.github.io/TREAGENT/plan/workflow_status_v1.html) (팀이 함께 고치는 [공유 보드](https://claude.ai/artifact/RYHk7ixzHrzH3vafomNssB)는 초대받은 사람만) |
+
+- 앱은 로그인이 필요하고, 지금은 중구만 다룹니다. 서버 상태는 [treagent-production.up.railway.app/health](https://treagent-production.up.railway.app/health)에서 `{"status":"ok"}`로 확인합니다.
+- 앱은 `main` 병합 때 자동 배포되므로 최신 `dev` 작업은 18:00 자동 승격 뒤에 반영됩니다.
+
 ## 한눈에 보기
 
 **대프리카 히든 퀘스트 (가칭)**: 날씨·기온·시간대·방문 요일에 맞춰 대구의 스탬프 투어 길(코스)을 안내하는 서비스입니다.
