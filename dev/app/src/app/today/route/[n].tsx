@@ -93,7 +93,7 @@ export default function RouteBriefScreen() {
           <Pressable
             onPress={() => {
               today.choose(index); // 고른 길을 기억해 둔다 (출발·여행 화면은 아직 없다)
-              router.dismissTo('/');
+              router.push('/travel');
             }}
             style={[pxBox(COLOR.red, COLOR.redDark), { flex: 1, height: 52, alignItems: 'center', justifyContent: 'center' }]}
           >
