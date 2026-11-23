@@ -10,6 +10,7 @@ import { createProfileRouter } from './routes/profile.js';
 import { createPgPartyStore } from './party/party_store.js';
 import { createPgProfileStore } from './profile/profile_store.js';
 import { createTokenVerifierFromEnv } from './auth/verify_token.js';
+import { createRequireLogin } from './auth/require_login.js';
 import { createComposeRoute } from './ai/compose_route.js';
 import { createRouteCache } from './ai/route_cache.js';
 import { createLlmFromEnv } from './ai/gemini_llm.js';
@@ -97,15 +98,18 @@ export function createApp({
   app.get('/health', (req, res) => {
     res.json({ status: 'ok' });
   });
-  app.use('/weather', createWeatherRouter(weatherService));
-    app.use('/recommend', createRecommendRouter({ weatherService, placeLoader, composeRoute, harangiLine, now }));
+  // /health 말고는 모두 로그인이 있어야 들어온다. LLM·T맵·기상청 호출 비용을 아무나 쓰지 못하게 하는 첫 방어선이다.
+  // /parties와 /profile은 라우터 안에서 같은 검사를 이미 하므로 여기서 또 하지 않는다 (Supabase에 두 번 묻지 않기 위해).
+  const requireLogin = createRequireLogin(tokenVerifier);
+  app.use('/weather', requireLogin, createWeatherRouter(weatherService));
+    app.use('/recommend', requireLogin, createRecommendRouter({ weatherService, placeLoader, composeRoute, harangiLine, now }));
   app.use(
     '/parties',
     createPartiesRouter({ store: partyStore, verifier: tokenVerifier, weatherService, placeLoader, composeRoute, harangiLine, profileStore, now }),
   );
   app.use('/profile', createProfileRouter({ store: profileStore, verifier: tokenVerifier, now }));
-  app.use('/courses', createCoursesRouter({ weatherService, placeLoader, courseLoader, now }));
-  app.use('/walk', createWalkRouter({ placeLoader, poiFinder: createPoiFinder() }));
+  app.use('/courses', requireLogin, createCoursesRouter({ weatherService, placeLoader, courseLoader, now }));
+  app.use('/walk', requireLogin, createWalkRouter({ placeLoader, poiFinder: createPoiFinder() }));
   
   // ④ 위 라우트에 안 걸린 모든 요청은 404
   app.use((req, res) => {

@@ -5,6 +5,9 @@ import { createWeatherService } from '../src/weather/index.js';
 
 const NOW = () => new Date('2026-11-16T05:30:00Z'); // 한국 시간 14:30 (월)
 const fast = { sleep: () => Promise.resolve(), random: () => 0 };
+// 로그인 필수라서 가짜 검증기와 토큰 헤더를 쓴다.
+const tokenVerifier = { verify: async () => ({ ok: true, userId: '00000000-0000-4000-8000-000000000001' }) };
+const AUTH = { Authorization: 'Bearer test' };
 
 // 서버를 켜고 콜백을 실행한 뒤 닫는다. 서버가 찍은 로그도 모아서 돌려준다.
 async function withServer(appOptions, run) {
@@ -26,12 +29,13 @@ async function withServer(appOptions, run) {
 
 const mockApp = (scenario = 'ok') => ({
   weatherService: createWeatherService({ source: 'mock', scenario, now: NOW, clientDeps: fast }),
+  tokenVerifier,
 });
 
 const post = (base, body, raw = false) =>
   fetch(`${base}/weather`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...AUTH },
     body: raw ? body : JSON.stringify(body),
   });
 
@@ -68,7 +72,7 @@ test('한국 범위 밖 좌표는 400', async () => {
 
 test('본문이 없으면 400', async () => {
   await withServer(mockApp(), async (base) => {
-    const res = await fetch(`${base}/weather`, { method: 'POST' });
+    const res = await fetch(`${base}/weather`, { method: 'POST', headers: AUTH });
     assert.equal(res.status, 400);
   });
 });
@@ -98,10 +102,10 @@ test('어떤 경우에도 좌표는 로그에 남지 않는다 (예외 메시지
     await post(base, { latitude: String(LAT), longitude: LNG }); // 잘못된 입력
     await post(base, { latitude: 60, longitude: LNG }); // 범위 밖
     await post(base, `{"latitude": ${LAT}, 깨진`, true); // 깨진 JSON
-    await fetch(`${base}/weather?lat=${LAT}&lng=${LNG}`, { method: 'POST' }); // 쿼리에 좌표
+    await fetch(`${base}/weather?lat=${LAT}&lng=${LNG}`, { method: 'POST', headers: AUTH }); // 쿼리에 좌표
   })));
   let status;
-  logs.push(...(await withServer({ weatherService: throwing }, async (base) => {
+  logs.push(...(await withServer({ weatherService: throwing, tokenVerifier }, async (base) => {
     const res = await post(base, { latitude: LAT, longitude: LNG });
     status = res.status;
   })));

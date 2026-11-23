@@ -7,6 +7,9 @@ import { createRouteCache } from '../src/ai/route_cache.js';
 
 const NOW = () => new Date('2026-11-16T05:30:00Z'); // 한국 14:30, 월요일
 const fast = { sleep: () => Promise.resolve(), random: () => 0 };
+// 로그인 필수라서 가짜 검증기와 토큰 헤더를 쓴다.
+const tokenVerifier = { verify: async () => ({ ok: true, userId: '00000000-0000-4000-8000-000000000001' }) };
+const AUTH = { Authorization: 'Bearer test' };
 
 const place = (o) => ({
   id: 'x', name: 'x', district: '중구', type: 'exhibit', openHour: null, closeHour: null,
@@ -51,6 +54,7 @@ async function withServer(scenario, placeLoader, composeRoute, run, harangiLine)
     placeLoader,
     composeRoute,
     harangiLine,
+    tokenVerifier,
     now: NOW,
   });
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
@@ -68,7 +72,7 @@ async function withServer(scenario, placeLoader, composeRoute, run, harangiLine)
 const call = (base, body) =>
   fetch(`${base}/recommend`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...AUTH },
     body: JSON.stringify(body),
   });
 const ids = (list) => list.map((p) => p.id);
@@ -334,7 +338,7 @@ test('장소를 하나씩 직접 고치는 주소(/recommend/swap)는 없다 (40
   await withServer('ok', okLoader, createComposeRoute({ llm: null }), async (base) => {
     const res = await fetch(`${base}/recommend/swap`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json', ...AUTH },
       body: JSON.stringify({ ...COORD, currentPlaceIds: ['a'], replacePlaceId: 'a' }),
     });
     assert.equal(res.status, 404);

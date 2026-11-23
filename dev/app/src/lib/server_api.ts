@@ -1,4 +1,5 @@
 // 서버 호출 모음. 좌표는 요청 본문(body)으로만 보내고, 본문·좌표·오류 내용은 로그에 남기지 않는다.
+import { supabase } from './supabase';
 
 // EXPO_PUBLIC_ 값은 반드시 이렇게 점(.)으로 직접 읽어야 앱에 들어간다 (공식 문서).
 const SERVER_URL = process.env.EXPO_PUBLIC_SERVER_URL;
@@ -54,12 +55,24 @@ export type RouteResult = {
     | { status: 'unavailable' };
 };
 
+// 서버는 /health 말고는 모두 로그인이 있어야 답한다. Authorization이 이미 있으면 그대로 두고,
+// 없으면 지금 로그인 세션의 토큰을 붙인다. getSession()은 만료가 가까우면 토큰을 새로 받아 온다.
+// 로그인하지 않았다면 헤더 없이 보내고, 서버가 401을 돌려주면 아래에서 UNAUTHORIZED로 바뀐다.
+async function withLoginToken(init?: RequestInit): Promise<RequestInit> {
+  const headers = new Headers(init?.headers);
+  if (!headers.has('Authorization')) {
+    const { data } = await supabase.auth.getSession();
+    if (data.session?.access_token) headers.set('Authorization', `Bearer ${data.session.access_token}`);
+  }
+  return { ...init, headers };
+}
+
 async function request<T>(path: string, init?: RequestInit, timeoutMs: number = TIMEOUT_MS): Promise<ApiResult<T>> {
   if (!SERVER_URL) return { ok: false, error: 'NO_SERVER_URL' };
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch(`${SERVER_URL}${path}`, { ...init, signal: controller.signal });
+    const res = await fetch(`${SERVER_URL}${path}`, { ...(await withLoginToken(init)), signal: controller.signal });
     if (res.ok) return { ok: true, data: (await res.json()) as T };
     if (res.status === 404) return { ok: false, error: 'NOT_FOUND' };
     if (res.status === 400) return { ok: false, error: 'INVALID' };
