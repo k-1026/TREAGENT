@@ -37,7 +37,8 @@ const PALETTE: Record<string, string> = {
 };
 
 // 칸 하나 = cell(px). 그림의 가로·세로 칸 수는 격자에서 정해진다.
-export function PixelSprite({ grid, cell }: { grid: string[]; cell: number }) {
+// tint를 주면 빈 칸('.')이 아닌 모든 칸을 그 색 하나로 칠한다 (탭·버튼 아이콘처럼 한 가지 색인 그림)
+export function PixelSprite({ grid, cell, tint }: { grid: string[]; cell: number; tint?: string }) {
   const width = grid[0].length * cell;
   const height = grid.length * cell;
   return (
@@ -53,7 +54,7 @@ export function PixelSprite({ grid, cell }: { grid: string[]; cell: number }) {
                 top: y * cell,
                 width: run.len * cell,
                 height: cell,
-                backgroundColor: PALETTE[run.ch] ?? 'transparent',
+                backgroundColor: tint ?? PALETTE[run.ch] ?? 'transparent',
               },
             ]}
           />
