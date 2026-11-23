@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TREAGENT 워크플로우 보드</title>
+<meta name="description" content="기획·개발 워크플로우 단계별 task를 카드로 보고, 사람 칸으로 옮겨 배정하는 현황 보드입니다.">
+<style>
+:root{--bg:#f6f9f8;--card:#fff;--ink:#1d2a2a;--sub:#5b6b6b;--line:#d9e3e2;--brand:#2a7f78;
+--done:#2f7d4f;--doing:#1f6fb5;--todo:#6b7777;--warn:#b5801d;
+--done-bg:#e3f2e8;--doing-bg:#dcebf8;--todo-bg:#eceff0;--warn-bg:#faf0d9;--col:#eef3f2}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1b1b;--card:#162626;--ink:#e8f0ef;--sub:#a6b8b6;--line:#2c3d3d;--brand:#4fb3aa;
+--done:#6fcf92;--doing:#7db8ee;--todo:#9aa6a6;--warn:#e3b655;
+--done-bg:#1b3325;--doing-bg:#17304a;--todo-bg:#222c2c;--warn-bg:#3a3018;--col:#122020}}
+:root[data-theme="dark"]{--bg:#0f1b1b;--card:#162626;--ink:#e8f0ef;--sub:#a6b8b6;--line:#2c3d3d;--brand:#4fb3aa;
+--done:#6fcf92;--doing:#7db8ee;--todo:#9aa6a6;--warn:#e3b655;
+--done-bg:#1b3325;--doing-bg:#17304a;--todo-bg:#222c2c;--warn-bg:#3a3018;--col:#122020}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;line-height:1.5}
+.wrap{max-width:1240px;margin:0 auto;padding:22px 16px 64px}
+h1{font-size:25px;margin:0 0 4px}
+h2{font-size:19px;margin:30px 0 8px;padding-top:8px;border-top:1px solid var(--line)}
+p,li{font-size:14.5px}
+.sub{color:var(--sub);font-size:13.5px}
+.kicker{color:var(--brand);font-size:12.5px;letter-spacing:.06em}
+code{font-family:ui-monospace,Consolas,monospace;font-size:12px;background:var(--col);padding:1px 5px;border-radius:4px}
+a{color:var(--brand)}
+.note{background:var(--warn-bg);border-left:4px solid var(--warn);padding:8px 12px;border-radius:6px;margin:10px 0;font-size:13.5px}
+.roles{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:10px;margin:10px 0}
+.role{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:10px 14px}
+.role h3{margin:0;font-size:16px}
+.role .what{font-size:13px;color:var(--brand);font-weight:700;margin:2px 0 4px}
+.role ul{margin:4px 0 0;padding-left:1.1em}
+.role li{font-size:12.5px;color:var(--sub)}
+.tabs{display:flex;gap:6px;margin:12px 0 6px;flex-wrap:wrap}
+.tabs button,.chip,.tool button{font:inherit;font-size:13px;padding:5px 13px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.tabs button{font-size:15px;font-weight:700;padding:7px 20px}
+.tabs button[aria-pressed="true"],.chip[aria-pressed="true"]{background:var(--brand);color:var(--bg);border-color:var(--brand)}
+.flow{display:flex;gap:6px;overflow-x:auto;padding:4px 0 8px;align-items:stretch}
+.chip{display:flex;flex-direction:column;align-items:flex-start;min-width:132px;border-radius:10px;padding:8px 10px;text-align:left}
+.chip b{font-size:13px}
+.chip small{font-size:11.5px;opacity:.85}
+.chip .bar{height:5px;width:100%;background:var(--line);border-radius:3px;margin-top:5px;overflow:hidden}
+.chip .bar i{display:block;height:100%;background:var(--done)}
+.chip.cur{border:2px solid var(--doing)}
+.arrow{align-self:center;color:var(--sub)}
+.tool{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:8px 0}
+.tool label{font-size:13px;color:var(--sub);display:flex;gap:5px;align-items:center}
+.board{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:start}
+@media (max-width:900px){.board{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.board{grid-template-columns:1fr}h1{font-size:21px}}
+.colm{background:var(--col);border:1px solid var(--line);border-radius:10px;padding:8px;min-height:120px}
+.colm.over{outline:2px dashed var(--brand)}
+.colm h3{margin:2px 4px 8px;font-size:14px;display:flex;justify-content:space-between}
+.colm h3 span{color:var(--sub);font-weight:400;font-size:12.5px}
+.tk{background:var(--card);border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin:0 0 7px;cursor:grab;font-size:13px}
+.tk.dragging{opacity:.4}
+.tk.d{opacity:.65}
+.tk .tt{font-weight:600;font-size:13.5px;margin-bottom:3px}
+.tk.d .tt{text-decoration:line-through}
+.tk .meta{display:flex;flex-wrap:wrap;gap:5px;align-items:center;font-size:11.5px;color:var(--sub)}
+.tk .nt{font-size:12px;color:var(--sub);margin-top:3px}
+.st{border:0;border-radius:999px;font:inherit;font-size:11.5px;font-weight:700;padding:1px 9px;cursor:pointer}
+.st.todo{background:var(--todo-bg);color:var(--todo)}
+.st.doing{background:var(--doing-bg);color:var(--doing)}
+.st.done{background:var(--done-bg);color:var(--done)}
+.due{font-weight:700;color:var(--brand)}
+.tk select{font:inherit;font-size:11.5px;margin-left:auto;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:6px;padding:1px 2px}
+ul.plain{padding-left:1.2em;margin:6px 0}
+.slide{width:100%;margin:0 0 8px}
+.empty{font-size:12.5px;color:var(--sub);text-align:center;padding:14px 4px}
+.tk .ed{border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;font-size:11.5px;border-radius:6px;padding:0 6px;cursor:pointer}
+.tk .new{background:var(--warn-bg);color:var(--warn);border-radius:999px;padding:0 7px;font-weight:700}
+dialog{border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);padding:16px 18px;width:min(460px,92vw)}
+dialog::backdrop{background:rgba(0,0,0,.4)}
+dialog h3{margin:0 0 8px}
+dialog label{display:block;font-size:12.5px;color:var(--sub);margin:8px 0 0}
+dialog input,dialog select,dialog textarea{display:block;width:100%;font:inherit;font-size:14px;margin-top:3px;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.btns{display:flex;gap:8px;margin-top:14px}
+.btns button{font:inherit;font-size:14px;padding:6px 14px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+.btns .pri{background:var(--brand);color:var(--bg);border-color:var(--brand)}
+.btns .danger{margin-left:auto;color:var(--warn)}
+</style>
+</head>
+<body>
+<div class="wrap">
+<div class="kicker">TREAGENT · 워크플로우 보드 v1</div>
+<h1>기획·개발 워크플로우와 task 배정 보드</h1>
+<p class="sub">기준일 2026-11-23 (Day21). 강의 산출물, 저장소 파일, GitHub PR 기록을 대조해 task로 쪼갰습니다. <b>끝난 일은 PR 작성자 기준으로 이름과 PR 번호를 붙였고, 오늘 이후 task는 모두 "미정"</b>에 두었습니다. 카드를 사람 칸으로 끌어서 옮기면 배정됩니다.</p>
+
+<div class="note">이 파일은 저장소에 두는 <b>고정 사본</b>입니다. 변경(배정·수정·카드 추가)이 이 브라우저에만 저장됩니다. 팀이 함께 고치는 공유 보드는 <a href="https://claude.ai/artifact/RYHk7ixzHrzH3vafomNssB">claude.ai 공유 보드</a>이며, 공유 설정에서 초대받은 사람만 열 수 있습니다.</div>
+
+<div class="roles">
+  <div class="role"><h3>소정</h3><div class="what">FE · BE · AI</div><ul>
+    <li>앱·운영자 웹 개발 전체, 서버, <b>DB 테이블(구조) 만들기</b>, 하랑이 조회 도구·검증 로직. 테이블에 들어가는 데이터는 직접 조사하지 않음</li>
+    <li>git: 병합 PR 61개. 개발부분 30(서버·DB·앱), 저장소 규칙·자동화·배포 약 20, 명세 v1·고객 전략 v1, 경쟁·시장 조사 일부</li></ul></div>
+  <div class="role"><h3>소형</h3><div class="what">PM · DES · CON · AI(대사) · FE 화면</div><ul>
+    <li>기획·프로젝트 관리, 디자인·UX, 콘텐츠·스토리·에셋, 대사 프롬프트, 앱·웹 화면</li>
+    <li>git: 병합 PR 54개. 브랜드 16, 기획 15, 스토리보드 10, 발표 7, 리서치 5</li>
+    <li>목업·스토리보드는 <b>개발 트랙의 "화면 설계"</b> 단계로 분류</li></ul></div>
+  <div class="role"><h3>민지</h3><div class="what">RES · DES · PM · FE 화면</div><ul>
+    <li>리서치·검수·QA, 디자인·UX, 기획·프로젝트 관리, 앱·웹 화면. <b>테이블에 들어갈 장소·관광 데이터를 직접 조사해 입력</b> (역할 문서의 "장소 사실 확인·출처 기록"에 해당)</li>
+    <li>git: 병합 PR 16개 + 열린 PR 1개(#208 앱 화면). 리서치 8, 브랜드 4, 발표 3, 기획 1</li></ul></div>
+</div>
+<div class="note">역할은 <code>plan/team_roles_v1.md</code>(2026-11-13 합의)를 그대로 옮겼습니다. 소형·민지가 같이 맡은 DES·PM의 주 담당은 문서에도 <b>[결정 필요]</b>입니다. DB는 <b>소정이 테이블 구조, 민지가 데이터 조사·입력</b>으로 나눠 적었습니다(팀 확인 반영, 역할 문서에는 따로 적혀 있지 않음). PR 수는 작업량이 아닙니다.</div>
+
+<h2>워크플로우와 task 보드</h2>
+<div class="tabs" id="tabs" role="group" aria-label="트랙"></div>
+<p class="sub" id="flowHelp">단계를 누르면 그 단계의 카드만 봅니다. 막대는 완료 비율, 파란 테두리는 지금 진행하는 단계입니다 (제안).</p>
+<div class="flow" id="flow"></div>
+<div class="tool">
+  <label><input type="checkbox" id="showDone"> 완료된 카드도 보기</label>
+  <button type="button" id="addBtn">＋ 카드 추가</button>
+  <button type="button" id="copyBtn">배정 현황 복사</button>
+  <button type="button" id="resetBtn">내 변경 초기화</button>
+  <span class="sub" id="msg"></span>
+</div>
+<div class="board" id="board"></div>
+<p class="sub">카드 위 상태 버튼을 누르면 예정 → 진행 → 완료로 바뀌고, "✎ 수정"으로 제목·마감·메모·단계를 고칠 수 있으며, "＋ 카드 추가"로 새 카드를 만듭니다. 한 칸에는 카드를 10개씩만 보이고, 11개부터는 칸 위 슬라이더로 넘깁니다. 터치 화면에서는 카드 오른쪽 아래 선택 칸으로 사람을 바꿉니다. <b>변경 내용은 이 브라우저에만 저장되고 팀과 공유되지 않습니다.</b> 합의한 배정은 "배정 현황 복사"로 텍스트를 복사해 공유하세요.</p>
+
+<h2>결정 필요</h2>
+<ul class="plain">
+  <li><b>폴더 위치</b>: 강의 자료의 <code>modeling/</code>, <code>reports/</code>, <code>video/</code>, <code>quality/</code>, <code>automation/</code>, <code>demo/</code>, <code>handoff/</code>, <code>kit/</code>, <code>analysis/</code>는 이 저장소 대분류에 없습니다. 팀 결정 후 CLAUDE.md 표와 README에 함께 반영합니다.</li>
+  <li><b>팀 앱 저장소</b>: 강의 자료의 <code>&lt;팀이름&gt;-mvp</code>가 이 저장소인지 확인이 필요합니다.</li>
+  <li><b>트랙</b>: README는 크리에이티브 트랙이라고 적었지만 제품은 앱 중심입니다. 캠페인 키트·콘텐츠 발행 에이전트(크리에이티브)와 대시보드·자동화(데이터)를 어디까지 낼지 정해야 합니다.</li>
+  <li><b>페르소나·시장 가정</b>: 브랜드명, 능금 모티프 승인, 금칙어, 핵심 자산 최종 선택, 연간 계약 건수·외주 비율(근거 없는 가정값은 목표 숫자로 쓰지 않습니다).</li>
+  <li><b>DB 담당 경계</b>: 소정은 테이블(구조)을 만들고, 민지는 들어갈 장소·관광 데이터를 조사해 넣습니다. 시드 SQL로 적재하는 일은 PR 기록상 지금까지 소정이 했습니다. 이 일을 누가 이어서 할지, 역할 문서에 적을지 정해야 합니다.</li>
+  <li><b>소형·민지 DES·PM 주 담당</b>: 역할 문서의 미결 항목 그대로입니다. 오늘 이후 task가 모두 "미정"인 것도 이 때문입니다.</li>
+  <li><b>공개 범위</b>: 이 html은 <code>main</code>에 병합되면 GitHub Pages로 외부에 공개됩니다. 내부용이면 <code>.github/site/exclude.txt</code>에 올립니다.</li>
+</ul>
+
+<h2>읽는 법과 한계</h2>
+<ul class="plain">
+  <li>"완료"는 파일이나 코드가 저장소에 있다는 뜻입니다. 내용의 완성도와 동작은 확인하지 않았습니다 <b>[확인 필요]</b>. "못 찾음"은 팀이 다른 곳에 만들었을 가능성을 배제하지 않습니다.</li>
+  <li>강의 자료는 md만 읽었고 PDF와 대조하지 않았습니다. xlsx, 팀 구글 시트, <code>archive/metadata.csv</code> 건수는 열지 않았습니다.</li>
+  <li>마감일은 강의 일정 기준입니다. 이미 지난 강의 일정 task는 "지난 일정"으로 적었습니다.</li>
+  <li><code>jjining</code>(5커밋), <code>cookieyeon</code>(1커밋)은 누구 계정인지 몰라 집계에서 뺐습니다 <b>[확인 필요]</b>.</li>
+</ul>
+
+<h2>출처</h2>
+<ul class="plain">
+  <li>강의 자료 <code>Day01~Day30</code> "오늘의 목표와 산출물" 절 (<code>CJ_AX_lecture_note/1. 강의 자료/*_v3.md</code>)</li>
+  <li>GitHub PR 목록 138건(<code>gh pr list</code>)과 <code>git log origin/dev</code> 작성자·영역별 집계 (2026-11-23 확인)</li>
+  <li><code>dev/app/src/app/</code>, <code>dev/server/src/</code> 파일 목록, <code>storyboard/app_screen_storyboard_v1.md</code>(화면 S-01~S-17), <code>plan/spec/treagent_tech_spec_v1.md</code></li>
+  <li><code>research/bm/jung_som_inputs_v1.csv</code>, <code>research/bm/jung_summer_tam_sam_som_v3.md</code>, <code>brand/persona_sheet.md</code>, <code>brand/customer_persona.md</code></li>
+  <li><code>plan/todo_des_con_v1.md</code>, <code>plan/team_roles_v1.md</code>, <code>plan/feedback/20261118_pitch_followup_eval_v4.md</code>, <code>dev/README.md</code></li>
+</ul>
+</div>
+<dialog id="dlg"><form id="dlgForm" method="dialog">
+  <h3 id="dlgTitle">카드 추가</h3>
+  <label>제목<input id="fTitle" type="text" maxlength="120" required></label>
+  <div class="row2"><label>트랙<select id="fTrack"><option>기획</option><option>개발</option></select></label>
+  <label>단계<select id="fStage"></select></label></div>
+  <div class="row2"><label>마감 (예: 11/30)<input id="fDue" type="text" maxlength="12"></label>
+  <label>상태<select id="fStatus"><option value="todo">예정</option><option value="doing">진행</option><option value="done">완료</option></select></label></div>
+  <label>담당<select id="fOwner"><option>미정</option><option>소정</option><option>소형</option><option>민지</option></select></label>
+  <label>메모·근거<textarea id="fNote" rows="3" maxlength="300"></textarea></label>
+  <div class="btns"><button type="submit" class="pri">저장</button><button type="button" id="fCancel">취소</button><button type="button" id="fDel" class="danger">삭제</button></div>
+</form></dialog>
+<noscript><p class="wrap">보드를 보려면 JavaScript가 필요합니다.</p></noscript>
+<script>
+(function(){
+var OWNERS=["미정","소정","소형","민지"];
+var STAGES={
+"기획":[["P1","리서치·자산"],["P2","문제·고객"],["P3","사업 모델·시장"],["P4","서비스 기획·스펙"],["P6","브랜드·콘텐츠·영상"],["P7","리포트·AI 작업 체계"],["P8","발표·평가"]],
+"개발":[["D1","설계·스펙"],["DM","화면 설계(스토리보드·목업)"],["DA","브랜드 에셋(캐릭터·이미지·UI)"],["D2","서버·API"],["D3","DB·데이터"],["D4","앱 화면(프론트)"],["D5","품질·배포·자동화"],["D6","빌드·평가 제출"]]
+};
+var CUR={"기획":["P6","P7"],"개발":["DM","DA","D4"]};
+var PAST="지난 일정";
+// [트랙, 단계, 제목, 마감, 상태(todo|doing|done), 담당(빈값=미정), 비고]
+var T=[
+["기획","P1","디지털 필드워크 계획서",PAST,"todo","","fieldwork_plan.md를 못 찾음 (Day04)"],
+["기획","P1","archive/ 폴더·metadata.csv 20건 이상",PAST,"doing","","파일은 있고 건수는 세지 않음 (Day05)"],
+["기획","P2","페인포인트 정의서 (Top3·점수·근거)",PAST,"todo","","painpoint_def.md 없음, candidates.md만 있음"],
+["기획","P2","JTBD·기회 매트릭스·리스크 점검·아이디어 Top3",PAST,"todo","","ax/ 폴더를 못 찾음 [확인 필요: 다른 이름·위치] (Day12)"],
+["기획","P2","고객 페르소나 확정 (리뷰 근거 id, 후보 선택)","","doing","","brand/customer_persona.md · 대표 이용자는 1박 2일 혼행객으로 정함"],
+["기획","P3","BM 캔버스·가치 제안 캔버스",PAST,"doing","","research/jung_summer_business_model_v1.md가 캔버스를 대신하는지 확인 (Day13)"],
+["기획","P3","레드팀 기록 (지적 → 반영·보류)",PAST,"todo","","못 찾음 (Day13)"],
+["기획","P3","TAM·SAM·SOM: 나라장터 낙찰 건·지자체 계약 단가 입력",PAST,"todo","","로그인 필요. research/bm/jung_som_inputs_v1.csv의 빈 칸"],
+["기획","P3","TAM·SAM·SOM: 가정 결정 (연간 계약 건수·외주 비율·운영 개월)",PAST,"todo","","근거 없는 가정값은 목표 숫자로 쓰지 않음"],
+["기획","P3","TAM·SAM·SOM 정리 문서 v3를 최신 입력으로 갱신",PAST,"todo","","v3(11/18)는 방문객 값이 미검증으로 남아 있어 현재 CSV와 어긋남"],
+["기획","P3","검증 기록 verify.md·utm_links.md",PAST,"todo","","못 찾음 (Day15)"],
+["기획","P4","유저 플로우·IA",PAST,"doing","","명세가 인용하는 유저 플로우 파일이 저장소에 없음"],
+["기획","P4","11/17 팀 결정을 소정과 확인 (도장=미션 완료, GPS+미션, 새 여행 경고, 코스 3곳, 중구만)","11/23","todo","","plan/todo_des_con_v1.md A5에서 남은 일"],
+["기획","P4","미결 안건 회의: 시간대 구분·하던 여행 처리·코스 제목·소요 시간","11/23","todo","","todo 문서 4절"],
+["기획","P4","spec v2 (수용 기준·범위 밖·완료 기준)","11/26","todo","","Day24"],
+["개발","DM","여행 흐름 S-04~S-08 연결 (브랜치, PR 전)","","doing","소형","feat/storyboard-travel-flow"],
+["개발","DM","방문 인증 실패 상태 S-06 (브랜치, PR 전)","","doing","소형","feat/storyboard-stop-gps-fail"],
+["개발","DM","완주·내 여행 한 장·장부 목업 S-08·S-09","","todo","","문서만 있음"],
+["개발","DM","운영자 화면 목업 S-11~S-13","","todo","","문서만 있음"],
+["개발","DM","미션·영수증·퀴즈 목업 S-15~S-17 (P1)","","todo","","문서만 있음"],
+["개발","DM","팀 모드 화면 목업","","todo","","앱 화면은 있으나 목업은 확인 필요"],
+["기획","P6","브랜드 페르소나 확정 (브랜드명·능금 모티프 승인·금칙어·핵심 자산)","","todo","","brand/persona_sheet.md 10장 미체크 3개"],
+["기획","P6","브랜드 스킬 확정 (잠정 → 확정)","","doing","",".claude/skills/brand-daeprica/"],
+["개발","DA","도트 UI 에셋 시트 (카드·버튼·탭·배지·날씨 아이콘·말풍선)","","todo","","todo 문서 C2"],
+["기획","P6","하랑이 승인 대사 세트 (장면×상황, 후보 2개씩)","","todo","","todo 문서 B1, 명세 7-3"],
+["기획","P6","장소별 미션 (장소 목록 조사 후 DB 입력)","","todo","","todo 문서 B4, 장소 목록 조사 대기"],
+["개발","DA","브랜드 비주얼 셋 + visual_rules.md","11/24","todo","","research/creative/visual_rules.md 있음 (Day22)"],
+["개발","DA","이미지 계획표 (컷·용도·도구·시도 횟수)","11/24","todo","","brand/visual/image_plan.md"],
+["개발","DA","캐릭터 시트 (정면·측면·표정·고정 요소 표)","11/24","todo","","brand/character/ 이미지·포즈 목록 있음"],
+["기획","P6","쇼츠 샷 리스트 보강 (층·도구·크레딧 계획)","11/25","doing","","storyboard/shotlist_v1.md 있음 (Day23)"],
+["기획","P6","Blender 프리비즈 1샷","11/25","todo","",""],
+["기획","P6","생성형 장면 2~3컷 + 프롬프트","11/25","todo","","무료 크레딧 한도 확인"],
+["기획","P6","Remotion 9:16 테스트 렌더","11/25","todo","",""],
+["기획","P6","30초 쇼츠 조립 (자막·내레이션·BGM·라이선스 표기)","11/30","todo","","제출 (평가)"],
+["기획","P7","산업 리포트 HTML (요약·차트·Q&A·출처)","11/23","todo","","오늘 마감 (Day21)"],
+["기획","P7","리포트 생성 스킬 (SKILL.md·template.html·factcheck.md)","11/23","todo","","오늘 마감"],
+["기획","P7","질문 트리·근거 표","11/23","todo","","오늘 마감"],
+["기획","P7","주간 예약 작업 1건 + 설정 캡처·첫 실행","11/23","todo","","오늘 마감"],
+["기획","P7","모델 비교 평가표·팀 AI 사용 가이드라인",PAST,"todo","","modeling/ 폴더 없음 [확인 필요] (Day19)"],
+["기획","P7","팀 스킬 3종·프롬프트 전후 비교·스킬 시험 기록",PAST,"doing","","스킬 2개 있음, modeling/ 없음 (Day20)"],
+["기획","P7","사용자 테스트 3~5명·결과서",PAST,"todo","","평가 v4: 다음 발표에서 하기로 함 (Day17)"],
+["기획","P8","캠페인 키트 (최종 비주얼·영상·카피·사용 조건)","12/3","todo","","트랙 결정 필요"],
+["기획","P8","HTML 데모 발표","12/4","todo","","demo/index.html (평가)"],
+["기획","P8","포트폴리오 사이트 + 30초 하이라이트","12/4","todo","",""],
+["기획","P8","핸드오프 패키지 (스킬·CLAUDE.md·매핑표·README)","12/4","todo","",""],
+["개발","D1","폴더 구조·팀 앱 저장소 결정 (modeling/·reports/ 등을 어디에)","11/23","todo","","결정 필요"],
+["개발","D1","mvp_audit.md (스펙과 다른 점·깨지는 지점)","11/26","todo","","Day24"],
+["개발","D1","plan_v2.md (계획 모드 결과)","11/26","todo","",""],
+["개발","D1","팀 CLAUDE.md v2 (개발 규칙)","11/26","doing","","dev/CLAUDE.md 있음"],
+["개발","D2","홈·진행 여행 API (여행 시작·이어하기)","","todo","","F-06, 진행 여행 DB 없음"],
+["개발","D2","GPS 방문 인증 검증 API (위치 전송 → 서버 검증 → 방문 저장)","","todo","","F-09"],
+["개발","D2","도장·완주 판정 API","","todo","","F-10"],
+["개발","D2","이동 중 경로 변경 API 점검","","todo","","F-08, 서버 일부 있는지 확인"],
+["개발","D2","운영자 API (장소 상태 변경·검수·게시)","","todo","","F-18"],
+["개발","D3","방문·도장·여행 테이블 설계·SQL","","todo","","현재 없음"],
+["개발","D3","장소·코스 데이터 조사·확대 (서문시장·3호선 등) — 조사·입력","","todo","","데이터는 민지가 찾아 넣는 흐름 · 담당 확정은 팀이 정함"],
+["개발","D3","장소·코스 시드 SQL·테이블 반영 (조사된 데이터를 DB에 적재)","","todo","","테이블 만들기는 소정 몫 · 담당 확정은 팀이 정함"],
+["개발","D3","이벤트 분석 정의표 (첫 인증률·변경 후 재개율·완주율)","","todo","","F-22, 명세상 P0에서 확정"],
+["개발","D3","RLS·비밀값 점검","12/3","todo","","Day29 보안 점검과 함께"],
+["개발","D4","로그인 전 화면을 목업대로 변경 (타이틀·로그인·가입·위치·구·군·처음 만나요)","","doing","민지","PR #208 열림 (11/20)"],
+["개발","D4","홈 화면 S-03 (진행 중 여행·코스·장부 진입)","","todo","","목업 있음, 앱 화면 없음"],
+["개발","D4","여행 시작·이어하기 + 지도·진행 S-05","","todo","","목업 브랜치 진행 중"],
+["개발","D4","방문 확인·GPS 인증 화면 S-06","","todo","",""],
+["개발","D4","경로 변경·보류 S-07","","todo","",""],
+["개발","D4","완주·내 여행 한 장·장부 S-08·S-09","","todo","",""],
+["개발","D4","내 계정 S-10 (닉네임·로그아웃) 확인","","todo","","me.tsx 있음, 목업과 대조"],
+["개발","D4","하랑이 대사 표시 (F-13)","","todo","",""],
+["개발","D4","운영자 웹 S-11~S-13","","todo","","P0지만 화면 전부 없음"],
+["개발","D4","미션·영수증·퀴즈 S-15~S-17 (P1)","","todo","",""],
+["개발","D5","360px 반응형 점검·수정","11/30","todo","","Day26"],
+["개발","D5","오류 화면 4종 (네트워크·DB·AI 한도·빈 입력)","11/30","todo","","Day26"],
+["개발","D5","레드팀·채점 에이전트 정의 (.claude/agents)","12/3","todo","","Day13에서 빠진 것과 함께"],
+["개발","D5","평가 기준표·골든셋·채점·보안 리뷰","12/3","todo","","quality/ (Day29)"],
+["개발","D5","배포 전 점검표 + 재배포 URL","12/3","todo","",""],
+["개발","D5","자동화 설계도·워크플로우 1개·운영 점검표","12/2","todo","","automation/ (Day28)"],
+["개발","D5","콘텐츠 발행 에이전트 v1 (크리에이티브 트랙)","12/2","todo","","트랙 결정 필요"],
+["개발","D6","MVP v2 재배포 (URL)","11/26","todo","",""],
+["개발","D6","DB 연동 점검: 저장·조회·AI 기능이 URL에서 동작","11/27","todo","","Supabase·서버는 이미 배포됨 (Day25)"],
+["개발","D6","웹서비스 v1.5 (기능 1개·360px·오류 화면 4종·spec v1.5)","11/30","todo","","제출 (평가)"],
+["개발","D6","빌드 로그·빌드 계획 (매일 기록)","11/30","doing","","docs/build_log.md · 지금부터 쌓기"],
+["개발","D6","분석 리포트·인터랙티브 대시보드","12/1","todo","","analysis/ (Day27)"],
+["개발","D6","앱 라이브 데모 준비","12/4","todo","","데모데이 (평가)"],
+["기획","P1","조사 노트·교차검증 표","","done","","research/, archive/crosscheck.md (Day03). 초기 일괄 커밋이라 담당 기록 없음"],
+["기획","P1","리뷰 분석 리포트","","done","","research/data/reviews/report.md (Day04). 초기 일괄 커밋이라 담당 기록 없음"],
+["기획","P1","자산 인벤토리 30개·Top3 근거","","done","","archive/inventory/ (Day06). 초기 일괄 커밋이라 담당 기록 없음"],
+["기획","P1","카카오 곳곳 기업 조사·유사 사례 비교표","","done","소형","PR #21"],
+["기획","P1","여름 장소 후보 풀·사실 확인표 v1","","done","소형","PR #38, #44"],
+["기획","P1","대구 능금 출처 검증 v1","","done","소형","PR #54"],
+["기획","P1","대구 도시 연혁 보조 근거·통계 교차 확인","","done","소형","PR #65"],
+["기획","P1","중구 관광자료 엑셀 v7 (중구 장소표 50곳)","","done","민지","PR #73 · DB 장소 시드의 원천"],
+["기획","P2","기업·산업 원페이지 5곳","","done","","research/company/ (Day09). 초기 일괄 커밋이라 담당 기록 없음"],
+["기획","P2","밸류체인 맵","","done","","research/valuechain/ (Day10). 초기 일괄 커밋이라 담당 기록 없음"],
+["기획","P2","여정 지도·VOC 분류표","","done","","research/painpoint/ (Day11). 초기 일괄 커밋이라 담당 기록 없음"],
+["기획","P2","고객 전략 v1 + 시각화 html","","done","소정","PR #8"],
+["기획","P2","크리에이티브 트랙 초안 7종","","done","민지","PR #6"],
+["기획","P2","발표 피드백 원문 기록","","done","민지","PR #15"],
+["기획","P2","11/13 중간 발표 피드백 통합 정리","","done","소형","PR #19"],
+["기획","P3","경쟁 분석표·포지셔닝 (이벤터스·큐알스탬프·퀘스투어)","","done","소정","PR #3 · 비교표는 소형 PR #21"],
+["기획","P3","시장 조사: 사업 모델 근거·시장·SOM·단위 경제 v1~v3, 방문자 36개월, 계산 시트","","done","민지","PR #152, #154, #162, #164, #165, #168, #172"],
+["기획","P3","시장·단가·손익 근거 정리 v2","","done","소정","PR #178"],
+["기획","P4","spec v1 (기능·기술·담당 명세, 위치 기반 추천·도사 인정 규칙)","","done","소정","PR #13, #14"],
+["기획","P4","시나리오·캠페인 기획","","done","","research/creative/. 초기 일괄 커밋이라 담당 기록 없음"],
+["기획","P4","서비스 이름을 대프리카 히든 퀘스트(가칭)로 변경","","done","소형","PR #5"],
+["기획","P4","팀 역할 분담 v1","","done","소형","PR #45"],
+["기획","P4","할 일 v1 (DES·CON·PM·AI 대사·FE 화면)","","done","소형","PR #108, #111"],
+["기획","P4","11/17 팀 결정 6건을 명세에 반영, 옛 문구 정리","","done","소형","PR #118, #138, #140"],
+["기획","P4","등장인물 규모·중도 참여 정책 v1","","done","소형","PR #22"],
+["개발","DM","앱 화면 스토리보드 v1 (S-01~S-18, 미션 화면 포함)","","done","소형","PR #71"],
+["개발","DM","게임 흐름 스토리 v1 (타이틀~엔딩)","","done","소형","PR #86"],
+["개발","DM","홈 화면 구성·목업·도트 배경 프롬프트, 홈 목업 보완","","done","소형","PR #94, #104"],
+["개발","DM","타이틀·로그인·가입·위치 확인·구·군 선택 목업","","done","소형","PR #128"],
+["개발","DM","길동무 수·능금 도장 표기·코스 A(C01) 문서 정리","","done","소형","PR #124, #125, #126"],
+["개발","DM","경로 변경 S-07·코스 브리핑 씬, 쉼터 안내 S-14·날씨별 방 배경","","done","소형","PR #174, #177"],
+["개발","DM","목업 발표 모드·현재 화면 목업과 디자인 기준·준비물 아이콘","","done","소형","PR #157, #190, #192"],
+["개발","DM","첫 만남 프로필 화면 (닉네임·나이대 필수)","","done","소형","PR #197"],
+["개발","DM","홈 목업: 인증 실패·하랑이 대사·지역 변경·내 정보","","done","소형","PR #198"],
+["기획","P6","세계관·하랑이 설정 확정, 조난·탐험 설정, 첫 만남 흐름(열쇠·장부·앨범)","","done","소형","PR #16, #18, #20, #85"],
+["개발","DA","가상 굿즈 시안 4종·3D 디자인 시안·모니터 피규어","","done","소형","PR #25, #39, #41, #77"],
+["개발","DA","하랑이 도트 포즈 분할·옆모습 걷기 4프레임","","done","소형","PR #107, #130"],
+["개발","DA","컷씬 ② 라인아트 시안, 2D 지도 프롬프트(보류)","","done","소형","PR #96, #98"],
+["개발","DA","여행 아이템 시트·메인 화면 스프라이트 3종","","done","소형","PR #191, #207"],
+["개발","DA","하랑이 이미지 5종 (행동·아이템·표정·움직임)","","done","민지","PR #50"],
+["기획","P6","무료 장소 퀴즈 후보","","done","민지","PR #76"],
+["개발","DA","하랑이 3D 렌더·첫 화면 영상·픽셀 표정 시트","","done","민지","PR #114"],
+["개발","DA","하랑이 제자리 걷기 애니메이션","","done","민지","PR #132"],
+["기획","P8","발표 v10·유저 플로우 장·피치 개요·후속 v3·최종 대본·예상 질문","","done","소형","PR #9, #10, #144, #145, #158, #159"],
+["기획","P8","스토리보드 프로젝트 발표(pptx·pdf·html)·이어서 발표 html v1","","done","민지","PR #112, #150"],
+["기획","P8","피치 7장 발표 html 초안 v1","","done","소정","PR #141"],
+["개발","D1","저장소 구조 정리 (대분류, dev/app 이동, research·plan/feedback 이동)","","done","소정","PR #2, #23, #24, #26"],
+["개발","D2","서버 뼈대·개발 환경","","done","소정","PR #69"],
+["개발","D2","규칙 엔진(decideMode)·날씨 어댑터","","done","소정","PR #80, #82 · 서버 테스트 40개 파일"],
+["개발","D2","장소·코스·추천 API (후보 길 여러 개 포함)","","done","소정","PR #88, #90, #93, #195"],
+["개발","D2","AI 길 구성·소요시간·하랑이 브리핑·새로고침 (서버)","","done","소정","PR #175 · 앱 연결은 확인 필요"],
+["개발","D2","프로필 API (닉네임 중복 방지)","","done","소정","PR #194"],
+["개발","D2","팀 후보 길 API (방장이 후보 3개 중 선택)","","done","소정","PR #201"],
+["개발","D3","Supabase 연동·init 설정","","done","소정","PR #48, #52"],
+["개발","D3","장소 테이블·코스 테이블·코스 시드 C01","","done","소정","PR #88, #93"],
+["개발","D3","장소 테이블 구조 확장(alter_places)·장소×모드 적합도 표 만들기 + 시드 SQL 적재","","done","소정","PR #120, #134 · 소정은 테이블과 적재 SQL. 넣은 데이터(중구 장소표 50곳)는 민지의 엑셀 v7(PR #73)에서 옴"],
+["개발","D3","장소 접근성·확인 값 조사·입력 (계단·경사·쉴 곳·교육 적합도·접근성 메모·확인 출처)","","doing","민지","dev/supabase/inputs/place_access_input_v1.csv · 이 칸들은 아직 대부분 비어 있음 · 민지가 직접 조사해 입력 중"],
+["개발","D3","profiles 표 (닉네임·나이대) SQL","","done","소정","PR #193"],
+["개발","D3","팀 후보 길 표 party_route_candidates SQL","","done","소정","PR #200"],
+["개발","D4","Expo 앱 데모(코스 A)·Expo Router 시작점","","done","소정","PR #7, #56"],
+["개발","D4","로그인·가입·인증 context","","done","소정","PR #58"],
+["개발","D4","위치 읽기·위치와 구·군 선택 화면 (중구만)","","done","소정","PR #60, #62, #64"],
+["개발","D4","코스 목록·오늘의 길 화면 (AI 길 포함)","","done","소정","PR #100, #176"],
+["개발","D4","오늘의 길 후보 3개 화면 + 프로필","","done","소정","PR #196"],
+["개발","D4","팀 모드 (만들기·들어가기·대기실·후보 고르기)","","done","소정","PR #202"],
+["개발","D5","GitHub Flow 규칙·PR/이슈 템플릿·커밋 스킬, dev·main·presentation 3브랜치","","done","소정","PR #1, #29, #30, #170"],
+["개발","D5","html GitHub Pages 자동 배포·목차","","done","소정","PR #31, #34, #36"],
+["개발","D5","Railway·Vercel 배포, Docker, CORS, 세팅 가이드","","done","소정","PR #102, #179, #181, #183, #186, #187"],
+["개발","D5","dev→main 자동 승격","","done","소정","promote-dev-to-main.yml (PR #180·#203~#205)"],
+["개발","D5","서버 테스트","","done","소정","dev/server/test/ 40개 파일"]
+];
+// 저장된 변경: 카드별 수정(ov)과 새로 만든 카드(custom)
+var KEY="treagent_board_v1", CKEY="treagent_board_custom_v1", PAGE=10;
+var ov={}, custom=[];
+try{ ov=JSON.parse(localStorage.getItem(KEY)||"{}"); }catch(e){ ov={}; }
+try{ custom=JSON.parse(localStorage.getItem(CKEY)||"[]"); }catch(e){ custom=[]; }
+function save(){ try{ localStorage.setItem(KEY,JSON.stringify(ov)); localStorage.setItem(CKEY,JSON.stringify(custom)); }catch(e){} }
+var $=function(id){return document.getElementById(id);};
+function esc(s){return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];});}
+var SL={todo:"예정",doing:"진행",done:"완료"}, NEXT={todo:"doing",doing:"done",done:"todo"};
+var tasks=[];
+function build(){
+  tasks=T.map(function(r){ return {k:r[0]+"|"+r[2],base:true,track:r[0],stage:r[1],title:r[2],due:r[3],status:r[4],owner:r[5]||"미정",note:r[6]}; });
+  tasks.forEach(function(t){ var o=ov[t.k]; if(!o) return;
+    if(o.o&&OWNERS.indexOf(o.o)>=0) t.owner=o.o; if(o.s) t.status=o.s;
+    if(typeof o.t==="string"&&o.t) t.title=o.t; if(typeof o.d==="string") t.due=o.d; if(typeof o.n==="string") t.note=o.n;
+    if(o.r&&STAGES[o.r]) t.track=o.r; if(o.g) t.stage=o.g; if(o.h) t.hidden=true; });
+  custom.forEach(function(c){ if(STAGES[c.track]) tasks.push({k:c.k,base:false,track:c.track,stage:c.stage,title:c.title,due:c.due,status:c.status,owner:OWNERS.indexOf(c.owner)>=0?c.owner:"미정",note:c.note}); });
+  tasks=tasks.filter(function(t){return !t.hidden;});
+}
+function put(t){
+  if(t.base){ var o=ov[t.k]||{}; o.o=t.owner; o.s=t.status; ov[t.k]=o; }
+  else{ custom.forEach(function(c){ if(c.k===t.k){ c.track=t.track; c.stage=t.stage; c.title=t.title; c.due=t.due; c.status=t.status; c.owner=t.owner; c.note=t.note; } }); }
+  save();
+}
+build();
+
+var track="기획", stage="all", offs={};
+function renderTabs(){
+  var tb=$("tabs"); tb.innerHTML="";
+  Object.keys(STAGES).forEach(function(k){
+    var n=tasks.filter(function(t){return t.track===k;}), d=n.filter(function(t){return t.status==="done";}).length;
+    var b=document.createElement("button"); b.type="button"; b.textContent=k+" ("+d+"/"+n.length+")";
+    b.setAttribute("aria-pressed",k===track?"true":"false");
+    b.onclick=function(){ track=k; stage="all"; offs={}; render(); };
+    tb.appendChild(b);
+  });
+}
+function renderFlow(){
+  var f=$("flow"); f.innerHTML="";
+  function mk(id,name,list,cur){
+    var d=list.filter(function(t){return t.status==="done";}).length, p=list.length?Math.round(d/list.length*100):0;
+    var b=document.createElement("button"); b.type="button"; b.className="chip"+(cur?" cur":"");
+    b.setAttribute("aria-pressed",stage===id?"true":"false");
+    b.innerHTML="<b>"+esc(name)+(cur?" ◀":"")+"</b><small>"+d+"/"+list.length+" 완료</small><span class='bar'><i style='width:"+p+"%'></i></span>";
+    b.onclick=function(){ stage=id; offs={}; render(); };
+    f.appendChild(b);
+  }
+  var all=tasks.filter(function(t){return t.track===track;});
+  mk("all","전체",all,false);
+  STAGES[track].forEach(function(s){
+    var a=document.createElement("span"); a.className="arrow"; a.textContent="→"; f.appendChild(a);
+    mk(s[0],s[0]+" "+s[1],all.filter(function(t){return t.stage===s[0];}),CUR[track].indexOf(s[0])>=0);
+  });
+}
+function dueKey(d){ if(!d) return "99"; if(d===PAST) return "00"; var m=d.split("/"); if(m.length<2) return "98"; return ("0"+m[0]).slice(-2)+("0"+m[1]).slice(-2); }
+function stageName(t){ return (STAGES[t.track].filter(function(s){return s[0]===t.stage;})[0]||[])[1]||""; }
+function card(t){
+  var c=document.createElement("div"); c.className="tk"+(t.status==="done"?" d":""); c.draggable=true; c.dataset.k=t.k;
+  c.innerHTML="<div class='tt'>"+esc(t.title)+"</div><div class='meta'><button type='button' class='st "+t.status+"' title='누르면 상태가 바뀜'>"+SL[t.status]+"</button>"+
+    (t.due?"<span class='due'>"+esc(t.due)+"</span>":"")+"<span>"+esc(t.stage+" "+stageName(t))+"</span>"+(t.base?"":"<span class='new'>새 카드</span>")+
+    "<button type='button' class='ed' title='글 수정'>✎ 수정</button><select aria-label='담당 변경'>"+
+    OWNERS.map(function(o){return "<option"+(o===t.owner?" selected":"")+">"+o+"</option>";}).join("")+"</select></div>"+
+    (t.note?"<div class='nt'>"+esc(t.note)+"</div>":"");
+  c.querySelector(".st").onclick=function(){ t.status=NEXT[t.status]; put(t); render(); };
+  c.querySelector(".ed").onclick=function(){ openEdit(t); };
+  c.querySelector("select").onchange=function(e){ t.owner=e.target.value; put(t); render(); };
+  c.addEventListener("dragstart",function(e){ e.dataTransfer.setData("text/plain",t.k); e.dataTransfer.effectAllowed="move"; c.classList.add("dragging"); });
+  c.addEventListener("dragend",function(){ c.classList.remove("dragging"); });
+  return c;
+}
+function renderBoard(){
+  var bd=$("board"); bd.innerHTML=""; var showDone=$("showDone").checked;
+  var list=tasks.filter(function(t){ return t.track===track && (stage==="all"||t.stage===stage) && (showDone||t.status!=="done"); });
+  OWNERS.forEach(function(o){
+    var col=document.createElement("div"); col.className="colm"; col.dataset.o=o;
+    var items=list.filter(function(t){return t.owner===o;}).sort(function(a,b){return dueKey(a.due)<dueKey(b.due)?-1:dueKey(a.due)>dueKey(b.due)?1:0;});
+    var max=Math.max(0,items.length-PAGE), off=Math.min(offs[o]||0,max); offs[o]=off;
+    var h=document.createElement("h3"); h.innerHTML=esc(o)+"<span>"+(items.length>PAGE?(off+1)+"–"+Math.min(off+PAGE,items.length)+" / ":"")+items.length+"</span>"; col.appendChild(h);
+    if(items.length>PAGE){
+      var sl=document.createElement("input"); sl.type="range"; sl.min=0; sl.max=max; sl.step=1; sl.value=off; sl.className="slide"; sl.setAttribute("aria-label",o+" 칸 카드 넘기기");
+      sl.oninput=function(){ offs[o]=+sl.value; renderBoard(); var again=document.querySelector('.colm[data-o="'+o+'"] .slide'); if(again) again.focus(); };
+      col.appendChild(sl);
+    }
+    items.slice(off,off+PAGE).forEach(function(t){ col.appendChild(card(t)); });
+    if(!items.length){ var em=document.createElement("div"); em.className="empty"; em.textContent="카드를 여기로 끌어 놓으세요"; col.appendChild(em); }
+    col.addEventListener("dragover",function(e){ e.preventDefault(); col.classList.add("over"); });
+    col.addEventListener("dragleave",function(){ col.classList.remove("over"); });
+    col.addEventListener("drop",function(e){
+      e.preventDefault(); col.classList.remove("over");
+      var k=e.dataTransfer.getData("text/plain"); var t=tasks.filter(function(x){return x.k===k;})[0];
+      if(t&&t.owner!==o){ t.owner=o; put(t); render(); }
+    });
+    bd.appendChild(col);
+  });
+}
+function render(){ renderTabs(); renderFlow(); renderBoard(); }
+
+// 글 추가·수정
+var dlg=$("dlg"), editing=null;
+function fillStages(tr,sel){ var s=$("fStage"); s.innerHTML=STAGES[tr].map(function(x){return "<option value='"+x[0]+"'"+(x[0]===sel?" selected":"")+">"+x[0]+" "+esc(x[1])+"</option>";}).join(""); }
+function closeDlg(){ if(dlg.close) dlg.close(); else dlg.removeAttribute("open"); }
+function openEdit(t){
+  editing=t||null;
+  var d=t||{track:track,stage:(stage!=="all"?stage:STAGES[track][0][0]),title:"",due:"",status:"todo",owner:"미정",note:""};
+  $("dlgTitle").textContent=t?"카드 글 수정":"카드 추가";
+  $("fTitle").value=d.title; $("fTrack").value=d.track; fillStages(d.track,d.stage); $("fDue").value=d.due===PAST?"":d.due;
+  $("fStatus").value=d.status; $("fOwner").value=d.owner; $("fNote").value=d.note||"";
+  $("fDel").style.display=t?"":"none"; $("fDel").textContent=t&&t.base?"숨기기":"삭제";
+  if(dlg.showModal) dlg.showModal(); else dlg.setAttribute("open","");
+}
+$("fTrack").onchange=function(){ fillStages($("fTrack").value); };
+$("addBtn").onclick=function(){ openEdit(null); };
+$("fCancel").onclick=closeDlg;
+$("dlgForm").onsubmit=function(e){
+  e.preventDefault();
+  var title=$("fTitle").value.trim(); if(!title){ $("fTitle").focus(); return; }
+  var v={track:$("fTrack").value,stage:$("fStage").value,title:title,due:$("fDue").value.trim(),status:$("fStatus").value,owner:$("fOwner").value,note:$("fNote").value.trim()};
+  if(!editing){ custom.push({k:"custom|"+Date.now()+"|"+Math.random().toString(36).slice(2,6),track:v.track,stage:v.stage,title:v.title,due:v.due,status:v.status,owner:v.owner,note:v.note}); }
+  else if(editing.base){ var o=ov[editing.k]||{}; o.o=v.owner; o.s=v.status; o.t=v.title; o.d=v.due; o.n=v.note; o.r=v.track; o.g=v.stage; ov[editing.k]=o; }
+  else{ custom.forEach(function(c){ if(c.k===editing.k){ for(var x in v) c[x]=v[x]; } }); }
+  save(); build(); track=v.track; if(stage!=="all") stage=v.stage; closeDlg(); render();
+};
+$("fDel").onclick=function(){
+  if(!editing) return;
+  if(!confirm(editing.base?"이 카드를 숨길까요? (내 변경 초기화로 되살릴 수 있습니다)":"이 카드를 삭제할까요?")) return;
+  if(editing.base){ var o=ov[editing.k]||{}; o.h=true; ov[editing.k]=o; } else { custom=custom.filter(function(c){return c.k!==editing.k;}); }
+  save(); build(); closeDlg(); render();
+};
+$("showDone").onchange=function(){ offs={}; renderBoard(); };
+$("copyBtn").onclick=function(){
+  var out=["TREAGENT 배정 현황 (2026-11-23 기준)"];
+  OWNERS.forEach(function(o){
+    var l=tasks.filter(function(t){return t.owner===o&&t.status!=="done";});
+    out.push("","["+o+"] "+l.length+"개"); l.forEach(function(t){ out.push("- ("+t.track+" "+t.stage+") "+t.title+(t.due?" ~"+t.due:"")+" ["+SL[t.status]+"]"+(t.note?" — "+t.note:"")); });
+  });
+  var txt=out.join("\n"), msg=$("msg");
+  function ok(){ msg.textContent="복사했습니다."; setTimeout(function(){msg.textContent="";},2500); }
+  try{ navigator.clipboard.writeText(txt).then(ok,function(){ msg.textContent="복사하지 못했습니다."; }); }catch(e){ msg.textContent="복사하지 못했습니다."; }
+};
+$("resetBtn").onclick=function(){
+  if(!confirm("이 브라우저에 저장한 배정·상태·글 수정·새 카드를 모두 되돌릴까요?")) return;
+  ov={}; custom=[]; try{ localStorage.removeItem(KEY); localStorage.removeItem(CKEY); }catch(e){}
+  offs={}; build(); render();
+};
+render();
+})();
+</script>
+</body>
+</html>
