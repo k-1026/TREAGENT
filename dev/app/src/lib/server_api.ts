@@ -288,12 +288,15 @@ export function startParty(accessToken: string, partyId: string) {
 
 // ---- 도보 경로 (TMAP, 서버 경유) ----
 export type WalkPlace = { id: string; name: string; lat: number; lng: number; coordSource: 'db' | 'tmap_poi' };
+export type WalkStep = { lat: number; lng: number; pathIndex: number; text: string; turn: number | null; type: string };
 export type WalkResult = {
   places: WalkPlace[];
   path: { lat: number; lng: number }[];
   distance: number; // 총 거리 (m)
   time: number; // 총 시간 (초)
   legs: { distance: number; time: number }[]; // 구간별. startIncluded면 legs[0]이 "내 위치 → 첫 장소"
+  legEnds: number[]; // 각 구간이 끝나는 path 위치
+  steps: WalkStep[]; // 길 안내 지점
   startIncluded: boolean;
 };
 
