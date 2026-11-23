@@ -147,7 +147,7 @@
   .head{height:104px;background:var(--beam);position:relative;border-bottom:3px solid var(--ink)}
   .head .t{position:absolute;left:18px;bottom:12px;color:#fff;font-size:22px;font-weight:800;text-shadow:2px 2px 0 var(--ink)}
   .head .s{position:absolute;left:18px;bottom:46px;color:#fff3e0;font-size:12px}
-  .head .back{position:absolute;right:14px;bottom:12px;border:0;background:var(--cream);padding:5px 10px;font-size:13px;font-weight:700;cursor:pointer}
+  .head .back{position:absolute;right:14px;top:46px;bottom:auto;border:0;background:var(--cream);padding:5px 10px;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 0 0 2px var(--ink)}
   .scroll{position:absolute;left:0;right:0;top:104px;bottom:0;overflow:auto;padding:14px 16px 16px;background:var(--cream);display:flex;flex-direction:column;gap:12px}
   .h3{font-size:14px;font-weight:800;margin:4px 0 0}
   .h3 span{font-size:12px;font-weight:400;color:var(--muted);margin-left:6px}
@@ -377,7 +377,7 @@
 
   <!-- 오늘 페이지 (책상 위 장부 그림으로 열림) -->
   <section class="view" id="v-today" aria-label="오늘 페이지">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">펼친 장부의 오늘 페이지</div><div class="t">오늘 페이지</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">펼친 장부의 오늘 페이지</div><div class="t">오늘 페이지</div><button class="back px" data-view="home">⌂ 홈</button></div>
     <div class="scroll">
       <div class="row px"><div><b>추천 길 · [요일] · [시간대] · [날씨]</b>날씨와 시간대에 맞춰 고른 추천 길이에요. 장소 3곳을 걸어요. [승인 대사 대기]</div></div>
       <div class="h3">오늘 걸을 장소 <span id="todayCnt"></span></div>
@@ -388,7 +388,7 @@
 
   <!-- 주머니 (홈 [주머니]) -->
   <section class="view" id="v-pouch" aria-label="주머니">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">내가 받은 물건</div><div class="t">주머니</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">내가 받은 물건</div><div class="t">주머니</div><button class="back px" data-view="home">⌂ 홈</button></div>
     <div class="scroll">
       <button class="row px" data-nav="todo" data-idx="열쇠 하랑이 한마디 (7-13)">
         <svg class="ico" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><g transform="translate(0 3)"><polygon fill="#5b2a22" points="3,0 6,0 8,2 8,5 6,7 3,7 1,5 1,2"/><polygon fill="#e8b230" points="4,1 5,1 7,3 7,4 5,6 4,6 2,4 2,3"/><rect fill="#f7d774" x="3" y="1" width="2" height="1"/><rect fill="#fffaf1" x="4" y="3" width="2" height="2"/><rect fill="#5b2a22" x="8" y="2" width="7" height="4"/><rect fill="#e8b230" x="8" y="3" width="6" height="2"/><rect fill="#b9791e" x="8" y="4" width="6" height="1"/><rect fill="#5b2a22" x="10" y="6" width="2" height="4"/><rect fill="#e8b230" x="10" y="6" width="1" height="3"/><rect fill="#5b2a22" x="13" y="6" width="2" height="3"/><rect fill="#e8b230" x="13" y="6" width="1" height="2"/></g></svg>
@@ -452,7 +452,7 @@
 
   <!-- S-08 완주 한 장 -->
   <section class="view" id="v-done" aria-label="오늘의 여행 사진">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">하랑이와 함께 끝까지 걸었어요</div><div class="t">완주</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">하랑이와 함께 끝까지 걸었어요</div><div class="t">완주</div><button class="back px" data-view="home">⌂ 홈</button></div>
     <div class="scroll">
       <div class="snap" id="snapCard"></div>
       <button class="cta px" data-nav="fullsnap" data-idx="done" style="height:52px">전체 화면으로 보기</button>
@@ -469,7 +469,7 @@
 
   <!-- 모든 길: 중구 코스 전체 목록 -->
   <section class="view" id="v-all" aria-label="모든 길">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">중구 안의 모든 길</div><div class="t">모든 길</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">중구 안의 모든 길</div><div class="t">모든 길</div><button class="back px" data-view="home">⌂ 홈</button></div>
     <div class="scroll">
       <div id="allList" class="list"></div>
     </div>
@@ -477,7 +477,7 @@
 
   <!-- 오늘의 길: 3개 보기, 새로고침으로 다른 3개 -->
   <section class="view" id="v-picks" aria-label="오늘의 길 3개">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="pickNote"></div><div class="t">오늘의 길</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="pickNote"></div><div class="t">오늘의 길</div><button class="back px" data-view="home">⌂ 홈</button></div>
     <div class="scroll">
       <div id="pickList" class="list"></div>
       <button class="row px" data-nav="reroll" style="justify-content:center;font-weight:800">마음에 드는 길이 없어요 · 다른 길 3개 새로 불러오기</button>
@@ -486,7 +486,7 @@
 
   <!-- 날씨 상세 (S-14): 홈 방의 창을 눌렀을 때 -->
   <section class="view" id="v-weather" aria-label="날씨 상세">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">날씨 기준 시각 · [기준 시각]</div><div class="t">오늘 날씨</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">날씨 기준 시각 · [기준 시각]</div><div class="t">오늘 날씨</div><button class="back px" data-view="home">⌂ 홈</button></div>
     <div class="scroll">
       <div class="sh-banner" id="wxBan"></div>
       <div class="sh-card"><div class="sh-wx"><i id="wxIcon"></i><div><b id="wxNow"></b><small id="wxWhere"></small></div></div></div>
@@ -502,7 +502,7 @@
 
   <!-- 준비 중 (아직 만들지 않은 기능의 자리) -->
   <section class="view" id="v-todo" aria-label="준비 중">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">다음 단계에서 만듭니다</div><div class="t" id="todoT">준비 중</div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">다음 단계에서 만듭니다</div><div class="t" id="todoT">준비 중</div><button class="back px" data-view="home">⌂ 홈</button></div>
     <div class="scroll">
       <div class="row px"><div><b>준비 중인 화면입니다</b><small id="todoSpec"></small></div></div>
       <button class="row px" data-view="home" style="justify-content:center;font-weight:800">홈으로 돌아가기</button>
@@ -512,7 +512,7 @@
 
   <!-- 쉼터 안내 (S-14): 폭염·호우·확인 불가일 때 -->
   <section class="view" id="v-shelter" aria-label="쉼터">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="shSub"></div><div class="t" id="shTitle"></div><button class="back px" data-view="home">‹ 홈</button></div>
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s" id="shSub"></div><div class="t" id="shTitle"></div><button class="back px" data-view="home">⌂ 홈</button></div>
     <div class="scroll">
       <!-- 쉼터 화면은 독립 목업(shelter_weather_mockup_v1.html)의 쉼터 화면을 그대로 씀 (한 곳에서만 고침) -->
       <iframe id="shFrame" title="쉼터 안내" src="shelter_weather_mockup_v1.html?embed=s&wx=normal" style="display:block;width:390px;height:740px;border:0;margin:-14px -16px -16px"></iframe>
@@ -850,7 +850,7 @@
     if(name==='logout'){ ['#logoutBtn'].forEach(function(s){$(s).style.display='none'}); ['#logoutBox','#logoutOk','#logoutNo'].forEach(function(s){$(s).style.display=''}); return }
     if(name==='logoutcancel'){ $('#logoutBtn').style.display=''; ['#logoutBox','#logoutOk','#logoutNo'].forEach(function(s){$(s).style.display='none'}); return }
     if(name==='weather'){ renderWeather($('#state').value); show('weather'); return }
-    if(name==='shelter'){ var wxk=$('#state').value; var wxp={heat:'heat',storm:'storm',unknown:'unknown'}[wxk]||'normal'; location.href='shelter_weather_mockup_v1.html?wx='+wxp; return }
+    if(name==='shelter'){ var wxk=$('#state').value; var wxp={heat:'heat',storm:'storm',unknown:'unknown'}[wxk]||'normal'; location.href='shelter_weather_mockup_v1.html?screen=s&wx='+wxp; return }
     if(name==='picks'){ PAGE=0; renderPicks(); show('picks'); return }
     if(name==='reroll'){ PAGE++; renderPicks(); return }
     if(name==='fullsnap'){ $('#snapFull').innerHTML=(idx==='trip'?$('#snapTrip'):$('#snapCard')).innerHTML; $('#fsv').hidden=false; return }

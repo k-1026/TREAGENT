@@ -70,9 +70,9 @@
 <main class="phone" id="phone">
   <div class="status"><span>9:41</span><span>●●● ▮</span></div>
   <header class="top">
-    <button class="navbtn" id="back" aria-label="뒤로">‹ 홈</button>
+    <button class="navbtn" id="back" aria-label="뒤로">‹ 뒤로</button>
     <b id="title">날씨</b>
-    <span style="width:62px"></span>
+    <button class="navbtn" id="home" aria-label="홈으로">⌂ 홈</button>
   </header>
 
   <!-- 날씨 화면 -->
@@ -163,7 +163,7 @@
   $('#toWeather').addEventListener('click',function(){ show('w'); });
   document.addEventListener('click',function(e){
     var g=e.target.closest('[data-go]'); if(g){ toast('→ '+g.dataset.go); }
-    if(e.target.closest('#back')){ if(history.length>1){ history.back(); } else { location.href='app_home_mockup_v1.html'; } }
+    if(e.target.closest('#back')){ if(history.length>1){ history.back(); } else { location.href='app_home_mockup_v1.html'; } } if(e.target.closest('#home')){ location.href='app_home_mockup_v1.html'; }
   });
   var P=new URLSearchParams(location.search);
   if(P.get('wx') && WX[P.get('wx')]) $('#wx').value=P.get('wx');
@@ -173,7 +173,7 @@
     renderWeather(); renderShelter(); show('s');
     return;
   }
-  renderWeather(); renderShelter(); show('w');
+  renderWeather(); renderShelter(); show(P.get('screen')==='s' ? 's' : 'w');
 })();
 </script>
 </body>
