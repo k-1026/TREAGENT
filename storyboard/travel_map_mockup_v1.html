@@ -312,8 +312,8 @@
 
   // 이벤트
   document.addEventListener('click',function(e){
-    var g=e.target.closest('[data-go]'); if(g){ toast('→ '+g.dataset.go+' (자리)'); return; }
-    if(e.target.closest('#back')){ if(phone.classList.contains('full')) setFull(false); else toast('이전 화면 (자리)'); return; }
+    var g=e.target.closest('[data-go]'); if(g && g.dataset.go.indexOf('홈')===0){ location.href='app_home_mockup_v1.html'; return; } if(g){ toast('→ '+g.dataset.go+' (자리)'); return; }
+    if(e.target.closest('#back')){ if(phone.classList.contains('full')) setFull(false); else if(history.length>1) history.back(); else location.href='app_home_mockup_v1.html'; return; }
     if(e.target.closest('#bannerAlt')){ toast('경로 변경 보기 (S-07)'); return; }
   });
   $('#expand').addEventListener('click',function(){ setFull(!phone.classList.contains('full')); });

@@ -892,8 +892,8 @@
     else if(name==='walkout'){ walkout() }
     else if(name==='briefdone'){ readyHome() }
     else if(name==='tripdetail'){ show('tripdetail') }
-    else if(name==='travel'){ scene.classList.remove('going','ready'); ensureTrip(); renderTravel(); show('travel') }
-    else if(name==='place'){ cur=+idx; phase=cur<TRIP.done?'passed':'intro'; renderStop(); show('stop') }
+    else if(name==='travel'){ location.href='travel_map_mockup_v1.html'; return }
+    else if(name==='place'){ location.href='travel_map_mockup_v1.html'; return }
     else if(name==='arrive'){ phase=$('#gpsSel').value==='ok'?'mission':'gpsfail'; renderStop() }
     else if(name==='gpsretry'){ phase='mission'; renderStop() }
     else if(name==='mission'){ mission() }
