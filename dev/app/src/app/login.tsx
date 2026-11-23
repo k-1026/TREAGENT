@@ -13,8 +13,8 @@
  * 동작 순서
  *  1) 버튼을 누르면 submitting을 켜고 signInWithPassword를 호출한다.
  *  2) 실패하면 오류 문구를 보여 준다.
- *  3) 성공하면 여기서 이동하지 않는다.
- *     session이 바뀌면 _layout.tsx가 홈으로 보낸다.
+ *  3) 성공하면 열쇠 돌리기 연출을 켠다 (목업 ② 로그인 성공, key_overlay.tsx).
+ *     화면 이동은 여기서 하지 않는다. session이 바뀌면 _layout.tsx가 홈으로 보낸다.
  *
  * 주의
  *  - 비밀번호와 입력값은 console.log로 출력하지 않는다.
@@ -26,12 +26,14 @@ import { StyleSheet, Text } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { COLOR } from '../lib/theme';
 import { AuthFrame, PxButton, PxInput, PxMessage } from '../components/auth_ui';
+import { useKeyOverlay } from '../components/key_overlay';
 
 export default function LoginScreen() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState('');
+  const keyOverlay = useKeyOverlay();
 
   const onLogin = async () => {
     setSubmitting(true);
@@ -41,6 +43,8 @@ export default function LoginScreen() {
 
     if (error) {
       setErrorMessage('이메일 또는 비밀번호를 확인해 주세요.');
+    } else {
+      keyOverlay.play();
     }
     setSubmitting(false);
   };

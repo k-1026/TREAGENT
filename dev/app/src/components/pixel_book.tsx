@@ -9,10 +9,11 @@
  * 글자 뜻 (PALETTE)
  *  K 잉크 테두리   R 장부 표지   D 장부 책등   L 장부 밝은 선   C 장부 자물쇠 크림   H 장부 밝은 면 (쓰이지 않음)
  *  P 능금 빨강     Q 능금 밝은 빨강   E 능금 어두운 빨강   W 능금 반사빛
- *  S 꼭지          G 잎 초록          V 잎 줄기 (진한 초록)  . 빈 칸
+ *  S 꼭지          G 잎 초록          V 잎 줄기 (진한 초록)
+ *  Y 열쇠 금색     F 열쇠 구멍 종이색  . 빈 칸
  *
  * 능금은 이 파일이 아니라 assets/apple_pixel.png 그림을 쓴다.
- * 쓰는 곳: 타이틀(title.tsx), 로그인·가입 헤더(auth_ui.tsx)
+ * 쓰는 곳: 타이틀(title.tsx), 로그인·가입 헤더(auth_ui.tsx), 로그인 성공 열쇠 연출(key_overlay.tsx)
  */
 import { StyleSheet, View } from 'react-native';
 import { COLOR } from '../lib/theme';
@@ -31,6 +32,8 @@ const PALETTE: Record<string, string> = {
   S: '#e0703a',
   G: '#8bb83a',
   V: '#5f8f2a',
+  Y: '#e8b230',
+  F: COLOR.paper,
 };
 
 // 칸 하나 = cell(px). 그림의 가로·세로 칸 수는 격자에서 정해진다.
@@ -103,6 +106,32 @@ const BOOK = fromRects(24, 30, [
 // 장부 그림. cell은 칸 한 개의 크기(px). 장부는 24x30 칸이다.
 export function PixelBook({ cell }: { cell: number }) {
   return <PixelSprite grid={BOOK} cell={cell} />;
+}
+
+// 열쇠 16x16 (목업 로그인 성공 화면의 열쇠 그림을 칸으로 옮김: 둥근 손잡이 + 몸통 + 이 두 개)
+const KEY = fromRects(16, 16, [
+  [3, 3, 3, 1, 'K'],
+  [2, 4, 5, 1, 'K'],
+  [1, 5, 7, 3, 'K'],
+  [2, 8, 5, 1, 'K'],
+  [3, 9, 3, 1, 'K'],
+  [4, 4, 1, 1, 'Y'],
+  [3, 5, 3, 1, 'Y'],
+  [2, 6, 5, 1, 'Y'],
+  [3, 7, 3, 1, 'Y'],
+  [4, 8, 1, 1, 'Y'],
+  [4, 6, 2, 2, 'F'],
+  [8, 5, 7, 4, 'K'],
+  [8, 6, 6, 2, 'Y'],
+  [10, 9, 2, 4, 'K'],
+  [10, 9, 1, 3, 'Y'],
+  [13, 9, 2, 3, 'K'],
+  [13, 9, 1, 2, 'Y'],
+]);
+
+// 열쇠 그림. cell은 칸 한 개의 크기(px). 열쇠는 16x16 칸이다.
+export function PixelKey({ cell }: { cell: number }) {
+  return <PixelSprite grid={KEY} cell={cell} />;
 }
 
 const styles = StyleSheet.create({

@@ -12,7 +12,7 @@
  *  - "닫기"는 선택 없이 이전 화면으로 돌아간다.
  *
  * 확인 필요
- *  - districts.ts에서 중구만 켜 있다. 나머지 8개는 주석 처리돼 있어 목록에 한 개만 보인다. [결정 필요]
+ *  - 목업처럼 9개를 모두 보여 주고, 중구만 누를 수 있다. 나머지 구·군을 언제 열지는 [결정 필요]
  *
  * 규칙: 좌표는 다루지 않는다. 선택값은 저장하지 않는다 (앱을 다시 켜면 사라진다).
  */
@@ -20,16 +20,20 @@ import { router } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { DISTRICTS } from '../lib/districts';
 import { BTN_RED, COLOR, pxBox } from '../lib/theme';
+import { CONTENT } from '../components/phone_column';
 
 export default function DistrictScreen() {
   return (
     <View style={styles.safe}>
       {/* 위쪽 주황 헤더 (목업 .head2) */}
       <View style={styles.head}>
-        <Text style={styles.headTitle}>어느 동네에서 시작할까요?</Text>
+        {/* 제목은 아래 내용과 같은 폭(CONTENT) 안에서 왼쪽에 맞춘다 */}
+        <View style={CONTENT}>
+          <Text style={styles.headTitle}>어느 동네에서 시작할까요?</Text>
+        </View>
       </View>
 
-      <ScrollView style={styles.body} contentContainerStyle={styles.bodyContent}>
+      <ScrollView style={styles.body} contentContainerStyle={[styles.bodyContent, CONTENT]}>
         <Text style={styles.note}>지금은 중구만 안내해요. 나머지 동네는 준비 중이에요.</Text>
 
         <View style={styles.grid}>
@@ -54,7 +58,7 @@ export default function DistrictScreen() {
           })}
         </View>
 
-        <Pressable onPress={() => router.back()} style={styles.close}>
+        <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} style={styles.close}>
           <Text style={styles.closeText}>닫기</Text>
         </Pressable>
       </ScrollView>

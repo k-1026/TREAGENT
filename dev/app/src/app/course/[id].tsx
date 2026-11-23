@@ -5,6 +5,7 @@ import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text, View } fr
 import { ERROR_LABEL, MODE_LABEL, REASON_LABEL, TYPE_LABEL } from '../../lib/labels';
 import { usePlace } from '../../lib/place_context';
 import { getRoute, RouteResult } from '../../lib/server_api';
+import { CONTENT } from '../../components/phone_column';
 
 export default function CourseScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -51,7 +52,7 @@ export default function CourseScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: '#fbf6ee' }}>
-      <ScrollView contentContainerStyle={{ padding: 20, gap: 12 }}>
+      <ScrollView contentContainerStyle={[{ padding: 20, gap: 12 }, CONTENT]}>
         {loading && (
           <>
             <ActivityIndicator color="#a8242a" />

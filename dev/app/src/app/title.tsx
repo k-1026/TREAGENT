@@ -28,8 +28,8 @@ import { Animated, Easing, Image, Pressable, SafeAreaView, StyleSheet, Text, Vie
 import { BTN_RED, COLOR, pxBox } from '../lib/theme';
 import { PixelBook } from '../components/pixel_book';
 
-// 장부 칸 한 개 = 5px → 120x150. 능금은 참고 그림에 맞춰 칸 3px → 45x45 (장부보다 작게).
-const CELL = 5;
+// 장부 칸 한 개 = 7px → 168x210 (목업 .book 크기). 능금은 참고 그림에 맞춰 칸 3px → 45x45 (장부보다 작게).
+const CELL = 7;
 // 능금 그림(assets/apple_pixel.png)은 원본 그대로 쓴다. 화면에서의 크기만 여기서 정한다.
 const APPLE_SIZE = 54;
 
@@ -158,7 +158,7 @@ const styles = StyleSheet.create({
   scene: { flex: 1, alignItems: 'center', justifyContent: 'center' },
   bookWrap: { width: 24 * CELL, height: 30 * CELL },
   // 능금: 장부 오른쪽 바닥 모서리에 살짝 걸쳐 멈춘다. 굴러올 때는 오른쪽에서 들어온다.
-  applePos: { position: 'absolute', left: 104, bottom: 0 },
+  applePos: { position: 'absolute', left: 24 * CELL - 16, bottom: 0 },
 
   // 제목과 소개
   info: { alignItems: 'center', paddingHorizontal: 30, gap: 2 },

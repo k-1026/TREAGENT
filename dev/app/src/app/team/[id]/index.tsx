@@ -11,6 +11,7 @@ import { usePlace } from '../../../lib/place_context';
 import { DEFAULT_NICKNAME } from '../../../lib/profile';
 import { getParty, getPartyRoute, PartyInfo, startParty, TodayRoute } from '../../../lib/server_api';
 import { COLOR, pxBox } from '../../../lib/theme';
+import { CONTENT } from '../../../components/phone_column';
 
 const POLL_MS = 6000; // [확인 필요] 임시 값
 
@@ -74,7 +75,7 @@ export default function TeamLobbyScreen() {
         backLabel="‹ 홈"
         onBack={() => router.dismissTo('/')}
       />
-      <ScrollView contentContainerStyle={{ padding: 16, gap: 12 }}>
+      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
         {error && <Text style={{ color: COLOR.ink }}>{ERROR_LABEL[error] ?? ERROR_LABEL.SERVER}</Text>}
         {!place && (
           <Pressable onPress={() => router.replace('/')}>
