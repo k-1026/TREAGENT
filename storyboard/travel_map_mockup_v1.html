@@ -138,6 +138,12 @@
     <option value="2">2/3</option>
     <option value="3">3/3 (모두 완료)</option>
   </select></label>
+  <label>이동 상태 <select id="mv">
+    <option value="stop">출발 전·멈춤·도착 (정면)</option>
+    <option value="fwd">정방향 이동 (뒷모습)</option>
+    <option value="left">왼쪽 이동 (왼쪽 측면)</option>
+    <option value="right">오른쪽 이동 (오른쪽 측면)</option>
+  </select></label>
   <button id="alertBtn">코스 변경 알림창 띄우기</button>
 </div>
 
@@ -156,7 +162,7 @@
       <span class="pin" id="pin1" style="left:70px;top:90px">1</span>
       <span class="pin" id="pin2" style="left:230px;top:40px">2</span>
       <span class="pin" id="pin3" style="left:290px;top:200px">3</span>
-      <img class="me" src="../brand/character/images/harangi_map_marker_v1.png" alt="내 위치 (하랑이)" style="left:160px;top:230px">
+      <img class="me" id="me" src="../brand/character/images/harangi_view_front_v1.png" alt="내 위치 (하랑이)" style="left:160px;top:230px">
     </div>
     <button class="expand" id="expand" aria-label="지도 확대">⤢ 확대</button>
   </section>
@@ -360,6 +366,9 @@
   $('#stampbtn').addEventListener('click',function(){ renderSheet(); openDim('#stampsheet'); });
   $('#stampclose').addEventListener('click',closeAll);
 
+  // 내 위치 마커: 이동 상태에 따라 하랑이 방향 시안을 바꿈
+  var MARK={stop:'harangi_view_front_v1.png',fwd:'harangi_view_back_v1.png',left:'harangi_view_left_v1.png',right:'harangi_view_right_v1.png'};
+  $('#mv').addEventListener('change',function(){ $('#me').src='../brand/character/images/'+MARK[$('#mv').value]; });
   $('#alertBtn').addEventListener('click',function(){ openDim('#alert'); });
   $('#altgo').addEventListener('click',function(){ closeAll(); toast('대체 길 안내 (S-07)'); });
   $('#altlater').addEventListener('click',function(){ closeAll(); toast('보류했어요. 다음 재평가 때 다시 알려 드려요'); });
