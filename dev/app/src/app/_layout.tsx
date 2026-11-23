@@ -45,7 +45,8 @@ function Gate() {
 
   if (loading) return null;
 
-  const onLoginScreen = segments[0] === 'login' || segments[0] === 'signup';
+  // 로그인 전 화면: 타이틀, 로그인, 가입
+  const onAuthScreen = segments[0] === 'title' || segments[0] === 'login' || segments[0] === 'signup';
   const onWelcome = segments[0] === 'welcome';
 
   if (session && status === 'loading') return null;
@@ -53,9 +54,9 @@ function Gate() {
 
   return (
     <>
-      {!session && !onLoginScreen && <Redirect href="/login" />}
-      {session && onLoginScreen && <Redirect href={status === 'ready' ? '/' : '/welcome'} />}
-      {session && !onLoginScreen && status === 'none' && !onWelcome && <Redirect href="/welcome" />}
+      {!session && !onAuthScreen && <Redirect href="/title" />}
+      {session && onAuthScreen && <Redirect href={status === 'ready' ? '/' : '/welcome'} />}
+      {session && !onAuthScreen && status === 'none' && !onWelcome && <Redirect href="/welcome" />}
       {session && status === 'ready' && onWelcome && <Redirect href="/" />}
       <Stack screenOptions={{ headerShown: false }} />
     </>
