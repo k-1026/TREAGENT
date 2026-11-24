@@ -349,8 +349,8 @@
       if(stState()==='arrivefail'){ toast('도착 확인 실패 → 방문 확인 실패 카드 (S-06)'); return; }
       phase='arrived'; toast('도착 확인됨 · 이제 미션을 할 수 있어요'); render(-1); return;
     }
-    $('#mtitle').textContent='미션 · '+(n()+1)+'번 장소';
-    openDim('#mission'); $('#mission').classList.add('on');
+    // 미션은 별도 화면(S-15 미션 안내)으로 넘어갑니다. 장소 번호만 넘김
+    location.href='mission_flow_mockup_v1.html?from=map&n='+(n()+1);
   });
   $('#mlater').addEventListener('click',closeAll);
   $('#dim').addEventListener('click',closeAll);
