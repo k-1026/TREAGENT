@@ -7,7 +7,7 @@
 <meta name="description" content="홈·장부(지도·내 여행·앨범)·주머니·오늘 페이지·내 정보 배치 확인용 목업. 상태 7종과 탭 이동, 외출 연출 자리를 바꿔 볼 수 있습니다 (임시 문구, 창작).">
 <style>
   :root{
-    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#c9763a;
+    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#a85a24;
     --red:#dc3b30; --red-d:#9c2420; --sage:#9fb58a; --paper:#fffaf1; --muted:#7a5a4c; --shade:#d9bf98;
     --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   }
@@ -144,11 +144,12 @@
   .ic.me{clip-path:polygon(30% 0,70% 0,78% 25%,70% 48%,95% 62%,100% 100%,0 100%,5% 62%,30% 48%,22% 25%)}
 
   /* ---------- 장부 / 오늘 페이지 / 주머니 / 내 정보 ---------- */
-  .head{height:104px;background:var(--beam);position:relative;border-bottom:3px solid var(--ink)}
-  .head .t{position:absolute;left:18px;bottom:12px;color:#fff;font-size:22px;font-weight:800;text-shadow:2px 2px 0 var(--ink)}
-  .head .s{position:absolute;left:18px;bottom:46px;color:#fff3e0;font-size:12px}
-  .head .back{position:absolute;right:14px;bottom:12px;border:0;background:var(--cream);padding:5px 10px;font-size:13px;font-weight:700;cursor:pointer}
-  .scroll{position:absolute;left:0;right:0;top:104px;bottom:0;overflow:auto;padding:14px 16px 16px;background:var(--cream);display:flex;flex-direction:column;gap:12px}
+  /* 머리글 공통 규칙: 상태 막대 40px + 제목 줄 60px, 뒤로 버튼은 왼쪽 (design_system_v1.md 머리글) */
+  .head{height:100px;background:var(--beam);position:relative;border-bottom:3px solid var(--ink)}
+  .head .t{position:absolute;left:0;right:0;top:44px;text-align:center;color:#fff;font-size:18px;font-weight:800;text-shadow:2px 2px 0 var(--ink)}
+  .head .s{position:absolute;left:0;right:0;top:70px;text-align:center;color:#fff3e0;font-size:12px}
+  .head .back{position:absolute;left:12px;top:50px;border:0;background:var(--cream);padding:6px 11px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 0 2px var(--ink);color:var(--ink);font-family:inherit}
+  .scroll{position:absolute;left:0;right:0;top:100px;bottom:0;overflow:auto;padding:14px 16px 16px;background:var(--cream);display:flex;flex-direction:column;gap:12px}
   .h3{font-size:14px;font-weight:800;margin:4px 0 0}
   .h3 span{font-size:12px;font-weight:400;color:var(--muted);margin-left:6px}
   .row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--paper);font-size:13px;border:0;width:100%;text-align:left;line-height:1.45}
