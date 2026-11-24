@@ -2,7 +2,7 @@
  * [trip_card.tsx] 내 여행 카드 미리보기 (주소: /trip_card?i=번호) — 장부 [내 여행]의 카드를 누르면 열린다
  * 목업: storyboard/app_home_mockup_v1.html의 내 여행 카드 미리보기·전체보기 (.tc-prev, .tc-full)
  *
- * 보이는 것: 9:16 카드(앞면/뒷면 뒤집기) → [저장] [공유] → [하랑이 일기 보기]
+ * 보이는 것: 9:16 카드(앞면/뒷면 뒤집기) → [저장] [공유] (하랑이 일기 보기 버튼은 팀 요청으로 뺐다, 2026-11-24)
  *  - 카드 오른쪽 아래 ⛶: 전체보기. 전체보기는 화면을 채우고, 평소엔 버튼이 없다. 화면을 누르면 [닫기]와 뒤집기가 나왔다 사라진다.
  *  - [저장], [공유]는 아직 기능이 없다 → 짧은 안내만 보인다 [확인 필요: 앨범 저장, 공유 방식]
  *  - 카드 내용은 예시 자료(trip_card_data.ts)이고 실제 여행 기록이 저장되면 바꾼다.
@@ -61,9 +61,6 @@ export default function TripCardScreen() {
             <Text style={styles.actText}>공유</Text>
           </Pressable>
         </View>
-        <Pressable onPress={() => router.push({ pathname: '/soon', params: { what: '하랑이 일기' } })} style={styles.diary}>
-          <Text style={styles.actText}>하랑이 일기 보기</Text>
-        </Pressable>
       </View>
 
       {full ? (
@@ -94,7 +91,6 @@ const styles = StyleSheet.create({
   act: { width: 150, height: 50, alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.paper, borderRadius: 6, borderWidth: 1.5, borderColor: COLOR.ink, boxShadow: `0px 4px 0px 0px ${COLOR.shade}` },
   save: { backgroundColor: COLOR.red },
   actText: { fontSize: 16, fontWeight: '800', color: COLOR.ink },
-  diary: { height: 52, alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.paper, borderRadius: 6, borderWidth: 1.5, borderColor: COLOR.ink },
 
   full: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, backgroundColor: '#2b1814', alignItems: 'center', justifyContent: 'center', zIndex: 70 },
   close: { position: 'absolute', left: 16, top: 14, paddingVertical: 7, paddingHorizontal: 12, backgroundColor: COLOR.paper, borderRadius: 6, borderWidth: 1.5, borderColor: COLOR.ink },
