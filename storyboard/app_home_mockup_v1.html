@@ -7,7 +7,7 @@
 <meta name="description" content="홈·장부(지도·내 여행·앨범)·주머니·오늘 페이지·내 정보 배치 확인용 목업. 상태 7종과 탭 이동, 외출 연출 자리를 바꿔 볼 수 있습니다 (임시 문구, 창작).">
 <style>
   :root{
-    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#c9763a;
+    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#a85a24;
     --red:#dc3b30; --red-d:#9c2420; --sage:#9fb58a; --paper:#fffaf1; --muted:#7a5a4c; --shade:#d9bf98;
     --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
   }
@@ -25,7 +25,7 @@
   .only .phone{box-shadow:none}
   .stage{width:390px;height:844px;transform-origin:top left}
   .phone{word-break:keep-all;overflow-wrap:break-word;position:relative;width:390px;height:844px;background:var(--cream);overflow:hidden;box-shadow:0 0 0 3px var(--ink),0 14px 36px rgba(60,40,20,.28);user-select:none}
-  .px{box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink),0 6px 0 0 var(--shade)}
+  .px{border-radius:6px;box-shadow:0 0 0 1.5px var(--ink),0 4px 0 0 var(--shade)}
   button{font-family:inherit;color:var(--ink)}
   .view{position:absolute;left:0;top:0;width:390px;bottom:84px;display:none}
   .view.on{display:block}
@@ -111,8 +111,10 @@
   .wxcard small{display:block;font-size:13px;color:var(--muted)}
   .cta{display:block;width:100%;height:68px;padding:10px 14px;background:#d03a2f;color:#fff;font-weight:800;font-size:17px;text-align:left;border:0;cursor:pointer;--shade:var(--red-d);margin:2px 0 4px}
   .cta small{display:block;font-weight:400;font-size:12px;opacity:.92;margin-top:3px}
-  .quick{display:flex;gap:10px;margin:0 0 4px}
-  .quick button{flex:1;height:54px;background:var(--paper);border:0;font-size:12px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer}
+  .quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 4px}
+  .quick .chat{grid-column:span 2;flex-direction:row;justify-content:flex-start;gap:12px;padding:0 14px}
+  .quick .chat .hface{width:58px;height:58px;object-fit:contain;flex:none}
+  .quick button{flex:1;height:64px;box-sizing:border-box;background:var(--paper);border:0;font-size:14px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer}
   .qi{width:20px;height:18px;background:var(--ink);display:block}
   .qi.list{background:repeating-linear-gradient(to bottom,var(--ink) 0 4px,transparent 4px 7px)}
   .qi.rest{clip-path:polygon(50% 0,100% 55%,64% 55%,64% 100%,36% 100%,36% 55%,0 55%)}
@@ -144,11 +146,12 @@
   .ic.me{clip-path:polygon(30% 0,70% 0,78% 25%,70% 48%,95% 62%,100% 100%,0 100%,5% 62%,30% 48%,22% 25%)}
 
   /* ---------- 장부 / 오늘 페이지 / 주머니 / 내 정보 ---------- */
-  .head{height:104px;background:var(--beam);position:relative;border-bottom:3px solid var(--ink)}
-  .head .t{position:absolute;left:18px;bottom:12px;color:#fff;font-size:22px;font-weight:800;text-shadow:2px 2px 0 var(--ink)}
-  .head .s{position:absolute;left:18px;bottom:46px;color:#fff3e0;font-size:12px}
-  .head .back{position:absolute;right:14px;bottom:12px;border:0;background:var(--cream);padding:5px 10px;font-size:13px;font-weight:700;cursor:pointer}
-  .scroll{position:absolute;left:0;right:0;top:104px;bottom:0;overflow:auto;padding:14px 16px 16px;background:var(--cream);display:flex;flex-direction:column;gap:12px}
+  /* 머리글 공통 규칙: 상태 막대 40px + 제목 줄 60px, 뒤로 버튼은 왼쪽 (design_system_v1.md 머리글) */
+  .head{height:100px;background:var(--beam);position:relative;border-bottom:3px solid var(--ink)}
+  .head .t{position:absolute;left:0;right:0;top:44px;text-align:center;color:#fff;font-size:18px;font-weight:800;text-shadow:2px 2px 0 var(--ink)}
+  .head .s{position:absolute;left:0;right:0;top:70px;text-align:center;color:#fff3e0;font-size:12px}
+  .head .back{position:absolute;left:12px;top:50px;border:0;background:var(--cream);padding:6px 11px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 0 2px var(--ink);color:var(--ink);font-family:inherit}
+  .scroll{position:absolute;left:0;right:0;top:100px;bottom:0;overflow:auto;padding:14px 16px 16px;background:var(--cream);display:flex;flex-direction:column;gap:12px}
   .h3{font-size:14px;font-weight:800;margin:4px 0 0}
   .h3 span{font-size:12px;font-weight:400;color:var(--muted);margin-left:6px}
   .row{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--paper);font-size:13px;border:0;width:100%;text-align:left;line-height:1.45}
@@ -333,8 +336,7 @@
     <div class="body">
       <button class="cta px" id="cta"><span id="ctaT"></span><small id="ctaS"></small></button>
       <div class="quick">
-        <button class="px" id="q1"><i class="qi list"></i><span id="q1t">모든 길</span></button>
-        <button class="px" data-nav="shelter"><i class="qi rest"></i>쉼터</button>
+        <button class="px chat" id="chat"><img class="hface" src="../brand/images/characters/ui/harangi_chat_btn_v1.png" alt="하랑이"><span>하랑이와 대화하기</span></button>
         <button class="px" data-view="pouch"><i class="qi pouch"></i>주머니</button>
       </div>
       <div class="wxcard px" id="wxCard"><b>오늘 챙길 것</b><ul class="tiplist" id="tipList"></ul></div>
@@ -344,7 +346,7 @@
 
   <!-- 장부 (S-09): 책갈피 [지도] [내 여행] [앨범] -->
   <section class="view" id="v-ledger" aria-label="장부">
-    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">하랑이와 함께 걸어 확인한 기록 · 지도, 내 여행, 앨범</div><div class="t">장부</div></div>
+    <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">하랑이와 함께 걸어 확인한 기록</div><div class="t">장부</div></div>
     <div class="scroll">
       <div class="seg" role="tablist" aria-label="장부 책갈피">
         <button role="tab" data-bm="map" aria-selected="true">지도</button>
@@ -459,7 +461,8 @@
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">하랑이와 함께 끝까지 걸었어요</div><div class="t">완주</div><button class="back px" data-view="home">‹ 홈</button></div>
     <div class="scroll">
       <div class="snap" id="snapCard"></div>
-      <button class="cta px" data-nav="fullsnap" data-idx="done" style="height:52px">전체 화면으로 보기</button>
+      <button class="row px" data-nav="diary" style="justify-content:center;font-weight:800;height:52px;font-size:16px">하랑이 일기 보기</button>
+      <button class="cta px" data-nav="fullsnap" data-idx="done" style="height:52px;text-align:center">전체 화면으로 보기</button>
       <button class="row px" data-nav="share" style="justify-content:center;font-weight:800">SNS 공유 (4:5)</button>
       <button class="row px" data-tab="ledger" data-bm="trips" style="justify-content:center;font-weight:800">내 여행에 넣기</button>
       <button class="row px" data-view="home" style="justify-content:center;font-weight:800">홈으로</button>
@@ -508,8 +511,10 @@
   <section class="view" id="v-todo" aria-label="준비 중">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">다음 단계에서 만듭니다</div><div class="t" id="todoT">준비 중</div><button class="back px" data-view="home">‹ 홈</button></div>
     <div class="scroll">
-      <div class="row px"><div><b>준비 중인 화면입니다</b><small id="todoSpec"></small></div></div>
-      <button class="row px" data-view="home" style="justify-content:center;font-weight:800">홈으로 돌아가기</button>
+      <div id="todoEmpty" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/images/characters/ui/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>오늘 조건에 맞는 길이 아직 없어요</b><small style="color:var(--muted);font-size:13px">[승인 대사 대기 · 추천 없음] 다른 곳이나 쉼터를 골라 볼까요?</small></div>
+      <div class="row px" id="todoRow"><div><b>준비 중인 화면입니다</b><small id="todoSpec"></small></div></div>
+      <div id="todoActs" hidden style="display:flex;flex-direction:column;gap:12px"></div>
+      <button class="row px" id="todoHome" data-view="home" style="justify-content:center;font-weight:800">홈으로 돌아가기</button>
     </div>
   </section>
 
@@ -550,7 +555,7 @@
         </div>
         <div class="snapfoot"><span>[하랑이 마무리 대사 · 승인 대기]</span><span>도장 3/3</span></div>
       </div>
-      <button class="cta px" data-nav="fullsnap" data-idx="trip" style="height:52px">전체 화면으로 보기</button>
+      <button class="cta px" data-nav="fullsnap" data-idx="trip" style="height:52px;text-align:center">전체 화면으로 보기</button>
       <button class="row px" data-tab="ledger" data-bm="trips" style="justify-content:center;font-weight:800">내 여행 목록으로</button>
     </div>
   </section>
@@ -646,9 +651,7 @@
     $('#ctaT').textContent=s.cta[0]; $('#ctaS').textContent=s.cta[1]; $('#cta').dataset.go=s.cta[2];
     $('#cta').dataset.nav=({none:'picks',outside:'picks',active:'travel',notice:'travel',heat:'shelter',storm:'shelter',unknown:'shelter'})[k]||'todo';
     $('#cta').dataset.idx=s.cta[2];
-    $('#tipList').innerHTML=(TIPS[k]||TIPS.none).map(function(t){var f=ICON[t];return '<li>'+(f?'<img src="../brand/images/items/item_'+f+'_v1.png?v=4" alt="">':'')+'<span>'+t+'</span></li>'}).join('');
-    $('#q1t').textContent='모든 길';
-    $('#q1').dataset.nav='all';
+    $('#tipList').innerHTML=(TIPS[k]||TIPS.none).map(function(t){var f=ICON[t];return '<li>'+(f?'<img src="../brand/images/characters/item_'+f+'_v1.png?v=4" alt="">':'')+'<span>'+t+'</span></li>'}).join('');
     var sb=$('#sbanner'); if(s.banner){sb.hidden=false;sb.className='sbanner'+(s.banner[0]==='n'?' n':'');sb.textContent=s.banner[1];sb.dataset.go=s.banner[2]}else{sb.hidden=true}
     sb.dataset.nav=(s.banner&&s.banner[2]==='S-07 경로 변경')?'reroute':(s.banner&&s.banner[2]==='S-14 가까운 쉼터')?'shelter':'';
     var L=$('#list'); L.innerHTML='';
@@ -833,19 +836,40 @@
     unknown:['[날씨 확인 불가 대사 후보 A · 승인 대기]','[날씨 확인 불가 대사 후보 B · 승인 대기]']
   };
   var WXKEY={heat:'heat',storm:'storm',unknown:'unknown'};
+  // 말풍선은 언제나 하나만 보임. 세 말풍선(기본 #mainBub, 탭 #hBub, 출발 #dBub)을 한 곳에서만 켠다
+  function showOnly(id){
+    ['mainBub','hBub','dBub'].forEach(function(k){
+      var el=document.getElementById(k);
+      el.style.display = (k===id) ? (k==='hBub'?'block':'') : 'none';
+    });
+  }
   function showHarangi(){
     var w=WXKEY[$('#state').value]||'normal';
     var pool=HPOOL.common.concat(HPOOL[w]);
     $('#hTx').textContent=pool[Math.floor(Math.random()*pool.length)];
-    $('#mainBub').style.display='none';
-    $('#hBub').style.display='block';
+    showOnly('hBub');
   }
   function hideHarangi(){
-    $('#hBub').style.display='none';
-    $('#mainBub').style.display='';
+    var ready=scene.classList.contains('ready')||scene.classList.contains('going');
+    showOnly(ready?'dBub':'mainBub');
+  }
+  // 코스 없음일 때 버튼: 원인(홈 상태)에 따라 다르게 보임. 홈 이동은 머리글 ‹ 홈으로 충분하므로 중복하지 않음
+  function noRouteActs(k){
+    var PN=function(nav,label){ return '<button class="cta px" data-nav="'+nav+'" style="height:52px;text-align:center;font-size:16px;font-weight:800">'+label+'</button>' };
+    var PG=function(label,note){ return '<button class="cta px" data-go="'+note+'" style="height:52px;text-align:center;font-size:16px;font-weight:800">'+label+'</button>' };
+    var RN=function(nav,label){ return '<button class="row px" data-nav="'+nav+'" style="height:52px;justify-content:center;font-size:16px;font-weight:800">'+label+'</button>' };
+    var RG=function(label,note){ return '<button class="row px" data-go="'+note+'" style="height:52px;justify-content:center;font-size:16px;font-weight:800">'+label+'</button>' };
+    if(k==='heat'||k==='storm') return PN('shelter','가까운 쉼터 보기');
+    if(k==='unknown') return PN('shelter','가까운 쉼터 보기')+RG('다시 확인','재평가 (F-08)');
+    if(k==='outside') return PN('region','구·군 바꾸기')+RG('중구 코스 둘러보기','중구 코스 (S-04)');
+    if(k==='active'||k==='notice') return PN('travel','이어하기')+RG('다시 확인','재평가 (F-08)');
+    return PG('다시 확인','재평가 (F-08)')+RN('region','구·군 바꾸기');
   }
   function renderTodo(label){
     $('#todoT').textContent=label;
+    var s14=/^S-14/.test(label); // 코스 없음(추천 없음) 자리: 빈 상태 일러스트, 준비 중 문구와 중복 홈 버튼은 뺌
+    $('#todoEmpty').hidden=!s14; $('#todoRow').hidden=s14; $('#todoHome').hidden=s14;
+    $('#todoActs').hidden=!s14; if(s14){ $('#todoActs').innerHTML=noRouteActs($('#state').value); }
     $('#todoSpec').textContent='기획 근거: '+(TODO_SPEC[label]||'[확인 필요]')+' · 목업에서는 자리만 둡니다.';
   }
   // 모든 길: 중구의 모든 코스 목록 (날씨 추천 3개는 '오늘의 길 고르기')
@@ -880,6 +904,7 @@
     else if(name==='briefdone'){ readyHome() }
     else if(name==='tripdetail'){ show('tripdetail') }
     else if(name==='travel'){ location.href='travel_map_mockup_v1.html'; return }
+    else if(name==='diary'){ location.href='diary_mockup_v1.html'; return }
     else if(name==='place'){ location.href='travel_map_mockup_v1.html'; return }
     else if(name==='arrive'){ phase=$('#gpsSel').value==='ok'?'mission':'gpsfail'; renderStop() }
     else if(name==='gpsretry'){ phase='mission'; renderStop() }
@@ -916,11 +941,13 @@
     show('home');
     scene.classList.remove('going'); scene.classList.add('ready');
     $('#dBubTx').textContent='오늘은 '+cc().t+'('+(TRIP.route==='indoor'?'실내':'야외')+') 길로 가 볼까요?';
+    showOnly('dBub');
   }
   // 문을 누르면: 대사 → 몸 돌리기 → 옆모습으로 문 쪽 걷기 → 문 밖으로 사라짐
   function walkout(){
     scene.classList.remove('ready'); scene.classList.remove('going');
     $('#dBubTx').textContent='자, 이제 오늘의 길을 걸으러 가요!';
+    showOnly('dBub');
     void scene.offsetWidth; scene.classList.add('going');
   }
   $('#mKeep').addEventListener('click',function(){ $('#modal').hidden=true; nav('travel') });
@@ -939,6 +966,7 @@
   }
   document.addEventListener('click',function(e){
     if(e.target.closest('#hHot')){showHarangi();return}
+    if(e.target.closest('#chat')){location.href='chat_harangi_mockup_v1.html';return}
     if(e.target.closest('#hBub')){hideHarangi();return}
     var nv=e.target.closest('[data-nav]'); if(nv&&nv.dataset.nav){nav(nv.dataset.nav,nv.dataset.idx);return}
     var sg=e.target.closest('.seg button'); if(sg){bm(sg.dataset.bm);return}
