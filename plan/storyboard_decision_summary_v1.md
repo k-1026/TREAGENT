@@ -24,9 +24,9 @@
 
 ### 1-3. 캐릭터와 스프라이트
 
-- **채택 스프라이트**: 장부 (펼침, `brand/character/images/ledger_sprite_v1.webp`), 덮인 장부 (`ledger_closed_sprite_v1.png`), 능금 (`nunggeum_sprite_v1.png`), 하랑이 꼬리 (`harangi_tail_sprite_v1.webp`), 열쇠 (`key_sprite_v1.png`), 부채 (`fan_sprite_v1.png`), 납작만두 (`dumpling_sprite_v1.png`). 투명 배경은 사용자가 확인했습니다. 메타데이터는 `archive/metadata.csv`에 등록했습니다 (커밋 `80b8592`, `88df0b3`, 브랜치 `feat/brand-sprite-assets`, 푸시 대기).
+- **채택 스프라이트**: 장부 (펼침, `brand/images/items/ledger_sprite_v1.webp`), 덮인 장부 (`ledger_closed_sprite_v1.png`), 능금 (`nunggeum_sprite_v1.png`), 하랑이 꼬리 (`harangi_tail_sprite_v1.webp`), 열쇠 (`key_sprite_v1.png`), 부채 (`fan_sprite_v1.png`), 납작만두 (`dumpling_sprite_v1.png`). 투명 배경은 사용자가 확인했습니다. 메타데이터는 `archive/metadata.csv`에 등록했습니다 (커밋 `80b8592`, `88df0b3`, 브랜치 `feat/brand-sprite-assets`, 푸시 대기).
 - **꼬리 조건**: 몸과 같은 능금 빨강, 끝 3분의 1만 크림색. 얼굴과 배는 크림색 (`brand/character/prompts.md` 공통 조건).
-- **준비물 아이콘**: 9종 (생수, 캡모자, 양산, 선크림, 쿨토시, 우산, 여벌 양말, 운동화, 겉옷). 시트 `brand/character/images/travel_items_sheet_v1.webp`.
+- **준비물 아이콘**: 9종 (생수, 캡모자, 양산, 선크림, 쿨토시, 우산, 여벌 양말, 운동화, 겉옷). 시트 `brand/images/items/travel_items_sheet_v1.webp`.
 
 ### 1-4. 보류로 둔 것
 

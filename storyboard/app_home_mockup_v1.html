@@ -78,7 +78,7 @@
   .spr img{position:absolute;left:-34px;top:-5px;width:358px;height:119px;max-width:none;image-rendering:pixelated;display:block}
   .glow{position:absolute;left:6px;top:116px;width:74px;height:120px;z-index:2;background:radial-gradient(ellipse at 50% 60%,#fff3b8,rgba(255,230,150,0) 70%);opacity:0;transition:opacity 1.2s}
   .going .glow{opacity:1}
-  /* 외출: 정면 스프라이트를 숨기고 옆모습 걷기 4프레임(brand/character/images/harangi_pixel_walk_side_0N_transparent.png)으로 문 쪽(왼쪽)으로 걸어 나감 */
+  /* 외출: 정면 스프라이트를 숨기고 옆모습 걷기 4프레임(brand/images/characters/sprites/harangi_pixel_walk_side_0N_transparent.png)으로 문 쪽(왼쪽)으로 걸어 나감 */
   .walker{position:absolute;left:69px;top:196px;width:117px;height:121px;z-index:3;display:none;visibility:hidden;transform:scaleX(-1);transform-origin:58px 100%}
   .walker img{position:absolute;left:0;top:0;width:117px;height:121px;max-width:none;image-rendering:pixelated;opacity:0;animation:fr .56s steps(1) infinite}
   .walker img:nth-child(2){animation-delay:.14s}.walker img:nth-child(3){animation-delay:.28s}.walker img:nth-child(4){animation-delay:.42s}
@@ -236,7 +236,7 @@
   .briefbub::before{content:"";position:absolute;left:50%;bottom:-8px;transform:translateX(-50%);z-index:1;border-left:8px solid transparent;border-right:8px solid transparent;border-top:9px solid var(--paper)}
   .briefstage{position:absolute;left:0;right:0;top:600px;height:180px;overflow:hidden}
   .briefstage::after{content:"";position:absolute;left:0;right:0;bottom:10px;height:3px;background:var(--ink);z-index:2}
-  .briefhara{position:absolute;left:50%;transform:translateX(-50%);top:0;width:180px;height:180px;background-image:url(../brand/character/images/harangi_pixel_expressions_transparent.webp);background-size:540px 180px;background-position:-180px 0;background-repeat:no-repeat;image-rendering:pixelated}
+  .briefhara{position:absolute;left:50%;transform:translateX(-50%);top:0;width:180px;height:180px;background-image:url(../brand/images/characters/sprites/harangi_pixel_expressions_transparent.webp);background-size:540px 180px;background-position:-180px 0;background-repeat:no-repeat;image-rendering:pixelated}
   .briefbtns{position:absolute;left:20px;right:20px;top:786px;display:flex;gap:10px}
   .briefbtns button{flex:1;height:52px;margin:0;font-size:17px;font-weight:800;text-align:center;justify-content:center;border:0;cursor:pointer;display:flex;align-items:center}
   .briefbtns .cta{display:block;width:auto}
@@ -315,8 +315,8 @@
       <img class="bg" src="../brand/home/home_room_day_v2.webp" alt="도트 방 배경: 문, 창 너머 골목, 장부가 놓인 책상">
       <div class="status"><span>9:41</span><span>●●● ▮</span></div>
       <div class="glow"></div>
-      <div class="spr" id="spr"><img src="../brand/character/images/harangi_fullbody_pixel_transparent.png" alt="하랑이 (정면, 임시 합성)"></div>
-      <div class="walker" aria-hidden="true"><img src="../brand/character/images/harangi_pixel_walk_side_01_transparent.png" alt=""><img src="../brand/character/images/harangi_pixel_walk_side_02_transparent.png" alt=""><img src="../brand/character/images/harangi_pixel_walk_side_03_transparent.png" alt=""><img src="../brand/character/images/harangi_pixel_walk_side_04_transparent.png" alt=""></div>
+      <div class="spr" id="spr"><img src="../brand/images/characters/sprites/harangi_fullbody_pixel_transparent.png" alt="하랑이 (정면, 임시 합성)"></div>
+      <div class="walker" aria-hidden="true"><img src="../brand/images/characters/sprites/harangi_pixel_walk_side_01_transparent.png" alt=""><img src="../brand/images/characters/sprites/harangi_pixel_walk_side_02_transparent.png" alt=""><img src="../brand/images/characters/sprites/harangi_pixel_walk_side_03_transparent.png" alt=""><img src="../brand/images/characters/sprites/harangi_pixel_walk_side_04_transparent.png" alt=""></div>
       <button class="hot" style="left:232px;top:180px;width:80px;height:44px" data-view="today" title="오늘 페이지" aria-label="오늘 페이지 열기"></button>
       <span class="mark">오늘 페이지 ▾</span>
       <button class="hot" id="hHot" style="left:92px;top:210px;width:66px;height:104px" title="하랑이" aria-label="하랑이 누르기"></button>
@@ -336,7 +336,7 @@
     <div class="body">
       <button class="cta px" id="cta"><span id="ctaT"></span><small id="ctaS"></small></button>
       <div class="quick">
-        <button class="px chat" id="chat"><img class="hface" src="../brand/character/images/harangi_chat_btn_v1.png" alt="하랑이"><span>하랑이와 대화하기</span></button>
+        <button class="px chat" id="chat"><img class="hface" src="../brand/images/characters/ui/harangi_chat_btn_v1.png" alt="하랑이"><span>하랑이와 대화하기</span></button>
         <button class="px" data-view="pouch"><i class="qi pouch"></i>주머니</button>
       </div>
       <div class="wxcard px" id="wxCard"><b>오늘 챙길 것</b><ul class="tiplist" id="tipList"></ul></div>
@@ -364,16 +364,16 @@
       </div>
 
       <div class="segp" id="bm-trips" hidden>
-        <div class="h3">내 여행</div>
-        <div id="em-trips" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/character/images/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>아직 빈 칸뿐이에요</b><small style="color:var(--muted);font-size:13px">첫 길을 걸으러 갈까요? 길을 마치면 여기 기록이 남아요.</small></div>
-        <button class="row px" data-nav="tripdetail"><div style="flex:1"><b>중구 근대골목 걷기</b><small>[날짜] · 3곳 · 도장 3/3 · 완주</small><div class="mini"><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""></div></div></button>
-        <button class="row px" data-nav="travel"><div style="flex:1"><b>중구 근대골목 걷기</b><small>[날짜] · 3곳 · 진행 중 · 눌러서 이어하기 [임시]</small><div class="mini"><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img class="e" src="../brand/character/images/stamp_nungeum.webp" alt=""></div></div></button>
+        <div class="h3">내 여행 <span>여행 1회가 한 장 · 본인 것만</span></div>
+        <div id="em-trips" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/images/characters/ui/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>아직 빈 칸뿐이에요</b><small style="color:var(--muted);font-size:13px">첫 길을 걸으러 갈까요? 길을 마치면 여기 기록이 남아요.</small></div>
+        <button class="row px" data-nav="tripdetail"><div style="flex:1"><b>중구 근대골목 걷기</b><small>[날짜] · 3곳 · 도장 3/3 · 완주</small><div class="mini"><img src="../brand/images/items/stamp_nungeum.webp" alt=""><img src="../brand/images/items/stamp_nungeum.webp" alt=""><img src="../brand/images/items/stamp_nungeum.webp" alt=""></div></div></button>
+        <button class="row px" data-nav="travel"><div style="flex:1"><b>중구 근대골목 걷기</b><small>[날짜] · 3곳 · 진행 중 · 눌러서 이어하기 [임시]</small><div class="mini"><img src="../brand/images/items/stamp_nungeum.webp" alt=""><img src="../brand/images/items/stamp_nungeum.webp" alt=""><img class="e" src="../brand/images/items/stamp_nungeum.webp" alt=""></div></div></button>
         <div class="row px"><div>한 장에는 실제로 방문한 장소와 날짜만 담겨요. 좌표는 담지 않아요.</div></div>
       </div>
 
       <div class="segp" id="bm-album" hidden>
         <div class="h3">앨범 <span>하랑이의 이야기</span></div>
-        <div id="em-album" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/character/images/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>아직 앨범이 비어 있어요</b><small style="color:var(--muted);font-size:13px">같이 걸으면 이야기가 생겨요.</small></div>
+        <div id="em-album" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/images/characters/ui/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>아직 앨범이 비어 있어요</b><small style="color:var(--muted);font-size:13px">같이 걸으면 이야기가 생겨요.</small></div>
         <button class="row px" data-nav="todo" data-idx="컷씬 ① 다시 보기"><div class="thumb">[컷씬 ①<br>썸네일]</div><div style="flex:1"><b>[컷씬 ① 제목]</b><small>[해금한 날짜] · 눌러서 다시 보기</small></div></button>
       </div>
     </div>
@@ -384,7 +384,7 @@
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">펼친 장부의 오늘 페이지</div><div class="t">오늘 페이지</div><button class="back px" data-view="home">‹ 홈</button></div>
     <div class="scroll">
       <div class="row px"><div><b>추천 길 · [요일] · [시간대] · [날씨]</b>날씨와 시간대에 맞춰 고른 추천 길이에요. 장소 3곳을 걸어요. [승인 대사 대기]</div></div>
-      <div id="em-today" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/character/images/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>오늘은 안내할 칸이 없어요</b><small style="color:var(--muted);font-size:13px">[승인 대사 대기 · 오늘 칸 없음] 내일 다시 확인해요.</small></div>
+      <div id="em-today" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/images/characters/ui/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>오늘은 안내할 칸이 없어요</b><small style="color:var(--muted);font-size:13px">[승인 대사 대기 · 오늘 칸 없음] 내일 다시 확인해요.</small></div>
       <div class="h3">오늘 걸을 장소 <span id="todayCnt"></span></div>
       <div id="todayCells" class="segp"></div>
       <button class="cta px" data-nav="course" data-idx="C01" style="height:68px;display:flex;align-items:center;justify-content:center;text-align:center">이 길 확인하기</button>
@@ -395,7 +395,7 @@
   <section class="view" id="v-pouch" aria-label="주머니">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">내가 받은 물건</div><div class="t">주머니</div><button class="back px" data-view="home">‹ 홈</button></div>
     <div class="scroll">
-      <div id="em-pouch" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/character/images/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>아직 받은 물건이 없어요</b><small style="color:var(--muted);font-size:13px">[승인 대사 대기 · 주머니 비어 있음]</small></div>
+      <div id="em-pouch" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/images/characters/ui/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>아직 받은 물건이 없어요</b><small style="color:var(--muted);font-size:13px">[승인 대사 대기 · 주머니 비어 있음]</small></div>
       <button class="row px" data-nav="todo" data-idx="열쇠 하랑이 한마디 (7-13)">
         <svg class="ico" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><g transform="translate(0 3)"><polygon fill="#5b2a22" points="3,0 6,0 8,2 8,5 6,7 3,7 1,5 1,2"/><polygon fill="#e8b230" points="4,1 5,1 7,3 7,4 5,6 4,6 2,4 2,3"/><rect fill="#f7d774" x="3" y="1" width="2" height="1"/><rect fill="#fffaf1" x="4" y="3" width="2" height="2"/><rect fill="#5b2a22" x="8" y="2" width="7" height="4"/><rect fill="#e8b230" x="8" y="3" width="6" height="2"/><rect fill="#b9791e" x="8" y="4" width="6" height="1"/><rect fill="#5b2a22" x="10" y="6" width="2" height="4"/><rect fill="#e8b230" x="10" y="6" width="1" height="3"/><rect fill="#5b2a22" x="13" y="6" width="2" height="3"/><rect fill="#e8b230" x="13" y="6" width="1" height="2"/></g></svg>
         <div class="tx"><b>열쇠</b>[날짜]에 처음 열렸어요 (눌러 보기)<small>상징 1개, 모으는 재화가 아니에요</small></div></button>
@@ -511,7 +511,7 @@
   <section class="view" id="v-todo" aria-label="준비 중">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">다음 단계에서 만듭니다</div><div class="t" id="todoT">준비 중</div><button class="back px" data-view="home">‹ 홈</button></div>
     <div class="scroll">
-      <div id="todoEmpty" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/character/images/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>오늘 조건에 맞는 길이 아직 없어요</b><small style="color:var(--muted);font-size:13px">[승인 대사 대기 · 추천 없음] 다른 곳이나 쉼터를 골라 볼까요?</small></div>
+      <div id="todoEmpty" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/images/characters/ui/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>오늘 조건에 맞는 길이 아직 없어요</b><small style="color:var(--muted);font-size:13px">[승인 대사 대기 · 추천 없음] 다른 곳이나 쉼터를 골라 볼까요?</small></div>
       <div class="row px" id="todoRow"><div><b>준비 중인 화면입니다</b><small id="todoSpec"></small></div></div>
       <div id="todoActs" hidden style="display:flex;flex-direction:column;gap:12px"></div>
       <button class="row px" id="todoHome" data-view="home" style="justify-content:center;font-weight:800">홈으로 돌아가기</button>
@@ -549,9 +549,9 @@
         <div class="snapw">[지난 날씨 기록]</div>
         <div class="snapphoto"><span>[지난 여행 사진 자리]</span></div>
         <div class="snapcap"><b>중구 근대골목 걷기</b>
-          <div class="snaprow"><b>[시각]</b><span>동성로</span><img src="../brand/character/images/stamp_nungeum.webp" alt="도장"></div>
-          <div class="snaprow"><b>[시각]</b><span>대구 근대골목</span><img src="../brand/character/images/stamp_nungeum.webp" alt="도장"></div>
-          <div class="snaprow"><b>[시각]</b><span>대구약령시한의약박물관</span><img src="../brand/character/images/stamp_nungeum.webp" alt="도장"></div>
+          <div class="snaprow"><b>[시각]</b><span>동성로</span><img src="../brand/images/items/stamp_nungeum.webp" alt="도장"></div>
+          <div class="snaprow"><b>[시각]</b><span>대구 근대골목</span><img src="../brand/images/items/stamp_nungeum.webp" alt="도장"></div>
+          <div class="snaprow"><b>[시각]</b><span>대구약령시한의약박물관</span><img src="../brand/images/items/stamp_nungeum.webp" alt="도장"></div>
         </div>
         <div class="snapfoot"><span>[하랑이 마무리 대사 · 승인 대기]</span><span>도장 3/3</span></div>
       </div>
@@ -589,7 +589,7 @@
 <script>
 (function(){
   var $=function(s){return document.querySelector(s)}, $$=function(s){return document.querySelectorAll(s)};
-  var scene=$('#scene'), toastT, STAMP='../brand/character/images/stamp_nungeum.webp';
+  var scene=$('#scene'), toastT, STAMP='../brand/images/items/stamp_nungeum.webp';
   // 코스 정보는 서버 시드(dev/supabase/migrations/seed_courses.sql)를 따른다. 제목 후보 A, 소요 60분은 임시 [확인 필요]
   var C={
     C01:{t:'중구 근대골목 걷기',m:'중구 · 3곳 · 약 60분 [확인 필요]',
@@ -651,7 +651,7 @@
     $('#ctaT').textContent=s.cta[0]; $('#ctaS').textContent=s.cta[1]; $('#cta').dataset.go=s.cta[2];
     $('#cta').dataset.nav=({none:'picks',outside:'picks',active:'travel',notice:'travel',heat:'shelter',storm:'shelter',unknown:'shelter'})[k]||'todo';
     $('#cta').dataset.idx=s.cta[2];
-    $('#tipList').innerHTML=(TIPS[k]||TIPS.none).map(function(t){var f=ICON[t];return '<li>'+(f?'<img src="../brand/character/images/item_'+f+'_v1.png?v=4" alt="">':'')+'<span>'+t+'</span></li>'}).join('');
+    $('#tipList').innerHTML=(TIPS[k]||TIPS.none).map(function(t){var f=ICON[t];return '<li>'+(f?'<img src="../brand/images/characters/item_'+f+'_v1.png?v=4" alt="">':'')+'<span>'+t+'</span></li>'}).join('');
     var sb=$('#sbanner'); if(s.banner){sb.hidden=false;sb.className='sbanner'+(s.banner[0]==='n'?' n':'');sb.textContent=s.banner[1];sb.dataset.go=s.banner[2]}else{sb.hidden=true}
     sb.dataset.nav=(s.banner&&s.banner[2]==='S-07 경로 변경')?'reroute':(s.banner&&s.banner[2]==='S-14 가까운 쉼터')?'shelter':'';
     var L=$('#list'); L.innerHTML='';
@@ -783,7 +783,7 @@
   }
   // 쉼터 (S-14 쉼터 안내): 폭염·호우·날씨 확인 불가일 때 보여 줌. 기준 시각, 운영 시간, AWS 여부를 함께 적음 (CLAUDE.md 안전 정보 규칙)
   // 오늘 챙길 것: 날씨 수치는 쓰지 않고 행동만 안내. 문구는 창작 항목(후보 2개 중 확정은 팀)
-  // 준비물 아이콘 파일명 (brand/character/images/item_이름_v1.png, 원본 96px을 48px로 표시)
+  // 준비물 아이콘 파일명 (brand/images/items/item_이름_v1.png, 원본 96px을 48px로 표시)
   var ICON={'생수':'water','캡모자':'cap','양산':'parasol','선크림':'sunscreen','쿨토시':'sleeves','우산':'umbrella','여벌 양말':'socks','운동화':'sneakers','겉옷':'jacket'};
   var TIPS={none:['생수','운동화','겉옷'],outside:['운동화','생수','캡모자'],heat:['생수','캡모자','쿨토시'],storm:['우산','여벌 양말','운동화'],unknown:['날씨를 확인하지 못했어요'],active:['생수','운동화','겉옷'],notice:['경로가 바뀌었어요','생수','운동화'],empty:['오늘은 안내할 길이 없어요.<br>내일 다시 확인해요.']};
   function renderShelter(k){
@@ -931,7 +931,7 @@
   function renderBrief(r){
     var names=cc().routes[r].stops, walk=[8,6], h='';
     names.forEach(function(n,i){
-      h+='<div class="bstop"><img src="../brand/character/images/stamp_nungeum.webp" alt=""><div class="bt"><b>'+(i+1)+'. '+n+'</b><small>[장소 특징 한 줄 · 검수 문구 필요]</small></div></div>';
+      h+='<div class="bstop"><img src="../brand/images/items/stamp_nungeum.webp" alt=""><div class="bt"><b>'+(i+1)+'. '+n+'</b><small>[장소 특징 한 줄 · 검수 문구 필요]</small></div></div>';
       if(i<names.length-1) h+='<div class="bwalk">↓ 도보 약 '+walk[i]+'분 [예시]</div>';
     });
     $('#briefList').innerHTML=h;

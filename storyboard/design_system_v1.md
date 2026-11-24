@@ -65,7 +65,7 @@
 
 ## 7. 하랑이 (캐릭터)
 
-- 표정 시트: `brand/character/images/harangi_pixel_expressions_transparent.webp` (2000 x 667, 투명 배경, 한 칸 = 높이 667)
+- 표정 시트: `brand/images/characters/sprites/harangi_pixel_expressions_transparent.webp` (2000 x 667, 투명 배경, 한 칸 = 높이 667)
   - 1번 장면: 기쁨 (웃는 얼굴), 2번 장면: 차분함 (기본 표정, 브리핑에서 사용), 3번 장면: 놀람
 - 화면에서는 그림 한 장면만 잘라 씀 (`background-size`와 `background-position`)
 - 기본 표정 = 2번 장면 (브리핑 씬 확정)
@@ -76,7 +76,7 @@
 
 ## 8. 도장 아이콘
 
-- 파일: `brand/character/images/stamp_nungeum.webp` (투명 배경, 1254 x 1254)
+- 파일: `brand/images/items/stamp_nungeum.webp` (투명 배경, 1254 x 1254)
 - 표시 크기: 장소 목록 40px, 완주 카드 44px, 지도 도장 26px
 - 배경 칸을 따로 깔지 않음 (흰 배경 문제 원인: 제가 넣은 CSS 배경, 제거 완료)
 - 픽셀 느낌 유지: `image-rendering: pixelated`
@@ -181,6 +181,6 @@
 - `storyboard/app_screen_storyboard_v1.md` (S-01~S-14 화면 정의)
 - `storyboard/game_flow_story_v1.md` (4절 튜토리얼 흐름, 7절 경로 변경 규칙)
 - `brand/home/home_room_day_v2.webp`, `brand/home/home_room_heat_v1.webp`, `brand/home/home_room_storm_v1.webp`
-- `brand/character/images/harangi_pixel_expressions_transparent.webp`, `brand/character/images/stamp_nungeum.webp`
+- `brand/images/characters/sprites/harangi_pixel_expressions_transparent.webp`, `brand/images/items/stamp_nungeum.webp`
 - `brand/character/prompts.md` (P5~P12)
 - `CLAUDE.md` ("민감한 소재", "브랜드·캐릭터 작업" 규칙)

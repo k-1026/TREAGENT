@@ -162,7 +162,7 @@
       <span class="pin" id="pin1" style="left:70px;top:90px">1</span>
       <span class="pin" id="pin2" style="left:230px;top:40px">2</span>
       <span class="pin" id="pin3" style="left:290px;top:200px">3</span>
-      <img class="me" id="me" src="../brand/character/images/harangi_view_front_v1.png" alt="내 위치 (하랑이)" style="left:160px;top:230px">
+      <img class="me" id="me" src="../brand/images/characters/base/harangi_view_front_v1.png" alt="내 위치 (하랑이)" style="left:160px;top:230px">
     </div>
     <button class="expand" id="expand" aria-label="지도 확대">⤢ 확대</button>
   </section>
@@ -256,7 +256,7 @@
 (function(){
   var $=function(s){return document.querySelector(s)};
   var phone=$('#phone');
-  var IMG='../brand/character/images/stamp_nungeum.webp';
+  var IMG='../brand/images/items/stamp_nungeum.webp';
   var NAMES=['[장소 1 이름 예시]','[장소 2 이름 예시]','[장소 3 이름 예시]'];
   var PIN_POS=['pin1','pin2','pin3'];
   var toastT, phase='arrive';
@@ -374,7 +374,7 @@
 
   // 내 위치 마커: 이동 상태에 따라 하랑이 방향 시안을 바꿈
   var MARK={stop:'harangi_view_front_v1.png',fwd:'harangi_view_back_v1.png',left:'harangi_view_left_v1.png',right:'harangi_view_right_v1.png'};
-  $('#mv').addEventListener('change',function(){ $('#me').src='../brand/character/images/'+MARK[$('#mv').value]; });
+  $('#mv').addEventListener('change',function(){ $('#me').src='../brand/images/characters/base/'+MARK[$('#mv').value]; });
   $('#alertBtn').addEventListener('click',function(){ openDim('#alert'); });
   $('#altgo').addEventListener('click',function(){ closeAll(); toast('대체 길 안내 (S-07)'); });
   $('#altlater').addEventListener('click',function(){ closeAll(); toast('보류했어요. 다음 재평가 때 다시 알려 드려요'); });

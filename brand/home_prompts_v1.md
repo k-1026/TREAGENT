@@ -11,7 +11,7 @@
 ## 1. 쓰는 법
 
 - 순서: ① 기본본(평상시·낮) 생성 → 채택 → ② 그 이미지를 첨부해 날씨·시간대 변형 → ③ 외출 전환 프레임.
-- 첨부할 이미지: 하랑이 도트 시트 `brand/character/images/harangi_fullbody_pixel.webp` (화풍 기준으로만 첨부). 변형은 채택한 기본본을 첨부합니다.
+- 첨부할 이미지: 하랑이 도트 시트 `brand/images/characters/sprites/harangi_fullbody_pixel.webp` (화풍 기준으로만 첨부). 변형은 채택한 기본본을 첨부합니다.
 - 하랑이는 그리지 않습니다. 앱이 스프라이트와 말풍선을 따로 얹습니다 (storyboard/app_home_screen_v1.md 2절).
 - 글자·숫자는 모든 프롬프트에서 금지합니다. GPT는 한글을 자주 틀리고, 글자는 앱이 얹습니다.
 - 도트 정확도: GPT는 정확한 픽셀 격자를 못 지킵니다. 결과를 약 180 x 180 으로 줄였다가 정수 배로 키우는 후처리를 권합니다 `[확인 필요: 디자인 담당 도구]`.
@@ -138,7 +138,7 @@ NO text, NO letters, NO numbers, NO logos, NO other characters, NO shadows on th
 ## 출처
 
 - storyboard/app_home_screen_v1.md (구성, 변형, 외출 전환)
-- brand/character/images/harangi_fullbody_pixel.webp (화풍 기준)
+- brand/images/characters/sprites/harangi_fullbody_pixel.webp (화풍 기준)
 - brand/character/prompts.md (프롬프트 기록 형식, 영문 원문 + 한국어 참고)
 - brand/worldview.md (5-3절 장부는 연출), brand/character/profile/harangi_squirrel.md (상표·로고 금지)
 - plan/spec/treagent_tech_spec_v1.md:506-512 (날씨 시나리오)
