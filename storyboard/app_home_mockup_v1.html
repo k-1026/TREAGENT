@@ -363,6 +363,7 @@
 
       <div class="segp" id="bm-trips" hidden>
         <div class="h3">내 여행 <span>여행 1회가 한 장 · 본인 것만</span></div>
+        <div id="em-trips" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/character/images/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>아직 빈 칸뿐이에요</b><small style="color:var(--muted);font-size:13px">첫 길을 걸으러 갈까요? 길을 마치면 여기 기록이 남아요.</small></div>
         <button class="row px" data-nav="tripdetail"><div style="flex:1"><b>중구 근대골목 걷기</b><small>[날짜] · 3곳 · 도장 3/3 · 완주</small><div class="mini"><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""></div></div></button>
         <button class="row px" data-nav="travel"><div style="flex:1"><b>중구 근대골목 걷기</b><small>[날짜] · 3곳 · 진행 중 · 눌러서 이어하기 [임시]</small><div class="mini"><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img src="../brand/character/images/stamp_nungeum.webp" alt=""><img class="e" src="../brand/character/images/stamp_nungeum.webp" alt=""></div></div></button>
         <div class="row px"><div>한 장에는 실제로 방문한 장소와 날짜만 담겨요. 좌표는 담지 않아요.</div></div>
@@ -370,6 +371,7 @@
 
       <div class="segp" id="bm-album" hidden>
         <div class="h3">앨범 <span>하랑이의 이야기</span></div>
+        <div id="em-album" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/character/images/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>아직 앨범이 비어 있어요</b><small style="color:var(--muted);font-size:13px">같이 걸으면 이야기가 생겨요.</small></div>
         <button class="row px" data-nav="todo" data-idx="컷씬 ① 다시 보기"><div class="thumb">[컷씬 ①<br>썸네일]</div><div style="flex:1"><b>[컷씬 ① 제목]</b><small>[해금한 날짜] · 눌러서 다시 보기</small></div></button>
       </div>
     </div>
@@ -380,6 +382,7 @@
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">펼친 장부의 오늘 페이지</div><div class="t">오늘 페이지</div><button class="back px" data-view="home">‹ 홈</button></div>
     <div class="scroll">
       <div class="row px"><div><b>추천 길 · [요일] · [시간대] · [날씨]</b>날씨와 시간대에 맞춰 고른 추천 길이에요. 장소 3곳을 걸어요. [승인 대사 대기]</div></div>
+      <div id="em-today" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/character/images/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>오늘은 안내할 칸이 없어요</b><small style="color:var(--muted);font-size:13px">[승인 대사 대기 · 오늘 칸 없음] 내일 다시 확인해요.</small></div>
       <div class="h3">오늘 걸을 장소 <span id="todayCnt"></span></div>
       <div id="todayCells" class="segp"></div>
       <button class="cta px" data-nav="course" data-idx="C01" style="height:68px;display:flex;align-items:center;justify-content:center;text-align:center">이 길 확인하기</button>
@@ -390,6 +393,7 @@
   <section class="view" id="v-pouch" aria-label="주머니">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">내가 받은 물건</div><div class="t">주머니</div><button class="back px" data-view="home">‹ 홈</button></div>
     <div class="scroll">
+      <div id="em-pouch" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/character/images/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>아직 받은 물건이 없어요</b><small style="color:var(--muted);font-size:13px">[승인 대사 대기 · 주머니 비어 있음]</small></div>
       <button class="row px" data-nav="todo" data-idx="열쇠 하랑이 한마디 (7-13)">
         <svg class="ico" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><g transform="translate(0 3)"><polygon fill="#5b2a22" points="3,0 6,0 8,2 8,5 6,7 3,7 1,5 1,2"/><polygon fill="#e8b230" points="4,1 5,1 7,3 7,4 5,6 4,6 2,4 2,3"/><rect fill="#f7d774" x="3" y="1" width="2" height="1"/><rect fill="#fffaf1" x="4" y="3" width="2" height="2"/><rect fill="#5b2a22" x="8" y="2" width="7" height="4"/><rect fill="#e8b230" x="8" y="3" width="6" height="2"/><rect fill="#b9791e" x="8" y="4" width="6" height="1"/><rect fill="#5b2a22" x="10" y="6" width="2" height="4"/><rect fill="#e8b230" x="10" y="6" width="1" height="3"/><rect fill="#5b2a22" x="13" y="6" width="2" height="3"/><rect fill="#e8b230" x="13" y="6" width="1" height="2"/></g></svg>
         <div class="tx"><b>열쇠</b>[날짜]에 처음 열렸어요 (눌러 보기)<small>상징 1개, 모으는 재화가 아니에요</small></div></button>
@@ -651,6 +655,13 @@
     if(!s.cards.length){var m=document.createElement('div');m.className='msg px';m.textContent=s.msg;L.appendChild(m)}
     // 오늘 페이지
     $('#todayCnt').textContent='도장 '+s.today+'/3 · 장소마다 도장 1개';
+    // 빈 상태 (S-09 기록 없음, S-19 앨범 비어 있음, S-20 주머니 비어 있음, S-21 오늘 칸 없음)
+    var noTrip=(k==='none'), noCourse=(k==='empty');
+    function setHidden(sel, on){ document.querySelectorAll(sel).forEach(function(x){ x.hidden=on; }); }
+    setHidden('#bm-trips > .row', noTrip); $('#em-trips').hidden=!noTrip;
+    setHidden('#bm-album > .row', noTrip); $('#em-album').hidden=!noTrip;
+    setHidden('#v-pouch .scroll > .row', noTrip); $('#em-pouch').hidden=!noTrip;
+    setHidden('#todayCells', noCourse); setHidden('#v-today .scroll > button.cta', noCourse); $('#em-today').hidden=!noCourse;
     var T=$('#todayCells'); T.innerHTML='';
     for(var i=0;i<3;i++){var done=i<s.today;T.insertAdjacentHTML('beforeend','<div class="cell px"><div class="l"><b>'+stopName(k,i)+' · [미션 종류]</b>[상태 한 줄: 검수된 정보 요약]<small>'+(done?'내가 채운 장소 · 미션 완료':'아직 비어 있어요')+'</small></div>'+(done?'<img src="'+STAMP+'" alt="내 도장">':'<div class="slot"></div>')+'</div>')}
   }
