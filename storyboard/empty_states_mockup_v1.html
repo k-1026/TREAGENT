@@ -84,8 +84,15 @@
     $('#go').textContent=k.go;
   }
   $('#kind').addEventListener('change',render);
-  $('#go').addEventListener('click',function(){ toast('→ '+$('#go').textContent+' (자리)'); });
-  $('#back2').addEventListener('click',function(){ toast('→ 홈 (S-03, 자리)'); });
+  // 빈 상태 화면의 버튼은 모두 '길 걸으러 가기' 계열이라 오늘의 길 화면으로 간다
+  var GO={
+    ledger:'app_home_mockup_v1.html?view=picks',
+    album:'app_home_mockup_v1.html?view=picks',
+    pouch:'app_home_mockup_v1.html?view=picks',
+    today:'app_home_mockup_v1.html?view=picks'
+  };
+  $('#go').addEventListener('click',function(){ location.href=GO[$('#kind').value]; });
+  $('#back2').addEventListener('click',function(){ location.href='app_home_mockup_v1.html'; });
   $('#back').addEventListener('click',function(){ if(history.length>1){ history.back(); } else { toast('이전 화면 (자리)'); } });
   render();
 })();
