@@ -75,7 +75,7 @@ Claude Code가 이 저장소에서 작업할 때 따르는 규칙입니다.
 |---|---|---|
 | 리서치 | `research/` | 지역·기업·사례 조사 노트, 밸류체인, 리뷰 데이터(`data/`), 사용자 문제와 고객 여정(`painpoint/`) |
 | 기획 | `plan/` | 기획서, 고객 전략, 기능·기술 명세(`spec/`), 발표 피드백 원문과 통합 정리(`feedback/`) |
-| 브랜드·콘텐츠 | `brand/` | 페르소나, 세계관, 게임 요소, 캐릭터와 이미지(`character/`, `character/images/`), 상품 시안(`product/`) |
+| 브랜드·콘텐츠 | `brand/` | 페르소나, 세계관, 게임 요소, 캐릭터 설정 문서(`character/`), 이미지(`images/characters/`, `images/items/`), 상품 시안(`product/`) |
 | 스토리보드 | `storyboard/` | 훅, 전환 문장, 스토리 구조, 등장인물 |
 | 개발 | `dev/` | Expo 앱(`dev/app/`)과 앱에 들어가는 에셋(`dev/app/assets/`), 이후 서버·운영자 웹 |
 | 발표 | `presentation/` | 발표일 폴더(`YYYYMMDD/`) 단위의 html, pdf, 대본 |
@@ -83,10 +83,10 @@ Claude Code가 이 저장소에서 작업할 때 따르는 규칙입니다.
 | 도구 | `.claude/`, `.github/` | 스킬, 이슈·PR 양식, 자동화 |
 
 - 위치를 고르는 순서: ① 하는 일에 맞는 대분류 → ② 이미 있는 하위 폴더 → ③ 없을 때만 새 하위 폴더 (실제 파일이 들어올 때 만듭니다).
-- 하위 폴더는 2단계까지를 기본으로 합니다 (예: `research/company/<이름>/`). 그보다 깊어지면 구조를 먼저 확인받습니다.
+- 하위 폴더는 2단계까지를 기본으로 합니다 (예: `research/company/<이름>/`). 그보다 깊어지면 구조를 먼저 확인받습니다. 예외: `brand/images/characters/`는 종류별 하위 폴더(3단계)를 씁니다 (`sprites/`, `stickers/`, `base/`, `motion/`, `ui/`).
 - 같은 성격의 자료를 여러 폴더에 나누지 않습니다. 같은 내용의 다른 형식(md와 html)은 같은 폴더에 둡니다.
 - 폐기·보류한 문서는 지우지 않고 `archive/rejected/`로 옮기고, 원래 문서에는 대체 문서 위치를 적습니다.
-- 이미지는 쓰는 곳 기준으로 둡니다: 캐릭터·브랜드 이미지는 `brand/character/images/`, 앱 번들용은 `dev/app/assets/`, 발표 전용은 발표일 폴더의 `assets/`.
+- 이미지는 쓰는 곳 기준으로 둡니다: 캐릭터 이미지는 `brand/images/characters/`, 아이템·소품·원본 시트는 `brand/images/items/`, 앱 번들용은 `dev/app/assets/`, 발표 전용은 발표일 폴더의 `assets/`.
 - 발표 html은 이미지를 상대경로로 불러옵니다. 폴더나 이미지를 옮기면 html의 경로도 함께 고칩니다.
 
 ## 파일명 기준
@@ -113,7 +113,7 @@ Claude Code가 이 저장소에서 작업할 때 따르는 규칙입니다.
 - 주소: `https://k-1026.github.io/TREAGENT/<저장소 안 경로>` (예: `.../presentation/20261113/20261112_plan_pitch_v10.html`). 2026-11-13에 배포를 시작했습니다 (Actions "HTML 배포" 성공). 열리지 않으면 Actions 탭의 실행 결과를 확인합니다.
 - html은 위 "폴더 구조 기준"의 알맞은 대분류 폴더에 만들고, 파일명은 "파일명 기준"을 따릅니다. 배포 전용 폴더는 따로 만들지 않습니다.
 - 모든 html에 `<meta charset="utf-8">`, `<meta name="viewport" content="width=device-width, initial-scale=1">`, **`<title>`** 을 씁니다. `<title>`이 목차의 제목이 됩니다. 한 줄 설명은 `<meta name="description" content="...">`로 쓸 수 있습니다.
-- 이미지·다른 문서는 **상대경로**로 불러옵니다 (예: `../../brand/character/images/harangi_sheet.webp`). `/`로 시작하는 절대경로와 `file://` 경로는 쓰지 않습니다. 참조한 저장소 파일은 사이트에 함께 복사됩니다.
+- 이미지·다른 문서는 **상대경로**로 불러옵니다 (예: `../../brand/images/characters/base/harangi_sheet.webp`). `/`로 시작하는 절대경로와 `file://` 경로는 쓰지 않습니다. 참조한 저장소 파일은 사이트에 함께 복사됩니다.
 - 이미지는 쓰는 곳 기준 위치(위 "폴더 구조 기준")에 두고 html에서 참조합니다. 같은 이미지를 발표 폴더에 복사하지 않습니다.
 - 배포에서 빼고 싶은 html은 `.github/site/exclude.txt`에 경로를 적습니다 (목차에도 나오지 않습니다).
 - **배포하면 외부에 공개됩니다.** html을 올리기 전에 개인정보, EXIF 위치 정보, 허가받지 않은 실존 인물·가게 이름이 없는지 확인합니다 ("개인정보", "브랜드·캐릭터 작업" 규칙). 확인이 안 된 html은 `exclude.txt`에 먼저 적습니다.

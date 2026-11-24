@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 450" width="680" height="450" role="img">
+<title>손익 시나리오 3개 (연도별 손익)</title>
+<desc>보수, 기준, 낙관 세 시나리오의 1년차, 2년차, 3년차 손익을 막대로 비교한 그림. 1년차는 공통 개발비 1,500만원 때문에 보수와 기준에서 적자다</desc>
+<style>
+text{font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.th{font-size:14px;font-weight:700;fill:#2C2C2A}
+.ts{font-size:12px;fill:#5F5E5A}
+.arr{stroke:#6B6A64;stroke-width:1.5;fill:none}
+.c-purple>rect,rect.c-purple{fill:#EEEDFE;stroke:#534AB7;stroke-width:1}
+.c-purple .th{fill:#3C3489}.c-purple .ts{fill:#534AB7}
+.c-teal>rect,rect.c-teal{fill:#E1F5EE;stroke:#0F6E56;stroke-width:1}
+.c-teal .th{fill:#085041}.c-teal .ts{fill:#0F6E56}
+.c-coral>rect,rect.c-coral{fill:#FAECE7;stroke:#993C1D;stroke-width:1}
+.c-coral .th{fill:#712B13}.c-coral .ts{fill:#993C1D}
+.c-gray>rect,rect.c-gray{fill:#F1EFE8;stroke:#5F5E5A;stroke-width:1}
+.c-gray .th{fill:#444441}.c-gray .ts{fill:#5F5E5A}
+.zone{fill:none;stroke:#B4B2A9;stroke-width:1;stroke-dasharray:4 4}
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#6B6A64" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect width="680" height="450" fill="#FFFFFF"/>
+<line x1="70" y1="230" x2="650" y2="230" stroke="#5F5E5A" stroke-width="1"/>
+<line x1="70" y1="230.0" x2="650" y2="230.0" stroke="#D3D1C7" stroke-width="0.5" stroke-dasharray="3 3"/>
+<text class="ts" x="64" y="230.0" text-anchor="end" dominant-baseline="central">0</text>
+<line x1="70" y1="173.33333333333334" x2="650" y2="173.33333333333334" stroke="#D3D1C7" stroke-width="0.5" stroke-dasharray="3 3"/>
+<text class="ts" x="64" y="173.33333333333334" text-anchor="end" dominant-baseline="central">3,000</text>
+<line x1="70" y1="116.66666666666667" x2="650" y2="116.66666666666667" stroke="#D3D1C7" stroke-width="0.5" stroke-dasharray="3 3"/>
+<text class="ts" x="64" y="116.66666666666667" text-anchor="end" dominant-baseline="central">6,000</text>
+<line x1="70" y1="60.0" x2="650" y2="60.0" stroke="#D3D1C7" stroke-width="0.5" stroke-dasharray="3 3"/>
+<text class="ts" x="64" y="60.0" text-anchor="end" dominant-baseline="central">9,000</text>
+<text class="ts" x="64" y="40" text-anchor="end" dominant-baseline="central">만원</text>
+<rect x="98.0" y="230" width="40" height="18.057800444444442" fill="#AFA9EC" stroke="#444441" stroke-width="0.5"/>
+<text class="ts" x="118.0" y="260.0578004444444" text-anchor="middle" dominant-baseline="central">-956</text>
+<text class="ts" x="118.0" y="344" text-anchor="middle" dominant-baseline="central">1년차</text>
+<rect x="150.0" y="209.44893422222222" width="40" height="20.551065777777776" fill="#5DCAA5" stroke="#444441" stroke-width="0.5"/>
+<text class="ts" x="170.0" y="199.44893422222222" text-anchor="middle" dominant-baseline="central">1,088</text>
+<text class="ts" x="170.0" y="344" text-anchor="middle" dominant-baseline="central">2년차</text>
+<rect x="202.0" y="199.17340133333335" width="40" height="30.826598666666666" fill="#F0997B" stroke="#444441" stroke-width="0.5"/>
+<text class="ts" x="222.0" y="189.17340133333335" text-anchor="middle" dominant-baseline="central">1,632</text>
+<text class="ts" x="222.0" y="344" text-anchor="middle" dominant-baseline="central">3년차</text>
+<text class="th" x="160.66666666666669" y="372" text-anchor="middle" dominant-baseline="central">보수  3년 누적 1,764만원</text>
+<text class="ts" x="160.66666666666669" y="392" text-anchor="middle" dominant-baseline="central">단가 1,000만 · 2 인·월 · 1/2/3건</text>
+<rect x="291.33333333333337" y="230" width="40" height="13.807800444444444" fill="#AFA9EC" stroke="#444441" stroke-width="0.5"/>
+<text class="ts" x="311.33333333333337" y="255.80780044444444" text-anchor="middle" dominant-baseline="central">-731</text>
+<text class="ts" x="311.33333333333337" y="344" text-anchor="middle" dominant-baseline="central">1년차</text>
+<rect x="343.33333333333337" y="186.42340133333335" width="40" height="43.57659866666666" fill="#5DCAA5" stroke="#444441" stroke-width="0.5"/>
+<text class="ts" x="363.33333333333337" y="176.42340133333335" text-anchor="middle" dominant-baseline="central">2,307</text>
+<text class="ts" x="363.33333333333337" y="344" text-anchor="middle" dominant-baseline="central">2년차</text>
+<rect x="395.33333333333337" y="157.37233555555554" width="40" height="72.62766444444445" fill="#F0997B" stroke="#444441" stroke-width="0.5"/>
+<text class="ts" x="415.33333333333337" y="147.37233555555554" text-anchor="middle" dominant-baseline="central">3,845</text>
+<text class="ts" x="415.33333333333337" y="344" text-anchor="middle" dominant-baseline="central">3년차</text>
+<text class="th" x="354.00000000000006" y="372" text-anchor="middle" dominant-baseline="central">기준  3년 누적 5,421만원</text>
+<text class="ts" x="354.00000000000006" y="392" text-anchor="middle" dominant-baseline="central">단가 1,000만 · 1 인·월 · 1/3/5건</text>
+<rect x="484.6666666666667" y="226.19391155555556" width="40" height="3.8060884444444443" fill="#AFA9EC" stroke="#444441" stroke-width="0.5"/>
+<text class="ts" x="504.6666666666667" y="216.19391155555556" text-anchor="middle" dominant-baseline="central">201</text>
+<text class="ts" x="504.6666666666667" y="344" text-anchor="middle" dominant-baseline="central">1년차</text>
+<rect x="536.6666666666667" y="133.58173466666668" width="40" height="96.41826533333332" fill="#5DCAA5" stroke="#444441" stroke-width="0.5"/>
+<text class="ts" x="556.6666666666667" y="123.58173466666668" text-anchor="middle" dominant-baseline="central">5,104</text>
+<text class="ts" x="556.6666666666667" y="344" text-anchor="middle" dominant-baseline="central">2년차</text>
+<rect x="588.6666666666667" y="69.30289111111111" width="40" height="160.6971088888889" fill="#F0997B" stroke="#444441" stroke-width="0.5"/>
+<text class="ts" x="608.6666666666667" y="59.30289111111111" text-anchor="middle" dominant-baseline="central">8,507</text>
+<text class="ts" x="608.6666666666667" y="344" text-anchor="middle" dominant-baseline="central">3년차</text>
+<text class="th" x="547.3333333333334" y="372" text-anchor="middle" dominant-baseline="central">낙관  3년 누적 13,813만원</text>
+<text class="ts" x="547.3333333333334" y="392" text-anchor="middle" dominant-baseline="central">단가 1,820만 · 0.5 인·월 · 1/3/5건</text>
+<text class="ts" x="20" y="424" text-anchor="start" dominant-baseline="central">공통 개발비 1,500만원(가정)은 1년차에 반영. AI 호출비 · 법인세 · 부가세 · 영업비 · 4대보험은 제외.</text>
+</svg>

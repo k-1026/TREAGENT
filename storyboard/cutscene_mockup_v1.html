@@ -1,0 +1,153 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>고정 컷씬 재생 목업 v1 (S-19 앨범 연결)</title>
+<meta name="description" content="고정 컷씬 재생 화면 목업. 1편 1컷, 세로 전체 화면, 텍스트를 탭해 넘기고 언제든 건너뛸 수 있습니다. 재생이 시작되면 앨범(S-19)에 해금·저장됩니다. 컷씬 ①은 첫 쉼터 회상, 컷씬 ②는 납작만두 가게 회상입니다. 일러스트와 대사는 자리만 두고 창작 후보로 표시합니다.">
+<style>
+  :root{
+    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#a85a24; --paper:#fffaf1; --red:#d03a2f; --red-d:#9c2420;
+    --muted:#7a5a4c; --shade:#d9bf98;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#e9e4dc;color:var(--ink);font-family:var(--font)}
+  body{display:flex;flex-direction:column;align-items:center;padding:12px 12px 28px;gap:10px}
+  .ctrl{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:center;font-size:14px;max-width:760px}
+  .ctrl select{font:inherit;padding:5px 8px;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:0}
+  .phone{position:relative;width:390px;height:844px;background:#2b1a16;overflow:hidden;box-shadow:0 0 0 3px var(--ink),0 14px 36px rgba(60,40,20,.28)}
+  .scene{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:flex-end}
+  .art{position:absolute;inset:0;background:repeating-linear-gradient(0deg,#4a2c24 0 12px,#42261f 12px 24px);display:flex;align-items:center;justify-content:center;color:#f3dfc0;font-size:14px;text-align:center;line-height:1.6;padding:24px}
+  .art .box{border:2px dashed #d9bf98;padding:18px 16px;background:rgba(43,26,22,.55)}
+  .skip{position:absolute;top:52px;right:14px;z-index:5;border:0;background:var(--cream);padding:6px 12px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 0 2px var(--ink);color:var(--ink);font-family:inherit}
+  .tag{position:absolute;top:52px;left:14px;z-index:5;font-size:13px;font-weight:800;padding:4px 10px;background:var(--cream);box-shadow:0 0 0 2px var(--ink);color:var(--ink)}
+  .talk{position:relative;z-index:4;margin:0 14px 46px;background:var(--paper);box-shadow:0 0 0 3px var(--ink);padding:16px 18px;min-height:150px;cursor:pointer}
+  .talk .who{font-size:14px;font-weight:800;color:var(--beam);margin-bottom:6px}
+  .talk .line{font-size:17px;line-height:1.7;color:var(--ink)}
+  .talk .more{position:absolute;right:12px;bottom:8px;font-size:13px;color:var(--muted)}
+  .dots{position:absolute;left:0;right:0;bottom:20px;display:flex;justify-content:center;gap:6px;z-index:4}
+  .dots i{width:8px;height:8px;background:var(--shade);box-shadow:0 0 0 1px var(--ink)}
+  .dots i.on{background:var(--red)}
+  .end{position:absolute;inset:0;background:var(--cream);display:none;flex-direction:column;justify-content:center;gap:16px;padding:28px 24px;z-index:6}
+  .end.on{display:flex}
+  .card{background:var(--paper);padding:18px 18px;box-shadow:0 0 0 2px var(--ink)}
+  .card b{display:block;font-size:17px;line-height:1.4}
+  .card small{display:block;font-size:14px;color:var(--muted);margin-top:6px;line-height:1.5}
+  .hara{font-size:15px;line-height:1.6;background:var(--paper);padding:12px 14px;box-shadow:0 0 0 2px var(--ink)}
+  .hara b{color:var(--beam)}
+  .btn{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:56px;padding:0;line-height:1;border:0;background:var(--paper);color:var(--ink);font-weight:800;font-size:17px;cursor:pointer;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink);font-family:inherit}
+  .btn.primary{background:var(--red);color:#fff}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row2 .btn{height:52px;font-size:16px}
+  .toast{position:absolute;left:24px;right:24px;top:110px;background:var(--ink);color:#fff8ea;padding:12px 14px;font-size:15px;text-align:center;z-index:30}
+</style>
+</head>
+<body>
+
+<div class="ctrl" role="group" aria-label="목업 조작 (실제 화면에는 없음)">
+  <label>컷씬 <select id="cut">
+    <option value="c1">① 첫 만남 쉼터 회상 (컷씬 A, 두 번째 여행 중반)</option>
+    <option value="c2">② 납작만두 가게 회상</option>
+  </select></label>
+  <label>들어온 길 <select id="mode">
+    <option value="first">처음 재생 (해금)</option>
+    <option value="replay">앨범에서 다시 보기</option>
+  </select></label>
+</div>
+
+<main class="phone" id="phone">
+  <div class="art" id="art"><div class="box" id="artTxt">[컷씬 일러스트 자리]</div></div>
+  <div class="tag" id="tag">컷씬</div>
+  <button class="skip" id="skip">건너뛰기</button>
+
+  <div class="scene" id="scene">
+    <div class="talk" id="talk">
+      <div class="who" id="who">하랑이</div>
+      <div class="line" id="line"></div>
+      <div class="more" id="more">탭하여 넘기기 ▸</div>
+    </div>
+    <div class="dots" id="dots"></div>
+  </div>
+
+  <!-- 끝 화면 -->
+  <section class="end" id="end">
+    <div class="card" style="text-align:center">
+      <b id="endTitle">이 이야기, 앨범에 넣어 둘게요!</b>
+      <small id="endSub">장부의 [앨범] 책갈피에 담겼어요. 건너뛰었어도 저장돼요.</small>
+    </div>
+    <div class="hara"><b>하랑이</b> <span id="endQuote">앞으로도 많은 길을 함께 걸어요!</span></div>
+    <div class="row2">
+      <button class="btn primary" id="toAlbum">앨범에서 보기</button>
+      <button class="btn" id="close">닫기</button>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" style="display:none"></div>
+</main>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var toastT;
+  function toast(t){var el=$('#toast');el.textContent=t;el.style.display='block';clearTimeout(toastT);toastT=setTimeout(function(){el.style.display='none'},1800)}
+
+  // 대사와 장면 설명은 우선 넣어 둔 자리표시. 컷씬 ①은 게임 흐름 6-6의 예문 13, 컷씬 ②는 9-1절의 창작 초안(후보). 컷씬 ① 재생 시점은 두 번째 여행 중반 (9-1절 결정)
+  var CUTS={
+    c1:{tag:'컷씬 ① · 두 번째 여행 중반', art:'[컷씬 ① 일러스트 자리 · 그늘 있는 쉼터 한 컷]',
+        lines:['후아, 여기 그늘 좋죠?','...사실 저, 견습생이 되기 전에 서두르다 한참 앉아 있어야 했거든요.','아, 아니에요, 그 얘기는 나중에요!'],
+        note:'창작 후보. 대사는 확정 전 [확인 필요]'},
+    c2:{tag:'컷씬 ② · 가게 앞 그늘', art:'[컷씬 ② 일러스트 자리 · 가게 앞 그늘, 의자와 물 한 컵]',
+        lines:['그때 저, 서두르다 더는 못 걷겠어서 가게 앞 그늘에 털썩 앉았어요.','그런데 거기에 의자랑 물 한 컵이 놓여 있었어요. 아무도 저를 못 봤을 텐데, 누가 쉬어 가라고 내놓은 것 같았죠.','옆에는 납작만두가 천 주머니에 싸여 있었고요. 그 주머니가 지금 제 포쉐트예요, 헤헤.','그날 생각했어요. 나도 누군가를 쉬게 해 주는 도사가 되고 싶다고!'],
+        note:'창작 후보 (9-1절 초안). 가게 주인은 손이나 그림자로만 나옴'}
+  };
+  var cur, idx=0, replay=false;
+
+  function renderLine(){
+    var L=CUTS[$('#cut').value].lines;
+    $('#line').textContent=L[idx];
+    $('#dots').innerHTML=L.map(function(_,i){return '<i class="'+(i===idx?'on':'')+'"></i>'}).join('');
+    $('#more').textContent=idx<L.length-1?'탭하여 넘기기 ▸':'탭하여 끝내기 ▸';
+  }
+  function load(){
+    cur=CUTS[$('#cut').value]; idx=0; replay=$('#mode').value==='replay';
+    $('#tag').textContent=cur.tag;
+    $('#artTxt').textContent=cur.art;
+    $('#end').classList.remove('on');
+    $('#skip').style.display='block';
+    $('#talk').style.display='block';
+    renderLine();
+  }
+  function finish(){
+    $('#talk').style.display='none';
+    $('#skip').style.display='none';
+    $('#dots').innerHTML='';
+    $('#endTitle').textContent=replay?'다시 봐도 좀 쑥스럽네요!':'이 이야기, 앨범에 넣어 둘게요!';
+    $('#endSub').textContent=replay?'앨범에서 다시 본 컷씬이에요. 같은 장면이 매번 나와요.':'장부의 [앨범] 책갈피에 담겼어요. 건너뛰었어도 저장돼요.';
+    $('#endQuote').textContent=replay?'다시 봐도 좀 쑥스럽네요!':'앞으로도 많은 길을 함께 걸어요!';
+    $('#end').classList.add('on');
+    if(!replay) toast('앨범에 해금됐어요 (계정 기준)');
+  }
+  function next(){
+    var L=cur.lines;
+    if(idx<L.length-1){ idx++; renderLine(); } else { finish(); }
+  }
+
+  $('#talk').addEventListener('click',next);
+  $('#skip').addEventListener('click',finish);
+  $('#cut').addEventListener('change',load);
+  $('#mode').addEventListener('change',load);
+  $('#toAlbum').addEventListener('click',function(){ location.href='app_home_mockup_v1.html?view=ledger'; });
+  $('#close').addEventListener('click',function(){
+    if(history.length>1){ history.back(); } else { location.href='app_home_mockup_v1.html?view=ledger'; }
+  });
+
+  // 목업 진입: ?cut=c2&mode=replay 로 바로 열 수 있음
+  var P=new URLSearchParams(location.search);
+  if(P.get('cut')&&CUTS[P.get('cut')]) $('#cut').value=P.get('cut');
+  if(P.get('mode')==='replay') $('#mode').value='replay';
+  load();
+})();
+</script>
+</body>
+</html>

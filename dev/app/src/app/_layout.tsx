@@ -7,14 +7,21 @@
  *
  * 판단 규칙 (Gate)
  *  1) loading 중이면 아무것도 그리지 않는다.
- *  2) 로그인 안 했는데 로그인 화면이 아니면 -> /login 으로 이동
- *  3) 로그인 했는데 로그인 화면이면          -> / (홈) 으로 이동
+ *  2) 로그인 안 했는데 로그인 전 화면(title, login, signup)이 아니면 -> /title 로 이동
+ *  3) 로그인 했는데 로그인 전 화면이면                              -> 홈(또는 첫 만남)으로 이동
  *  4) 그 외에는 그대로 화면을 보여 준다.
  *
  * 왜 Gate를 따로 두나
  *  - useAuth()는 <AuthProvider> 안쪽 컴포넌트에서만 쓸 수 있다.
+ *
+ * 왜 <Redirect>와 <Stack>을 같이 그리나
+ *  - 루트 레이아웃이 마운트되기 전에 이동하면 오류가 나서, <Stack>은 항상 그린다.
+ *  - 대신 이동해야 하는 동안에는 screenLayout으로 각 화면의 내용을 비운다.
+ *    (로그인 없이 주소를 직접 열었을 때 보호 화면이 한 프레임 그려져 서버 호출이 나가는 것을 막는다.)
+ *  - 이것은 화면 표시용 가드다. 진짜 보호는 서버가 한다 (dev/server/src/auth/require_login.js).
  */
 import { Redirect, Stack, useSegments } from 'expo-router';
+import type { Href } from 'expo-router';
 import { Pressable, SafeAreaView, Text } from 'react-native';
 import { AuthProvider, useAuth } from '../lib/auth_context';
 import { PlaceProvider } from '../lib/place_context';
@@ -54,13 +61,26 @@ function Gate() {
   if (session && status === 'loading') return null;
   if (session && status === 'error') return <ProfileError onRetry={retry} />;
 
+  // 지금 화면이 맞지 않으면 이동할 곳을 정한다. 맞으면 null (서로 겹치지 않는 경우만 있다).
+  let redirectTo: Href | null = null;
+  if (!session) {
+    if (!onAuthScreen) redirectTo = '/title';
+  } else if (onAuthScreen) {
+    redirectTo = status === 'ready' ? '/' : '/welcome';
+  } else if (status === 'none' && !onWelcome) {
+    redirectTo = '/welcome';
+  } else if (status === 'ready' && onWelcome) {
+    redirectTo = '/';
+  }
+
   return (
     <>
-      {!session && !onAuthScreen && <Redirect href="/title" />}
-      {session && onAuthScreen && <Redirect href={status === 'ready' ? '/' : '/welcome'} />}
-      {session && !onAuthScreen && status === 'none' && !onWelcome && <Redirect href="/welcome" />}
-      {session && status === 'ready' && onWelcome && <Redirect href="/" />}
-      <Stack screenOptions={{ headerShown: false }} />
+      {redirectTo && <Redirect href={redirectTo} />}
+      <Stack
+        screenOptions={{ headerShown: false }}
+        // 이동하는 동안에는 화면 내용을 그리지 않는다 (화면 안의 서버 호출이 실행되지 않게).
+        screenLayout={({ children }) => (redirectTo ? <></> : children)}
+      />
     </>
   );
 }

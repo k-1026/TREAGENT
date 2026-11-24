@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>TREAGENT 기획서 v1 요약</title>
+<meta name="description" content="TREAGENT 기획서 v1의 한 장 요약: VOC, 페인포인트, 페르소나, 유저 플로우, 시장 규모, 비즈니스 모델 캔버스, 손익, 시뮬레이션 3개. 팀 확인 전 초안.">
+<style>
+  :root { --bg:#fbfaf7; --card:#ffffff; --ink:#2c2c2a; --muted:#5f5e5a; --line:#d3d1c7; --accent:#0f6e56; --warn:#993c1d; }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg:#1f1f1d; --card:#2a2a28; --ink:#eceae2; --muted:#b4b2a9; --line:#444441; --accent:#5dcaa5; --warn:#f0997b; }
+  }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif; line-height:1.65; }
+  main { max-width:880px; margin:0 auto; padding:24px 16px 64px; }
+  h1 { font-size:26px; margin:8px 0 4px; }
+  h2 { font-size:20px; margin:36px 0 10px; padding-top:12px; border-top:1px solid var(--line); }
+  h3 { font-size:16px; margin:16px 0 6px; }
+  p, li { font-size:15px; }
+  .sub { color:var(--muted); font-size:14px; }
+  .note { background:var(--card); border:1px solid var(--line); border-left:4px solid var(--warn); border-radius:8px; padding:10px 14px; margin:14px 0; font-size:14px; }
+  .grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; }
+  .card { background:var(--card); border:1px solid var(--line); border-radius:12px; padding:12px 14px; }
+  .card b { color:var(--accent); }
+  table { width:100%; border-collapse:collapse; font-size:14px; background:var(--card); }
+  th, td { border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  th { background:rgba(15,110,86,.10); }
+  figure { margin:12px 0; text-align:center; }
+  figure img { max-width:100%; height:auto; border:1px solid var(--line); border-radius:8px; background:#fff; }
+  figcaption { color:var(--muted); font-size:13px; margin-top:4px; }
+  .tag { display:inline-block; font-size:12px; padding:1px 8px; border-radius:10px; border:1px solid var(--line); color:var(--muted); }
+  .bad { color:var(--warn); font-weight:700; }
+  a { color:var(--accent); }
+</style>
+</head>
+<body>
+<main>
+  <h1>TREAGENT 기획서 v1 요약</h1>
+  <p class="sub">2026-11-24 · 팀 확인 전 초안 · 본문: <a href="treagent_planning_doc_v1.md">treagent_planning_doc_v1.md</a></p>
+  <div class="note">이 화면의 수치는 모두 근거 문서의 값입니다. <b>가정</b>·<b>미검증</b> 표시가 붙은 값은 확정이 아니고, 목표 수치는 쓰지 않았습니다. 시뮬레이션은 전망이 아니라 가정이나 규칙을 바꿔 본 결과입니다.</div>
+
+  <h2>1. 한눈에 보기</h2>
+  <div class="grid">
+    <div class="card"><b>무엇을</b><br>대구 중구에서 날씨·시간·장소 운영 상태에 맞춰 길(코스)을 바꿔 안내하고, 하랑이가 안내와 기록을 맡는 서비스</div>
+    <div class="card"><b>왜</b><br>방문 전 정보가 현장과 달라 헛걸음하거나, 더위·혼잡에 막힘. 행사 운영 쪽은 변경 안내와 결과 보고가 부담</div>
+    <div class="card"><b>어떻게</b><br>규칙 엔진이 날씨로 모드를 정하고, 에이전트 3개(코스 설계·장소 안내·기록 정리)가 찾고 쓰고 기록. 안전·판정은 규칙이 담당</div>
+    <div class="card"><b>누가 돈을 내나</b><br>지자체 관광부서·관광기관과 행사 대행사의 코스 제작·운영 계약. 민간 팀권은 보류</div>
+  </div>
+
+  <h2>2. VOC와 페인포인트</h2>
+  <p>지도 리뷰 43건과 블로그 9건에서 불만·요청 <b>52건</b>을 분류했습니다. 전체 관광객의 불편률로 바꿔 말할 수 없는 분류표입니다.</p>
+  <table>
+    <tr><th>페인포인트 후보</th><th>VOC 건수</th><th>핵심</th></tr>
+    <tr><td>대기·혼잡</td><td>13건 (강도 합 21)</td><td>줄이 길거나 자리가 없음. 축제 글이 섞여 과대일 수 있음</td></tr>
+    <tr><td>휴관·공사·운영 변경</td><td>10건 (강도 합 20)</td><td>운영 정보가 현장과 달라 <b>헛걸음</b> (알아보기 단계 8건, 강도 3은 3건)</td></tr>
+    <tr><td>날씨·온도</td><td>4건 (강도 합 5)</td><td>더위·바람·냉기로 오래 머물기 어려움</td></tr>
+  </table>
+  <p class="sub">첫 파일럿은 “운영 변경 → 대체 장소 선택 → 진행 복구”에 집중합니다.</p>
+
+  <h2>3. 페르소나</h2>
+  <div class="grid">
+    <div class="card"><b>이용자 · 1박 2일 대구 혼행객</b><br>귀가 일정 사이 여유 시간에 중구에서 짧게 둘러봄. 휴대폰으로 운영시간과 길을 확인. 20~30대는 모집 가설 <span class="tag">가설</span></div>
+    <div class="card"><b>구매·운영 · 행사 대행사 PM</b><br>여러 장소 담당자와 일정을 맞추고 당일 변경에 대응, 종료 후 발주처에 보고 <span class="tag">인터뷰 전</span></div>
+  </div>
+
+  <h2>4. 유저 플로우</h2>
+  <figure>
+    <img src="spec/agent_architecture_v1_images/user_flow.svg" alt="이용자 유저 플로우: 앱 실행부터 장부까지, 에이전트가 들어가는 지점">
+    <figcaption>실선은 코드에 있는 화면, 점선은 아직 없는 화면</figcaption>
+  </figure>
+  <figure>
+    <img src="spec/agent_architecture_v1_images/operator_flow.svg" alt="운영자(공급자) 플로우">
+    <figcaption>운영자 화면은 모두 아직 없음 (목업만 있음)</figcaption>
+  </figure>
+
+  <h2>5. 시장 규모 (TAM · SAM · SOM)</h2>
+  <figure>
+    <img src="treagent_planning_doc_v1_images/market_funnel.svg" alt="시장 규모 TAM SAM SOM">
+    <figcaption>2025년 여름 4개월, 중구 외지인 방문 연인원 기준. 참여율과 구·군 7곳은 가정</figcaption>
+  </figure>
+
+  <h2>6. 비즈니스 모델 캔버스</h2>
+  <figure>
+    <img src="treagent_planning_doc_v1_images/bm_canvas.svg" alt="비즈니스 모델 캔버스 12블록">
+    <figcaption>레드팀 검증 반영(제안, 팀 확인 전). 지불자 구매 근거 없음, 가격 근거는 범위가 다른 비교 기준</figcaption>
+  </figure>
+  <h3>레드팀 검증 결과</h3>
+  <p class="sub">투자자·고객·경쟁사 관점 서브에이전트 3개를 동시에 실행. 지적 21건(치명 5 · 중요 13 · 참고 3)을 11개 묶음으로 정리하고, 두 관점 이상이 같은 지적이면 한 단계 상향. 기록: <a href="../research/bm/redteam_log_v1.md">redteam_log_v1.md</a></p>
+  <table>
+    <tr><th>묶음</th><th>분류</th><th>지적</th><th>제안 처리 (팀 확인 전)</th></tr>
+    <tr><td>R1 지불자 근거</td><td class="bad">치명</td><td>돈을 내는 쪽의 구매 이유에 근거가 없음. 동구·북구 연속 계약은 현직 업체 것. 1순위가 문서마다 다름(대행사 / 지자체)</td><td>재계약 선례 정정, 1순위 결정 필요, 구매 신호 인터뷰</td></tr>
+    <tr><td>R2 가격 근거</td><td class="bad">치명</td><td>"같은 일의 대안 비용"은 팀 금지 문장. 계약 4건은 범위가 다름. 퀘스투어 두 상품 혼재</td><td>"범위가 다른 비교 기준"으로 수정, 확인값·가정값 분리</td></tr>
+    <tr><td>R3 책임 소재</td><td class="bad">치명</td><td>AI가 틀린 설명을 냈을 때 책임질 역할이 없음</td><td>후보 A(주의 장소만 사전 승인) / B(전부 사전 승인), 팀 결정</td></tr>
+    <tr><td>R4 약속 미구현</td><td class="bad">치명</td><td>지불자 약속 3개(변경 입력·반영·집계) 모두 없음. 차별점 근거 없음</td><td>약속/현황 분리, 경쟁사 시연 확인 과제</td></tr>
+    <tr><td>R5 데이터·해자</td><td class="bad">치명(상향)</td><td>영업시간 아는 곳 17/48. 이용 권리 미확인. 핵심 자원 복제 쉬움</td><td>"모름" 표기, 해자는 가설로 낮춤</td></tr>
+    <tr><td>R6 비용</td><td>중요(상향)</td><td>Railway·AI 호출비 누락, 운영 개월 1 가정, 인건비 근거 약함</td><td>Railway 줄 추가, 가정 표기, 숫자는 한도 확인 후</td></tr>
+    <tr><td>R7 시장·건수</td><td>중요</td><td>구·군 7곳과 계약 건수가 가정</td><td>시장 규모 한 줄과 가정 표기</td></tr>
+    <tr><td>R8 VOC 대표성</td><td>중요(상향)</td><td>날씨 VOC 4건이 중구 밖. 강도 3은 서문야시장 편중</td><td>가치 제안을 "운영 정보"로 좁힘, 날씨는 설계 가설</td></tr>
+    <tr><td>R9 사용자 비용</td><td>중요(상향)</td><td>설치·가입·위치·개인정보 수고를 적은 칸이 없음</td><td>채널 블록에 사용자 비용 표기, D-17 결정</td></tr>
+    <tr><td>R10 학습 루프</td><td>중요</td><td>설계 수준, 경쟁사도 리포트 제공</td><td>차별점이 아님을 표기</td></tr>
+    <tr><td>R11 큰 플랫폼</td><td>참고</td><td>지도 앱이 기능을 붙이면 대체될 위험</td><td>근거 자료 없어 보류, 포지셔닝 맵 때 재검토</td></tr>
+  </table>
+  <div class="note"><b>에이전트도 틀렸습니다.</b> 큐알스탬프 100만원~ "확인 불가"와 영업시간 17/48 "확인 불가"는 근거 파일과 시드 SQL 재현으로 반박했습니다. 지적은 정답이 아니라 검증할 가설입니다.</div>
+  <p><b>팀이 정할 것</b>: 1순위 지불자 · AI 오류 책임 소재(후보 A/B) · 구매 신호 인터뷰 · 경쟁사 시연 확인 · 개인정보 범위(D-17). 이 표의 처리는 제안이며 책임자 칸은 비워 두었습니다.</p>
+  <p class="sub">반영본: <a href="../research/bm/bm_canvas_v2.md">bm_canvas_v2.md</a> · <a href="../research/bm/vpc_v2.md">vpc_v2.md</a></p>
+  <h2>6-1. 고객 여정 지도</h2>
+  <figure>
+    <img src="treagent_planning_doc_v1_images/journey_map_v2.svg" alt="고객 여정 지도 5층">
+    <figcaption>VOC 52건 기준. 알아보기 9건 모두 불만, 8건이 운영 정보 문제</figcaption>
+  </figure>
+
+  <h2>7. 손익 시나리오</h2>
+  <figure>
+    <img src="treagent_planning_doc_v1_images/pnl_scenarios.svg" alt="손익 시나리오 3개">
+    <figcaption>공통 개발비 1,500만원·인건비 월 225만원은 가정. AI 호출비·세금·영업비 제외</figcaption>
+  </figure>
+
+  <h2>8. 시뮬레이션 3개</h2>
+  <h3>사업 시뮬레이션</h3>
+  <p class="sub">판매 방식(A 지자체 직접 / B 행사 대행사 경유), 단가, 건당 투입, 계약 건수를 바꿔 손익분기와 3년 누적을 계산했습니다. 기존 손익 문서의 숫자를 모두 재현해 계산식을 확인했습니다. 전문: <a href="../research/bm/jung_summer_simulation_v1.md">jung_summer_simulation_v1.md</a></p>
+  <p><b>① 기존 시나리오 3개 (손익 문서 그대로, 원)</b></p>
+  <table>
+    <tr><th></th><th>보수</th><th>기준</th><th>낙관</th></tr>
+    <tr><td>단가 · 건당 투입</td><td>1,000만 · 2 인·월</td><td>1,000만 · 1 인·월</td><td>1,820만 · 0.5 인·월</td></tr>
+    <tr><td>계약 수 (1/2/3년차)</td><td>1 / 2 / 3</td><td>1 / 3 / 5</td><td>1 / 3 / 5</td></tr>
+    <tr><td>1년차 손익</td><td>-9,560,012</td><td>-7,310,012</td><td>+2,014,988</td></tr>
+    <tr><td><b>3년 누적</b></td><td><b>+17,639,928</b></td><td><b>+54,209,892</b></td><td><b>+138,134,892</b></td></tr>
+  </table>
+  <p><b>② 손익분기 계약 수 (건당 1 인·월 기준, 소수 건수 → 올림)</b></p>
+  <table>
+    <tr><th>판매 방식</th><th>단가 1,000만원</th><th>단가 1,820만원</th></tr>
+    <tr><td>A 지자체 직접</td><td>1.95건 → 2건</td><td>0.94건 → 1건</td></tr>
+    <tr><td>B 대행사 경유 (마진 10%)</td><td>2.24건 → 3건</td><td>1.07건 → 2건</td></tr>
+    <tr><td>B 대행사 경유 (마진 15%)</td><td>2.42건 → 3건</td><td>1.14건 → 2건</td></tr>
+  </table>
+  <p><b>③ 무엇이 결과를 가장 크게 흔드나 (기준 시나리오, ±20%)</b></p>
+  <table>
+    <tr><th>가정</th><th>3년 누적 변화 폭</th></tr>
+    <tr><td>계약 단가</td><td>36,000,000원</td></tr>
+    <tr><td>계약 수</td><td>27,683,957원</td></tr>
+    <tr><td>건당 투입 · 인건비 단가</td><td>각 8,100,000원</td></tr>
+    <tr><td>공통 개발비</td><td>6,000,000원</td></tr>
+  </table>
+  <ul>
+    <li>단가 1,000만원에서는 <b>연 2건부터 1년차가 흑자</b>입니다. 계약이 0건인 해의 손실은 공통 개발비(가정)입니다.</li>
+    <li>B는 대행사 마진 15%(가정)만으로 손익분기가 소수 기준 0.2~4.2건 늘어납니다. 건당 3 인·월이면 9건이 필요합니다.</li>
+    <li class="bad">가장 크게 흔드는 두 가정(단가, 계약 수)이 모두 가정값입니다. 레드팀도 같은 곳을 지적했습니다: 가격 근거는 범위가 다른 비교 기준이고, 계약 수에는 구매 신호가 없습니다 (R2·R7).</li>
+    <li>비용에는 AI 호출비, Railway, 영업비, 세금이 빠져 있고 운영 개월은 1로 가정했습니다 (R6).</li>
+  </ul>
+  <h3>서비스 시뮬레이션</h3>
+  <figure>
+    <img src="treagent_planning_doc_v1_images/service_matrix.svg" alt="날씨 6가지와 시각 5가지의 모드와 코스 결과">
+    <figcaption>실제 서버 규칙 코드를 가짜 날씨·시각으로 실행한 결과 (AI 미사용)</figcaption>
+  </figure>
+  <ul>
+    <li>모드 판정은 의도대로 동작합니다 (20℃ 탐험, 30℃ 그늘, 35℃ 실내).</li>
+    <li class="bad">월요일 폭염에는 실내 코스의 3곳이 모두 월요일 휴관이라 갈 곳이 없고, 저녁에도 3곳이 닫힙니다.</li>
+    <li>영업시간을 아는 방문 장소는 48곳 중 17곳(35%)뿐이라 나머지는 열린 것으로 보고 추천합니다.</li>
+  </ul>
+  <h3>페르소나 이용 시뮬레이션</h3>
+  <table>
+    <tr><th>페인포인트</th><th>판정</th></tr>
+    <tr><td>휴관·공사·운영 변경</td><td>일부 (영업시간을 아는 장소만 걸러짐)</td></tr>
+    <tr><td>대기·혼잡</td><td>미해소 (혼잡 데이터 없음)</td></tr>
+    <tr><td>날씨·온도</td><td>일부, 새 위험 (폭염에 야외 유형 장소가 코스에 들어감)</td></tr>
+  </table>
+  <p class="sub">실제 사용자 관찰이 아닌 논리적 점검입니다.</p>
+
+  <h2>9. 결정이 필요한 것</h2>
+  <ul>
+    <li>판매 방식 1순위와 대행사 마진, 1차 고객과 민간 타깃의 우선순위</li>
+    <li>에이전트가 경로 결정까지 맡는 것(기획서 15장 원칙과 달라짐)과 제출(11/30)까지의 구현 범위</li>
+    <li>레드팀 결과: AI 오류 책임 소재(후보 A/B), 구매 신호 인터뷰, 가치 제안 범위를 "운영 정보"로 좁힐지</li>
+    <li>운영자 웹의 형태, 폭염 모드에서 야외 유형 장소를 코스에 넣을지</li>
+  </ul>
+  <p class="sub">전체 목록은 본문 14·15장, 근거 문서는 본문 0장 표에 있습니다.</p>
+</main>
+</body>
+</html>

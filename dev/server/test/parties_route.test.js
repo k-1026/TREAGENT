@@ -438,7 +438,8 @@ test('장소를 하나씩 직접 고치는 API는 없다 (404)', async () => {
     await api(1, 'POST', `/parties/${id}/recommend`, COORD);
     const swap = await api(1, 'POST', `/parties/${id}/swap`, { ...COORD, routeVersion: 1, replacePlaceId: 'b', newPlaceId: 'd' });
     assert.equal(swap.status, 404);
-    const open = await fetch(`${api.base}/recommend/swap`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: '{}' });
+    // /recommend는 이제 로그인이 필요하다. 로그인한 사용자로 불러도 이런 주소는 없어야 한다.
+    const open = await api(1, 'POST', '/recommend/swap', {});
     assert.equal(open.status, 404);
   });
 });

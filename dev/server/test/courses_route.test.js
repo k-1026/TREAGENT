@@ -5,6 +5,9 @@ import { createWeatherService } from '../src/weather/index.js';
 
 const NOW = () => new Date('2026-11-16T05:30:00Z'); // 한국 14:30, 월요일
 const fast = { sleep: () => Promise.resolve(), random: () => 0 };
+// 로그인 필수라서 가짜 검증기와 토큰 헤더를 쓴다.
+const tokenVerifier = { verify: async () => ({ ok: true, userId: '00000000-0000-4000-8000-000000000001' }) };
+const AUTH = { Authorization: 'Bearer test' };
 
 const P = (o) => ({
   id: 'x', name: 'x', district: '중구', type: 'outdoor', openHour: null, closeHour: null,
@@ -32,6 +35,7 @@ async function withServer(scenario, loaders, run) {
     weatherService: createWeatherService({ source: 'mock', scenario, now: NOW, clientDeps: fast }),
     placeLoader: loaders.placeLoader ?? places(),
     courseLoader: loaders.courseLoader ?? courses,
+    tokenVerifier,
     now: NOW,
   });
   await new Promise((resolve) => server.listen(0, '127.0.0.1', resolve));
@@ -49,7 +53,7 @@ async function withServer(scenario, loaders, run) {
 const route = (base, id, body) =>
   fetch(`${base}/courses/${id}/route`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...AUTH },
     body: JSON.stringify(body),
   });
 const COORD = { latitude: 35.8714, longitude: 128.6014 };
@@ -133,7 +137,7 @@ test('코스나 장소 DB를 못 읽으면 503', async () => {
 
 test('GET /courses는 코스 카드 정보와 장소 유형을 준다', async () => {
   await withServer('ok', {}, async (base) => {
-    const json = await (await fetch(`${base}/courses`)).json();
+    const json = await (await fetch(`${base}/courses`, { headers: AUTH })).json();
     assert.deepEqual(json.courses, [
       { id: 'C01', title: '제목', theme: null, district: '중구', durationMin: 60, types: ['exhibit', 'outdoor'] },
     ]);

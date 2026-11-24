@@ -5,3 +5,4 @@
 #   presentation/20261113/20261110_plan_pitch_v1.html
 #   research/data/*
 # dev/, .git, node_modules는 항상 뺍니다.
+plan/treagent_planning_summary_v1.html
