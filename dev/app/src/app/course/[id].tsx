@@ -85,7 +85,7 @@ export default function CourseScreen() {
             </Text>
 
             {!route.available && route.stations.length === 0 && (
-              <Text style={{ color: '#7a6a5a' }}>쉼터 안내는 준비 중이에요. 이따 다시 확인해 주세요.</Text>
+              <Text style={{ color: '#7a6a5a' }}>지금은 이 길을 안내할 수 없어요. 이따 다시 확인해 주세요.</Text>
             )}
 
             {route.stations.map((s) => (

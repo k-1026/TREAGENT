@@ -259,6 +259,8 @@ export default function MissionScreen() {
                 <Text style={[styles.bannerText, { color: hint.startsWith('아쉬') ? COLOR.redDark : COLOR.ink }]}>{hint}</Text>
               </View>
             ) : null}
+            {/* 목업처럼 힌트 버튼은 늘 보이고, 오답일 때 [다시 풀기]가 더해진다 */}
+            <WxButton label="힌트 보기" onPress={() => setHint(`힌트: ${q.h}`)} />
             {picked && !picked.right ? (
               <WxButton
                 label="다시 풀기"
@@ -267,9 +269,7 @@ export default function MissionScreen() {
                   setHint(null);
                 }}
               />
-            ) : (
-              <WxButton label="힌트 보기" onPress={() => setHint(`힌트: ${q.h}`)} />
-            )}
+            ) : null}
             <Text style={styles.foot}>{`${qi + 1} / ${quizList.length} 문제`}</Text>
           </>
         ) : null}
