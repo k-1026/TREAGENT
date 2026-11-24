@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>내 여행 카드 뒤집기 목업 v1 (목록·미리보기·전체보기)</title>
+<meta name="description" content="장부 [내 여행]의 한 장 카드 목업. 목록(한 줄 3~4장) → 미리보기(뒤집기, 저장·공유) → 전체보기(화면 꽉 채움, 뒤집기). 앞면은 비주얼 위주, 뒷면은 장소별 소제목 일기. 스크롤이 생기지 않도록 분량을 점검합니다. 임시 문구와 창작 후보는 표시했습니다. 근거: storyboard/app_home_screen_v1.md 66-76행, storyboard/compare_diary_card_v1.html, storyboard/diary_mockup_v1.html.">
+<style>
+  :root{--ink:#2b2118;--muted:#7a6a5a;--line:#d9c9b4;--paper:#fbf5ea;--card:#fffaf0;--frame:#5b4636;--accent:#a35a22;--warnbg:#fff4cc;--warn:#7a5b00}
+  *{box-sizing:border-box}
+  body{margin:0;font-family:"Malgun Gothic","맑은 고딕",system-ui,sans-serif;color:var(--ink);background:var(--paper);line-height:1.5;padding:20px}
+  h1{font-size:20px;margin:0 0 6px}
+  .lead{color:var(--muted);font-size:13px;margin:0 0 12px}
+  .note{background:var(--warnbg);color:var(--warn);border-radius:8px;padding:9px 12px;font-size:12.5px;margin:10px 0}
+  .wrap{display:grid;grid-template-columns:minmax(300px,360px) 1fr;gap:20px;align-items:start}
+  @media (max-width:760px){.wrap{grid-template-columns:1fr}}
+
+  /* 폰 프레임 */
+  /* 폰 비율: 최신 스마트폰에 가까운 9:19.5 (세로가 가로의 약 2.17배). 카드 단위 계산을 위해 container로 둠 */
+  .phone{width:100%;max-width:340px;aspect-ratio:9/19.5;height:auto;container-type:size;border:2px solid var(--frame);border-radius:26px;background:var(--card);overflow:hidden;position:relative;margin:0 auto}
+  .screen{position:absolute;inset:0;display:none;flex-direction:column}
+  .screen.on{display:flex}
+  .bar{background:#e9d8bd;padding:10px 12px;display:flex;align-items:center;justify-content:space-between;min-height:48px}
+  .bar b{font-size:14px}
+  .bar button{border:1px solid var(--line);background:#fff;border-radius:8px;padding:5px 9px;font-size:12px;font-family:inherit;cursor:pointer}
+  .body{flex:1;min-height:0;padding:12px;display:flex;flex-direction:column;overflow:hidden}
+
+  /* 목록 */
+  .grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;align-items:start;align-content:start}
+  @media (min-width:420px){.grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
+  .thumb{display:flex;flex-direction:column;min-width:0;width:100%;margin:0;padding:0;border:0;background:none;cursor:pointer;font-family:inherit;text-align:left;color:var(--ink)}
+  .thumb .mini{width:100%;aspect-ratio:9/16;border:2px solid var(--frame);border-radius:8px;background:#fffdf7;overflow:hidden}
+  .thumb .mini img{width:100%;height:100%;object-fit:cover;display:block}
+  .thumb small{display:block;width:100%;font-size:11px;color:var(--muted);margin-top:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+  /* 전체보기: 카드가 화면 가로를 꽉 채우고, 화면을 누르면 닫기·뒤집기 버튼이 나왔다 사라짐 */
+  .fullstage{position:absolute;inset:0;background:#2b2118;display:flex;align-items:center;justify-content:center;cursor:pointer}
+  /* 전체보기 카드: 폰 가로를 꽉 채우고(9:16 유지), 폰이 더 길면 위아래에 여백이 남음 */
+  #fullCard{width:min(100cqw,calc(100cqh * 9 / 16));height:auto;aspect-ratio:9/16;perspective:1200px}
+  .fullstage .face{border:0;border-radius:0}
+  .ov{position:absolute;left:0;right:0;display:flex;justify-content:space-between;align-items:center;padding:12px;opacity:0;pointer-events:none;transition:opacity .25s;z-index:2}
+  .ov.show{opacity:1;pointer-events:auto}
+  .ov.top{top:0;background:linear-gradient(rgba(43,33,24,.65),rgba(43,33,24,0))}
+  .ov.bottom{bottom:0;justify-content:center;padding-bottom:18px;background:linear-gradient(rgba(43,33,24,0),rgba(43,33,24,.65))}
+  .ov button{border:1px solid #fff;background:rgba(255,255,255,.92);color:var(--ink);border-radius:999px;padding:7px 14px;font-size:13px;font-family:inherit;cursor:pointer}
+  .ov button.pri{background:var(--accent);border-color:var(--accent);color:#fff}
+  /* 뒤집기: 카드 우측 하단의 동그란 아이콘 (카드 바깥 레이어라 함께 돌지 않음) */
+  .flipbtn{position:absolute;right:12px;bottom:12px;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.94);color:var(--ink);font-size:22px;line-height:1;box-shadow:0 2px 6px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;padding:0;font-family:inherit}
+  .flipbtn.ovi{opacity:0;pointer-events:none;transition:opacity .25s}
+  .flipbtn.ovi.show{opacity:1;pointer-events:auto}
+  .actions button.save{background:#c62828;border-color:#c62828;color:#fff}
+
+  /* 카드 (앞·뒤) */
+  .stage{flex:1;min-height:0;display:flex;align-items:center;justify-content:center;perspective:900px;position:relative}
+  .card{position:relative;height:100%;max-height:100%;aspect-ratio:9/16;width:auto;max-width:100%}
+  .inner{position:absolute;inset:0;transition:transform .6s ease;transform-style:preserve-3d}
+  .card.flipped .inner{transform:rotateY(180deg)}
+  .face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;border:2px solid var(--frame);border-radius:12px;background:#fffdf7;overflow:hidden;padding:10px;display:flex;flex-direction:column}
+  .face.back{transform:rotateY(180deg)}
+
+  /* 앞면: 비주얼 위주 */
+  .front .pic{flex:1;min-height:0;border-radius:8px;background:linear-gradient(#f7e2c3,#f1cfa0);position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .front .pic img.hr{width:58%;max-height:80%;object-fit:contain}
+  .front .pic .ph{position:absolute;left:8px;top:8px;font-size:10px;color:var(--muted);background:rgba(255,255,255,.7);border-radius:4px;padding:1px 5px}
+  .front .date{font-size:11px;color:var(--muted);margin-top:8px}
+  .front h2{font-size:15px;margin:2px 0 4px}
+  .front .stamps{display:flex;gap:4px;align-items:center}
+  .front .stamps img{width:30px;height:30px;object-fit:contain}
+  .front .stamps img.off{opacity:.25}
+  .front .say{font-size:11px;color:var(--ink);margin-top:4px}
+
+  /* 뒷면: 소제목 일기 (스크롤 없이 고정) */
+  .back .top{display:flex;justify-content:space-between;font-size:10.5px;color:var(--muted)}
+  .back h2{font-size:13px;margin:4px 0 4px;color:var(--accent)}
+  .back .sec{margin-bottom:6px}
+  .back h4{font-size:11.5px;margin:0 0 1px}
+  .back p{font-size:10.5px;margin:0;line-height:1.5}
+  .back .end{margin-top:auto;font-size:10.5px;border-top:1px dashed var(--line);padding-top:5px}
+
+  /* 하단 버튼 */
+  .actions{display:flex;gap:8px;justify-content:center;padding:10px 0 0;flex-wrap:wrap}
+  .actions button{border:1px solid var(--accent);background:#fff;color:var(--accent);border-radius:999px;padding:7px 14px;font-size:12.5px;font-family:inherit;cursor:pointer}
+  .actions button.pri{background:var(--accent);color:#fff}
+  .hint{font-size:11px;color:var(--muted);text-align:center;margin:4px 0 0}
+  .toast{position:absolute;left:50%;bottom:14px;transform:translateX(-50%);background:#3b2e24;color:#fff;font-size:12px;padding:7px 12px;border-radius:999px;opacity:0;transition:opacity .25s;pointer-events:none;white-space:nowrap}
+  .toast.on{opacity:1}
+  .share{display:none;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:6px}
+  .share.on{display:flex}
+  .share span{font-size:11.5px;border:1px solid var(--line);background:#fff;border-radius:6px;padding:4px 8px}
+
+  .check{font-size:12px;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 10px;margin-top:10px}
+  .check.bad{border-color:#b00020;color:#b00020}
+  ul{margin:6px 0 0 18px;padding:0;font-size:13px}
+  li{margin:3px 0}
+  h3{font-size:14px;margin:16px 0 6px}
+</style>
+</head>
+<body>
+
+<h1>내 여행 카드 뒤집기 목업 v1</h1>
+<p class="lead">장부 [내 여행] → 카드 한 번 누르면 미리보기 → 카드 한 번 더 누르면 전체보기. 앞면은 그림 위주, 뒷면은 장소별 소제목 일기입니다. 목업 안의 문구는 자리표시(창작 후보)입니다.</p>
+
+<div class="wrap">
+  <div>
+    <div class="phone" id="phone">
+
+      <!-- 1. 목록 -->
+      <section class="screen on" id="s-list" aria-label="내 여행 목록">
+        <div class="bar"><b>내 여행</b><small style="color:var(--muted);font-size:11px">완주 3장</small></div>
+        <div class="body">
+          <div class="grid" id="grid"></div>
+          <p class="hint" style="margin-top:12px">카드를 누르면 한 장을 자세히 봐요.</p>
+        </div>
+      </section>
+
+      <!-- 2. 미리보기 -->
+      <section class="screen" id="s-prev" aria-label="카드 미리보기">
+        <div class="bar"><button data-go="list">‹ 내 여행</button><b id="prevTitle">미리보기</b><span style="width:52px"></span></div>
+        <div class="body">
+          <div class="stage">
+            <div class="card" id="prevCard" title="카드를 누르면 전체 화면으로 봐요">
+              <div class="inner">
+                <div class="face front"></div>
+                <div class="face back"></div>
+              </div>
+              <button class="flipbtn" data-flip="prevCard" aria-label="카드 뒤집기">↻</button>
+            </div>
+          </div>
+          <div class="actions">
+            <button id="btnSave" class="save">저장</button>
+            <button id="btnShare">공유</button>
+          </div>
+          <div class="share" id="shareChips"><span>인스타그램</span><span>카카오톡</span><span>링크 복사</span></div>
+          <p class="hint">카드를 누르면 전체 화면으로 봐요.</p>
+        </div>
+      </section>
+
+      <!-- 3. 전체보기 -->
+      <section class="screen" id="s-full" aria-label="카드 전체보기">
+        <div class="fullstage" id="fullStage">
+          <div class="card" id="fullCard">
+            <div class="inner">
+              <div class="face front"></div>
+              <div class="face back"></div>
+            </div>
+            <button class="flipbtn ovi" data-flip="fullCard" aria-label="카드 뒤집기">↻</button>
+          </div>
+        </div>
+        <div class="ov top" id="ovTop"><button data-go="prev">‹ 닫기</button><span></span></div>
+      </section>
+
+      <div class="toast" id="toast"></div>
+    </div>
+  </div>
+
+  <div>
+    <h3>화면 설명</h3>
+    <ul>
+      <li><b>목록</b>: 한 줄 3장(좁은 화면), 4장(넓은 화면). 카드 아래에는 날짜만 둡니다.</li>
+      <li><b>미리보기</b>: 카드 한 장, 가운데 [저장](붉은색) [공유]. 뒤집기는 카드 우측 하단의 동그란 화살표 아이콘입니다. 카드는 화면 높이에 맞춰 줄어들고 스크롤이 생기지 않습니다.</li>
+      <li><b>전체보기</b>: 실제 카드가 화면 가로를 꽉 채웁니다. 평소에는 아무 버튼도 없고, 화면을 한 번 누르면 [닫기]와 우측 하단 뒤집기 아이콘이 나오고 다시 누르면 사라집니다.</li>
+    </ul>
+
+    <h3>앞면 (단순화)</h3>
+    <ul>
+      <li>그림 영역이 대부분. 장소 그림 자리는 창작 후보(작업 전 자리표시).</li>
+      <li>날짜, 여행 이름, 도장 3개(받은 것만 선명), 하랑이 한 줄. 이 네 가지만 둡니다.</li>
+      <li>좌표, 지도, 이용자 위치는 넣지 않습니다 (한 장에는 방문 장소와 날짜만).</li>
+    </ul>
+
+    <h3>뒷면 (일기, 소제목 구조)</h3>
+    <ul>
+      <li>장소별 소제목 + 짧은 문단 3개 + 마무리 한 줄.</li>
+      <li>분량 기준(창작 제안, 팀 확인 필요): 장소당 2~3문장, 전체 약 300자 이내. 넘치면 스크롤이 생기므로 이 목업에서는 넘침 여부를 자동으로 검사합니다 (아래 표시).</li>
+      <li>AI 실패 때는 사실만 채운 틀 일기를 같은 자리에 보이고, 작은 안내를 붙입니다 (diary_mockup_v1.html 기준).</li>
+    </ul>
+
+    <div class="check" id="check">분량 점검: 확인 중…</div>
+
+    <h3>저장·공유 (임시)</h3>
+    <ul>
+      <li>저장: 기기 앨범의 <b>daeprica</b> 폴더에 카드 이미지를 저장합니다. 사진 접근 권한 확인이 필요합니다 `[확인 필요]`.</li>
+      <li>공유: 인스타그램, 카카오톡, 링크 복사. 기기 공유 창이 열리면 그 창을 씁니다.</li>
+      <li>공유 이미지에는 위치 정보(EXIF)가 없도록 저장 전에 제거합니다 (CLAUDE.md 개인정보 규칙).</li>
+    </ul>
+
+    <h3>결정 필요</h3>
+    <ul>
+      <li>뒤집기 방식: 3D 뒤집기 (지금 목업) 와 탭 전환 중 하나를 기본으로 쓸지</li>
+      <li>뒷면 일기 수정 버튼: 회의에서 일기 수정이 보류되어 목업에는 두지 않음</li>
+      <li>저장 파일 크기: 비율은 인스타그램 스토리 9:16으로 정했습니다. 해상도는 `[확인 필요]`</li>
+    </ul>
+  </div>
+</div>
+
+<script>
+  // 샘플 데이터 (자리표시). 실제 값은 DB 연결 후 채움
+  var TRIPS = [
+    {id:1, title:'중구 근대골목 걷기', date:'[날짜 1]', stamps:3, say:'오늘도 같이 걸어 줘서 고마워요!',
+     parts:[
+       {h:'동성로에서 시작', p:'[일기 본문 자리] 아침 공기가 선선했어요. 사람 많은 길을 지나 첫 장소에 도착했어요.'},
+       {h:'근대골목을 걷다', p:'[일기 본문 자리] 오래된 벽돌과 간판을 하나씩 보며 천천히 걸었어요.'},
+       {h:'약령시에서 마무리', p:'[일기 본문 자리] 박물관 앞에서 도장을 받고 한숨 돌렸어요.'}
+     ], end:'오늘 길은 같이 걸어서 더 좋았어요. 다음에도 같이 가요!'},
+    {id:2, title:'중구 약령시 한 바퀴', date:'[날짜 2]', stamps:3, say:'장부에 한 칸이 또 채워졌어요.',
+     parts:[
+       {h:'약령시 입구', p:'[일기 본문 자리] 한약 냄새가 먼저 반겨 줬어요.'},
+       {h:'향토역사관', p:'[일기 본문 자리] 옛 사진을 한참 보고 나왔어요.'},
+       {h:'기념관 앞', p:'[일기 본문 자리] 조용한 곳에서 오늘 걸은 길을 떠올렸어요.'}
+     ], end:'천천히 걸은 날이었어요. 또 같이 가요!'},
+    {id:3, title:'동성로 한 바퀴', date:'[날짜 3]', stamps:2, say:'다음 길은 같이 골라 볼까요?',
+     parts:[
+       {h:'출발', p:'[일기 본문 자리] 비가 그친 뒤라 길이 반짝였어요.'},
+       {h:'두 번째 장소', p:'[일기 본문 자리] 익숙한 골목이었지만 새로 보이는 것이 많았어요.'},
+       {h:'끝', p:'[일기 본문 자리] 도장 두 개를 받고 여기서 쉬었어요.'}
+     ], end:'다음에 또 걸어요.'}
+  ];
+
+  var STAMP = '../brand/images/items/stamp_nungeum.webp';
+  var HARANGI = '../brand/images/characters/ui/harangi_empty_state_v2.webp';
+
+  function frontHTML(t){
+    var st = '';
+    for (var i=0;i<3;i++) st += '<img src="'+STAMP+'" alt="도장 '+(i<t.stamps?'받음':'없음')+'" class="'+(i<t.stamps?'':'off')+'">';
+    return '<div class="pic"><span class="ph">[장소 그림 자리 · 창작 후보]</span><img class="hr" src="'+HARANGI+'" alt="하랑이 일러스트 자리"></div>'
+      + '<div class="date">'+t.date+'</div>'
+      + '<h2>'+t.title+'</h2>'
+      + '<div class="stamps">'+st+'</div>'
+      + '<div class="say">하랑이: '+t.say+'</div>';
+  }
+  function backHTML(t){
+    var secs = t.parts.map(function(x){ return '<div class="sec"><h4>'+x.h+'</h4><p>'+x.p+'</p></div>'; }).join('');
+    return '<div class="top"><span>'+t.date+'</span><span>하랑이의 일기</span></div>'
+      + '<h2>'+t.title+'</h2>' + secs
+      + '<div class="end">'+t.end+'</div>';
+  }
+  function fill(card, t){
+    card.querySelector('.front').innerHTML = frontHTML(t);
+    card.querySelector('.back').innerHTML = backHTML(t);
+    card.classList.remove('flipped');
+  }
+  function show(name){
+    document.querySelectorAll('.screen').forEach(function(s){ s.classList.toggle('on', s.id === 's-'+name); });
+  }
+  var current = TRIPS[0];
+  var toastTimer;
+  function toast(msg){
+    var el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('on');
+    clearTimeout(toastTimer); toastTimer = setTimeout(function(){ el.classList.remove('on'); }, 1800);
+  }
+
+  // 목록 만들기
+  var grid = document.getElementById('grid');
+  TRIPS.forEach(function(t){
+    var b = document.createElement('button');
+    b.className = 'thumb';
+    b.innerHTML = '<div class="mini"><img src="'+HARANGI+'" alt=""></div><small>'+t.title+'</small>';
+    b.addEventListener('click', function(){
+      current = t;
+      fill(document.getElementById('prevCard'), t);
+      document.getElementById('prevTitle').textContent = t.title;
+      show('prev');
+    });
+    grid.appendChild(b);
+  });
+
+  // 미리보기 카드: 한 번 누르면 뒤집기가 아니라 전체보기 (뒤집기는 버튼으로)
+  document.getElementById('prevCard').addEventListener('click', function(e){
+    if (e.target.closest('button')) return;
+    fill(document.getElementById('fullCard'), current);
+    document.querySelectorAll('.ov, .ovi').forEach(function(o){ o.classList.remove('show'); });
+    show('full');
+  });
+  // 전체보기: 화면을 한 번 누르면 버튼이 나오고, 다시 누르면 사라짐
+  document.getElementById('fullStage').addEventListener('click', function(e){
+    if (e.target.closest('.flipbtn')) return; // 뒤집기 버튼 누를 때는 화면 버튼을 그대로 둠
+    document.querySelectorAll('.ov, .ovi').forEach(function(o){ o.classList.toggle('show'); });
+  });
+  document.querySelectorAll('[data-flip]').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      document.getElementById(btn.getAttribute('data-flip')).classList.toggle('flipped');
+    });
+  });
+  document.querySelectorAll('[data-go]').forEach(function(btn){
+    btn.addEventListener('click', function(){ show(btn.getAttribute('data-go')); });
+  });
+  document.getElementById('btnSave').addEventListener('click', function(){
+    toast('앨범 daeprica 폴더에 저장했어요 [임시]');
+  });
+  document.getElementById('btnShare').addEventListener('click', function(){
+    var s = document.getElementById('shareChips');
+    s.classList.toggle('on');
+  });
+  document.querySelectorAll('#shareChips span').forEach(function(sp){
+    sp.addEventListener('click', function(){ toast(sp.textContent + '(으)로 공유 [임시]'); });
+  });
+
+  // 분량 점검: 뒷면이 카드 안에 다 들어가는지 (넘치면 빨간 표시)
+  function checkOverflow(){
+    var bad = [];
+    // 숨은 화면은 높이를 잴 수 없으므로 미리보기 화면을 잠깐 켜서 잰다
+    var prevOn = document.getElementById('s-prev').classList.contains('on');
+    document.getElementById('s-prev').classList.add('on');
+    TRIPS.forEach(function(t){
+      var tmp = document.getElementById('prevCard');
+      fill(tmp, t);
+      var back = tmp.querySelector('.back');
+      // 뒷면 내용 높이가 카드 높이를 넘는지 확인
+      if (back.scrollHeight > back.clientHeight + 1) bad.push(t.title);
+    });
+    if (!prevOn) document.getElementById('s-prev').classList.remove('on');
+    var c = document.getElementById('check');
+    if (bad.length){ c.classList.add('bad'); c.textContent = '분량 점검: 넘침 있음 → ' + bad.join(', ') + ' (문장을 줄이세요)'; }
+    else { c.classList.remove('bad'); c.textContent = '분량 점검: 모든 샘플 뒷면이 스크롤 없이 들어갑니다.'; }
+  }
+  // 카드가 화면에 그려진 뒤 점검
+  // 글꼴이 다 읽힌 뒤 점검 (글꼴 전 측정은 줄바꿈이 달라 오차가 남)
+  window.addEventListener('load', function(){
+    (document.fonts ? document.fonts.ready : Promise.resolve()).then(checkOverflow);
+  });
+</script>
+</body>
+</html>

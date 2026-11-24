@@ -265,6 +265,66 @@
   .snaprow img{width:26px;height:26px;image-rendering:pixelated;flex:none}
   .fsview{position:absolute;left:0;top:0;width:390px;height:844px;z-index:70;background:#2b1814;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:20px;box-sizing:border-box}
   .fsview .snap{max-width:354px}
+  /* ---------- 내 여행 카드 (인스타 스토리 9:16) : 장부 목록 · 미리보기 · 전체보기 ---------- */
+  /* 목록: 한 줄 3장. 카드 글자는 cqw 단위라 미리보기와 전체보기에서 같은 비율로 커진다 */
+  .tc-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 12px;align-items:start}
+  .tc-thumb{display:flex;flex-direction:column;min-width:0;padding:0;border:0;background:none;cursor:pointer;text-align:left;color:var(--ink);font-family:inherit}
+  .tc-mini{width:100%;aspect-ratio:9/16;background:var(--paper);border-radius:6px;box-shadow:0 0 0 2px var(--ink),0 4px 0 0 var(--shade);padding:8px 7px;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden}
+  .tc-mini .d{font-size:10px;color:var(--muted)}
+  .tc-mini .st{display:flex;gap:3px;flex-wrap:wrap}
+  .tc-mini .st img{width:17px;height:17px;image-rendering:pixelated;flex:none}
+  .tc-thumb b{display:block;width:100%;font-size:12px;margin-top:6px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .tc-thumb small{display:block;width:100%;font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  /* 미리보기 화면 */
+  .tc-prev{flex:1;min-height:0;display:flex;align-items:center;justify-content:center}
+  .tc-card{position:relative;height:100%;max-width:100%;aspect-ratio:9/16;container-type:size;perspective:1000px}
+  .tc-inner{position:absolute;inset:0;transition:transform .6s ease;transform-style:preserve-3d}
+  .tc-card.flipped .tc-inner{transform:rotateY(180deg)}
+  .tc-face{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--paper);box-shadow:0 0 0 3px var(--ink);border-radius:10px;overflow:hidden;padding:5.5cqw 5cqw;display:flex;flex-direction:column;font-size:3.7cqw;line-height:1.5;word-break:keep-all}
+  .tc-back{transform:rotateY(180deg)}
+  /* 앞면: 그림 위주 */
+  .tc-pic{flex:1;min-height:0;background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px);display:flex;align-items:center;justify-content:center;font-size:3cqw;color:var(--muted);text-align:center;padding:3cqw;border-radius:6px}
+  .tc-date{font-size:3.1cqw;color:var(--muted);margin-top:3cqw}
+  .tc-front h2{font-size:5.6cqw;margin:1cqw 0 2.5cqw;line-height:1.3}
+  .tc-front .st{display:flex;gap:1.5cqw}
+  .tc-front .st img{width:10cqw;height:10cqw;image-rendering:pixelated}
+  .tc-front .st img.off{opacity:.25}
+  .tc-say{font-size:3.4cqw;margin-top:2.5cqw}
+  /* 뒷면: 2.png 일기 구성 (날씨·기준 시각 → 제목 → 장소별 시각·기록 → 마무리 → 도장·호칭) */
+  .tc-top{display:flex;justify-content:space-between;gap:6px;font-size:3.1cqw;color:var(--muted)}
+  .tc-title{font-size:5.6cqw;font-weight:800;margin:2cqw 0 3cqw;line-height:1.3}
+  .tc-ent{display:flex;gap:3cqw;align-items:center;padding:2.5cqw 0 2.5cqw 3cqw;border-left:1.2cqw solid var(--shade);margin-bottom:3cqw}
+  .tc-ent .tx{flex:1;min-width:0}
+  .tc-ent .et{font-size:3.7cqw;font-weight:700;line-height:1.45}
+  .tc-ent .dp{font-size:3.3cqw;line-height:1.55;margin-top:1cqw}
+  .tc-wx{font-size:3.1cqw;color:var(--muted);margin-top:-1cqw;margin-bottom:2cqw}
+  .tc-ent .em{font-size:3cqw;color:var(--muted);margin-top:1cqw}
+  .tc-ent img{width:12cqw;height:12cqw;image-rendering:pixelated;flex:none}
+  .tc-close{margin-top:auto;font-size:3.7cqw;line-height:1.5;border-top:.5cqw dashed var(--shade);padding-top:3cqw}
+  .tc-foot{display:flex;align-items:center;gap:2.5cqw;font-size:3.1cqw;color:var(--muted);margin-top:3cqw}
+  .tc-foot img{width:8cqw;height:8cqw;image-rendering:pixelated;flex:none}
+  /* 뒤집기: 카드 우측 하단 동그란 아이콘 (카드 바깥 레이어라 함께 돌지 않음) */
+  .tc-flip{position:absolute;right:4cqw;bottom:4cqw;width:13cqw;height:13cqw;min-width:40px;min-height:40px;border-radius:50%;border:0;background:var(--paper);box-shadow:0 0 0 2px var(--ink),0 3px 0 0 var(--shade);color:var(--ink);font-size:6cqw;font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;padding:0;font-family:inherit}
+  /* 전체보기 아이콘: 뒤집기 버튼 왼쪽 옆 (같은 크기, 같은 모양) */
+  .tc-fs{right:calc(4cqw + 15cqw);font-size:5.2cqw}
+  .tc-flip.ovi{opacity:0;pointer-events:none;transition:opacity .25s}
+  .tc-flip.ovi.show{opacity:1;pointer-events:auto}
+  /* 미리보기 아래 버튼: 가운데 정렬 */
+  .tc-acts{display:flex;justify-content:center;gap:10px;flex:none}
+  .tc-acts button{width:150px;height:50px;border:0;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;background:var(--paper);color:var(--ink);box-shadow:0 0 0 2px var(--ink),0 4px 0 0 var(--shade)}
+  .tc-acts .save{background:var(--red);color:#fff;box-shadow:0 0 0 2px var(--red-d),0 4px 0 0 var(--red-d)}
+  .tc-chips{display:none;justify-content:center;gap:6px;flex-wrap:wrap;flex:none}
+  .tc-chips.on{display:flex}
+  .tc-chips span{font-size:12px;background:var(--paper);box-shadow:0 0 0 1.5px var(--ink);padding:5px 9px;cursor:pointer}
+  .tc-hint{font-size:12px;color:var(--muted);text-align:center;margin:0;flex:none}
+  /* 전체보기: 폰 화면을 채우는 카드. 평소엔 버튼이 없고, 화면을 누르면 닫기·뒤집기가 나왔다 사라짐 */
+  .tc-full{position:absolute;left:0;top:0;width:390px;height:844px;z-index:70;background:#2b1814;display:none;align-items:center;justify-content:center;container-type:size;cursor:pointer}
+  .tc-full.on{display:flex}
+  .tc-full .tc-card{height:auto;width:min(100cqw,calc(100cqh * 9 / 16));aspect-ratio:9/16}
+  .tc-full .tc-face{box-shadow:none;border-radius:0}
+  .tc-ov{position:absolute;left:0;right:0;top:0;padding:14px 16px;display:flex;justify-content:flex-start;opacity:0;pointer-events:none;transition:opacity .25s;z-index:2}
+  .tc-ov.show{opacity:1;pointer-events:auto}
+  .tc-ov button{border:0;background:var(--paper);box-shadow:0 0 0 2px var(--ink),0 3px 0 0 var(--shade);padding:7px 12px;font-size:14px;font-weight:800;cursor:pointer;font-family:inherit;color:var(--ink)}
   /* 출발 전: 출발 대사와 [나가요]만 보임. 외출 중에는 말풍선을 모두 숨김 */
   .scene.ready .door-hot,.scene.ready .exitarrow{display:block}
   /* 대사: 출발 준비 때 뜨고, 나가는 동안 잠깐 보였다가 하랑이가 문 밖으로 나가면 사라짐 */
@@ -366,7 +426,9 @@
       <div class="segp" id="bm-trips" hidden>
         <div class="h3">내 여행</div>
         <div id="em-trips" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/images/characters/ui/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>아직 빈 칸뿐이에요</b><small style="color:var(--muted);font-size:13px">첫 길을 걸으러 갈까요? 길을 마치면 여기 기록이 남아요.</small></div>
-        <button class="row px" data-nav="tripdetail"><div style="flex:1"><b>중구 근대골목 걷기</b><small>[날짜] · 3곳 · 도장 3/3 · 완주</small><div class="mini"><img src="../brand/images/items/stamp_nungeum.webp" alt=""><img src="../brand/images/items/stamp_nungeum.webp" alt=""><img src="../brand/images/items/stamp_nungeum.webp" alt=""></div></div></button>
+        <div class="h3 tc-lbl">완주한 여행 <span style="display:inline-flex;gap:4px;align-items:center;vertical-align:middle;margin-left:4px"><img src="../brand/images/items/stamp_nungeum.webp" alt="도장" style="width:20px;height:20px;image-rendering:pixelated"><img src="../brand/images/items/stamp_nungeum.webp" alt="도장" style="width:20px;height:20px;image-rendering:pixelated"><img src="../brand/images/items/stamp_nungeum.webp" alt="도장" style="width:20px;height:20px;image-rendering:pixelated"></span></div>
+        <div class="tc-grid" id="tcGrid" aria-label="완주한 여행 카드 목록"></div>
+        <div class="h3 tc-lbl">진행 중 <span>이어서 걸을 수 있어요</span></div>
         <button class="row px" data-nav="travel"><div style="flex:1"><b>중구 근대골목 걷기</b><small>[날짜] · 3곳 · 진행 중 · 눌러서 이어하기 [임시]</small><div class="mini"><img src="../brand/images/items/stamp_nungeum.webp" alt=""><img src="../brand/images/items/stamp_nungeum.webp" alt=""><img class="e" src="../brand/images/items/stamp_nungeum.webp" alt=""></div></div></button>
         <div class="row px"><div>한 장에는 실제로 방문한 장소와 날짜만 담겨요. 좌표는 담지 않아요.</div></div>
       </div>
@@ -460,18 +522,31 @@
   <section class="view" id="v-done" aria-label="오늘의 여행 사진">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">하랑이와 함께 끝까지 걸었어요</div><div class="t">완주</div><button class="back px" data-view="home">‹ 홈</button></div>
     <div class="scroll">
-      <div class="snap" id="snapCard"></div>
-      <button class="row px" data-nav="diary" style="justify-content:center;font-weight:800;height:52px;font-size:16px">하랑이 일기 보기</button>
-      <button class="cta px" data-nav="fullsnap" data-idx="done" style="height:52px;text-align:center">전체 화면으로 보기</button>
-      <button class="row px" data-nav="share" style="justify-content:center;font-weight:800">SNS 공유 (4:5)</button>
-      <button class="row px" data-tab="ledger" data-bm="trips" style="justify-content:center;font-weight:800">내 여행에 넣기</button>
-      <button class="row px" data-view="home" style="justify-content:center;font-weight:800">홈으로</button>
+      <div class="tc-prev">
+        <div class="tc-card" id="donePrev">
+          <div class="tc-inner">
+            <div class="tc-face tc-front" id="donePrevF"></div>
+            <div class="tc-face tc-back" id="donePrevB"></div>
+          </div>
+          <button class="tc-flip" data-tcflip="donePrev" aria-label="카드 뒤집기">↻</button>
+          <button class="tc-flip tc-fs" aria-label="전체보기">⛶</button>
+        </div>
+      </div>
+      <div class="tc-acts"><button class="save" data-toast="앨범 daeprica 폴더에 저장">저장</button><button data-toast="SNS 공유 (9:16 카드)">공유</button></div>
+      <button class="row px" data-nav="diary" style="justify-content:center;font-weight:800;flex:none">하랑이 일기 보기</button>
     </div>
   </section>
-  <!-- 전체 화면 보기 (SNS 4:5 카드를 크게) -->
-  <div class="fsview" id="fsv" hidden>
-    <div class="snap" id="snapFull"></div>
-    <button class="row px" data-nav="closefull" style="justify-content:center;font-weight:800;width:auto;padding:10px 24px">닫기</button>
+
+  <!-- 내 여행 카드 전체보기 (9:16 카드가 폰 화면을 채움). 화면을 누르면 닫기·뒤집기가 나왔다 사라짐 -->
+  <div class="tc-full" id="tcFull" role="dialog" aria-label="카드 전체보기">
+    <div class="tc-card" id="tcFullCard">
+      <div class="tc-inner">
+        <div class="tc-face tc-front" id="tcFullF"></div>
+        <div class="tc-face tc-back" id="tcFullB"></div>
+      </div>
+      <button class="tc-flip ovi" data-tcflip="tcFullCard" aria-label="카드 뒤집기">↻</button>
+    </div>
+    <div class="tc-ov" id="tcOvTop"><button id="tcClose">‹ 닫기</button></div>
   </div>
 
   <!-- 모든 길: 중구 코스 전체 목록 -->
@@ -543,20 +618,19 @@
   <!-- 내 여행 상세: 장부 [내 여행]에서 지난 여행 한 장을 누르면 열림 (F-11, 본인 것만, 좌표 없음) -->
   <section class="view" id="v-tripdetail" aria-label="내 여행 상세">
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">지난 여행 한 장</div><div class="t">내 여행</div><button class="back px" data-tab="ledger" data-bm="trips">‹ 장부</button></div>
-    <div class="scroll">
-      <div class="snap" id="snapTrip">
-        <div class="snaptop"><span>하랑이와 걸은 오늘</span><span>[지난 날짜]</span></div>
-        <div class="snapw">[지난 날씨 기록]</div>
-        <div class="snapphoto"><span>[지난 여행 사진 자리]</span></div>
-        <div class="snapcap"><b>중구 근대골목 걷기</b>
-          <div class="snaprow"><b>[시각]</b><span>동성로</span><img src="../brand/images/items/stamp_nungeum.webp" alt="도장"></div>
-          <div class="snaprow"><b>[시각]</b><span>대구 근대골목</span><img src="../brand/images/items/stamp_nungeum.webp" alt="도장"></div>
-          <div class="snaprow"><b>[시각]</b><span>대구약령시한의약박물관</span><img src="../brand/images/items/stamp_nungeum.webp" alt="도장"></div>
+    <div class="scroll" style="gap:10px">
+      <div class="tc-prev">
+        <div class="tc-card" id="tcPrev">
+          <div class="tc-inner">
+            <div class="tc-face tc-front" id="tcPrevF"></div>
+            <div class="tc-face tc-back" id="tcPrevB"></div>
+          </div>
+          <button class="tc-flip" data-tcflip="tcPrev" aria-label="카드 뒤집기">↻</button>
+          <button class="tc-flip tc-fs" aria-label="전체보기">⛶</button>
         </div>
-        <div class="snapfoot"><span>[하랑이 마무리 대사 · 승인 대기]</span><span>도장 3/3</span></div>
       </div>
-      <button class="cta px" data-nav="fullsnap" data-idx="trip" style="height:52px;text-align:center">전체 화면으로 보기</button>
-      <button class="row px" data-tab="ledger" data-bm="trips" style="justify-content:center;font-weight:800">내 여행 목록으로</button>
+      <div class="tc-acts"><button class="save" id="tcSave">저장</button><button id="tcShare">공유</button></div>
+      <div class="tc-chips" id="tcChips"><span>인스타그램</span><span>카카오톡</span><span>링크 복사</span></div>
     </div>
   </section>
 
@@ -661,7 +735,7 @@
     // 빈 상태 (S-09 기록 없음, S-19 앨범 비어 있음, S-20 주머니 비어 있음, S-21 오늘 칸 없음)
     var noTrip=(k==='none'), noCourse=(k==='empty');
     function setHidden(sel, on){ document.querySelectorAll(sel).forEach(function(x){ x.hidden=on; }); }
-    setHidden('#bm-trips > .row', noTrip); $('#em-trips').hidden=!noTrip;
+    setHidden('#bm-trips > .row', noTrip); setHidden('#bm-trips > .tc-grid, #bm-trips > .tc-lbl', noTrip); $('#em-trips').hidden=!noTrip;
     setHidden('#bm-album > .row', noTrip); $('#em-album').hidden=!noTrip;
     setHidden('#v-pouch .scroll > .row', noTrip); $('#em-pouch').hidden=!noTrip;
     setHidden('#todayCells', noCourse); setHidden('#v-today .scroll > button.cta', noCourse); $('#em-today').hidden=!noCourse;
@@ -757,7 +831,11 @@
       +'<div class="snapfoot"><span>[하랑이 마무리 대사 · 승인 대기]</span><span>도장 3/3</span></div>';
   }
   function renderDone(){
-    $('#snapCard').innerHTML=snapHTML();
+    // 완주 카드도 9:16 카드: 방금 걸은 길의 실제 기록으로 채움
+    var dd=new Date(), dds=dd.getFullYear()+'.'+String(dd.getMonth()+1).padStart(2,'0')+'.'+String(dd.getDate()).padStart(2,'0')+' ('+WD[dd.getDay()]+')';
+    window.tcOpenDone({date:dds, wx:TRIP.weather||'', title:cc().t, say:'', name:'[이름]',
+      ents:[0,1,2].map(function(i){ return {t:TRIP.times[i]||'--:--', p:stopAt(i)+'에 도착했어요.', fact:'[하랑이 일기 문단 자리 · 기록 정리 결과 · 승인 대기]', rec:'방문 기록 · '+stopAt(i)+' · [미션 종류]'}; }),
+      close:'[하랑이 마무리 대사 · 승인 대기]'});
     if(!TRIP.counted){ MY_DONE[CUR]=true; TRIP.counted=true; renderMap() }
   }
   // S-07: 조건이 바뀌면 대체 길을 제안만 하고 자동으로 바꾸지 않는다 (game_flow_story_v1.md 7절)
@@ -888,10 +966,10 @@
     if(name==='shelter'){ var wxk=$('#state').value; var wxp={heat:'heat',storm:'storm',unknown:'unknown'}[wxk]||'normal'; location.href='shelter_weather_mockup_v1.html?wx='+wxp; return }
     if(name==='picks'){ PAGE=0; renderPicks(); show('picks'); return }
     if(name==='reroll'){ PAGE++; renderPicks(); return }
-    if(name==='fullsnap'){ $('#snapFull').innerHTML=(idx==='trip'?$('#snapTrip'):$('#snapCard')).innerHTML; $('#fsv').hidden=false; return }
+    if(name==='fullsnap'){ window.tcOpenFull(); return }
     if(name==='briefback'){ show('course'); return }
     if(name==='cancelready'){ scene.classList.remove('ready'); return }
-    if(name==='closefull'){ $('#fsv').hidden=true; return }
+    if(name==='closefull'){ $('#tcFull').classList.remove('on'); return }
     if(name==='share'){ toast('SNS 공유는 다음 단계 (자리)'); return }
     if(name==='course' && idx){ CUR=idx }
     if(name==='reroute'){ location.href='reroute_mockup_v1.html?sit='+($('#optNoAlt').checked?'none':'closed'); return }
@@ -902,7 +980,7 @@
     else if(name==='depart'){ startRoute() }
     else if(name==='walkout'){ walkout() }
     else if(name==='briefdone'){ readyHome() }
-    else if(name==='tripdetail'){ show('tripdetail') }
+    else if(name==='tripdetail'){ window.tcOpen(idx); show('tripdetail') }
     else if(name==='travel'){ location.href='travel_map_mockup_v1.html'; return }
     else if(name==='diary'){ location.href='diary_mockup_v1.html'; return }
     else if(name==='place'){ location.href='travel_map_mockup_v1.html'; return }
@@ -996,6 +1074,129 @@
   var VIEW_Q=new URLSearchParams(location.search).get('view');
   if(VIEW_Q && document.getElementById('v-'+VIEW_Q)){ show(VIEW_Q); }  window.addEventListener('resize',fit); fit(); render(); renderMap();
   report();
+})();
+</script>
+<script>
+/* 내 여행 카드: 샘플 데이터 · 장부 목록 · 미리보기 · 전체보기 (임시 문구, 창작 후보) */
+(function(){
+  var STAMP = '../brand/images/items/stamp_nungeum.webp';
+  var TRIPS = [
+    {date:'[완주 날짜 1]', wx:'[날씨 한 줄] · [기준 시각]', title:'중구 근대골목 걷기', say:'오늘도 같이 걸어 줘서 고마워요!', name:'[이름]',
+     ents:[
+       {t:'[시각]', p:'[장소 1 이름]에 도착했어요.', fact:'[사실 1: 그날 보여 준 설명]', rec:'방문 기록 · 장소 1 · [미션 종류]'},
+       {t:'[시각]', p:'[장소 2 이름]에서 걸었어요.', fact:'[사실 2: 퀴즈 결과 또는 설명, 범위는 결정 필요]', rec:'방문 기록 · 장소 2 · [미션 종류]'},
+       {t:'[시각]', p:'[장소 3 이름]까지 걸었어요.', fact:'[사실 3]', rec:'방문 기록 · 장소 3 · [미션 종류]'}
+     ],
+     close:'오늘 길은 {이름} 님이랑 걸은 한 장이에요. 다음에도 같이 가요!'},
+    {date:'[완주 날짜 2]', wx:'[날씨 한 줄] · [기준 시각]', title:'중구 약령시 한 바퀴', say:'장부에 한 칸이 또 채워졌어요.', name:'[이름]',
+     ents:[
+       {t:'[시각]', p:'[장소 1 이름]에 들렀어요.', fact:'[사실 1]', rec:'방문 기록 · 장소 1 · [미션 종류]'},
+       {t:'[시각]', p:'[장소 2 이름]을 천천히 봤어요.', fact:'[사실 2]', rec:'방문 기록 · 장소 2 · [미션 종류]'},
+       {t:'[시각]', p:'[장소 3 이름]에서 마쳤어요.', fact:'[사실 3]', rec:'방문 기록 · 장소 3 · [미션 종류]'}
+     ],
+     close:'천천히 걸은 날이었어요. 또 같이 가요!'},
+    {date:'[완주 날짜 3]', wx:'[날씨 한 줄] · [기준 시각]', title:'동성로 한 바퀴', say:'다음 길은 같이 골라 볼까요?', name:'[이름]',
+     ents:[
+       {t:'[시각]', p:'[장소 1 이름]에서 출발했어요.', fact:'[사실 1]', rec:'방문 기록 · 장소 1 · [미션 종류]'},
+       {t:'[시각]', p:'[장소 2 이름]에 들렀어요.', fact:'[사실 2]', rec:'방문 기록 · 장소 2 · [미션 종류]'},
+       {t:'[시각]', p:'[장소 3 이름]에서 쉬었어요.', fact:'[사실 3]', rec:'방문 기록 · 장소 3 · [미션 종류]'}
+     ],
+     close:'다음에 또 걸어요.'}
+  ];
+  var cur = 0, custom = null;
+  var $i = function(id){ return document.getElementById(id); };
+  // 화면 하단 짧은 안내 (메인 스크립트의 toast()와 같은 #toast 요소를 씀)
+  var tcT;
+  function tcToast(msg){ var el=$i('toast'); el.textContent=msg+' (자리)'; el.classList.add('on'); clearTimeout(tcT); tcT=setTimeout(function(){ el.classList.remove('on'); },1800); }
+
+  function frontHTML(t){
+    var st = '';
+    for (var i = 0; i < 3; i++) st += '<img src="'+STAMP+'" alt="도장" class="'+(i < 3 ? '' : 'off')+'">';
+    return '<div class="tc-pic">[장소 그림 자리 · 창작 후보]</div>'
+      + '<div class="tc-date">'+t.date+'</div>'
+      + '<h2>'+t.title+'</h2>'
+      + '<div class="st">'+st+'</div>'
+      + '<div class="tc-say">하랑이: '+t.say+'</div>';
+  }
+  function backHTML(t){
+    var ents = t.ents.map(function(e){
+      return '<div class="tc-ent"><div class="tx"><div class="et">'+e.t+' '+e.p+'</div><div class="dp">'+e.fact+'</div><div class="em">'+e.rec+'</div></div><img src="'+STAMP+'" alt="도장"></div>';
+    }).join('');
+    return '<div class="tc-top"><span>하랑이의 일기</span><span>'+t.date+'</span></div>'
+      + '<div class="tc-title">'+t.title+'</div>'
+      + '<div class="tc-wx">'+t.wx+'</div>'
+      + ents
+      + '<div class="tc-close">'+t.close+'</div>'
+      + '<div class="tc-foot"><img src="'+STAMP+'" alt="">도장 3/3 · 이름은 '+t.name+' 님 (호칭 규칙)</div>';
+  }
+  function fill(front, back, t){ front.innerHTML = frontHTML(t); back.innerHTML = backHTML(t); }
+
+  function renderGrid(){
+    var g = $i('tcGrid');
+    g.innerHTML = TRIPS.map(function(t, i){
+      return '<button class="tc-thumb" data-nav="tripdetail" data-idx="'+i+'">'
+        + '<div class="tc-mini"><div class="d">'+t.date+'</div></div>'
+        + '<b>'+t.title+'</b><small>3곳 · 도장 3/3 · 완주</small></button>';
+    }).join('');
+  }
+
+  // 미리보기 열기 (장부 목록에서 카드를 누를 때 nav()가 호출)
+  window.tcOpen = function(idx){
+    cur = Math.max(0, Math.min(TRIPS.length - 1, parseInt(idx, 10) || 0));
+    custom = null;
+    var card = $i('tcPrev');
+    fill($i('tcPrevF'), $i('tcPrevB'), TRIPS[cur]);
+    card.classList.remove('flipped');
+    $i('tcChips').classList.remove('on');
+  };
+  // 완주 직후 화면: 방금 걸은 길의 실제 기록으로 채운 카드
+  window.tcOpenDone = function(d){
+    custom = d;
+    fill($i('donePrevF'), $i('donePrevB'), d);
+    $i('donePrev').classList.remove('flipped');
+  };
+  function openFull(){
+    var data = custom || TRIPS[cur];
+    var card = $i('tcFullCard');
+    fill($i('tcFullF'), $i('tcFullB'), data);
+    card.classList.remove('flipped');
+    $i('tcFull').classList.add('on');
+    document.querySelectorAll('#tcOvTop, #tcFull .tc-flip').forEach(function(x){ x.classList.remove('show'); });
+  }
+
+  renderGrid();
+
+  window.tcOpenFull = openFull;
+  // 미리보기의 전체보기 아이콘 (카드 클릭과 같은 동작)
+  document.querySelectorAll('.tc-fs').forEach(function(b){
+    b.addEventListener('click', function(e){ e.stopPropagation(); openFull(); });
+  });
+  // 저장·공유 등 자리 버튼
+  document.querySelectorAll('[data-toast]').forEach(function(b){
+    b.addEventListener('click', function(){ tcToast(b.getAttribute('data-toast')); });
+  });
+  // 뒤집기 (카드 안 버튼이라 카드 클릭으로 전체보기가 열리지 않도록 막음)
+  document.querySelectorAll('[data-tcflip]').forEach(function(b){
+    b.addEventListener('click', function(e){
+      e.stopPropagation();
+      $i(b.getAttribute('data-tcflip')).classList.toggle('flipped');
+    });
+  });
+  $i('tcSave').addEventListener('click', function(){ tcToast('앨범 daeprica 폴더에 저장'); });
+  $i('tcShare').addEventListener('click', function(){ $i('tcChips').classList.toggle('on'); });
+  $i('tcChips').addEventListener('click', function(e){
+    var s = e.target.closest('span'); if (s) tcToast(s.textContent + '로 공유');
+  });
+
+  // 전체보기: 화면을 누르면 닫기·뒤집기 버튼이 나왔다 사라짐
+  $i('tcFull').addEventListener('click', function(e){
+    if (e.target.closest('.tc-flip, #tcClose')) return;
+    document.querySelectorAll('#tcOvTop, #tcFull .tc-flip').forEach(function(x){ x.classList.toggle('show'); });
+  });
+  $i('tcClose').addEventListener('click', function(e){
+    e.stopPropagation();
+    $i('tcFull').classList.remove('on');
+  });
 })();
 </script>
 </body>
