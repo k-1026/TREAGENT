@@ -129,9 +129,15 @@
       return '<button class="btn '+b[0]+'" data-label="'+b[1]+'" data-note="'+b[2]+'">'+b[1]+'</button>';
     }).join('');
   }
+  // 버튼이 가는 곳: 길 선택 → 여행 지도, 쉼터 → 쉼터 화면, 나중에 → 홈(장부에 접어 둠)
+  function target(label, k){
+    if(label==='쉼터 보기') return 'shelter_weather_mockup_v1.html?screen=s&wx='+({heat:'heat',storm:'storm'}[k]||'normal');
+    if(label==='나중에 이어하기') return 'app_home_mockup_v1.html';
+    return 'travel_map_mockup_v1.html';
+  }
   $('#btns').addEventListener('click',function(e){
     var b=e.target.closest('.btn'); if(!b) return;
-    toast('→ '+b.dataset.label+' ('+b.dataset.note+')');
+    location.href=target(b.dataset.label, $('#sit').value);
   });
   $('#sit').addEventListener('change',render);
   $('#indoor').addEventListener('change',render);

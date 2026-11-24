@@ -859,7 +859,7 @@
     if(name==='closefull'){ $('#fsv').hidden=true; return }
     if(name==='share'){ toast('SNS 공유는 다음 단계 (자리)'); return }
     if(name==='course' && idx){ CUR=idx }
-    if(name==='reroute'){ location.href='travel_map_mockup_v1.html?alert=1'; return }
+    if(name==='reroute'){ location.href='reroute_mockup_v1.html?sit='+($('#optNoAlt').checked?'none':'closed'); return }
     else if(name==='reroute-accept'){ location.href='travel_map_mockup_v1.html'; return }
     else if(name==='reroute-keep'){ location.href='travel_map_mockup_v1.html'; return }
     else if(name==='reroute-later'){ show('home'); toast('여행을 장부에 접어 뒀어요') }
