@@ -4,6 +4,8 @@ import { router } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Image, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
 import { CoursePlacesCard } from '../components/course_places_card';
+import { CONTENT } from '../components/phone_column';
+import { ScreenHead } from '../components/screen_head';
 import { TmapView } from '../components/tmap_view';
 import { getCurrentLocation } from '../lib/location';
 import { getWalk, WalkPlace, WalkResult } from '../lib/server_api';
@@ -201,12 +203,29 @@ export default function TravelScreen() {
 
   if (!route) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream, padding: 20, gap: 12 }}>
-        <Text style={{ color: COLOR.ink }}>고른 길이 없어요.</Text>
-        <Pressable onPress={() => router.replace('/today')}>
-          <Text style={{ color: COLOR.red, fontWeight: '700' }}>오늘의 길 받으러 가기</Text>
-        </Pressable>
-      </SafeAreaView>
+      // 고른 길이 없을 때: 다른 화면과 같은 머리글 + 안내 + 큰 버튼 (홈 목업 갱신본의 머리글·칸 모양)
+      <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
+        <ScreenHead
+          title="여행 지도"
+          sub="고른 길이 있어야 지도를 볼 수 있어요"
+          backLabel="‹ 홈"
+          onBack={() => (router.canGoBack() ? router.back() : router.replace('/'))}
+        />
+        <View style={[CONTENT, { padding: 18, gap: 14 }]}>
+          <View style={[pxBox(), { padding: 16 }]}>
+            <Text style={{ color: COLOR.ink, fontSize: 17, fontWeight: '800' }}>고른 길이 없어요</Text>
+            <Text style={{ color: COLOR.muted, fontSize: 14, lineHeight: 21, marginTop: 6 }}>
+              오늘의 길을 먼저 고르면 지도에서 걸을 길을 볼 수 있어요.
+            </Text>
+          </View>
+          <Pressable
+            onPress={() => router.replace('/today')}
+            style={({ pressed }) => [pxBox(COLOR.red, COLOR.redDark), { height: 56, alignItems: 'center', justifyContent: 'center' }, pressed && { opacity: 0.85 }]}
+          >
+            <Text style={{ color: '#fff', fontSize: 17, fontWeight: '800' }}>오늘의 길 받으러 가기</Text>
+          </Pressable>
+        </View>
+      </View>
     );
   }
 
