@@ -651,7 +651,7 @@
     $('#ctaT').textContent=s.cta[0]; $('#ctaS').textContent=s.cta[1]; $('#cta').dataset.go=s.cta[2];
     $('#cta').dataset.nav=({none:'picks',outside:'picks',active:'travel',notice:'travel',heat:'shelter',storm:'shelter',unknown:'shelter'})[k]||'todo';
     $('#cta').dataset.idx=s.cta[2];
-    $('#tipList').innerHTML=(TIPS[k]||TIPS.none).map(function(t){var f=ICON[t];return '<li>'+(f?'<img src="../brand/images/characters/item_'+f+'_v1.png?v=4" alt="">':'')+'<span>'+t+'</span></li>'}).join('');
+    $('#tipList').innerHTML=(TIPS[k]||TIPS.none).map(function(t){var f=ICON[t];return '<li>'+(f?'<img src="../brand/images/items/item_'+f+'_v1.png?v=4" alt="">':'')+'<span>'+t+'</span></li>'}).join('');
     var sb=$('#sbanner'); if(s.banner){sb.hidden=false;sb.className='sbanner'+(s.banner[0]==='n'?' n':'');sb.textContent=s.banner[1];sb.dataset.go=s.banner[2]}else{sb.hidden=true}
     sb.dataset.nav=(s.banner&&s.banner[2]==='S-07 경로 변경')?'reroute':(s.banner&&s.banner[2]==='S-14 가까운 쉼터')?'shelter':'';
     var L=$('#list'); L.innerHTML='';
