@@ -139,7 +139,7 @@
       </div>
       <div class="hara"><b>하랑이</b> [승인 대사 대기 · S-18]</div>
       <div class="row2">
-        <button class="btn primary" id="dLedger">장부에서 보기</button>
+        <button class="btn primary" id="dToday">오늘 페이지에서 보기</button>
         <button class="btn" id="dHome">홈으로</button>
       </div>
     </div>
@@ -257,7 +257,8 @@
 
   // S-18
   $('#dHome').addEventListener('click',function(){ location.href='app_home_mockup_v1.html'; });
-  $('#dLedger').addEventListener('click',function(){ location.href='app_home_mockup_v1.html?view=ledger'; });
+  // 도장은 오늘 페이지(S-21, 홈 방 안의 장부 그림)의 오늘 칸에 반영됨. 장부 탭(S-09)이 아님
+  $('#dToday').addEventListener('click',function(){ location.href='app_home_mockup_v1.html?view=today'; });
   // 도장 애니메이션은 S-18 진입 때마다 다시 재생
   var origShow=show;
   show=function(k){ origShow(k); if(k==='d'){ var s=$('#stamp'); s.classList.remove('on'); void s.offsetWidth; s.classList.add('on'); } };
