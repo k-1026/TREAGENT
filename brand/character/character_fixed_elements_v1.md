@@ -3,7 +3,7 @@
 - 작성일: 2026-11-23
 - 목적: 그림을 새로 그리거나 생성할 때 바뀌면 안 되는 항목을 한 표에 모읍니다. 캐릭터 시트 작업(DA, 마감 11/24)의 기준 문서입니다.
 - 상태: 초안. `[확정]`은 사용자 결정, `[창작 후보]`는 팀이 정할 항목입니다.
-- 참고 시트: `brand/character/images/harangi_sheet.webp` (정면, 측면, 표정 3종, 설명 문구 포함).
+- 참고 시트: `brand/images/characters/base/harangi_sheet.webp` (정면, 측면, 표정 3종, 설명 문구 포함).
 
 ## 1. 몸과 얼굴
 
@@ -38,10 +38,10 @@
 | 포쉐트 | 가방 모양 자체가 납작만두인 작은 가방 (문양이 아님) | 사용자 확인 (2026-11-23), `harangi_character.md` 6절 | `[확정]` |
 | 포쉐트 속 | 능금 몇 개 (캐릭터 소품, 플레이어 주머니와 별개) | `harangi_personality_v1.md` 3-1절, `game_concept.md` 10절 | `[확정]` |
 | 견습생 이전 회상 | 부채, 조끼, 포쉐트 없음 | `brand/worldview.md` 3-5절, `brand/cutscene/README.md` | `[확정]` |
-| 열쇠 | 구리빛, 바람 무늬 원형 고리 (스토리의 "바람결 문양") | `brand/character/images/key_sprite_v1.png`, `game_flow_story_v1.md` 2-6절 | `[확정]` |
-| 장부 (펼침) | 크림색 종이 페이지, 빨간 책갈피 끈 | `brand/character/images/ledger_sprite_v1.webp` | `[확정]` |
-| 장부 (덮임) | 빨간 표지에 바람 무늬, 가죽 테두리 | `brand/character/images/ledger_closed_sprite_v1.png` | `[확정]` |
-| 능금 | 작고 둥근 한 알, 빨간 껍질, 초록 잎 (사과보다 작게) | `brand/character/images/nunggeum_sprite_v1.png`, `brand/decision_nunggeum_motif_v1.md` | `[확정]` |
+| 열쇠 | 구리빛, 바람 무늬 원형 고리 (스토리의 "바람결 문양") | `brand/images/items/key_sprite_v1.png`, `game_flow_story_v1.md` 2-6절 | `[확정]` |
+| 장부 (펼침) | 크림색 종이 페이지, 빨간 책갈피 끈 | `brand/images/items/ledger_sprite_v1.webp` | `[확정]` |
+| 장부 (덮임) | 빨간 표지에 바람 무늬, 가죽 테두리 | `brand/images/items/ledger_closed_sprite_v1.png` | `[확정]` |
+| 능금 | 작고 둥근 한 알, 빨간 껍질, 초록 잎 (사과보다 작게) | `brand/images/items/nunggeum_sprite_v1.png`, `brand/decision_nunggeum_motif_v1.md` | `[확정]` |
 | 손수건 | 스토리 2-4의 소품, 그림 기준 없음 | `game_flow_story_v1.md` 2-4절 | `[확인 필요]` |
 
 ## 4. 표정과 포즈
@@ -99,8 +99,8 @@
 
 ## 출처
 
-- `brand/character/images/harangi_sheet.webp`
-- `brand/character/images/harangi_tail_sprite_v1.webp`, `fan_sprite_v1.png` (채택본)
+- `brand/images/characters/base/harangi_sheet.webp`
+- `brand/images/characters/sprites/harangi_tail_sprite_v1.webp`, `fan_sprite_v1.png` (채택본)
 - `brand/character/profile/harangi_character.md` 6절, 6-1절 ~ 6-4절
 - `brand/character/profile/harangi_personality_v1.md` 3-1절
 - `brand/character/profile/harangi_squirrel.md`

@@ -10,7 +10,7 @@
 
 ## 1. 지금 있는 포즈 (도트, 투명 배경, 포즈별 PNG)
 
-- 원본 시트: `brand/character/images/harangi_fullbody_pixel_transparent.png` (2000 x 667, 포즈 3개가 한 장). 원본은 그대로 둡니다.
+- 원본 시트: `brand/images/characters/sprites/harangi_fullbody_pixel_transparent.png` (2000 x 667, 포즈 3개가 한 장). 원본은 그대로 둡니다.
 - 시트를 포즈별로 잘라 같은 크기(640 x 660)로 맞췄습니다. **발바닥 선(아래에서 8px 위)과 머리 중심이 모두 같아서** 포즈를 바꿔 끼워도 위치가 튀지 않습니다.
 
 | 파일 | 포즈 | 쓰는 곳 |
@@ -35,7 +35,7 @@
 
 | # | 포즈 | 쓰는 곳 | 근거 | 우선 | 참고 그림 |
 |---|---|---|---|---|---|
-| 1 | **옆모습 걷기** (오른쪽을 봄, 2 또는 4프레임) | 코스를 고르면 문으로 나가는 외출 연출 | storyboard/app_home_screen_v1.md 5절, brand/home_prompts_v1.md 5-2절 | P0 | **완료** (4프레임, 팀 제작, brand/character/images/harangi_pixel_walk_side_01~04_transparent.png) |
+| 1 | **옆모습 걷기** (오른쪽을 봄, 2 또는 4프레임) | 코스를 고르면 문으로 나가는 외출 연출 | storyboard/app_home_screen_v1.md 5절, brand/home_prompts_v1.md 5-2절 | P0 | **완료** (4프레임, 팀 제작, brand/images/characters/harangi_pixel_walk_side_01~04_transparent.png) |
 | 2 | 놀람 (땀방울, 손 올림) | 경로 변경 알림 (S-07), 특보 안내 (S-14) | storyboard/app_screen_storyboard_v1.md S-07, S-14 | P0 | 6actions 2번 |
 | 3 | 차분 (조용히 서 있음) | 이동 보류, 로그인 (S-01, S-07) | 같은 문서 S-01, S-07 | P0 | expressions 차분 표정 |
 | 4 | 갸웃, 지도 보기 | 코스 없음, 코스 상세·길 안내 (S-04, S-05) | 같은 문서 S-04, S-05 | P0 | 6actions 5번 |
@@ -73,8 +73,8 @@
 
 ## 출처
 
-- brand/character/images/harangi_fullbody_pixel_transparent.png (분할 원본)
-- brand/character/images/harangi_6actions.png, harangi_expressions_fullbody.png, harangi_expressions.webp (참고 그림)
+- brand/images/characters/sprites/harangi_fullbody_pixel_transparent.png (분할 원본)
+- brand/images/characters/base/harangi_6actions.png, harangi_expressions_fullbody.png, harangi_expressions.webp (참고 그림)
 - brand/character/profile/harangi_character.md (6절 외형, 7절 말투 규칙, 8절 예문 5·6·10·12·14~18)
 - storyboard/app_screen_storyboard_v1.md (S-01, S-02, S-04, S-05, S-07, S-14, S-18)
 - storyboard/game_flow_story_v1.md (8-1절, 9-2절)

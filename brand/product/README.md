@@ -12,7 +12,7 @@
 | `harangi_monitor_figure_mockup.webp` | 가상 굿즈 5 (시안) | 모니터 위에 앉아 능금을 안은 하랑이 피규어. 생성형 AI 시안 (창작, 상세는 `virtual_goods_v1.md`) |
 | `woori_nungeum_juice_reference.jpg` | 기존 상품 (참고) | 농협 우리능금쥬스. 기존 능금 활용 상품 사례 |
 
-- 캐릭터 디자인 시안은 `brand/character/images/harangi_3d_turnaround.webp`에 있습니다 (3D 콘텐츠 제작 시 참고용 디자인 시안, 실제 3D 모델링 아님).
+- 캐릭터 디자인 시안은 `brand/images/characters/base/harangi_3d_turnaround.webp`에 있습니다 (3D 콘텐츠 제작 시 참고용 디자인 시안, 실제 3D 모델링 아님).
 
 ## 확인 필요
 
