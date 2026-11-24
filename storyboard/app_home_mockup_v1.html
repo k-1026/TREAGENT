@@ -837,16 +837,22 @@
     unknown:['[날씨 확인 불가 대사 후보 A · 승인 대기]','[날씨 확인 불가 대사 후보 B · 승인 대기]']
   };
   var WXKEY={heat:'heat',storm:'storm',unknown:'unknown'};
+  // 말풍선은 언제나 하나만 보임. 세 말풍선(기본 #mainBub, 탭 #hBub, 출발 #dBub)을 한 곳에서만 켠다
+  function showOnly(id){
+    ['mainBub','hBub','dBub'].forEach(function(k){
+      var el=document.getElementById(k);
+      el.style.display = (k===id) ? (k==='hBub'?'block':'') : 'none';
+    });
+  }
   function showHarangi(){
     var w=WXKEY[$('#state').value]||'normal';
     var pool=HPOOL.common.concat(HPOOL[w]);
     $('#hTx').textContent=pool[Math.floor(Math.random()*pool.length)];
-    $('#mainBub').style.display='none';
-    $('#hBub').style.display='block';
+    showOnly('hBub');
   }
   function hideHarangi(){
-    $('#hBub').style.display='none';
-    $('#mainBub').style.display='';
+    var ready=scene.classList.contains('ready')||scene.classList.contains('going');
+    showOnly(ready?'dBub':'mainBub');
   }
   // 코스 없음일 때 버튼: 원인(홈 상태)에 따라 다르게 보임. 홈 이동은 머리글 ‹ 홈으로 충분하므로 중복하지 않음
   function noRouteActs(k){
@@ -936,11 +942,13 @@
     show('home');
     scene.classList.remove('going'); scene.classList.add('ready');
     $('#dBubTx').textContent='오늘은 '+cc().t+'('+(TRIP.route==='indoor'?'실내':'야외')+') 길로 가 볼까요?';
+    showOnly('dBub');
   }
   // 문을 누르면: 대사 → 몸 돌리기 → 옆모습으로 문 쪽 걷기 → 문 밖으로 사라짐
   function walkout(){
     scene.classList.remove('ready'); scene.classList.remove('going');
     $('#dBubTx').textContent='자, 이제 오늘의 길을 걸으러 가요!';
+    showOnly('dBub');
     void scene.offsetWidth; scene.classList.add('going');
   }
   $('#mKeep').addEventListener('click',function(){ $('#modal').hidden=true; nav('travel') });
