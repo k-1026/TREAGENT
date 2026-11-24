@@ -90,7 +90,8 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLOR.cream },
   body: { flex: 1, paddingTop: 14, paddingHorizontal: 18, paddingBottom: 16, gap: 12 },
   acts: { flexDirection: 'row', justifyContent: 'center', gap: 10 },
-  act: { width: 150, height: 50, alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.paper, borderRadius: 6, borderWidth: 1.5, borderColor: COLOR.ink },
+  // 저장·공유 버튼: 목업 #264에서 모서리 6으로 다듬음, 아래 4px 그림자
+  act: { width: 150, height: 50, alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.paper, borderRadius: 6, borderWidth: 1.5, borderColor: COLOR.ink, boxShadow: `0px 4px 0px 0px ${COLOR.shade}` },
   save: { backgroundColor: COLOR.red },
   actText: { fontSize: 16, fontWeight: '800', color: COLOR.ink },
   diary: { height: 52, alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.paper, borderRadius: 6, borderWidth: 1.5, borderColor: COLOR.ink },
