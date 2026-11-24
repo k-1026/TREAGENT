@@ -510,8 +510,8 @@
     <div class="head"><div class="status"><span>9:41</span><span>●●● ▮</span></div><div class="s">다음 단계에서 만듭니다</div><div class="t" id="todoT">준비 중</div><button class="back px" data-view="home">‹ 홈</button></div>
     <div class="scroll">
       <div id="todoEmpty" hidden style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:14px 10px;text-align:center"><img src="../brand/character/images/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트" style="width:100%;max-height:220px;object-fit:contain"><b>오늘 조건에 맞는 길이 아직 없어요</b><small style="color:var(--muted);font-size:13px">[승인 대사 대기 · 추천 없음] 다른 곳이나 쉼터를 골라 볼까요?</small></div>
-      <div class="row px"><div><b>준비 중인 화면입니다</b><small id="todoSpec"></small></div></div>
-      <button class="row px" data-view="home" style="justify-content:center;font-weight:800">홈으로 돌아가기</button>
+      <div class="row px" id="todoRow"><div><b>준비 중인 화면입니다</b><small id="todoSpec"></small></div></div>
+      <button class="row px" id="todoHome" data-view="home" style="justify-content:center;font-weight:800">홈으로 돌아가기</button>
     </div>
   </section>
 
@@ -848,7 +848,8 @@
   }
   function renderTodo(label){
     $('#todoT').textContent=label;
-    $('#todoEmpty').hidden=!/^S-14/.test(label); // 코스 없음(추천 없음) 자리에만 빈 상태 일러스트
+    var s14=/^S-14/.test(label); // 코스 없음(추천 없음) 자리: 빈 상태 일러스트, 준비 중 문구와 중복 홈 버튼은 뺌
+    $('#todoEmpty').hidden=!s14; $('#todoRow').hidden=s14; $('#todoHome').hidden=s14;
     $('#todoSpec').textContent='기획 근거: '+(TODO_SPEC[label]||'[확인 필요]')+' · 목업에서는 자리만 둡니다.';
   }
   // 모든 길: 중구의 모든 코스 목록 (날씨 추천 3개는 '오늘의 길 고르기')
