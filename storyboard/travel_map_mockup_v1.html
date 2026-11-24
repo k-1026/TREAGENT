@@ -374,6 +374,11 @@
   $('#altlater').addEventListener('click',function(){ closeAll(); toast('보류했어요. 다음 재평가 때 다시 알려 드려요'); });
 
   setFull(false);
+  // 미션 흐름(S-18)을 마치고 돌아온 경우: 방금 받은 도장을 반영 (sessionStorage, 목업용)
+  try{
+    var got=sessionStorage.getItem('mockStamp');
+    if(got){ $('#stamps').value=got; phase='arrive'; sessionStorage.removeItem('mockStamp'); }
+  }catch(e){}
   render(-1);
   // 홈의 경로 변경 진입(?alert=1): 알림창을 바로 띄움
   if(new URLSearchParams(location.search).get('alert')){ document.querySelector('#dim').classList.add('on'); document.querySelector('#alert').classList.add('on'); }
