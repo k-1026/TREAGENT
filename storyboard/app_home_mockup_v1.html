@@ -111,8 +111,10 @@
   .wxcard small{display:block;font-size:13px;color:var(--muted)}
   .cta{display:block;width:100%;height:68px;padding:10px 14px;background:#d03a2f;color:#fff;font-weight:800;font-size:17px;text-align:left;border:0;cursor:pointer;--shade:var(--red-d);margin:2px 0 4px}
   .cta small{display:block;font-weight:400;font-size:12px;opacity:.92;margin-top:3px}
-  .quick{display:flex;gap:10px;margin:0 0 4px}
-  .quick button{flex:1;height:54px;background:var(--paper);border:0;font-size:12px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer}
+  .quick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin:0 0 4px}
+  .quick .chat{grid-column:span 2;flex-direction:row;justify-content:flex-start;gap:12px;padding:0 14px}
+  .quick .chat .hface{width:46px;height:46px;object-fit:cover;object-position:50% 0;flex:none}
+  .quick button{flex:1;height:64px;box-sizing:border-box;background:var(--paper);border:0;font-size:14px;font-weight:800;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;cursor:pointer}
   .qi{width:20px;height:18px;background:var(--ink);display:block}
   .qi.list{background:repeating-linear-gradient(to bottom,var(--ink) 0 4px,transparent 4px 7px)}
   .qi.rest{clip-path:polygon(50% 0,100% 55%,64% 55%,64% 100%,36% 100%,36% 55%,0 55%)}
@@ -334,8 +336,7 @@
     <div class="body">
       <button class="cta px" id="cta"><span id="ctaT"></span><small id="ctaS"></small></button>
       <div class="quick">
-        <button class="px" id="q1"><i class="qi list"></i><span id="q1t">모든 길</span></button>
-        <button class="px" data-nav="shelter"><i class="qi rest"></i>쉼터</button>
+        <button class="px chat" id="chat"><img class="hface" src="../brand/character/images/harangi_face_v1.png" alt="하랑이"><span>하랑이와 대화하기</span></button>
         <button class="px" data-view="pouch"><i class="qi pouch"></i>주머니</button>
       </div>
       <div class="wxcard px" id="wxCard"><b>오늘 챙길 것</b><ul class="tiplist" id="tipList"></ul></div>
@@ -651,8 +652,6 @@
     $('#cta').dataset.nav=({none:'picks',outside:'picks',active:'travel',notice:'travel',heat:'shelter',storm:'shelter',unknown:'shelter'})[k]||'todo';
     $('#cta').dataset.idx=s.cta[2];
     $('#tipList').innerHTML=(TIPS[k]||TIPS.none).map(function(t){var f=ICON[t];return '<li>'+(f?'<img src="../brand/character/images/item_'+f+'_v1.png?v=4" alt="">':'')+'<span>'+t+'</span></li>'}).join('');
-    $('#q1t').textContent='모든 길';
-    $('#q1').dataset.nav='all';
     var sb=$('#sbanner'); if(s.banner){sb.hidden=false;sb.className='sbanner'+(s.banner[0]==='n'?' n':'');sb.textContent=s.banner[1];sb.dataset.go=s.banner[2]}else{sb.hidden=true}
     sb.dataset.nav=(s.banner&&s.banner[2]==='S-07 경로 변경')?'reroute':(s.banner&&s.banner[2]==='S-14 가까운 쉼터')?'shelter':'';
     var L=$('#list'); L.innerHTML='';
@@ -967,6 +966,7 @@
   }
   document.addEventListener('click',function(e){
     if(e.target.closest('#hHot')){showHarangi();return}
+    if(e.target.closest('#chat')){location.href='chat_harangi_mockup_v1.html';return}
     if(e.target.closest('#hBub')){hideHarangi();return}
     var nv=e.target.closest('[data-nav]'); if(nv&&nv.dataset.nav){nav(nv.dataset.nav,nv.dataset.idx);return}
     var sg=e.target.closest('.seg button'); if(sg){bm(sg.dataset.bm);return}
