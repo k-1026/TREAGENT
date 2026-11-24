@@ -289,7 +289,7 @@
   .tc-front .st{display:flex;gap:1.5cqw}
   .tc-front .st img{width:10cqw;height:10cqw;image-rendering:pixelated}
   .tc-front .st img.off{opacity:.25}
-  .tc-say{font-size:3.4cqw;margin-top:2.5cqw;display:flex;align-items:center;gap:2cqw;padding-right:20cqw;line-height:1.4}
+  .tc-say{font-size:3.4cqw;margin-top:2.5cqw;display:flex;align-items:center;gap:1cqw;padding-right:25cqw;line-height:1.4}
   .tc-hf{width:11cqw;height:11cqw;object-fit:contain;flex:none}
   /* 뒷면: 2.png 일기 구성 (날씨·기준 시각 → 제목 → 장소별 시각·기록 → 마무리 → 도장·호칭) */
   .tc-top{display:flex;justify-content:space-between;gap:6px;font-size:3.1cqw;color:var(--muted)}
@@ -305,14 +305,14 @@
   .tc-foot{display:flex;align-items:center;gap:2.5cqw;font-size:3.1cqw;color:var(--muted);margin-top:3cqw}
   .tc-foot img{width:8cqw;height:8cqw;image-rendering:pixelated;flex:none}
   /* 뒤집기: 카드 우측 하단 동그란 아이콘 (카드 바깥 레이어라 함께 돌지 않음) */
-  .tc-flip{position:absolute;right:4cqw;bottom:4cqw;width:13cqw;height:13cqw;min-width:40px;min-height:40px;border-radius:50%;border:0;background:var(--paper);box-shadow:0 0 0 2px var(--ink),0 3px 0 0 var(--shade);color:var(--ink);font-size:6cqw;font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;padding:0;font-family:inherit}
+  .tc-flip{position:absolute;right:3cqw;bottom:3.5cqw;width:10cqw;height:10cqw;min-width:30px;min-height:30px;border-radius:50%;border:0;background:var(--paper);box-shadow:0 0 0 2px var(--ink),0 3px 0 0 var(--shade);color:var(--ink);font-size:5cqw;font-weight:800;line-height:1;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:3;padding:0;font-family:inherit}
   /* 전체보기 아이콘: 뒤집기 버튼 왼쪽 옆 (같은 크기, 같은 모양) */
-  .tc-fs{right:calc(4cqw + 15cqw);font-size:5.2cqw}
+  .tc-fs{right:calc(3cqw + 12cqw);font-size:4.2cqw}
   .tc-flip.ovi{opacity:0;pointer-events:none;transition:opacity .25s}
   .tc-flip.ovi.show{opacity:1;pointer-events:auto}
   /* 미리보기 아래 버튼: 가운데 정렬 */
   .tc-acts{display:flex;justify-content:center;gap:10px;flex:none}
-  .tc-acts button{width:150px;height:50px;border:0;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;background:var(--paper);color:var(--ink);box-shadow:0 0 0 2px var(--ink),0 4px 0 0 var(--shade)}
+  .tc-acts button{width:150px;height:50px;border:0;border-radius:6px;font-size:16px;font-weight:800;font-family:inherit;cursor:pointer;background:var(--paper);color:var(--ink);box-shadow:0 0 0 2px var(--ink),0 4px 0 0 var(--shade)}
   .tc-acts .save{background:var(--red);color:#fff;box-shadow:0 0 0 2px var(--red-d),0 4px 0 0 var(--red-d)}
   .tc-chips{display:none;justify-content:center;gap:6px;flex-wrap:wrap;flex:none}
   .tc-chips.on{display:flex}
