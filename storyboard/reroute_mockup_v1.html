@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>경로 변경·보류 목업 v1 (S-07)</title>
+<meta name="description" content="조건이 바뀌었을 때 경로 변경 화면 목업(S-07). 상황(휴관, 폭염, 호우, 날씨 변화, 혼잡, 위치 이탈, 대체 길 없음)마다 하랑이 제안과 선택지가 달라집니다. 근거: storyboard/game_flow_story_v1.md 7-2절, storyboard/app_screen_storyboard_v1.md S-07. 대사는 초안이며 승인 전 [확인 필요]. 자동으로 경로를 바꾸지 않고 제안만 합니다.">
+<style>
+  :root{
+    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#a85a24; --paper:#fffaf1; --red:#d03a2f; --red-d:#9c2420;
+    --muted:#7a5a4c; --shade:#d9bf98;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#e9e4dc;color:var(--ink);font-family:var(--font)}
+  body{display:flex;flex-direction:column;align-items:center;padding:12px 12px 28px;gap:10px}
+  .ctrl{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:center;font-size:14px;max-width:760px}
+  .ctrl select{font:inherit;padding:5px 8px;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:0}
+  .phone{position:relative;width:390px;height:844px;background:var(--cream);overflow:hidden;box-shadow:0 0 0 3px var(--ink),0 14px 36px rgba(60,40,20,.28)}
+  .status{position:absolute;left:0;top:0;width:390px;height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:13px;font-weight:700;color:#fff3e0;background:var(--beam);z-index:20}
+  .top{position:absolute;left:0;top:40px;width:390px;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:var(--beam);border-bottom:3px solid var(--ink);z-index:19}
+  .top b{color:#fff;font-size:18px;text-shadow:2px 2px 0 var(--ink)}
+  .navbtn{border:0;background:var(--cream);padding:6px 11px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 0 2px var(--ink);color:var(--ink);font-family:inherit}
+  .pbody{position:absolute;left:0;top:100px;width:390px;bottom:0;overflow:auto;padding:16px 18px 28px;display:flex;flex-direction:column;gap:14px}
+  .banner{padding:14px 16px;font-size:16px;line-height:1.5;font-weight:700;box-shadow:0 0 0 2px var(--ink)}
+  .banner.warn{background:#ffe1d6;color:var(--red-d)}
+  .banner.storm{background:#dfe7f0;color:#2f4a6b}
+  .banner.grey{background:#e6e1da;color:var(--ink)}
+  .banner.ok{background:#e4ecd9;color:#2e4a1f}
+  .card{background:var(--paper);padding:16px 18px;box-shadow:0 0 0 2px var(--ink)}
+  .card small{display:block;font-size:14px;color:var(--muted);margin-top:6px;line-height:1.5}
+  .hara{font-size:15px;line-height:1.6;background:var(--paper);padding:12px 14px;box-shadow:0 0 0 2px var(--ink)}
+  .hara b{color:var(--beam)}
+  .btn{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:56px;padding:0;line-height:1;border:0;background:var(--paper);color:var(--ink);font-weight:800;font-size:17px;cursor:pointer;box-shadow:0 0 0 3px var(--ink);font-family:inherit}
+  .btn.primary{background:var(--red);color:#fff}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row2 .btn{height:52px;font-size:16px}
+  .toast{position:absolute;left:24px;right:24px;bottom:24px;background:var(--ink);color:#fff8ea;padding:12px 14px;font-size:15px;text-align:center;z-index:30;display:none}
+</style>
+</head>
+<body>
+
+<div class="ctrl" role="group" aria-label="목업 조작 (실제 화면에는 없음)">
+  <label>상황 <select id="sit">
+    <option value="closed">장소 휴관·운영 변경</option>
+    <option value="heat">폭염특보</option>
+    <option value="storm">호우·낙뢰</option>
+    <option value="wind">날씨 변화 (일반)</option>
+    <option value="crowd">혼잡</option>
+    <option value="off">위치 이탈</option>
+    <option value="none">대체 길 없음</option>
+  </select></label>
+  <label><input type="checkbox" id="indoor" checked> 실내 길 있음 (폭염일 때)</label>
+</div>
+
+<main class="phone" id="phone">
+  <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+  <header class="top">
+    <button class="navbtn" id="back" aria-label="뒤로">‹ 뒤로</button>
+    <b>경로 변경</b>
+    <button class="navbtn" data-go="홈 (S-03)" aria-label="홈">⌂ 홈</button>
+  </header>
+
+  <section class="pbody">
+    <div class="banner" id="ban"></div>
+    <div class="card">
+      <b id="why" style="display:block;font-size:17px;line-height:1.4"></b>
+      <small id="note"></small>
+    </div>
+    <div class="hara"><b>하랑이</b> <span id="quote"></span></div>
+    <div id="btns" style="display:flex;flex-direction:column;gap:12px"></div>
+    <small style="color:var(--muted);font-size:13px;line-height:1.5">하랑이는 제안만 해요. 이용자가 고르기 전에는 경로가 바뀌지 않아요. 도장과 방문 기록은 그대로 남아요.</small>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</main>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var toastT;
+  function toast(t){var el=$('#toast');el.textContent=t;el.style.display='block';clearTimeout(toastT);toastT=setTimeout(function(){el.style.display='none'},1800)}
+
+  // 대사는 게임 흐름 7-2절의 초안 (승인 전 [확인 필요]). 버튼 이름도 7-2절 표를 따름
+  var S={
+    closed:{cls:'warn', ban:'운영 상태가 바뀌었어요',
+      why:'[스팟]이 오늘 문을 닫았어요', note:'운영자가 바꾼 상태가 다음 재평가 때 반영됨 (F-08, F-18)',
+      quote:'엇, [스팟]이 오늘 문을 닫았대요! 바로 옆 [대체 스팟]은 열려 있어요. 그쪽으로 갈까요?',
+      btns:[['primary','대체 길로 계속','5-8 · 남은 칸만 바꾸고 도장 보존'],['','나중에 이어하기','5-10 · 장부에 접어 두고 홈으로']]},
+    heat:{cls:'warn', ban:'폭염특보 · [기준 시각] 기준',
+      why:'바깥 길을 멈췄어요', note:'기준 시각과 운영 시간은 필수. 쉼터 운영 시간은 [운영 시간]까지',
+      quote:'으아, 폭염특보가 떴어요! [기준 시각] 기준이에요. 바깥 길은 멈출게요. 가까운 쉼터는 [운영 시간]까지 열려 있대요!',
+      btns:[['primary','실내 길로 계속','5-8 · 실내 길만 바꿈 (실내 길이 있을 때)'],['','쉼터 보기','쉼터 안내 (S-14)'],['','나중에 이어하기','5-10']]},
+    storm:{cls:'storm', ban:'호우·낙뢰 · 신규 이동 보류',
+      why:'지금은 밖으로 나가지 않아요', note:'신규 이동 보류 (F-23). 확인된 쉼터만 안내',
+      quote:'으악, 밖에 나가면 안 돼요! 이건 양보 못 해요!',
+      btns:[['primary','쉼터 보기','쉼터 안내 (S-14)'],['','나중에 이어하기','5-10']]},
+    wind:{cls:'ok', ban:'날씨가 바뀌었어요',
+      why:'이쪽 그늘 길이 더 맞아요', note:'안전 위험이 없는 변화일 때만 "원래대로" 선택 가능',
+      quote:'엇, 바람이 바뀌었어요! 이쪽 그늘 길이 더 맞아요. 바꿔 볼까요?',
+      btns:[['primary','대체 길로 계속','5-8'],['','원래대로 계속','5-9 · 안전 위험 없을 때만'],['','나중에 이어하기','5-10']]},
+    crowd:{cls:'ok', ban:'사람이 많아요',
+      why:'혼잡을 피해 조금 돌아가요', note:'혼잡 분산 모드 (20261110_game_storyboard_v1.md A-3)',
+      quote:'여기 사람이 너무 많대요! 조금 돌아서 갈까요?',
+      btns:[['primary','대체 길로 계속','5-8'],['','원래대로 계속','5-9'],['','나중에 이어하기','5-10']]},
+    off:{cls:'grey', ban:'길에서 조금 벗어났어요',
+      why:'길이 달라졌어요', note:'이탈 기준(거리, 시간)은 [결정 필요]. 이용자를 탓하는 말은 쓰지 않음',
+      quote:'어라, 길이 달라졌네요! 괜찮아요, 다시 찾아볼까요?',
+      btns:[['primary','원래 길로 돌아가기','지도 안내로'],['','여기서 길 다시 짜기','대체 길 제안 (S-07)']]},
+    none:{cls:'grey', ban:'오늘은 이어 갈 길이 없어요',
+      why:'대체 길이 아직 없어요', note:'추측하지 않음. 쉼터는 운영 시간과 기준 시각을 함께 적음 (명세 T-03, T-08)',
+      quote:'으악, 오늘은 이어 갈 길이 없어요... 확인된 쉼터에서 쉬어요! 이건 양보 못 해요!',
+      btns:[['primary','쉼터 보기','쉼터 안내 (S-14)'],['','다시 확인','재평가 (F-08)'],['','나중에 이어하기','5-10']]}
+  };
+
+  function render(){
+    var k=$('#sit').value, d=S[k];
+    $('#indoor').parentElement.style.opacity = (k==='heat') ? '1' : '0.4';
+    var ban=d.ban;
+    var btns=d.btns.slice();
+    // 폭염에서 실내 길이 없으면 첫 번째 버튼(실내 길)을 빼고 쉼터만 둠
+    if(k==='heat' && !$('#indoor').checked){ btns=btns.slice(1); ban='폭염특보 · 실내 길 없음'; }
+    $('#ban').className='banner '+d.cls;
+    $('#ban').textContent=ban;
+    $('#why').textContent=d.why;
+    $('#note').textContent=d.note;
+    $('#quote').textContent=d.quote;
+    $('#btns').innerHTML=btns.map(function(b){
+      return '<button class="btn '+b[0]+'" data-label="'+b[1]+'" data-note="'+b[2]+'">'+b[1]+'</button>';
+    }).join('');
+  }
+  $('#btns').addEventListener('click',function(e){
+    var b=e.target.closest('.btn'); if(!b) return;
+    toast('→ '+b.dataset.label+' ('+b.dataset.note+')');
+  });
+  $('#sit').addEventListener('change',render);
+  $('#indoor').addEventListener('change',render);
+  document.addEventListener('click',function(e){
+    var g=e.target.closest('[data-go]'); if(g){ toast('→ '+g.dataset.go); }
+    if(e.target.closest('#back')){ if(history.length>1){ history.back(); } else { location.href='travel_map_mockup_v1.html'; } }
+  });
+
+  var P=new URLSearchParams(location.search);
+  if(P.get('sit')&&S[P.get('sit')]) $('#sit').value=P.get('sit');
+  render();
+})();
+</script>
+</body>
+</html>
