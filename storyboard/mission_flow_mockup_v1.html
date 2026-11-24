@@ -139,7 +139,7 @@
       </div>
       <div class="hara"><b>하랑이</b> [승인 대사 대기 · S-18]</div>
       <div class="row2">
-        <button class="btn primary" data-go="장부 (S-09)">장부에서 보기</button>
+        <button class="btn primary" id="dLedger">장부에서 보기</button>
         <button class="btn" id="dHome">홈으로</button>
       </div>
     </div>
@@ -173,6 +173,8 @@
     $('#scr').value=k;
     $('#title').textContent=TITLE[k];
     if(k==='q') renderQ();
+  // 지도에서 온 경우, 도장 받은 장소 번호를 남겨 지도에 반영
+  if(k==='d' && fromMap && window.placeNo){ try{ sessionStorage.setItem('mockStamp', String(window.placeNo)); }catch(e){} }
   }
   function kindLabel(){ return $('#kind').value==='receipt' ? '영수증형' : '퀴즈형'; }
   function syncKind(){ $('#kTag').textContent=kindLabel(); }
@@ -255,6 +257,7 @@
 
   // S-18
   $('#dHome').addEventListener('click',function(){ location.href='app_home_mockup_v1.html'; });
+  $('#dLedger').addEventListener('click',function(){ location.href='app_home_mockup_v1.html?view=ledger'; });
   // 도장 애니메이션은 S-18 진입 때마다 다시 재생
   var origShow=show;
   show=function(k){ origShow(k); if(k==='d'){ var s=$('#stamp'); s.classList.remove('on'); void s.offsetWidth; s.classList.add('on'); } };

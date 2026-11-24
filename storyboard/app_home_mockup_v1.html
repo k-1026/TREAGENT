@@ -382,7 +382,7 @@
       <div class="row px"><div><b>추천 길 · [요일] · [시간대] · [날씨]</b>날씨와 시간대에 맞춰 고른 추천 길이에요. 장소 3곳을 걸어요. [승인 대사 대기]</div></div>
       <div class="h3">오늘 걸을 장소 <span id="todayCnt"></span></div>
       <div id="todayCells" class="segp"></div>
-      <button class="cta px" data-nav="course" data-idx="C01" style="height:52px">이 길 확인하기<small>장소를 채우라는 재촉은 하지 않아요 [임시]</small></button>
+      <button class="cta px" data-nav="course" data-idx="C01" style="height:68px;display:flex;align-items:center;justify-content:center;text-align:center">이 길 확인하기</button>
     </div>
   </section>
 
@@ -953,6 +953,9 @@
     if(typeof d.optA==='boolean')$('#optA').checked=d.optA;
     if(typeof d.optB==='boolean')$('#optB').checked=d.optB;
     render();report();});
+  /* ?view=ledger: 미션 완료 화면 등 다른 목업에서 특정 탭으로 바로 들어올 때 */
+  var VIEW_Q=new URLSearchParams(location.search).get('view');
+  if(VIEW_Q && document.getElementById('v-'+VIEW_Q)){ show(VIEW_Q); }
   window.addEventListener('resize',fit); fit(); render(); renderMap();
   report();
 })();
