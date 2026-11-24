@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 790" width="680" height="790" role="img">
+<title>장소 DB 갱신 서브그래프</title>
+<desc>후보를 발굴하고 기획자와 확인자가 검토해 후보 보관 테이블에 쓰고, 사람이 승인한 것만 코드가 장소 DB에 반영하며, 실패하면 후보를 바꾸거나 폐기하고 거절하면 보류하는 그래프</desc>
+<style>
+text{font-family:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif}
+.th{font-size:14px;font-weight:700;fill:#2C2C2A}
+.ts{font-size:12px;fill:#5F5E5A}
+.arr{stroke:#6B6A64;stroke-width:1.5;fill:none}
+.c-purple>rect,rect.c-purple{fill:#EEEDFE;stroke:#534AB7;stroke-width:1}
+.c-purple .th{fill:#3C3489}.c-purple .ts{fill:#534AB7}
+.c-teal>rect,rect.c-teal{fill:#E1F5EE;stroke:#0F6E56;stroke-width:1}
+.c-teal .th{fill:#085041}.c-teal .ts{fill:#0F6E56}
+.c-coral>rect,rect.c-coral{fill:#FAECE7;stroke:#993C1D;stroke-width:1}
+.c-coral .th{fill:#712B13}.c-coral .ts{fill:#993C1D}
+.c-gray>rect,rect.c-gray{fill:#F1EFE8;stroke:#5F5E5A;stroke-width:1}
+.c-gray .th{fill:#444441}.c-gray .ts{fill:#5F5E5A}
+.zone{fill:none;stroke:#B4B2A9;stroke-width:1;stroke-dasharray:4 4}
+</style>
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M2 1L8 5L2 9" fill="none" stroke="#6B6A64" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></marker></defs>
+<rect width="680" height="790" fill="#FFFFFF"/>
+<g class="c-gray">
+<rect x="290" y="24" width="100" height="34" rx="8"/>
+<text class="th" x="340.0" y="41.0" text-anchor="middle" dominant-baseline="central">시작</text>
+</g>
+<g class="c-purple">
+<rect x="240" y="84" width="200" height="52" rx="8"/>
+<text class="th" x="340.0" y="101" text-anchor="middle" dominant-baseline="central">후보 발굴</text>
+<text class="ts" x="340.0" y="120" text-anchor="middle" dominant-baseline="central">웹 검색 · 출처 필수</text>
+</g>
+<g class="c-purple">
+<rect x="240" y="174" width="200" height="52" rx="8"/>
+<text class="th" x="340.0" y="191" text-anchor="middle" dominant-baseline="central">기획자</text>
+<text class="ts" x="340.0" y="210" text-anchor="middle" dominant-baseline="central">추가 · 수정 제안</text>
+</g>
+<g class="c-teal">
+<rect x="240" y="264" width="200" height="52" rx="8"/>
+<text class="th" x="340.0" y="281" text-anchor="middle" dominant-baseline="central">확인자 (코드)</text>
+<text class="ts" x="340.0" y="300" text-anchor="middle" dominant-baseline="central">출처 · 영업 · 좌표</text>
+</g>
+<g class="c-teal">
+<rect x="240" y="354" width="200" height="52" rx="8"/>
+<text class="th" x="340.0" y="371" text-anchor="middle" dominant-baseline="central">후보 보관 (코드)</text>
+<text class="ts" x="340.0" y="390" text-anchor="middle" dominant-baseline="central">후보 테이블에만 씀</text>
+</g>
+<g class="c-coral">
+<rect x="240" y="444" width="200" height="52" rx="8"/>
+<text class="th" x="340.0" y="461" text-anchor="middle" dominant-baseline="central">사람 승인</text>
+<text class="ts" x="340.0" y="480" text-anchor="middle" dominant-baseline="central">관리자 웹 · 주의 소재는 필수</text>
+</g>
+<g class="c-teal">
+<rect x="240" y="534" width="200" height="52" rx="8"/>
+<text class="th" x="340.0" y="551" text-anchor="middle" dominant-baseline="central">DB 반영 (코드)</text>
+<text class="ts" x="340.0" y="570" text-anchor="middle" dominant-baseline="central">승인된 것만 장소 DB에</text>
+</g>
+<g class="c-gray">
+<rect x="290" y="624" width="100" height="34" rx="8"/>
+<text class="th" x="340.0" y="641.0" text-anchor="middle" dominant-baseline="central">끝</text>
+</g>
+<g class="c-gray">
+<rect x="520" y="264" width="120" height="52" rx="8"/>
+<text class="th" x="580.0" y="281" text-anchor="middle" dominant-baseline="central">후보 폐기</text>
+<text class="ts" x="580.0" y="300" text-anchor="middle" dominant-baseline="central">기록만 남김</text>
+</g>
+<path d="M340 58 L340 82" class="arr" marker-end="url(#arrow)"/>
+<path d="M340 136 L340 172" class="arr" marker-end="url(#arrow)"/>
+<path d="M340 226 L340 262" class="arr" marker-end="url(#arrow)"/>
+<path d="M340 496 L340 532" class="arr" marker-end="url(#arrow)"/>
+<path d="M340 316 L340 352" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="348" y="334" text-anchor="start" dominant-baseline="central">통과</text>
+<path d="M340 406 L340 442" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="348" y="424" text-anchor="start" dominant-baseline="central">승인 요청</text>
+<path d="M340 586 L340 622" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="348" y="604" text-anchor="start" dominant-baseline="central">반영 기록</text>
+<path d="M240 290 L200 290 L200 200 L238 200" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="196" y="245" text-anchor="end" dominant-baseline="central">실패: 후보 교체</text>
+<path d="M442 290 L518 290" class="arr" marker-end="url(#arrow)"/>
+<text class="ts" x="480" y="314" text-anchor="middle" dominant-baseline="central">재시도 소진</text>
+<path d="M640 290 L664 290 L664 641 L392 641" class="arr" marker-end="url(#arrow)"/>
+<path d="M442 470 L664 470" class="arr"/>
+<text class="ts" x="552" y="458" text-anchor="middle" dominant-baseline="central">거절: 보류</text>
+<text class="ts" x="40" y="690" text-anchor="start" dominant-baseline="central">이용자 요청과 별개로 운영자가 돌립니다. LLM은 장소 DB에 직접 쓰지 않습니다.</text>
+<text class="ts" x="40" y="710" text-anchor="start" dominant-baseline="central">모든 단계의 결과와 판정은 실행 기록에 추가됩니다.</text>
+<rect class="c-teal" x="40" y="754" width="12" height="12" rx="2"/>
+<text class="ts" x="58" y="760" dominant-baseline="central">코드 단계</text>
+<rect class="c-purple" x="143" y="754" width="12" height="12" rx="2"/>
+<text class="ts" x="161" y="760" dominant-baseline="central">LLM 단계</text>
+<rect class="c-gray" x="259" y="754" width="12" height="12" rx="2"/>
+<text class="ts" x="277" y="760" dominant-baseline="central">상태 · 시작 · 끝</text>
+<rect class="c-coral" x="440" y="754" width="12" height="12" rx="2"/>
+<text class="ts" x="458" y="760" dominant-baseline="central">사람 · 이용자</text>
+</svg>
