@@ -194,7 +194,7 @@ export default function HomeScreen() {
         {/* 빠른 버튼 (목업 .quick: 3칸 격자, [하랑이와 대화하기]가 2칸, [주머니]가 1칸) */}
         <View style={styles.quick}>
           <Pressable onPress={() => router.push('/chat')} style={({ pressed }) => [styles.quickButton, styles.chatButton, pressed && styles.pressed]}>
-            <Image source={require('../../assets/harangi_chat_btn_v1.png')} style={styles.chatFace} resizeMode="contain" />
+            <Image source={require('../../assets/harangi_face_v2.webp')} style={styles.chatFace} resizeMode="contain" />
             <Text style={styles.quickText}>하랑이와 대화하기</Text>
           </Pressable>
           <Pressable onPress={() => router.push('/pouch')} style={({ pressed }) => [styles.quickButton, pressed && styles.pressed]}>

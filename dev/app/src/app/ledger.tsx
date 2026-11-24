@@ -3,7 +3,7 @@
  *
  * 책갈피 3개
  *  - 지도: 대구 9개 구·군 칸. 중구만 열림, 나머지는 준비 중. 내 완주율은 계산 기준이 없어 [○]% [확인 필요]
- *  - 내 여행: 여행 1회가 한 장. 기록이 없으면 빈 상태
+ *  - 내 여행: 여행 1회가 한 장(9:16 카드, 한 줄 3장, 누르면 /trip_card). 진행 중인 여행은 아래 줄. 기록이 없으면 빈 상태
  *  - 앨범: 해금한 컷씬. 기록이 없으면 빈 상태
  *
  * 데이터: 여행 기록·도장·앨범은 아직 서버에 저장되지 않는다 [확인 필요: 여행 세션 저장 PR].
@@ -18,8 +18,10 @@ import { BottomTab } from '../components/bottom_tab';
 import { EmptyState } from '../components/empty_state';
 import { CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
+import { TripMini } from '../components/trip_card';
 import { isHomeStateKey } from '../lib/home_state';
 import { COLOR, pxBox } from '../lib/theme';
+import { SAMPLE_TRIPS } from '../lib/trip_card_data';
 
 type Bookmark = 'map' | 'trips' | 'album';
 const BOOKMARKS: { key: Bookmark; label: string }[] = [
@@ -103,13 +105,18 @@ export default function LedgerScreen() {
             <Text style={styles.h3}>내 여행</Text>
             {filled ? (
               <>
-                <Pressable onPress={() => soon('내 여행 상세')} style={[pxBox(), styles.row]}>
-                  <View style={{ flex: 1 }}>
-                    <Text style={styles.rowTitle}>중구 근대골목 걷기</Text>
-                    <Text style={styles.rowSmall}>[날짜] · 3곳 · 도장 3/3 · 완주</Text>
-                    <MiniStamps got={3} />
-                  </View>
-                </Pressable>
+                <Text style={styles.h3}>
+                  완주한 여행 <Text style={styles.h3Sub}>카드를 누르면 크게 볼 수 있어요</Text>
+                </Text>
+                {/* 한 줄 3장 (목업 .tc-grid) */}
+                <View style={styles.grid}>
+                  {SAMPLE_TRIPS.map((t, i) => (
+                    <TripMini key={t.title} trip={t} onPress={() => router.push({ pathname: '/trip_card', params: { i: String(i) } })} />
+                  ))}
+                </View>
+                <Text style={styles.h3}>
+                  진행 중 <Text style={styles.h3Sub}>이어서 걸을 수 있어요</Text>
+                </Text>
                 <Pressable onPress={() => soon('이어하기')} style={[pxBox(), styles.row]}>
                   <View style={{ flex: 1 }}>
                     <Text style={styles.rowTitle}>중구 근대골목 걷기</Text>
@@ -166,6 +173,8 @@ const styles = StyleSheet.create({
   segTextOn: { color: '#fff' },
 
   panel: { gap: 12 },
+  // 완주한 여행 카드 목록: 한 줄 3장 (목업 .tc-grid)
+  grid: { flexDirection: 'row', gap: 12 },
   h3: { fontSize: 14, fontWeight: '800', color: COLOR.ink, marginTop: 4 },
   h3Sub: { fontSize: 12, fontWeight: '400', color: COLOR.muted },
 
