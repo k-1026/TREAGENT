@@ -4,7 +4,7 @@
  * 역할
  *  - 목업 storyboard/app_home_mockup_v1.html의 홈과 상태 8종을 옮긴다 (상태표: lib/home_state.ts).
  *  - 흐름: 로그인하면 홈이 첫 화면이다 (2026-11-23 요청). 위치는 기본으로 중구(MVP 지역)를 쓰고,
- *    왼쪽 위 날씨·지역 배지를 누르면 위치 확인 화면(/location)에서 바꾼다.
+ *    왼쪽 위 날씨·지역 배지를 누르면 날씨 상세(/weather)가 열리고, 거기서 [지역 바꾸기]로 위치 확인 화면(/location)에 간다.
  *    [확인 필요] 기획 흐름(storyboard/game_flow_story_v1.md 4절)은 위치 → 홈 순서다.
  *
  * 배치 (목업 390 x 844 기준, 화면 폭에 맞춰 배율 k를 곱한다)
@@ -21,23 +21,23 @@
  *  - 이름: none, active, notice, heat, storm, unknown, outside, empty
  *
  * 아직 연결하지 않은 것
- *  - 쉼터·경로 변경·이어하기 화면 → 지금은 준비 중(/soon). 주머니(/pouch), 장부(/ledger), 오늘 페이지(/today_page)는 연결됨
+ *  - 경로 변경·이어하기 화면 → 지금은 준비 중(/soon). 날씨 상세(/weather)는 연결됨. 쉼터 화면은 만들지 않기로 했다. 주머니(/pouch), 장부(/ledger), 오늘 페이지(/today_page)는 연결됨
  *  - 하랑이 대사: 승인 대사 대기. 목업 자리 표시를 그대로 둔다 [창작, 승인 필요]
  */
-import { router, useLocalSearchParams } from 'expo-router';
+import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Animated, Easing, Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { BottomTab } from '../components/bottom_tab';
 import { APP_MAX_WIDTH } from '../components/phone_column';
 import { PixelSprite } from '../components/pixel_book';
 import { PixelIcon } from '../components/pixel_icons';
-import { DISTRICTS, findDistrict } from '../lib/districts';
-import { BADGE_TONE, HOME_STATES, HomeGo, isHomeStateKey, pickHomeState, ROOM_IMAGE, TIP_ICON } from '../lib/home_state';
+import { findDistrict } from '../lib/districts';
+import { BADGE_TONE, HOME_STATES, HomeGo, ROOM_IMAGE, TIP_ICON } from '../lib/home_state';
 import { usePlace } from '../lib/place_context';
 import { displayName } from '../lib/profile';
 import { useProfile } from '../lib/profile_context';
-import { getWeatherNow } from '../lib/server_api';
 import { COLOR, pxBox } from '../lib/theme';
+import { useHomeWeather } from '../lib/use_home_weather';
 
 // 하단 탭 높이, 본문 최소 높이(여백 32 + 큰 버튼 68 + 빠른 버튼 64 + 간격 24 + 챙길 것 최소 150)
 const TAB_HEIGHT = 84;
@@ -56,23 +56,19 @@ function createBob() {
 const soon = (what: string) => router.push({ pathname: '/soon', params: { what } });
 
 // 큰 버튼·알림 띠가 갈 곳. 화면이 아직 없는 곳은 준비 중으로 보낸다.
-function go(target: HomeGo) {
+function go(target: HomeGo | undefined) {
+  if (!target) return; // 누르는 곳이 없는 안내 문구
   if (target === 'today') router.push('/today');
   else if (target === 'courses') router.push('/courses');
   else if (target === 'region') router.push('/location');
-  else if (target === 'shelter') soon('가까운 쉼터');
   else if (target === 'reroute') soon('경로 변경');
   else soon('이어하기'); // travel: 진행 중인 여행이 저장되지 않아 아직 이어 갈 수 없다
 }
 
-// 받은 날씨. key는 어느 위치로 받은 값인지 표시한다 (위치가 바뀌면 다시 "확인 중"이 된다)
-type WeatherView = { key: string; status: 'ok'; temp: number; hour: number } | { key: string; status: 'unavailable' };
-
 export default function HomeScreen() {
-  const { place, setPlace } = usePlace();
+  const { place } = usePlace();
   const { profile } = useProfile();
   const name = displayName(profile);
-  const params = useLocalSearchParams<{ state?: string }>();
   const { width: winWidth, height: winHeight } = useWindowDimensions();
   const k = Math.min(winWidth, APP_MAX_WIDTH) / 390; // 목업 좌표 → 화면 좌표 배율
 
@@ -91,7 +87,6 @@ export default function HomeScreen() {
   const bubbleBottom = Math.min(118 * k, sceneH - (badgeTop + BADGE_H + 6) - bubbleH);
   const iconSize = tipsAreaH > 0 ? Math.max(28, Math.min(48, (tipsAreaH - 2 * TIP_GAP) / 3)) : 48;
   const [bob] = useState(createBob);
-  const [weather, setWeather] = useState<WeatherView | null>(null);
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -104,42 +99,15 @@ export default function HomeScreen() {
     return () => loop.stop();
   }, [bob]);
 
-  // 위치를 아직 정하지 않았으면 기본 지역(중구 기준점)을 쓴다. MVP는 중구만 안내한다 (districts.ts).
-  useEffect(() => {
-    const jung = DISTRICTS.find((d) => d.code === 'jung');
-    if (!place && jung?.center) setPlace({ kind: 'district', code: jung.code, ...jung.center });
-  }, [place, setPlace]);
-
-  // 지금 위치의 날씨를 받는다. 좌표는 요청 본문으로만 보내고, 화면이나 로그에 남기지 않는다.
-  const lat = place?.latitude;
-  const lng = place?.longitude;
-  const placeKey = lat !== undefined && lng !== undefined ? `${lat},${lng}` : '';
-  useEffect(() => {
-    if (lat === undefined || lng === undefined) return;
-    const key = `${lat},${lng}`;
-    let alive = true;
-    getWeatherNow(lat, lng).then((r) => {
-      if (!alive) return;
-      if (r.ok && r.data.status === 'ok') setWeather({ key, status: 'ok', temp: r.data.temperatureC, hour: r.data.hour });
-      else setWeather({ key, status: 'unavailable' });
-    });
-    return () => {
-      alive = false;
-    };
-  }, [lat, lng]);
-
-  const current = weather && weather.key === placeKey ? weather : null; // 지금 위치의 값만 쓴다
-  const weatherState = !current ? 'loading' : current.status;
-  // 개발 중에만 ?state=이름 으로 다른 상태를 미리 본다
-  const previewKey = __DEV__ && isHomeStateKey(params.state) ? params.state : null;
-  const stateKey = previewKey ?? pickHomeState(weatherState);
-  const s = HOME_STATES[stateKey];
+  // 지금 위치의 날씨와 상태 (좌표는 요청 본문으로만 보낸다, 개발 중 ?state= 미리보기 포함)
+  const hw = useHomeWeather();
+  const s = HOME_STATES[hw.stateKey];
   const tone = BADGE_TONE[s.tone];
 
   const areaName = !place ? '중구' : place.kind === 'district' ? (findDistrict(place.code)?.name ?? '선택한 동네') : '현재 위치';
-  const live = s.live && current?.status === 'ok';
-  const temp = live ? String(Math.round(current.temp)) : '[○]';
-  const base = live ? `${current.hour}시` : weatherState === 'loading' && !previewKey ? '확인 중' : '[기준 시각]';
+  const live = s.live && hw.temp !== null && hw.hour !== null;
+  const temp = live ? String(Math.round(hw.temp!)) : '[○]';
+  const base = live ? `${hw.hour}시` : hw.loading && !hw.preview ? '확인 중' : '[기준 시각]';
   const badgeMain = s.badgeMain.replace('{temp}', temp);
   const badgeSub = s.badgeSub.replace('{area}', areaName).replace('{base}', base);
   const tipRows = s.tips.map((label) => ({ label, icon: TIP_ICON[label] }));
@@ -154,9 +122,9 @@ export default function HomeScreen() {
           resizeMode="cover"
         />
 
-        {/* 날씨·지역 배지 (목업 .badge). 누르면 위치를 다시 고른다 */}
+        {/* 날씨·지역 배지 (목업 .badge). 누르면 날씨 상세(/weather). 지역은 날씨 상세의 [지역 바꾸기]에서 바꾼다 */}
         <Pressable
-          onPress={() => router.push('/location')}
+          onPress={() => router.push('/weather')}
           style={[styles.badge, { ...pxBox(tone.bg, tone.shade), left: 12 * k, top: badgeTop }]}
         >
           <View style={[styles.badgeDot, { backgroundColor: tone.dot }]} />
@@ -211,10 +179,17 @@ export default function HomeScreen() {
 
       {/* 본문 (목업 .body: 위쪽 잉크색 6px 선, 안쪽 여백 16, 간격 12) */}
       <View style={styles.body}>
-        <Pressable onPress={() => go(s.cta.go)} style={({ pressed }) => [styles.cta, pressed && styles.pressed]}>
-          <Text style={styles.ctaMain}>{s.cta.title}</Text>
-          <Text style={styles.ctaSub}>{s.cta.sub}</Text>
-        </Pressable>
+        {s.cta.go ? (
+          <Pressable onPress={() => go(s.cta.go)} style={({ pressed }) => [styles.cta, pressed && styles.pressed]}>
+            <Text style={styles.ctaMain}>{s.cta.title}</Text>
+            {s.cta.sub ? <Text style={styles.ctaSub}>{s.cta.sub}</Text> : null}
+          </Pressable>
+        ) : (
+          // 누를 곳이 없는 안내 상자 (큰 버튼과 같은 높이)
+          <View style={styles.notice}>
+            <Text style={styles.noticeText}>{s.cta.title}</Text>
+          </View>
+        )}
 
         {/* 빠른 버튼 (목업 .quick: 3칸 격자, [하랑이와 대화하기]가 2칸, [주머니]가 1칸) */}
         <View style={styles.quick}>
@@ -308,6 +283,10 @@ const styles = StyleSheet.create({
   cta: { ...pxBox(COLOR.red, COLOR.redDark), height: 68, paddingHorizontal: 14, justifyContent: 'center' },
   ctaMain: { color: '#fff', fontSize: 17, fontWeight: '800' },
   ctaSub: { color: '#fff', fontSize: 12, opacity: 0.92, marginTop: 3 },
+
+  // 안내 상자: 큰 버튼 자리에서 누를 곳이 없을 때 (종이색 바탕)
+  notice: { ...pxBox(COLOR.paper), height: 68, paddingHorizontal: 14, justifyContent: 'center' },
+  noticeText: { color: COLOR.ink, fontSize: 15, fontWeight: '800' },
 
   // 빠른 버튼 (목업 .quick: 높이 64, 간격 10, 글씨 14 굵게)
   quick: { flexDirection: 'row', gap: 10 },

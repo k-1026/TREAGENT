@@ -20,7 +20,8 @@ export type HomeStateKey = 'none' | 'active' | 'notice' | 'heat' | 'storm' | 'un
 export const HOME_STATE_KEYS: HomeStateKey[] = ['none', 'active', 'notice', 'heat', 'storm', 'unknown', 'outside', 'empty'];
 
 // 큰 버튼과 알림 띠를 눌렀을 때 갈 곳. 아직 화면이 없는 곳은 홈에서 준비 중(/soon)으로 보낸다.
-export type HomeGo = 'today' | 'travel' | 'shelter' | 'courses' | 'reroute' | 'region';
+// go가 없으면 누르는 버튼이 아니라 안내 문구만 보인다 (쉼터 화면은 만들지 않기로 해서 폭염·호우·확인 불가가 이렇게 보인다, 2026-11-24 팀 결정).
+export type HomeGo = 'today' | 'travel' | 'courses' | 'reroute' | 'region';
 
 // 배지 색 (목업 .warn / .storm / .grey)
 export type BadgeTone = 'normal' | 'warn' | 'storm' | 'grey';
@@ -35,8 +36,8 @@ export type HomeState = {
   live: boolean; // 실제 날씨 값을 배지에 넣는 상태인가
   bubble: string; // {name}은 닉네임으로 바뀐다
   bubbleAlert: boolean; // 말풍선 아래 빨간 점선 줄 "오늘 비어 있는 장소가 있어요"
-  cta: { title: string; sub: string; go: HomeGo };
-  banner?: { kind: 'note' | 'warn'; text: string; go: HomeGo };
+  cta: { title: string; sub?: string; go?: HomeGo };
+  banner?: { kind: 'note' | 'warn'; text: string; go?: HomeGo };
   tips: string[];
 };
 
@@ -67,23 +68,23 @@ export const HOME_STATES: Record<HomeStateKey, HomeState> = {
     room: 'heat', tone: 'warn', live: false,
     badgeMain: '폭염특보 · 체감 [○]℃', badgeSub: '{area} · [기준 시각] 기준 · [AWS 여부] ▾',
     bubble: '{name} 님, [쉬어 가는 대사]', bubbleAlert: false,
-    cta: { title: '가까운 쉼터 보기', sub: '야외 길 안내를 멈췄어요 [임시]', go: 'shelter' },
-    banner: { kind: 'warn', text: '[기준 시각] 기준 · 쉼터는 [운영 시간]까지 · 야외 안내 중단', go: 'shelter' },
+    cta: { title: '야외 길 안내를 멈췄어요 [임시]' },
+    banner: { kind: 'warn', text: '[기준 시각] 기준 · 야외 안내 중단' },
     tips: ['생수', '캡모자', '쿨토시'],
   },
   storm: {
     room: 'storm', tone: 'storm', live: false,
     badgeMain: '호우 · 강수 [○]mm', badgeSub: '{area} · [기준 시각] 기준 ▾',
     bubble: '{name} 님, [안전 대사]', bubbleAlert: false,
-    cta: { title: '가까운 쉼터 보기', sub: '신규 이동을 보류했어요 [임시]', go: 'shelter' },
-    banner: { kind: 'warn', text: '[기준 시각] 기준 · 야외 코스 숨김 · 신규 이동 보류', go: 'shelter' },
+    cta: { title: '신규 이동을 보류했어요 [임시]' },
+    banner: { kind: 'warn', text: '[기준 시각] 기준 · 야외 코스 숨김 · 신규 이동 보류' },
     tips: ['우산', '여벌 양말', '운동화'],
   },
   unknown: {
     room: 'day', tone: 'grey', live: false,
     badgeMain: '날씨를 불러오지 못했어요', badgeSub: '{area} · 확인 중 ▾',
     bubble: '{name} 님, [확인 불가 대사]', bubbleAlert: false,
-    cta: { title: '가까운 쉼터 보기', sub: '날씨를 확인할 수 없어 길을 권하지 않아요 [임시]', go: 'shelter' },
+    cta: { title: '날씨를 확인할 수 없어 길을 권하지 않아요 [임시]' },
     tips: ['날씨를 확인하지 못했어요'],
   },
   outside: {
