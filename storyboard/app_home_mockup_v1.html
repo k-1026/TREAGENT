@@ -966,8 +966,7 @@
     render();report();});
   /* ?view=ledger: 미션 완료 화면 등 다른 목업에서 특정 탭으로 바로 들어올 때 */
   var VIEW_Q=new URLSearchParams(location.search).get('view');
-  if(VIEW_Q && document.getElementById('v-'+VIEW_Q)){ show(VIEW_Q); }
-  window.addEventListener('resize',fit); fit(); render(); renderMap();
+  if(VIEW_Q && document.getElementById('v-'+VIEW_Q)){ show(VIEW_Q); }  window.addEventListener('resize',fit); fit(); render(); renderMap();
   report();
 })();
 </script>
