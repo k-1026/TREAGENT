@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>미션 흐름 목업 v1 (S-15~S-18)</title>
+<meta name="description" content="도착 후 미션 흐름 목업. S-15 미션 안내 → 장소 종류에 따라 S-16 영수증 인증(식당·카페) 또는 S-17 퀴즈(박물관·공원) → S-18 도장 완료. 근거: storyboard/app_screen_storyboard_v1.md 2절 S-15~S-18. 대사·문제·보기 내용은 자리만 두고 [확인 필요]로 표시합니다.">
+<style>
+  :root{
+    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#a85a24; --paper:#fffaf1; --red:#d03a2f; --red-d:#9c2420;
+    --muted:#7a5a4c; --shade:#d9bf98;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#e9e4dc;color:var(--ink);font-family:var(--font)}
+  body{display:flex;flex-direction:column;align-items:center;padding:12px 12px 28px;gap:10px}
+  .ctrl{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:center;font-size:14px;max-width:760px}
+  .ctrl select{font:inherit;padding:5px 8px;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:0}
+  .phone{position:relative;width:390px;height:844px;background:var(--cream);overflow:hidden;box-shadow:0 0 0 3px var(--ink),0 14px 36px rgba(60,40,20,.28)}
+  .status{position:absolute;left:0;top:0;width:390px;height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:13px;font-weight:700;color:#fff3e0;background:var(--beam);z-index:20}
+  .top{position:absolute;left:0;top:40px;width:390px;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:var(--beam);border-bottom:3px solid var(--ink);z-index:19}
+  .top b{color:#fff;font-size:18px;text-shadow:2px 2px 0 var(--ink)}
+  .navbtn{border:0;background:var(--cream);padding:6px 11px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 0 2px var(--ink);color:var(--ink)}
+  .view{position:absolute;left:0;top:100px;width:390px;bottom:0;display:none}
+  .view.on{display:block}
+  .pbody{position:absolute;left:0;top:0;width:390px;bottom:0;overflow:auto;padding:16px 18px 28px;display:flex;flex-direction:column;gap:14px}
+  .card{background:var(--paper);padding:16px 18px;box-shadow:0 0 0 2px var(--ink)}
+  .card b{display:block;font-size:17px;line-height:1.4}
+  .card small{display:block;font-size:14px;color:var(--muted);margin-top:6px;line-height:1.5}
+  .banner{padding:14px 16px;font-size:16px;line-height:1.5;font-weight:700;box-shadow:0 0 0 2px var(--ink)}
+  .banner.warn{background:#ffe1d6;color:var(--red-d)}
+  .banner.ok{background:#e4ecd9;color:#2e4a1f}
+  .banner.grey{background:#e6e1da;color:var(--ink)}
+  .tag{display:inline-block;align-self:flex-start;font-size:13px;font-weight:800;padding:4px 10px;box-shadow:0 0 0 2px var(--ink);background:var(--cream2)}
+  .hara{font-size:15px;line-height:1.5;background:var(--paper);padding:12px 14px;box-shadow:0 0 0 2px var(--ink)}
+  .hara b{color:var(--beam)}
+  .frame{height:200px;background:var(--cream2);box-shadow:0 0 0 2px var(--ink);display:flex;align-items:center;justify-content:center;color:var(--muted);font-size:14px;text-align:center;line-height:1.5}
+  .btn{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:56px;padding:0;line-height:1;border:0;background:var(--paper);color:var(--ink);font-weight:800;font-size:17px;cursor:pointer;box-shadow:0 0 0 3px var(--ink)}
+  .btn.primary{background:var(--red);color:#fff}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .row2 .btn{height:52px;font-size:16px}
+  .opt{display:flex;align-items:center;min-height:52px;padding:10px 14px;background:var(--paper);font-size:16px;font-weight:700;box-shadow:0 0 0 2px var(--ink);border:0;text-align:left;cursor:pointer;color:var(--ink);width:100%;font-family:inherit}
+  .opt.picked{background:#e4ecd9}
+  .opt.wrong{background:#ffe1d6}
+  .stamp{width:160px;height:160px;margin:12px auto 0;opacity:0;transform:scale(1.6)}
+  .stamp img{width:100%;height:100%;object-fit:contain;display:block}
+  .stamp.on{animation:slam .45s ease-out forwards}
+  @keyframes slam{to{opacity:1;transform:scale(1)}}
+  .toast{position:absolute;left:24px;right:24px;bottom:24px;background:var(--ink);color:#fff8ea;padding:12px 14px;font-size:15px;text-align:center;z-index:30}
+</style>
+</head>
+<body>
+
+<div class="ctrl" role="group" aria-label="목업 조작 (실제 화면에는 없음)">
+  <label>장소 종류 <select id="kind">
+    <option value="receipt">식당·카페 (영수증형)</option>
+    <option value="quiz">박물관·공원 (퀴즈형)</option>
+  </select></label>
+  <label>영수증 검증 결과 <select id="rstate">
+    <option value="ok">성공</option>
+    <option value="store">상호명 불일치</option>
+    <option value="date">날짜 불일치</option>
+    <option value="read">글자 인식 실패</option>
+    <option value="retake">재촬영 필요</option>
+  </select></label>
+  <label>화면 <select id="scr">
+    <option value="g">S-15 미션 안내</option>
+    <option value="r">S-16 영수증 인증</option>
+    <option value="q">S-17 퀴즈</option>
+    <option value="d">S-18 미션 완료</option>
+  </select></label>
+</div>
+
+<main class="phone" id="phone">
+  <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+  <header class="top">
+    <button class="navbtn" id="back" aria-label="뒤로">‹ 뒤로</button>
+    <b id="title">미션</b>
+    <button class="navbtn" data-go="홈 (S-03)" aria-label="홈">⌂ 홈</button>
+  </header>
+
+  <!-- S-15 미션 안내 -->
+  <section class="view" id="vG">
+    <div class="pbody">
+      <div class="frame">[장소 사진 자리]<br>인증 지점 설명은 S-06과 같음</div>
+      <div><span class="tag" id="kTag">영수증형</span></div>
+      <div class="card">
+        <b>[장소 이름 자리]</b>
+        <small>미션 종류와 내용을 확인하고 시작해요. 하랑이 대사는 승인 후 채워요.</small>
+      </div>
+      <div class="hara"><b>하랑이</b> [승인 대사 대기 · S-15]</div>
+      <button class="btn primary" id="gStart">미션 시작</button>
+      <div class="row2">
+        <button class="btn" data-go="미션 내용 보기 (자리)">미션 내용 보기</button>
+        <button class="btn" id="gLater">나중에 하기</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- S-16 영수증 인증 -->
+  <section class="view" id="vR">
+    <div class="pbody">
+      <div class="banner grey">카드 번호와 금액은 가리면 더 좋아요. 가리지 않아도 인증할 수 있어요.</div>
+      <div class="frame" id="rFrame">[영수증 사진 자리]<br>카메라로 찍거나 갤러리에서 고를 수 있어요</div>
+      <div id="rBan" style="display:none" class="banner"></div>
+      <div class="card" id="rStatus" style="display:none"><b>검증 중…</b><small>상호명과 날짜를 확인하고 있어요.</small></div>
+      <div class="row2">
+        <button class="btn primary" id="rShoot">영수증 찍기</button>
+        <button class="btn" id="rGallery">갤러리에서 고르기</button>
+      </div>
+      <button class="btn" id="rNone">영수증 없이 하기</button>
+      <small style="color:var(--muted);font-size:13px">실패 <span id="failN">0</span>번. 3번 실패하면 쉬운 퀴즈로 바꿔요.</small>
+    </div>
+  </section>
+
+  <!-- S-17 퀴즈 -->
+  <section class="view" id="vQ">
+    <div class="pbody">
+      <div><span class="tag" id="qLevel">기본</span></div>
+      <div class="card">
+        <b id="qText">[문제 자리]</b>
+        <small>출처 있는 사실 확인표에서 만든 문제만 넣어요 [확인 필요]</small>
+      </div>
+      <div id="qOpts" style="display:flex;flex-direction:column;gap:10px"></div>
+      <div id="qHint" class="banner grey" style="display:none"></div>
+      <button class="btn" id="qHintBtn">힌트 보기</button>
+      <button class="btn" id="qRetry" style="display:none">다시 풀기</button>
+      <small style="color:var(--muted);font-size:13px" id="qProg"></small>
+    </div>
+  </section>
+
+  <!-- S-18 미션 완료 -->
+  <section class="view" id="vD">
+    <div class="pbody">
+      <div class="stamp" id="stamp"><img src="../brand/character/images/stamp_nungeum.webp" alt="능금 도장"></div>
+      <div class="card" style="text-align:center">
+        <b>도장을 받았어요</b>
+        <small>스탬프 문양은 모든 장소가 같아요.</small>
+      </div>
+      <div class="hara"><b>하랑이</b> [승인 대사 대기 · S-18]</div>
+      <div class="row2">
+        <button class="btn primary" data-go="장부 (S-09)">장부에서 보기</button>
+        <button class="btn" id="dHome">홈으로</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="toast" id="toast" style="display:none"></div>
+</main>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var toastT;
+  function toast(t){var el=$('#toast');el.textContent=t;el.style.display='block';clearTimeout(toastT);toastT=setTimeout(function(){el.style.display='none'},1600)}
+
+  var TITLE={g:'미션',r:'영수증 인증',q:'퀴즈',d:'미션 완료'};
+  var failN=0;
+  // 퀴즈 문제 자리 (정답 표시는 확인표가 정해진 뒤 채움). 기본 2문제, 쉬움 1문제
+  var Q_BASIC=[
+    {t:'[문제 1 자리]', o:['[보기 A]','[보기 B]','[보기 C]'], a:0, h:'[힌트 1 자리]'},
+    {t:'[문제 2 자리]', o:['[보기 A]','[보기 B]','[보기 C]'], a:1, h:'[힌트 2 자리]'}
+  ];
+  var Q_EASY=[
+    {t:'[쉬운 문제 자리]', o:['[보기 A]','[보기 B]'], a:0, h:'[힌트 자리]'}
+  ];
+  var qList=Q_BASIC, qi=0, qEasy=false;
+
+  function show(k){
+    ['vG','vR','vQ','vD'].forEach(function(id){ $('#'+id).classList.remove('on') });
+    var map={g:'vG',r:'vR',q:'vQ',d:'vD'};
+    $('#'+map[k]).classList.add('on');
+    $('#scr').value=k;
+    $('#title').textContent=TITLE[k];
+    if(k==='q') renderQ();
+  }
+  function kindLabel(){ return $('#kind').value==='receipt' ? '영수증형' : '퀴즈형'; }
+  function syncKind(){ $('#kTag').textContent=kindLabel(); }
+
+  // S-15: 장소 종류에 따라 다음 화면이 갈림
+  $('#gStart').addEventListener('click',function(){
+    if($('#kind').value==='receipt'){ show('r'); } else { startQuiz(false); }
+  });
+  $('#gLater').addEventListener('click',function(){
+    toast('지도로 돌아가요. 여행 지도에 "미션 대기"가 표시돼요.');
+    setTimeout(function(){ location.href='travel_map_mockup_v1.html'; },900);
+  });
+
+  // S-16: 검증 결과는 상단 조작판에서 고름
+  $('#rShoot').addEventListener('click',function(){
+    var st2=$('#rstate').value;
+    $('#rStatus').style.display='block';
+    $('#rBan').style.display='none';
+    setTimeout(function(){
+      $('#rStatus').style.display='none';
+      if(st2==='ok'){
+        $('#rBan').className='banner ok'; $('#rBan').textContent='확인됐어요. 도장을 찍어 드릴게요.';
+        $('#rBan').style.display='block';
+        setTimeout(function(){ show('d'); },700);
+        return;
+      }
+      failN++; $('#failN').textContent=failN;
+      var msg={store:'상호명이 맞지 않아요. 가게 이름이 보이게 다시 찍어요.',
+               date:'날짜가 맞지 않아요. 방문한 날 영수증인지 확인해요.',
+               read:'글자를 읽지 못했어요. 밝은 곳에서 다시 찍어요.',
+               retake:'사진이 흐려요. 영수증이 화면에 들어오게 다시 찍어요.'}[st2];
+      $('#rBan').className='banner warn'; $('#rBan').textContent=msg; $('#rBan').style.display='block';
+      if(failN>=3){
+        setTimeout(function(){ toast('실패가 3번 쌓여서 쉬운 퀴즈로 바꿔 드릴게요'); startQuiz(true); },900);
+      }
+    },700);
+  });
+  $('#rGallery').addEventListener('click',function(){ $('#rShoot').click(); });
+  $('#rNone').addEventListener('click',function(){ startQuiz(false); });
+
+  // S-17: 퀴즈
+  function startQuiz(easy){
+    qEasy=easy; qList=easy?Q_EASY:Q_BASIC; qi=0;
+    show('q');
+  }
+  function renderQ(){
+    var q=qList[qi];
+    $('#qLevel').textContent=qEasy?'쉬움':'기본';
+    $('#qText').textContent=q.t;
+    $('#qHint').style.display='none'; $('#qRetry').style.display='none';
+    $('#qHintBtn').style.display='block';
+    $('#qProg').textContent=(qi+1)+' / '+qList.length+' 문제';
+    $('#qOpts').innerHTML=q.o.map(function(o,i){
+      return '<button class="opt" data-i="'+i+'">'+o+'</button>';
+    }).join('');
+  }
+  $('#qOpts').addEventListener('click',function(e){
+    var b=e.target.closest('.opt'); if(!b) return;
+    var i=Number(b.dataset.i), q=qList[qi];
+    if(i===q.a){
+      b.classList.add('picked');
+      toast('맞았어요');
+      setTimeout(function(){
+        qi++;
+        if(qi>=qList.length){ show('d'); } else { renderQ(); }
+      },800);
+    } else {
+      b.classList.add('wrong');
+      $('#qHint').className='banner warn'; $('#qHint').textContent='아쉬워요. 힌트를 보고 다시 골라 봐요.';
+      $('#qHint').style.display='block';
+      $('#qRetry').style.display='block';
+    }
+  });
+  $('#qHintBtn').addEventListener('click',function(){
+    $('#qHint').className='banner grey';
+    $('#qHint').textContent='힌트: '+qList[qi].h;
+    $('#qHint').style.display='block';
+  });
+  $('#qRetry').addEventListener('click',function(){ renderQ(); });
+
+  // S-18
+  $('#dHome').addEventListener('click',function(){ location.href='app_home_mockup_v1.html'; });
+  // 도장 애니메이션은 S-18 진입 때마다 다시 재생
+  var origShow=show;
+  show=function(k){ origShow(k); if(k==='d'){ var s=$('#stamp'); s.classList.remove('on'); void s.offsetWidth; s.classList.add('on'); } };
+  show('g');
+
+  $('#kind').addEventListener('change',function(){ syncKind(); });
+  $('#scr').addEventListener('change',function(){ var v=$('#scr').value; if(v==='q') startQuiz(false); else show(v); });
+
+  document.addEventListener('click',function(e){
+    var g=e.target.closest('[data-go]'); if(g){ toast('→ '+g.dataset.go); }
+    if(e.target.closest('#back')){ if(history.length>1){ history.back(); } else { location.href='travel_map_mockup_v1.html'; } }
+  });
+  // 여행 지도(S-05)에서 넘어온 경우: ?from=map&n=장소번호&kind=quiz
+  var P=new URLSearchParams(location.search);
+  var fromMap=P.get('from')==='map';
+  if(P.get('kind')==='quiz') $('#kind').value='quiz';
+  if(fromMap && P.get('n')) window.placeNo=P.get('n');
+  syncKind();
+  if(fromMap){
+    $('#kTag').textContent=(window.placeNo?window.placeNo+'번 장소 · ':'')+kindLabel();
+  }
+})();
+</script>
+</body>
+</html>
