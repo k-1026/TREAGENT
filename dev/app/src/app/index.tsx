@@ -9,13 +9,14 @@
  *
  * 배치 (목업 390 x 844 기준, 화면 폭에 맞춰 배율 k를 곱한다)
  *  - 장면(높이 316): 방 그림(위 56), 날씨·지역 배지(12, 50), 하랑이, 말풍선, [오늘 페이지 ▾] 표시
- *  - 본문: [오늘의 길 고르기] 큰 버튼 → 빠른 버튼 3개(모든 길·쉼터·주머니) → 오늘 챙길 것
+ *  - 본문: [오늘의 길 고르기] 큰 버튼 → 빠른 버튼([하랑이와 대화하기] 2칸 + [주머니]) → 오늘 챙길 것
+ *    (2026-11-24 홈 목업 갱신본: 모든 길·쉼터 버튼이 빠지고 하랑이와 대화하기가 들어옴)
  *  - 하단 탭: 홈 · 장부 · 내 정보
  *
  * 아직 연결하지 않은 것 (목업에 있으나 데이터·화면이 없음)
  *  - 날씨 배지 값: 앱이 따로 받는 날씨 응답이 없어 목업 자리 표시를 그대로 둔다 [확인 필요: 날씨만 주는 서버 기능]
  *  - 상태 7종(진행 중, 폭염, 호우, 확인 불가, 중구 밖, 코스 없음), 오늘 챙길 것의 날씨별 변경
- *  - 쉼터·주머니·장부·오늘 페이지 화면 → 지금은 준비 중(/soon)
+ *  - 주머니·장부·오늘 페이지 화면 → 지금은 준비 중(/soon)
  *  - 하랑이 대사: 승인 대사 대기. 목업 자리 표시를 그대로 둔다 [창작, 승인 필요]
  */
 import { router } from 'expo-router';
@@ -24,7 +25,7 @@ import { Animated, Easing, Image, ImageSourcePropType, Pressable, StyleSheet, Te
 import { BottomTab } from '../components/bottom_tab';
 import { APP_MAX_WIDTH } from '../components/phone_column';
 import { PixelSprite } from '../components/pixel_book';
-import { PixelIcon, PixelIconName } from '../components/pixel_icons';
+import { PixelIcon } from '../components/pixel_icons';
 import { DISTRICTS, findDistrict } from '../lib/districts';
 import { usePlace } from '../lib/place_context';
 import { displayName } from '../lib/profile';
@@ -38,9 +39,9 @@ const TIPS: { label: string; icon: ImageSourcePropType }[] = [
   { label: '겉옷', icon: require('../../assets/item_jacket_v1.png') },
 ];
 
-// 하단 탭 높이, 본문 최소 높이(여백 32 + 큰 버튼 68 + 빠른 버튼 54 + 간격 24 + 챙길 것 최소 150)
+// 하단 탭 높이, 본문 최소 높이(여백 32 + 큰 버튼 68 + 빠른 버튼 64 + 간격 24 + 챙길 것 최소 150)
 const TAB_HEIGHT = 84;
-const BODY_MIN = 32 + 68 + 54 + 24 + 150;
+const BODY_MIN = 32 + 68 + 64 + 24 + 150;
 const TIP_GAP = 8;
 
 // 말풍선 꼬리 7x7 (K 잉크 테두리, F 종이색 속)
@@ -155,19 +156,16 @@ export default function HomeScreen() {
           <Text style={styles.ctaSub}>날씨에 맞는 길을 찾아봐요 [임시]</Text>
         </Pressable>
 
+        {/* 빠른 버튼 (목업 .quick: 3칸 격자, [하랑이와 대화하기]가 2칸, [주머니]가 1칸) */}
         <View style={styles.quick}>
-          {(
-            [
-              { label: '모든 길', icon: 'list', go: () => router.push('/courses') },
-              { label: '쉼터', icon: 'rest', go: () => soon('쉼터') },
-              { label: '주머니', icon: 'pouch', go: () => soon('주머니') },
-            ] as { label: string; icon: PixelIconName; go: () => void }[]
-          ).map((q) => (
-            <Pressable key={q.label} onPress={q.go} style={({ pressed }) => [styles.quickButton, pressed && styles.pressed]}>
-              <PixelIcon name={q.icon} color={COLOR.ink} />
-              <Text style={styles.quickText}>{q.label}</Text>
-            </Pressable>
-          ))}
+          <Pressable onPress={() => router.push('/chat')} style={({ pressed }) => [styles.quickButton, styles.chatButton, pressed && styles.pressed]}>
+            <Image source={require('../../assets/harangi_chat_btn_v1.png')} style={styles.chatFace} resizeMode="contain" />
+            <Text style={styles.quickText}>하랑이와 대화하기</Text>
+          </Pressable>
+          <Pressable onPress={() => soon('주머니')} style={({ pressed }) => [styles.quickButton, pressed && styles.pressed]}>
+            <PixelIcon name="pouch" color={COLOR.ink} />
+            <Text style={styles.quickText}>주머니</Text>
+          </Pressable>
         </View>
 
         <View style={styles.tips}>
@@ -195,7 +193,9 @@ const styles = StyleSheet.create({
   // 장면 (목업 .scene 바탕 #a85a24)
   scene: { backgroundColor: '#a85a24', overflow: 'hidden' },
 
+  // 배지·말풍선도 목업에서 .px 칸이다 (배지 그림자 색 #b98d62)
   badge: {
+    ...pxBox(COLOR.cream, '#b98d62'),
     position: 'absolute',
     zIndex: 4,
     flexDirection: 'row',
@@ -203,9 +203,6 @@ const styles = StyleSheet.create({
     gap: 6,
     paddingVertical: 5,
     paddingHorizontal: 8,
-    backgroundColor: COLOR.cream,
-    borderWidth: 3,
-    borderColor: COLOR.ink,
     maxWidth: 250,
   },
   badgeDot: { width: 11, height: 11, backgroundColor: '#f5b82e', borderWidth: 2, borderColor: COLOR.ink },
@@ -215,7 +212,7 @@ const styles = StyleSheet.create({
   mark: { position: 'absolute', zIndex: 6, paddingVertical: 1, paddingHorizontal: 5, backgroundColor: COLOR.cream, borderWidth: 2, borderColor: COLOR.ink },
   markText: { fontSize: 12, fontWeight: '800', color: COLOR.ink },
 
-  bubble: { position: 'absolute', zIndex: 4, backgroundColor: COLOR.paper, paddingVertical: 7, paddingHorizontal: 8, borderWidth: 3, borderColor: COLOR.ink },
+  bubble: { ...pxBox(COLOR.paper), position: 'absolute', zIndex: 4, paddingVertical: 7, paddingHorizontal: 8 },
   bubbleText: { fontSize: 12, lineHeight: 16, color: COLOR.ink },
   tail: { position: 'absolute', top: '100%' },
   bubbleMuted: { fontSize: 12, color: COLOR.muted, marginTop: 3 },
@@ -235,14 +232,17 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.85 },
 
   // 큰 버튼 (목업 .cta: 높이 68, 왼쪽 정렬)
-  cta: { ...pxBox(COLOR.red), height: 68, paddingHorizontal: 14, justifyContent: 'center' },
+  cta: { ...pxBox(COLOR.red, COLOR.redDark), height: 68, paddingHorizontal: 14, justifyContent: 'center' },
   ctaMain: { color: '#fff', fontSize: 17, fontWeight: '800' },
   ctaSub: { color: '#fff', fontSize: 12, opacity: 0.92, marginTop: 3 },
 
-  // 빠른 버튼 (목업 .quick: 높이 54, 간격 10)
+  // 빠른 버튼 (목업 .quick: 높이 64, 간격 10, 글씨 14 굵게)
   quick: { flexDirection: 'row', gap: 10 },
-  quickButton: { ...pxBox(COLOR.paper), flex: 1, height: 54, alignItems: 'center', justifyContent: 'center', gap: 5 },
-  quickText: { fontSize: 12, fontWeight: '700', color: COLOR.ink },
+  quickButton: { ...pxBox(COLOR.paper), flex: 1, height: 64, alignItems: 'center', justifyContent: 'center', gap: 5 },
+  // 하랑이와 대화하기: 2칸 폭, 얼굴 그림(58px) + 글씨를 가로로 놓는다
+  chatButton: { flex: 2, flexDirection: 'row', justifyContent: 'flex-start', gap: 12, paddingHorizontal: 14 },
+  chatFace: { width: 58, height: 58 },
+  quickText: { fontSize: 14, fontWeight: '800', color: COLOR.ink },
 
   // 오늘 챙길 것 (목업 .wxcard: 남은 높이를 채운다)
   tips: { ...pxBox(COLOR.paper), flex: 1, paddingVertical: 12, paddingHorizontal: 16, gap: 8 },

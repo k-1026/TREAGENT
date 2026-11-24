@@ -18,7 +18,9 @@ export function Chip({
       style={{
         paddingVertical: 9,
         paddingHorizontal: 14,
-        borderWidth: 3,
+        // 칸 모양은 pxBox와 같이 모서리 6, 잉크색 1.5px 테두리 (홈 목업 갱신본 .px)
+        borderRadius: 6,
+        borderWidth: 1.5,
         borderColor: COLOR.ink,
         backgroundColor: selected ? COLOR.ink : COLOR.paper,
         alignItems: 'center',
