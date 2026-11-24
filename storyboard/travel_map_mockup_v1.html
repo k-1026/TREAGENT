@@ -225,7 +225,8 @@
   <!-- 첫 완주 때 컷씬 ② 자리 (재생 시점은 팀 결정 전, 건너뛰기 가능) -->
   <section class="vfull" id="cut" aria-label="컷씬 ② 자리">
     <div class="cutbox">
-      <p><b>컷씬 ② 자리</b><br>첫 완주일 때 한 번 나옵니다. 건너뛰어도 앨범에 저장돼요.</p>
+      <p><b>컷씬 ② 보기</b><br>첫 완주일 때 한 번 나옵니다. 건너뛰어도 앨범에 저장돼요.</p>
+      <button class="cta px" id="cutplay" style="width:100%;margin-bottom:10px">컷씬 ② 보기</button>
       <button class="cta px" id="cutskip" style="width:100%">건너뛰기</button>
     </div>
   </section>
@@ -336,6 +337,11 @@
     $('#done').classList.add('on');
   }
   $('#cutskip').addEventListener('click',function(){ $('#cut').classList.remove('on'); openDone(); });
+  // 컷씬 ② 재생 화면으로 이동. 돌아왔을 때 도장·컷씬 상태를 이어 쓰도록 sessionStorage에 남김 (목업용)
+  $('#cutplay').addEventListener('click',function(){
+    try{ sessionStorage.setItem('mockMapState',JSON.stringify({stamps:$('#stamps').value,cutShown:true})); }catch(e){}
+    location.href='cutscene_mockup_v1.html?cut=c2&mode=first';
+  });
   $('#doneBack').addEventListener('click',function(){ $('#done').classList.remove('on'); });
   $('#doneLedger').addEventListener('click',function(){ toast('→ 장부 (자리)'); });
   $('#doneHome').addEventListener('click',function(){ toast('→ 홈 (S-03, 자리)'); });
@@ -378,6 +384,8 @@
   try{
     var got=sessionStorage.getItem('mockStamp');
     if(got){ $('#stamps').value=got; phase='arrive'; sessionStorage.removeItem('mockStamp'); }
+    var ms=sessionStorage.getItem('mockMapState');
+    if(ms){ var st=JSON.parse(ms); $('#stamps').value=String(st.stamps); cutShown=!!st.cutShown; phase='arrive'; sessionStorage.removeItem('mockMapState'); }
   }catch(e){}
   render(-1);
   // 홈의 경로 변경 진입(?alert=1): 알림창을 바로 띄움
