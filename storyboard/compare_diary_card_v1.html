@@ -1,0 +1,318 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>일기·한 장 카드 A/B 비교 v1</title>
+<meta name="description">일기와 한 장 카드의 구조, 글씨체, 스티커 방식을 A안과 B안으로 비교하고 선택을 기록하는 페이지. 창작 후보는 2개씩이며 팀 결정 전입니다. 근거: storyboard/game_flow_story_v1.md 7-4·7-8·7-13절, storyboard/trip_card_mockup_v1.html, storyboard/diary_mockup_v1.html.</meta>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jua&family=Gaegu:wght@400;700&family=Gowun+Dodum&family=Nanum+Pen+Script&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#a85a24; --paper:#fffaf1; --red:#d03a2f;
+    --muted:#7a5a4c; --shade:#d9bf98;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#e9e4dc;color:var(--ink);font-family:var(--font);line-height:1.6}
+  body{padding:16px}
+  main{max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:22px}
+  h1{font-size:22px;margin:8px 0 0}
+  h2{font-size:18px;margin:0 0 8px;padding-bottom:6px;border-bottom:3px solid var(--ink)}
+  h3{font-size:15px;margin:0 0 6px}
+  p{margin:0 0 8px;font-size:14px}
+  .lead{font-size:14px;color:var(--muted)}
+  .tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 7px;background:var(--cream2);box-shadow:0 0 0 2px var(--ink);margin-right:4px}
+  .tag.w{background:#ffe1d6;color:var(--red)}
+  section.sec{background:var(--cream);padding:16px;box-shadow:0 0 0 3px var(--ink)}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+  .opt{background:var(--paper);padding:12px;box-shadow:0 0 0 2px var(--ink);display:flex;flex-direction:column;gap:8px}
+  .opt .hd{display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .opt .hd b{font-size:15px}
+  ul{margin:0;padding-left:18px;font-size:13px;line-height:1.6}
+  .pros{color:#2d5a2a}
+  .cons{color:var(--red-d,#9c2420)}
+  .pick{display:flex;align-items:center;gap:6px;font-size:14px;font-weight:800;cursor:pointer;padding:8px 10px;background:#fff;box-shadow:0 0 0 2px var(--ink)}
+  .pick input{width:18px;height:18px;margin:0}
+  .flow{display:flex;flex-direction:column;gap:6px;font-size:12px}
+  .flow div{padding:6px 8px;background:#fff;box-shadow:0 0 0 1px var(--shade)}
+  .flow .arr{text-align:center;padding:0;background:none;box-shadow:none;color:var(--muted)}
+
+  /* 카드 미리보기 (9:16 축소) */
+  .mini{width:200px;height:356px;margin:0 auto;background:var(--paper);box-shadow:0 0 0 2px var(--ink);padding:14px 12px;display:flex;flex-direction:column;position:relative;overflow:hidden}
+  .mini .top{font-size:10px;color:var(--muted);display:flex;justify-content:space-between}
+  .mini .ttl{font-size:19px;margin-top:12px;line-height:1.25}
+  .mini .wx{font-size:10px;color:var(--muted);margin-top:4px}
+  .mini .list{margin-top:14px;display:flex;flex-direction:column;gap:10px;font-size:12px}
+  .mini .list div{display:flex;align-items:center;gap:6px}
+  .mini .list img{width:30px;height:30px;object-fit:contain}
+  .mini .hl{margin-top:auto;font-size:12px}
+  .auto{position:absolute;font-size:10px;background:#fff;padding:2px 4px;box-shadow:0 0 0 1px var(--shade)}
+  .ph{width:34px;height:34px;display:flex;align-items:center;justify-content:center;font-size:9px;background:var(--cream2);box-shadow:0 0 0 1px var(--ink);text-align:center;line-height:1.1}
+
+  /* 글씨체 샘플 */
+  .font-row{background:#fff;padding:10px 12px;box-shadow:0 0 0 1px var(--shade);margin-bottom:8px}
+  .font-row .k{font-size:11px;color:var(--muted)}
+  .s-jua{font-family:'Jua',sans-serif;font-size:22px}
+  .s-gae{font-family:'Gaegu',cursive;font-size:19px}
+  .s-gow{font-family:'Gowun Dodum',sans-serif;font-size:14px}
+  .s-pen{font-family:'Nanum Pen Script',cursive;font-size:26px}
+
+  .trays{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+  .tray{background:#fff;box-shadow:0 0 0 1px var(--shade);padding:6px;width:74px;text-align:center;font-size:11px}
+  .tray img{width:40px;height:40px;object-fit:contain;display:block;margin:0 auto 2px}
+  .tray .ph{margin:0 auto 2px}
+  .ok{font-size:11px;color:var(--muted);margin-top:4px}
+
+  .note{font-size:12px;color:var(--muted)}
+  .creative{font-size:12px;background:#fff;padding:6px 8px;box-shadow:0 0 0 1px var(--shade);margin-top:6px}
+
+  /* 선택 요약 */
+  .sum{display:flex;flex-direction:column;gap:10px}
+  .grp{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+  .grp .pick{font-size:13px;justify-content:center}
+  .grp h3{grid-column:1/-1;margin:6px 0 0}
+  .grp2{grid-template-columns:1fr 1fr}
+  textarea{width:100%;min-height:150px;font:inherit;font-size:13px;padding:10px;border:2px solid var(--ink);background:#fff;color:var(--ink);resize:vertical}
+  .btn{height:44px;padding:0 16px;border:0;background:var(--red);color:#fff;font:inherit;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 0 0 3px var(--ink)}
+  .btn.sub{background:var(--paper);color:var(--ink)}
+  .src{font-size:12px;color:var(--muted);padding-left:16px}
+  @media (max-width:640px){ .opts{grid-template-columns:1fr} .grp{grid-template-columns:1fr 1fr} }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <span class="tag">비교 목업</span><span class="tag w">결정 필요</span>
+    <h1>일기 · 한 장 카드 A/B 비교</h1>
+    <p class="lead">세 항목(구조, 글씨체, 스티커)을 A안과 B안으로 나눠 봅니다. 고른 뒤 맨 아래 「선택 정리」에서 결과 문장을 복사해 팀에 보내세요. 창작 항목은 후보 2개씩이며 팀이 확정하기 전까지 [확인 필요]입니다.</p>
+  </header>
+
+  <!-- 1. 구조 -->
+  <section class="sec" id="s1">
+    <h2>1. 화면 구조 <span class="tag">구조</span></h2>
+    <div class="opts">
+      <div class="opt">
+        <div class="hd"><b>A안: 현재 구조 유지</b><span class="tag">그대로</span></div>
+        <div class="flow">
+          <div>완주 화면: [한 장 전체 보기] [일기 보기]</div>
+          <div class="arr">↓</div>
+          <div>장부 [내 여행]: 카드 목록 (같은 카드 + 일기 따로)</div>
+          <div class="arr">↓</div>
+          <div>상세: 카드 한 페이지, 일기 한 페이지 (분리)</div>
+        </div>
+        <ul class="pros">
+          <li>이미 목업이 있어 바로 쓸 수 있습니다.</li>
+        </ul>
+        <ul class="cons">
+          <li>같은 카드가 완주 화면, 장부, 전체 보기 세 곳에 나옵니다.</li>
+          <li>일기 본문에 장소 정보가 카드와 반복됩니다.</li>
+          <li>하랑이 마무리 한 줄이 일기와 카드에 각각 있습니다.</li>
+        </ul>
+      </div>
+      <div class="opt">
+        <div class="hd"><b>B안: 자리 정리</b><span class="tag">추천</span></div>
+        <div class="flow">
+          <div>완주 화면: 카드 미리보기 1장 + [저장·공유] [일기 읽기]</div>
+          <div class="arr">↓</div>
+          <div>장부 [내 여행]: 썸네일 목록만</div>
+          <div class="arr">↓</div>
+          <div>상세: 위 탭 [카드 | 일기], 같은 자리에서 전환</div>
+        </div>
+        <ul class="pros">
+          <li>한 장 카드를 보여 주는 곳이 한 자리로 줄어듭니다.</li>
+          <li>일기는 장소별 짧은 문단과 마무리 한 줄로 줄일 수 있습니다.</li>
+        </ul>
+        <ul class="cons">
+          <li>완주 화면과 상세 화면을 새로 그려야 합니다.</li>
+          <li>탭 전환을 어디에 둘지 확인이 필요합니다 [확인 필요].</li>
+        </ul>
+      </div>
+    </div>
+    <label class="pick" style="margin-top:12px"><input type="radio" name="s1" value="A"> A안 (현재 구조)</label>
+    <label class="pick" style="margin-top:6px"><input type="radio" name="s1" value="B" checked> B안 (자리 정리)</label>
+    <p class="note" style="margin-top:8px">근거: storyboard/trip_card_mockup_v1.html (카드 단독 화면), storyboard/diary_mockup_v1.html (일기 단독 화면). 두 화면이 지금은 따로 있습니다.</p>
+  </section>
+
+  <!-- 2. 글씨체 -->
+  <section class="sec" id="s2">
+    <h2>2. 글씨체 <span class="tag">창작 후보</span></h2>
+    <div class="opts">
+      <div class="opt">
+        <div class="hd"><b>A안: 주아 + 고운돋움 + 개구</b></div>
+        <div class="font-row"><div class="k">제목 · 주아</div><div class="s-jua">중구 근대골목 걷기</div></div>
+        <div class="font-row"><div class="k">본문 · 고운돋움</div><div class="s-gow">그날 장소 세 곳을 천천히 걸었어요.</div></div>
+        <div class="font-row"><div class="k">하랑이 한 줄 · 개구</div><div class="s-gae">오늘 길이 한 장이 됐어요, 헤헤.</div></div>
+        <ul class="pros"><li>제목이 굵고 작은 화면에서도 읽힙니다.</li><li>하랑이 한 줄만 손글씨라 "하랑이가 썼다"는 느낌이 납니다.</li></ul>
+        <ul class="cons"><li>글꼴 3개를 앱에 넣어야 합니다. 라이선스 [확인 필요].</li></ul>
+      </div>
+      <div class="opt">
+        <div class="hd"><b>B안: 나눔펜 제목 + 고딕 본문</b></div>
+        <div class="font-row"><div class="k">제목 · 나눔펜</div><div class="s-pen">중구 근대골목 걷기</div></div>
+        <div class="font-row"><div class="k">본문 · 고운돋움</div><div class="s-gow">그날 장소 세 곳을 천천히 걸었어요.</div></div>
+        <div class="font-row"><div class="k">하랑이 한 줄 · 나눔펜</div><div class="s-pen" style="font-size:20px">오늘 길이 한 장이 됐어요, 헤헤.</div></div>
+        <ul class="pros"><li>손글씨 느낌이 가장 강해서 "하랑이가 만든 것"이 한눈에 보입니다.</li><li>글꼴이 2개뿐이라 용량이 가볍습니다.</li></ul>
+        <ul class="cons"><li>작은 글씨와 긴 문장에서 읽기가 어렵습니다.</li><li>스토리 9:16 카드처럼 큰 제목에서만 쓰는 것이 좋습니다.</li></ul>
+      </div>
+    </div>
+    <label class="pick" style="margin-top:12px"><input type="radio" name="s2" value="A" checked> A안 (주아 + 고운돋움 + 개구)</label>
+    <label class="pick" style="margin-top:6px"><input type="radio" name="s2" value="B"> B안 (나눔펜 제목 + 고운돋움)</label>
+    <p class="note" style="margin-top:8px">글꼴은 Google Fonts 미리보기로만 불러왔습니다. 실제 앱 탑재 가능 여부와 라이선스는 [미검증]입니다. 샘플 문장은 창작 후보입니다.</p>
+  </section>
+
+  <!-- 3. 스티커 -->
+  <section class="sec" id="s3">
+    <h2>3. 스티커 방식 <span class="tag">창작 후보</span><span class="tag w">열쇠 재화 아님 (7-13)</span></h2>
+    <div class="opts">
+      <div class="opt">
+        <div class="hd"><b>A안: 자동만</b></div>
+        <div class="mini">
+          <div class="top"><span>하랑이와 걸은 오늘</span><span>[완주 날짜]</span></div>
+          <div class="ttl">중구 근대골목 걷기</div>
+          <div class="wx">맑음 · 체감 [○]℃</div>
+          <div class="list">
+            <div><span class="ph">1</span>[장소 1]<img src="../brand/character/images/stamp_nungeum.webp" alt="" style="margin-left:auto"></div>
+            <div><span class="ph">2</span>[장소 2]<img src="../brand/character/images/stamp_nungeum.webp" alt="" style="margin-left:auto"></div>
+            <div><span class="ph">3</span>[장소 3]<img src="../brand/character/images/stamp_nungeum.webp" alt="" style="margin-left:auto"></div>
+          </div>
+          <div class="auto" style="right:10px;top:150px">☀ 맑음 스티커 (창작)</div>
+          <div class="hl">오늘 길이 한 장이 됐어요, 헤헤.</div>
+        </div>
+        <ul class="pros"><li>편집이 없어 구현과 검수가 쉽습니다.</li><li>받은 적 없는 스티커가 붙지 않아 "방문한 만큼만" 원칙과 맞습니다.</li></ul>
+        <ul class="cons"><li>매번 같은 모양이라 꾸민 느낌이 덜합니다.</li></ul>
+      </div>
+      <div class="opt">
+        <div class="hd"><b>B안: 자동 + 수동 (받은 스티커 중 골라 붙임)</b></div>
+        <div class="mini">
+          <div class="top"><span>하랑이와 걸은 오늘</span><span>[완주 날짜]</span></div>
+          <div class="ttl">중구 근대골목 걷기</div>
+          <div class="wx">맑음 · 체감 [○]℃</div>
+          <div class="list">
+            <div><span class="ph">1</span>[장소 1]<img src="../brand/character/images/stamp_nungeum.webp" alt="" style="margin-left:auto"></div>
+            <div><span class="ph">2</span>[장소 2]<img src="../brand/character/images/stamp_nungeum.webp" alt="" style="margin-left:auto"></div>
+            <div><span class="ph">3</span>[장소 3]<img src="../brand/character/images/stamp_nungeum.webp" alt="" style="margin-left:auto"></div>
+          </div>
+          <div class="auto" style="right:10px;top:150px">☀ 맑음 스티커 (창작)</div>
+          <div class="auto" style="left:12px;top:250px;transform:rotate(-6deg)">🍎 골라 붙인 스티커</div>
+          <div class="hl">오늘 길이 한 장이 됐어요, 헤헤.</div>
+        </div>
+        <ul class="pros"><li>내가 고른 스티커로 카드가 달라져 애착이 생깁니다.</li></ul>
+        <ul class="cons"><li>편집 화면과 저장 규칙을 따로 설계해야 합니다.</li><li>받은 스티커를 고르는 방식이 재화처럼 보일 수 있습니다 (7-13 확인 필요).</li><li>"추가만" 원칙과 어떻게 맞출지 정해야 합니다 [결정 필요].</li></ul>
+      </div>
+    </div>
+    <div style="margin-top:12px">
+      <p class="note">B안에서 붙일 수 있는 후보 (받은 것만 표시, 현재 이미지는 능금 하나뿐)</p>
+      <div class="trays">
+        <div class="tray"><img src="../brand/character/images/stamp_nungeum.webp" alt="능금"><div>능금</div><div class="ok">이미지 있음</div></div>
+        <div class="tray"><div class="ph">납작만두</div><div>납작만두</div><div class="ok">이미지 없음</div></div>
+        <div class="tray"><div class="ph">부채</div><div>부채</div><div class="ok">이미지 없음</div></div>
+        <div class="tray"><div class="ph">열쇠</div><div>열쇠</div><div class="ok">이미지 없음</div></div>
+      </div>
+    </div>
+    <label class="pick" style="margin-top:12px"><input type="radio" name="s3" value="A" checked> A안 (자동만, MVP 추천)</label>
+    <label class="pick" style="margin-top:6px"><input type="radio" name="s3" value="B"> B안 (자동 + 수동)</label>
+    <div class="creative">창작 후보 (날씨 스티커): ① 해 모양 ② 구름 모양 / 날씨별 한 개만 자동으로 붙입니다. 팀이 한 쪽을 고릅니다 [결정 필요].</div>
+  </section>
+
+  <!-- 선택 정리 -->
+  <section class="sec" id="s4">
+    <h2>선택 정리</h2>
+    <div class="sum">
+      <div class="grp">
+        <h3>구조</h3>
+        <label class="pick"><input type="radio" name="g1" value="B" checked>B 자리 정리</label>
+        <label class="pick"><input type="radio" name="g1" value="A">A 현재 구조</label>
+        <label class="pick"><input type="radio" name="g1" value="?">보류</label>
+      </div>
+      <div class="grp">
+        <h3>글씨체</h3>
+        <label class="pick"><input type="radio" name="g2" value="A" checked>A 주아·고운돋움·개구</label>
+        <label class="pick"><input type="radio" name="g2" value="B">B 나눔펜 제목</label>
+        <label class="pick"><input type="radio" name="g2" value="?">보류</label>
+      </div>
+      <div class="grp">
+        <h3>스티커</h3>
+        <label class="pick"><input type="radio" name="g3" value="A" checked>A 자동만</label>
+        <label class="pick"><input type="radio" name="g3" value="B">B 자동 + 수동</label>
+        <label class="pick"><input type="radio" name="g3" value="?">보류</label>
+      </div>
+      <textarea id="out" readonly></textarea>
+      <div style="display:flex;gap:8px;flex-wrap:wrap">
+        <button class="btn" id="copy">결과 복사</button>
+        <button class="btn sub" id="reset">기본값으로</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>결정 필요 · 확인 필요</h2>
+    <ul>
+      <li>완주 화면과 상세 화면을 B안 구조로 다시 그릴지 [결정 필요]</li>
+      <li>상세 화면의 [카드 | 일기] 탭 위치 [확인 필요]</li>
+      <li>글꼴 라이선스와 앱 번들 방식 [확인 필요]</li>
+      <li>스티커를 자동만 할지, 수동도 넣을지 [결정 필요]</li>
+      <li>꾸민 카드를 저장한 뒤 수정할 수 있는지, "추가만" 원칙과의 관계 [결정 필요]</li>
+      <li>날씨 스티커 후보 ①·② 중 선택 [결정 필요]</li>
+    </ul>
+  </section>
+
+  <section class="sec">
+    <h2>출처</h2>
+    <ul class="src">
+      <li>storyboard/game_flow_story_v1.md 7-4절 (한 장 카드 구성), 7-8절 (공유 시 시각·좌표 제외), 7-13절 (열쇠는 재화 아님)</li>
+      <li>storyboard/trip_card_mockup_v1.html (9:16 카드 단독 목업, 하랑이 한 줄 후보 2개)</li>
+      <li>storyboard/diary_mockup_v1.html (일기 단독 목업, 마무리 한 줄 후보 2개)</li>
+      <li>brand/character/images/stamp_nungeum.webp (능금 도장 이미지)</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(function(){
+  var NAMES={s1:'구조',s2:'글씨체',s3:'스티커'};
+  var LBL={
+    g1:{B:'B안(자리 정리)',A:'A안(현재 구조)','?':'보류'},
+    g2:{A:'A안(주아·고운돋움·개구)',B:'B안(나눔펜 제목)','?':'보류'},
+    g3:{A:'A안(자동만)',B:'B안(자동+수동)','?':'보류'}
+  };
+  var TITLE={g1:'구조',g2:'글씨체',g3:'스티커'};
+  function build(){
+    var lines=['[일기·한 장 카드 A/B 선택 결과 v1]'];
+    ['g1','g2','g3'].forEach(function(g){
+      var c=document.querySelector('input[name="'+g+'"]:checked');
+      lines.push('- '+TITLE[g]+': '+(c?LBL[g][c.value]:'미선택'));
+    });
+    lines.push('- 결정 필요 항목은 팀 확인 후 확정 [확인 필요]');
+    document.getElementById('out').value=lines.join('\n');
+  }
+  document.querySelectorAll('input[type=radio]').forEach(function(r){
+    r.addEventListener('change',function(){
+      if(r.name.indexOf('g')===0) build();
+      else{
+        // 위쪽 섹션 선택을 정리 영역에도 반영
+        var map={s1:'g1',s2:'g2',s3:'g3'};
+        var t=document.querySelector('input[name="'+map[r.name]+'"][value="'+r.value+'"]');
+        if(t){t.checked=true;build();}
+      }
+    });
+  });
+  document.querySelectorAll('.grp input').forEach(function(r){ r.addEventListener('change',build); });
+  document.getElementById('copy').addEventListener('click',function(){
+    var t=document.getElementById('out');
+    t.select();
+    try{ navigator.clipboard.writeText(t.value); }catch(e){ document.execCommand('copy'); }
+    this.textContent='복사했어요';
+    var b=this; setTimeout(function(){b.textContent='결과 복사'},1500);
+  });
+  document.getElementById('reset').addEventListener('click',function(){
+    var d={g1:'B',g2:'A',g3:'A'};
+    Object.keys(d).forEach(function(g){ document.querySelector('input[name="'+g+'"][value="'+d[g]+'"]').checked=true; });
+    ['s1','s2','s3'].forEach(function(s,i){ var k=['B','A','A'][i]; document.querySelector('input[name="'+s+'"][value="'+k+'"]').checked=true; });
+    build();
+  });
+  build();
+})();
+</script>
+</body>
+</html>
