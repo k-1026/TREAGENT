@@ -21,7 +21,7 @@
  *  - 이름: none, active, notice, heat, storm, unknown, outside, empty
  *
  * 아직 연결하지 않은 것
- *  - 쉼터·경로 변경·이어하기·주머니·장부·오늘 페이지 화면 → 지금은 준비 중(/soon)
+ *  - 쉼터·경로 변경·이어하기 화면 → 지금은 준비 중(/soon). 주머니(/pouch), 장부(/ledger), 오늘 페이지(/today_page)는 연결됨
  *  - 하랑이 대사: 승인 대사 대기. 목업 자리 표시를 그대로 둔다 [창작, 승인 필요]
  */
 import { router, useLocalSearchParams } from 'expo-router';
@@ -167,7 +167,7 @@ export default function HomeScreen() {
         </Pressable>
 
         {/* 오늘 페이지 표시 (책상 위 장부) */}
-        <Pressable onPress={() => soon('오늘 페이지')} style={[styles.mark, { left: 222 * k, top: 166 * k - crop }]}>
+        <Pressable onPress={() => router.push('/today_page')} style={[styles.mark, { left: 222 * k, top: 166 * k - crop }]}>
           <Text style={styles.markText}>오늘 페이지 ▾</Text>
         </Pressable>
 
@@ -222,7 +222,7 @@ export default function HomeScreen() {
             <Image source={require('../../assets/harangi_chat_btn_v1.png')} style={styles.chatFace} resizeMode="contain" />
             <Text style={styles.quickText}>하랑이와 대화하기</Text>
           </Pressable>
-          <Pressable onPress={() => soon('주머니')} style={({ pressed }) => [styles.quickButton, pressed && styles.pressed]}>
+          <Pressable onPress={() => router.push('/pouch')} style={({ pressed }) => [styles.quickButton, pressed && styles.pressed]}>
             <PixelIcon name="pouch" color={COLOR.ink} />
             <Text style={styles.quickText}>주머니</Text>
           </Pressable>

@@ -19,8 +19,8 @@ export function ScreenHead({
 }: {
   title: string;
   sub?: string;
-  backLabel: string;
-  onBack: () => void;
+  backLabel?: string; // 없으면 뒤로 버튼을 그리지 않는다 (예: 하단 탭으로 여는 장부)
+  onBack?: () => void;
   rightLabel?: string;
   onRight?: () => void;
 }) {
@@ -36,9 +36,11 @@ export function ScreenHead({
             {sub}
           </Text>
         ) : null}
-        <Pressable onPress={onBack} style={[styles.navButton, { left: 12 }]}>
-          <Text style={styles.navText}>{backLabel}</Text>
-        </Pressable>
+        {backLabel && onBack ? (
+          <Pressable onPress={onBack} style={[styles.navButton, { left: 12 }]}>
+            <Text style={styles.navText}>{backLabel}</Text>
+          </Pressable>
+        ) : null}
         {rightLabel && onRight ? (
           <Pressable onPress={onRight} style={[styles.navButton, { right: 12 }]}>
             <Text style={styles.navText}>{rightLabel}</Text>
