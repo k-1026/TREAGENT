@@ -48,8 +48,9 @@ function MiniStamps({ got }: { got: number }) {
 }
 
 export default function LedgerScreen() {
-  const params = useLocalSearchParams<{ state?: string }>();
-  const [tab, setTab] = useState<Bookmark>('map');
+  const params = useLocalSearchParams<{ state?: string; tab?: string }>();
+  // ?tab=album: 컷씬을 본 뒤 [앨범에서 보기]로 돌아오면 앨범 책갈피가 먼저 열린다
+  const [tab, setTab] = useState<Bookmark>(params.tab === 'album' ? 'album' : params.tab === 'trips' ? 'trips' : 'map');
   // 기록이 저장되지 않아 평소에는 빈 상태. 개발 중 미리보기에서만 예시 줄을 보인다
   const filled = __DEV__ && isHomeStateKey(params.state) && params.state !== 'none';
 
@@ -140,7 +141,10 @@ export default function LedgerScreen() {
               앨범 <Text style={styles.h3Sub}>하랑이의 이야기</Text>
             </Text>
             {filled ? (
-              <Pressable onPress={() => soon('컷씬 ① 다시 보기')} style={[pxBox(), styles.row]}>
+              <Pressable
+                onPress={() => router.push({ pathname: '/cutscene', params: { cut: 'c1', mode: 'replay' } })}
+                style={[pxBox(), styles.row]}
+              >
                 <View style={styles.thumb}>
                   <Text style={styles.thumbText}>{'[컷씬 ①\n썸네일]'}</Text>
                 </View>
