@@ -166,7 +166,7 @@ P0 — 발표 전
 - 2장 날씨별 길 예시 그림 (`pitch_outline_v1.md` 2장): 맑음 경로와 폭염 경로를 나란히 한 장
 
 P1 — 발표 품질
-- 표지 키비주얼 (p.13 크리에이티브 트랙): 하랑이 이미지를 쓸 수 있다 (`brand/character/images/harangi_fullbody_pixel_transparent.png` 등, 확인 필요). 팀 확정 후 사용
+- 표지 키비주얼 (p.13 크리에이티브 트랙): 하랑이 이미지를 쓸 수 있다 (`brand/images/characters/sprites/harangi_fullbody_pixel_transparent.png` 등, 확인 필요). 팀 확정 후 사용
 - 데모 과업 1개 고정 (p.7): 테스트 후 고정. 지금은 후보만 있음
 - 발표 역할 분담: 발표자, 조작자, 기록자 (p.19). 팀 확정 필요
 - 요청 대상 확정 (7장)

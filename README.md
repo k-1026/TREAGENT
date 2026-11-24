@@ -86,7 +86,7 @@
 | 5분 안에 전체 흐름 | 발표 최종본 [`presentation/20261113/20261112_plan_pitch_v10.html`](presentation/20261113/20261112_plan_pitch_v10.html) (PDF도 같은 폴더), 11/18 발표는 [`presentation/README.md`](presentation/README.md) |
 | 왜 하는지, 사업 검증 | [고객 전략](plan/treagent_customer_strategy_v1.md), [시각화 html](plan/treagent_customer_strategy_visualization_v1.html), 시장 근거 `research/bm/` |
 | 서비스 컨셉, 길, 트랙 | [게임·서비스 컨셉](brand/game_concept.md), [기획안](plan/daeprica_hidden_quest_plan.md)의 "방향 변경"과 0장 |
-| 세계관, 하랑이 | [세계관](brand/worldview.md), [하랑이 설정](brand/character/profile/harangi_character.md), 이미지는 `brand/character/images/` |
+| 세계관, 하랑이 | [세계관](brand/worldview.md), [하랑이 설정](brand/character/profile/harangi_character.md), 이미지는 `brand/images/characters/` |
 | 앱 화면 설계 (스토리보드·목업) | [앱 화면 스토리보드](storyboard/app_screen_storyboard_v1.md), 목업 [홈](storyboard/app_home_mockup_v1.html)·[로그인·지역](storyboard/app_login_region_mockup_v1.html) |
 | 앱 기능·기술·담당, 만드는 순서 | [기능·기술 명세 v1](plan/spec/treagent_tech_spec_v1.md) |
 | 앱·서버 실행과 배포, 새 컴퓨터 세팅 | [dev/README.md](dev/README.md), [세팅 가이드](dev/team_setup_guide_v1.md), 개발 규칙 [dev/CLAUDE.md](dev/CLAUDE.md) |
@@ -154,7 +154,7 @@ TREAGENT/
 | 보관 | 수집물·메타데이터, 인벤토리, 탈락·보류 후보 | `archive/` |
 | 도구 | 브랜드·Git 스킬, 이슈·PR 양식, 자동화 | `.claude/`, `.github/` |
 
-- `brand/character/images/`: 하랑이 이미지의 기준 위치입니다. 발표 html은 `../../brand/character/images/...` 상대경로로 불러옵니다. 앱에 들어가는 에셋은 `dev/app/assets/`에 둡니다.
+- `brand/images/characters/`: 하랑이 이미지의 기준 위치입니다. `brand/images/items/`: 여행 아이템, 고정 소품, 도장, 원본 시트입니다. 발표 html은 `../../brand/images/characters/...` 상대경로로 불러옵니다. 앱에 들어가는 에셋은 `dev/app/assets/`에 둡니다.
 - `brand/product/`: 가상 굿즈 시안입니다 ([README](brand/product/README.md)). 컷씬 시안은 [`brand/cutscene/`](brand/cutscene/README.md)에 있습니다.
 - `archive/rejected/daeprica/`: 폐기·보류한 후보 기록입니다.
 - 스킬용 `worldview.md`는 `.claude/skills/brand-daeprica/`에 있고, 설정 원본은 `brand/worldview.md`입니다.

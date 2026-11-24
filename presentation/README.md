@@ -6,7 +6,7 @@
 
 - 발표 하나당 **발표일 폴더** 하나를 만듭니다 (`presentation/<발표일 YYYYMMDD>/`).
 - 그 발표를 준비하면서 만든 자료는 전부 그 폴더에 넣습니다: 초안(v1~), 최종본 html·pdf, 대본, 이미지(`assets/`), 시연 영상, 리허설 메모.
-- 캐릭터 이미지는 `brand/character/images/`에 두고, html은 상대 경로(`../../brand/character/images/...`)로 불러옵니다.
+- 캐릭터 이미지는 `brand/images/characters/`에 두고, html은 상대 경로(`../../brand/images/characters/...`)로 불러옵니다.
 - 발표 전용 이미지가 생기면 발표일 폴더 안 `assets/`에 두고 html에서 `assets/...`로 참조합니다 (현재 `20261113/assets/`는 없음).
 - 다음 발표는 새 날짜 폴더를 만듭니다.
 - 파일명은 기존대로 `날짜_주제_버전` 형식입니다 (예: `20261112_plan_pitch_v10.html`).
