@@ -158,3 +158,5 @@ file_name,title,type,location,collected_date,collector,source_url,license,notes
 "../.claude/agents/redteam-investor.md","레드팀 에이전트 정의: 투자자","산업","daegu","2026-11-24","Claude Sonnet 5.5","강의 Day13 레드팀 방식","해당 없음 (팀 정리본)","태그: 운영. 읽기 전용 서브에이전트 정의"
 "../.claude/agents/redteam-customer.md","레드팀 에이전트 정의: 고객","산업","daegu","2026-11-24","Claude Sonnet 5.5","강의 Day13 레드팀 방식","해당 없음 (팀 정리본)","태그: 운영. 읽기 전용 서브에이전트 정의"
 "../.claude/agents/redteam-competitor.md","레드팀 에이전트 정의: 경쟁사","산업","daegu","2026-11-24","Claude Sonnet 5.5","강의 Day13 레드팀 방식","해당 없음 (팀 정리본)","태그: 운영. 읽기 전용 서브에이전트 정의"
+"../brand/character/images/harangi_empty_state_v1.webp","하랑이 빈 상태 일러스트 (능금을 든 납작만두, 결과 없음)","문화","daegu","2026-11-24","팀 제공 (요청자)","팀 제공 이미지 (2026-11-24 전달)","확인 필요 (팀 제작물, 사용 허가 범위 확인)","태그: 캐릭터;비주얼. 빈 상태 화면(장부·앨범·주머니·오늘 페이지) 공통 일러스트, 투명 배경 아님, 세로 941x1672"
+"../brand/character/images/harangi_empty_state_v2.webp","하랑이 빈 상태 일러스트 v2 (첫 생성본을 가로 16:10으로 잘라 넓힘)","문화","daegu","2026-11-24","팀 제공 (요청자)","팀 제공 이미지 (2026-11-24 전달, 첫 생성본 가공)","확인 필요 (팀 제작물, 사용 허가 범위 확인)","태그: 캐릭터;비주얼. 빈 상태 화면 공통 일러스트. 1586x992, 배경 색 채움 (투명 아님). v1 대체"
