@@ -35,7 +35,7 @@ export function TripCard({
   showFlip?: boolean; // false면 뒤집기 버튼을 숨긴다 (전체보기는 화면을 눌렀을 때만 보임)
 }) {
   const u = width / 100; // 목업의 1cqw
-  const btn = Math.max(40, 13 * u);
+  const btn = Math.max(30, 10 * u); // 목업 #264: 10cqw (최소 30)
   const face = [styles.face, { paddingVertical: 5.5 * u, paddingHorizontal: 5 * u }, square && { borderWidth: 0, borderRadius: 0 }];
 
   return (
@@ -54,9 +54,9 @@ export function TripCard({
               <Image key={i} source={STAMP} style={{ width: 10 * u, height: 10 * u }} />
             ))}
           </View>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2 * u, marginTop: 2.5 * u, paddingRight: 20 * u }}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 1 * u, marginTop: 2.5 * u, paddingRight: 25 * u }}>
             <Image source={FACE} style={{ width: 11 * u, height: 11 * u }} resizeMode="contain" />
-            <Text style={{ flex: 1, fontSize: 3.4 * u, lineHeight: 3.4 * u * 1.4, color: COLOR.ink }}>{`하랑이: ${trip.say}`}</Text>
+            <Text style={{ flex: 1, fontSize: 3.4 * u, lineHeight: 3.4 * u * 1.4, color: COLOR.ink }}>{trip.say}</Text>
           </View>
         </View>
       ) : (
@@ -103,13 +103,13 @@ export function TripCard({
 
       {/* 뒤집기·전체보기: 카드 오른쪽 아래 동그란 버튼 (카드 위 따로 놓인 층) */}
       {showFlip ? (
-        <Pressable onPress={onFlip} accessibilityLabel="카드 뒤집기" style={[styles.round, { width: btn, height: btn, right: 4 * u, bottom: 4 * u }]}>
-          <Text style={styles.roundText}>↻</Text>
+        <Pressable onPress={onFlip} accessibilityLabel="카드 뒤집기" style={[styles.round, { width: btn, height: btn, right: 3 * u, bottom: 3.5 * u }]}>
+          <Text style={[styles.roundText, { fontSize: 5 * u }]}>↻</Text>
         </Pressable>
       ) : null}
       {onFull ? (
-        <Pressable onPress={onFull} accessibilityLabel="전체보기" style={[styles.round, { width: btn, height: btn, right: 4 * u + btn + 2 * u, bottom: 4 * u }]}>
-          <Text style={styles.roundText}>⛶</Text>
+        <Pressable onPress={onFull} accessibilityLabel="전체보기" style={[styles.round, { width: btn, height: btn, right: 3 * u + 12 * u, bottom: 3.5 * u }]}>
+          <Text style={[styles.roundText, { fontSize: 4.2 * u }]}>⛶</Text>
         </Pressable>
       ) : null}
     </View>
