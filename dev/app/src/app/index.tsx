@@ -21,7 +21,7 @@
  *  - 이름: none, active, notice, heat, storm, unknown, outside, empty
  *
  * 아직 연결하지 않은 것
- *  - 경로 변경·이어하기 화면 → 지금은 준비 중(/soon). 날씨 상세(/weather)는 연결됨. 쉼터 화면은 만들지 않기로 했다. 주머니(/pouch), 장부(/ledger), 오늘 페이지(/today_page)는 연결됨
+ *  - 이어하기 화면 → 지금은 준비 중(/soon). 날씨 상세(/weather), 경로 변경(/reroute)은 연결됨. 쉼터 화면은 만들지 않기로 했다. 주머니(/pouch), 장부(/ledger), 오늘 페이지(/today_page)는 연결됨
  *  - 하랑이 대사: 승인 대사 대기. 목업 자리 표시를 그대로 둔다 [창작, 승인 필요]
  */
 import { router } from 'expo-router';
@@ -61,7 +61,7 @@ function go(target: HomeGo | undefined) {
   if (target === 'today') router.push('/today');
   else if (target === 'courses') router.push('/courses');
   else if (target === 'region') router.push('/location');
-  else if (target === 'reroute') soon('경로 변경');
+  else if (target === 'reroute') router.push('/reroute');
   else soon('이어하기'); // travel: 진행 중인 여행이 저장되지 않아 아직 이어 갈 수 없다
 }
 
