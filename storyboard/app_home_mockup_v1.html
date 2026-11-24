@@ -849,10 +849,10 @@
   }
   // 코스 없음일 때 버튼: 원인(홈 상태)에 따라 다르게 보임. 홈 이동은 머리글 ‹ 홈으로 충분하므로 중복하지 않음
   function noRouteActs(k){
-    var PN=function(nav,label){ return '<button class="cta px" data-nav="'+nav+'" style="height:52px;text-align:center">'+label+'</button>' };
-    var PG=function(label,note){ return '<button class="cta px" data-go="'+note+'" style="height:52px;text-align:center">'+label+'</button>' };
-    var RN=function(nav,label){ return '<button class="row px" data-nav="'+nav+'" style="justify-content:center;font-weight:800">'+label+'</button>' };
-    var RG=function(label,note){ return '<button class="row px" data-go="'+note+'" style="justify-content:center;font-weight:800">'+label+'</button>' };
+    var PN=function(nav,label){ return '<button class="cta px" data-nav="'+nav+'" style="height:52px;text-align:center;font-size:16px;font-weight:800">'+label+'</button>' };
+    var PG=function(label,note){ return '<button class="cta px" data-go="'+note+'" style="height:52px;text-align:center;font-size:16px;font-weight:800">'+label+'</button>' };
+    var RN=function(nav,label){ return '<button class="row px" data-nav="'+nav+'" style="height:52px;justify-content:center;font-size:16px;font-weight:800">'+label+'</button>' };
+    var RG=function(label,note){ return '<button class="row px" data-go="'+note+'" style="height:52px;justify-content:center;font-size:16px;font-weight:800">'+label+'</button>' };
     if(k==='heat'||k==='storm') return PN('shelter','가까운 쉼터 보기');
     if(k==='unknown') return PN('shelter','가까운 쉼터 보기')+RG('다시 확인','재평가 (F-08)');
     if(k==='outside') return PN('region','구·군 바꾸기')+RG('중구 코스 둘러보기','중구 코스 (S-04)');
