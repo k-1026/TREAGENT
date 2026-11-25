@@ -87,6 +87,12 @@ export default function HomeScreen() {
   const bubbleBottom = Math.min(118 * k, sceneH - (badgeTop + BADGE_H + 6) - bubbleH);
   const iconSize = tipsAreaH > 0 ? Math.max(28, Math.min(48, (tipsAreaH - 2 * TIP_GAP) / 3)) : 48;
   const [bob] = useState(createBob);
+  // 오늘 페이지 라벨의 뜨기 (목업 bob 1s steps(2): 0.5초마다 위·아래)
+  const [markUp, setMarkUp] = useState(false);
+  useEffect(() => {
+    const id = setInterval(() => setMarkUp((v) => !v), 500);
+    return () => clearInterval(id);
+  }, []);
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -125,7 +131,7 @@ export default function HomeScreen() {
         {/* 날씨·지역 배지 (목업 .badge). 누르면 날씨 상세(/weather). 지역은 날씨 상세의 [지역 바꾸기]에서 바꾼다 */}
         <Pressable
           onPress={() => router.push('/weather')}
-          style={[styles.badge, { ...pxBox(tone.bg, tone.shade), left: 12 * k, top: badgeTop }]}
+          style={[styles.badge, { ...pxBox(tone.bg, tone.shade), borderWidth: 2.5, left: 12 * k, top: badgeTop }]}
         >
           <View style={[styles.badgeDot, { backgroundColor: tone.dot }]} />
           <View>
@@ -134,10 +140,18 @@ export default function HomeScreen() {
           </View>
         </Pressable>
 
-        {/* 오늘 페이지 표시 (책상 위 장부) */}
-        <Pressable onPress={() => router.push('/today_page')} style={[styles.mark, { left: 222 * k, top: 166 * k - crop }]}>
-          <Text style={styles.markText}>오늘 페이지 ▾</Text>
-        </Pressable>
+        {/* 오늘 페이지: 책(아래 영역)을 눌러 연다. 라벨은 목업처럼 0.5초마다 3px씩 뜬다 (steps(2)) */}
+        <Pressable
+          onPress={() => router.push('/today_page')}
+          accessibilityLabel="오늘 페이지 열기"
+          style={{ position: 'absolute', left: 232 * k, top: 180 * k - crop, width: 80 * k, height: 44 * k }}
+        />
+        {/* 라벨: 책(버튼 영역)의 가운데에 맞춘다. 목업보다 조금 위 */}
+        <View pointerEvents="none" style={{ position: 'absolute', left: 232 * k - 5, width: 80 * k, top: 160 * k - crop, alignItems: 'center' }}>
+          <View style={[styles.mark, { position: 'relative', transform: [{ translateY: markUp ? -3 : 0 }] }]}>
+            <Text style={styles.markText}>오늘 페이지 ▾</Text>
+          </View>
+        </View>
 
         {/* 말풍선 (목업 .bubble: 왼쪽 40, 아래에서 118, 폭 172) */}
         <View
@@ -246,7 +260,8 @@ const styles = StyleSheet.create({
   mark: { position: 'absolute', zIndex: 6, paddingVertical: 1, paddingHorizontal: 5, backgroundColor: COLOR.cream, borderWidth: 2, borderColor: COLOR.ink },
   markText: { fontSize: 12, fontWeight: '800', color: COLOR.ink },
 
-  bubble: { ...pxBox(COLOR.paper), position: 'absolute', zIndex: 4, paddingVertical: 7, paddingHorizontal: 8 },
+  // 테두리 3px: 꼬리(픽셀 3칸짜리 계단)와 두께를 맞춘다 (목업 .px는 1.5px였음)
+  bubble: { ...pxBox(COLOR.paper), borderWidth: 2.5, boxShadow: 'none', position: 'absolute', zIndex: 4, paddingVertical: 7, paddingHorizontal: 8 },
   bubbleText: { fontSize: 12, lineHeight: 16, color: COLOR.ink },
   tail: { position: 'absolute', top: '100%' },
   bubbleMuted: { fontSize: 12, color: COLOR.muted, marginTop: 3 },
