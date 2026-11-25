@@ -19,6 +19,15 @@ import { createCoursesRouter } from './routes/courses.js';
 import { createCourseLoader } from './courses/load_courses.js';
 import { createWalkRouter } from './routes/walk.js';
 import { createPoiFinder } from './tmap/poi_search.js';
+import { createAdminGuardFromEnv } from './admin/admin_guard.js';
+import { createAdminAuthFromEnv } from './admin/admin_session.js';
+import { createAdminRouter } from './admin/admin_router.js';
+import { createLoggedStore, createMemoryRunReader, createPgRunReader } from './admin/run_reader.js';
+import { createRecorder } from './agents/common/recorder.js';
+import { createMemoryRunStore } from './agents/common/run_store_memory.js';
+import { createPgRunStore } from './agents/common/run_store_pg.js';
+import { AGENT_LIMITS, PRESENCE } from './agents/common/config.js';
+import { createPresence } from './admin/presence.js';
 
 // ① 요청 로그: 요청 한 건이 끝나면 딱 한 줄만 남긴다.
 function requestLogger(req, res, next) {
@@ -83,6 +92,19 @@ export function createApp({
   partyStore ??= createPgPartyStore({ query });
   profileStore ??= createPgProfileStore({ query });
   tokenVerifier = tokenVerifier === undefined ? createTokenVerifierFromEnv() : tokenVerifier;
+  // 접속 현황: 로그인 확인을 통과한 요청마다 "이 사람이 방금 서버를 썼다"고 기억한다 (관리자 화면의 접속자 목록용).
+  // 모든 라우트가 같은 확인기를 쓰므로 한 번 감싸면 전부 기록된다. 관리자 화면은 앱 로그인(Supabase)과 따로라서 관리자 본인은 세지 않는다.
+  const presence = createPresence({ secret: process.env.RUN_KEY_SECRET, config: PRESENCE });
+  const rawVerifier = tokenVerifier;
+  if (rawVerifier) {
+    tokenVerifier = {
+      async verify(header) {
+        const result = await rawVerifier.verify(header);
+        if (result.ok) presence.touch(result.userId);
+        return result;
+      },
+    };
+  }
 
   const app = express();
   // 응답 헤더에서 "Express를 쓴다"는 정보를 숨긴다.
@@ -110,6 +132,27 @@ export function createApp({
   app.use('/profile', createProfileRouter({ store: profileStore, verifier: tokenVerifier, now }));
   app.use('/courses', requireLogin, createCoursesRouter({ weatherService, placeLoader, courseLoader, now }));
   app.use('/walk', requireLogin, createWalkRouter({ placeLoader, poiFinder: createPoiFinder() }));
+  // 관리자 확인 화면: 관리자 전용 아이디·비밀번호(ADMIN_USERNAME, ADMIN_PASSWORD_HASH, ADMIN_SESSION_SECRET)로 로그인한다.
+  // 설정(또는 로컬 전용 ADMIN_DEV_OPEN)이 없으면 /admin/api는 닫혀 있다 (503).
+  // DATABASE_URL이 있으면 실행 기록을 DB(agent_runs 등)에 쓰고, 없으면 서버 메모리에만 쓴다.
+  const useDb = Boolean(process.env.DATABASE_URL);
+  const memoryStore = createMemoryRunStore();
+  const loggedStore = createLoggedStore(useDb ? createPgRunStore({ query }) : memoryStore);
+  const adminAuth = createAdminAuthFromEnv(process.env);
+  app.use(
+    '/admin',
+    createAdminRouter({
+      guard: createAdminGuardFromEnv(process.env, adminAuth),
+      auth: adminAuth,
+      reader: useDb ? createPgRunReader({ query }) : createMemoryRunReader(memoryStore),
+      recorder: createRecorder({ store: loggedStore }),
+      loggedStore,
+      storeKind: useDb ? 'db' : 'memory',
+      limits: AGENT_LIMITS,
+      presence,
+      presenceConfig: PRESENCE,
+    }),
+  );
   
   // ④ 위 라우트에 안 걸린 모든 요청은 404
   app.use((req, res) => {

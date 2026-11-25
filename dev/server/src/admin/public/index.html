@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TREAGENT 관리</title>
+  <meta name="description" content="에이전트 실행 기록을 확인하는 관리자 화면">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <header class="banner">
+    <strong class="brand">TREAGENT 관리</strong>
+    <nav id="nav" aria-label="페이지">
+      <a href="#/dashboard" data-page="dashboard">대시보드</a>
+      <a href="#/agents" data-page="agents">에이전트</a>
+      <a href="#/db" data-page="db">DB</a>
+      <a href="#/test" data-page="test">테스트</a>
+    </nav>
+    <div class="banner-right">
+      <span class="chip" title="다음 단계에서 유저별 조회가 들어옵니다">유저: 전체 (준비 중)</span>
+      <span class="chip" title="다음 단계에서 접속자 수가 들어옵니다">접속자: 준비 중</span>
+      <button id="logout-btn" type="button" hidden>로그아웃</button>
+    </div>
+  </header>
+  <main id="main"><p class="muted">불러오는 중…</p></main>
+  <script type="module" src="admin.js"></script>
+</body>
+</html>
