@@ -28,6 +28,7 @@ import { router } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { BottomTab } from '../components/bottom_tab';
+import { DevStatePanel } from '../components/dev_state_panel';
 import { APP_MAX_WIDTH } from '../components/phone_column';
 import { PixelSprite } from '../components/pixel_book';
 import { findDistrict } from '../lib/districts';
@@ -412,6 +413,7 @@ export default function HomeScreen() {
           </View>
         </View>
       ) : null}
+      <DevStatePanel />
     </View>
   );
 }
