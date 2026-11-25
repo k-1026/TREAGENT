@@ -7,7 +7,7 @@
  *
  * 배치 (위에서 아래로)
  *  - 장면: 가운데 장부. 능금은 장부 오른쪽 바닥 옆으로 굴러와 멈춘다.
- *  - 제목: 대프리카 / 히든 퀘스트 / (가칭), 그 아래 한 줄 소개
+ *  - 제목: 로고 이미지(대프리카 / 히든 퀘스트, assets/title_logo.png)
  *  - 버튼: 아래쪽에 두 개 (바람 장부 열기 / 처음이에요)
  *
  * 연출 (한 번만 재생하고 멈춘다)
@@ -33,6 +33,10 @@ const BOOK_H = 210;
 const BOOK_W = Math.round((BOOK_H * 516) / 529);
 // 능금 그림(assets/apple_pixel.png)은 원본 그대로 쓴다. 화면에서의 크기만 여기서 정한다.
 const APPLE_SIZE = 162; // 300% 키움 (기존 54)
+
+// 제목 로고: assets/title_logo.png (원본 1807x870, 투명 배경). 280~320px 폭에서 읽히도록 폭 290으로 고정한다.
+const LOGO_W = 290;
+const LOGO_H = Math.round((LOGO_W * 870) / 1807);
 
 // 애니메이션 값은 화면이 처음 그려질 때 한 번만 만든다 (렌더 중 ref 접근을 피한다).
 function createMotion() {
@@ -126,9 +130,12 @@ export default function TitleScreen() {
       </View>
 
       <View style={styles.info}>
-        <Text style={styles.logoMain}>대프리카</Text>
-        <Text style={styles.logoSub}>히든 퀘스트</Text>
-        <Text style={styles.logoNote}>(가칭)</Text>
+        <Image
+          source={require('../../assets/title_logo.png')}
+          style={{ width: LOGO_W, height: LOGO_H }}
+          resizeMode="contain"
+          accessibilityLabel="대프리카 히든 퀘스트"
+        />
       </View>
 
       <View style={styles.actions}>
@@ -167,9 +174,6 @@ const styles = StyleSheet.create({
 
   // 제목과 소개 (장면 아래, 40px 위로 올림: 장부 자리는 그대로)
   info: { alignItems: 'center', paddingHorizontal: 30, gap: 2, marginTop: -50 },
-  logoMain: { fontSize: 41, fontWeight: '800', letterSpacing: 2, color: COLOR.ink }, // 120% (기존 34)
-  logoSub: { fontSize: 31, fontWeight: '800', color: COLOR.redDark, letterSpacing: 1 }, // 120% (기존 26)
-  logoNote: { fontSize: 11, color: COLOR.muted, marginTop: 2 },
 
   // 버튼 (아래쪽 고정)
   actions: { paddingHorizontal: 24, paddingTop: 28, paddingBottom: 120, gap: 14 }, // 아래 여백 120: 버튼을 조금 더 위로 (30px)
