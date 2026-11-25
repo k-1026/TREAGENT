@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>앱 시연 페이지 v2 (움직임 넣은 클릭 시연판)</title>
+<meta name="description" content="v1에 목업의 움직임을 넣은 시연판: 타이틀 바람선·능금, 열쇠 돌리기, 하랑이 숨쉬기·대사, 외출 걷기, 지도 위 하랑이 걷기, 도장 찍기, 컷씬 ②, 내 여행 카드 뒤집기. 앱 코드와 따로 만들었고 아무것도 저장하지 않는다. 문구는 자리표시와 창작 후보(승인 전).">
+<style>
+  /* ---------- v2에서 더한 움직임 (근거: app_login_region_mockup_v1, app_home_mockup_v1, travel_map_mockup_v1, brand/cutscene) ---------- */
+  /* 타이틀 바람선 (로그인 목업 .wind sweep) */
+  .wind{position:absolute;left:-200px;height:3px;background:#fff;opacity:0;box-shadow:0 0 0 1px rgba(91,42,34,.15);z-index:2}
+  .go .wind{animation:sweep 1.6s ease-in forwards}
+  .go .wind.w2{animation-delay:.2s}.go .wind.w3{animation-delay:.4s}
+  @keyframes sweep{0%{left:-200px;opacity:.9}85%{opacity:.9}100%{left:420px;opacity:0}}
+  /* 열쇠 돌리기 (로그인 목업 .key) */
+  .keyov{position:absolute;inset:0;z-index:70;background:rgba(43,24,20,.62);display:none;align-items:center;justify-content:center;flex-direction:column;gap:14px;color:#fff;font-size:13px}
+  .keyov.on{display:flex}
+  .keyov.on svg{animation:turn .9s steps(6) forwards}
+  @keyframes turn{to{transform:rotate(90deg)}}
+  .keyov.on span{opacity:0;animation:fadein .5s .6s forwards}
+  @keyframes fadein{to{opacity:1}}
+  /* 홈 외출 (홈 목업 .walker, turnspr, out): 몸 돌리기 → 옆모습 4프레임으로 문 쪽으로 걸어 나감 */
+  .walker{position:absolute;left:62px;top:200px;width:108px;height:112px;z-index:3;display:none;transform:scaleX(-1);transform-origin:54px 100%}
+  .walker img{position:absolute;inset:0;width:108px;height:112px;object-fit:contain;image-rendering:pixelated;opacity:0;animation:fr .56s steps(1) infinite}
+  .walker img:nth-child(2){animation-delay:.14s}.walker img:nth-child(3){animation-delay:.28s}.walker img:nth-child(4){animation-delay:.42s}
+  @keyframes fr{0%{opacity:1}25%{opacity:0}100%{opacity:0}}
+  .going .hr{animation:turnspr .45s steps(2) .9s both}
+  @keyframes turnspr{0%{transform:scaleX(1)}60%{transform:scaleX(.1)}100%{transform:scaleX(.1);visibility:hidden}}
+  .going .walker{display:block;animation:out 1.6s 1.3s linear both}
+  @keyframes out{0%{transform:translateX(0) scaleX(-1);opacity:0}5%{opacity:1}80%{transform:translateX(-52px) scaleX(-1);opacity:1}100%{transform:translateX(-70px) scaleX(-1);opacity:0}}
+  .hr{cursor:pointer}
+  /* 지도 위 하랑이 (지도 목업 MARK: 방향별 모습) */
+  .me{position:absolute;width:52px;height:60px;object-fit:contain;image-rendering:pixelated;transform:translate(-50%,-90%);transition:left 1.6s linear,top 1.6s linear;z-index:4}
+  /* 컷씬 ② (brand/cutscene/cutscene_02_shade_rest_v1.html, 창작 시안) */
+  .cut{position:absolute;inset:0;z-index:65;background:#fffaf1;display:none;flex-direction:column}
+  .cut.on{display:flex}
+  .cut iframe{flex:1;border:0;width:100%;background:#fffaf1}
+  .cut .cbar{display:flex;gap:10px;padding:10px 14px 16px;background:var(--cream);border-top:2px solid var(--ink)}
+  .cut .cbar .btn{height:48px;font-size:15px}
+  .cut .ctag{position:absolute;left:12px;top:26px;font-size:12px;font-weight:800;padding:3px 8px;background:var(--cream);box-shadow:0 0 0 2px var(--ink)}
+  /* 내 여행 카드 뒤집기 (홈 목업 .tc-card) */
+  .tcard{position:relative;width:240px;height:426px;margin:0 auto;perspective:1000px;flex:none}
+  .tinner{position:absolute;inset:0;transition:transform .6s ease;transform-style:preserve-3d}
+  .tcard.flipped .tinner{transform:rotateY(180deg)}
+  .tface{position:absolute;inset:0;backface-visibility:hidden;-webkit-backface-visibility:hidden;background:var(--paper);box-shadow:0 0 0 3px var(--ink);border-radius:10px;padding:13px 12px;display:flex;flex-direction:column;overflow:hidden}
+  .tback{transform:rotateY(180deg)}
+  .tpic{flex:1;background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px);display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--muted)}
+  .tflip{position:absolute;right:10px;bottom:10px;width:36px;height:36px;border-radius:50%;border:0;background:var(--paper);box-shadow:0 0 0 2px var(--ink),0 3px 0 0 var(--shade);font-size:17px;font-weight:800;cursor:pointer;z-index:3}
+  @media (prefers-reduced-motion:reduce){.go .wind,.going .walker,.going .hr,.hr,.keyov.on svg{animation:none}.me,.tinner{transition:none}}
+  /* 색과 칸 모양은 앱(dev/app/src/lib/theme.ts)과 홈 목업(app_home_mockup_v1.html)을 따른다 */
+  :root{
+    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#a85a24; --paper:#fffaf1;
+    --red:#d03a2f; --red-d:#9c2420; --muted:#7a5a4c; --shade:#d9bf98; --sage:#9fb58a;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#e9e4dc;color:var(--ink);font-family:var(--font)}
+  body{display:flex;flex-direction:column;align-items:center;padding:12px 12px 28px;gap:10px}
+  button{font-family:inherit;color:var(--ink)}
+
+  /* 조작판: 폰 바깥. 실제 앱에는 없음 */
+  .ctrl{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;justify-content:center;font-size:14px;max-width:760px}
+  .ctrl b{margin-right:4px}
+  .ctrl button{font-size:13px;padding:6px 10px;border:2px solid var(--ink);background:#fff;cursor:pointer}
+  .ctrl button.on{background:var(--ink);color:#fff}
+  .note{font-size:13px;color:var(--muted);text-align:center;max-width:420px;line-height:1.5;margin:0}
+
+  .phone{position:relative;width:390px;height:844px;background:var(--cream);overflow:hidden;box-shadow:0 0 0 3px var(--ink),0 14px 36px rgba(60,40,20,.28);word-break:keep-all}
+  .demo-flag{position:absolute;left:0;right:0;top:0;z-index:80;background:var(--ink);color:#fff3e0;font-size:11px;font-weight:700;text-align:center;padding:3px 0;letter-spacing:.5px}
+  .px{border-radius:6px;box-shadow:0 0 0 1.5px var(--ink),0 4px 0 0 var(--shade)}
+  .view{position:absolute;inset:0;display:none}
+  .view.on{display:block}
+
+  /* 머리글 (앱 ScreenHead: 높이 100, 제목 가운데, 뒤로 왼쪽) */
+  .head{position:absolute;left:0;right:0;top:0;height:100px;background:var(--beam);border-bottom:3px solid var(--ink);z-index:5}
+  .head .t{position:absolute;left:84px;right:84px;top:44px;text-align:center;color:#fff;font-size:18px;font-weight:800;text-shadow:2px 2px 0 var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .head .s{position:absolute;left:60px;right:60px;top:70px;text-align:center;color:#fff3e0;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .head .nav{position:absolute;top:50px;border:0;background:var(--cream);padding:6px 11px;font-size:14px;font-weight:800;cursor:pointer;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink)}
+  .head .nav.l{left:12px} .head .nav.r{right:12px}
+  .body{position:absolute;left:0;right:0;top:100px;bottom:0;overflow:auto;padding:14px 16px 20px;display:flex;flex-direction:column;gap:12px}
+  .body.tabbed{bottom:84px}
+  .h3{font-size:14px;font-weight:800;margin:4px 0 0}
+  .h3 span{font-size:12px;font-weight:400;color:var(--muted);margin-left:6px}
+  .row{background:var(--paper);padding:11px 13px;font-size:13px;line-height:1.5;border:0;width:100%;text-align:left;display:flex;gap:10px;align-items:center}
+  .row b{display:block;font-size:14px;margin-bottom:3px}
+  .row small{display:block;font-size:12px;color:var(--muted)}
+  button.row{cursor:pointer}
+  .btn{display:flex;align-items:center;justify-content:center;width:100%;height:54px;border:0;background:var(--paper);font-weight:800;font-size:16px;cursor:pointer;flex:none}
+  .btn.red{background:var(--red);color:#fff;box-shadow:0 0 0 1.5px var(--ink),0 4px 0 0 var(--red-d)}
+  .two{display:flex;gap:10px}
+  .two .btn{flex:1}
+  .hara{background:var(--paper);padding:11px 13px;font-size:14px;line-height:1.6;box-shadow:0 0 0 2px var(--ink)}
+  .hara b{color:var(--beam)}
+
+  /* 하단 탭 */
+  .tab{position:absolute;left:0;right:0;bottom:0;height:84px;background:var(--paper);border-top:3px solid var(--ink);display:flex;padding-top:10px;z-index:6}
+  .tab button{flex:1;border:0;background:none;font-size:12px;font-weight:700;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px}
+  .tab button i{width:22px;height:20px;background:currentColor;display:block;border-radius:3px}
+  .tab button.on{color:var(--ink)}
+
+  /* 타이틀 */
+  #v-title{background:var(--cream)}
+  .tt-scene{position:absolute;left:0;right:0;top:110px;height:300px;display:flex;align-items:center;justify-content:center}
+  .tt-book{width:205px;height:210px;object-fit:contain;image-rendering:pixelated}
+  .tt-apple{position:absolute;width:54px;height:54px;left:calc(50% + 86px);top:208px;animation:roll 2.2s .5s ease-out both}
+  @keyframes roll{from{transform:translateX(339px) rotate(0)}to{transform:translateX(0) rotate(-720deg)}}
+  .tt-info{position:absolute;left:0;right:0;top:440px;text-align:center}
+  .tt-info h1{margin:0;font-size:34px;letter-spacing:2px}
+  .tt-info h2{margin:2px 0 0;font-size:26px;color:var(--red-d)}
+  .tt-info small{display:block;font-size:11px;color:var(--muted);margin-top:4px}
+  .tt-info p{font-size:13px;margin:18px 30px 0;line-height:1.6}
+  .tt-acts{position:absolute;left:24px;right:24px;bottom:44px;display:flex;flex-direction:column;gap:12px}
+
+  /* 홈 장면 */
+  .scene{position:absolute;left:0;right:0;top:0;height:316px;background:#a85a24;overflow:hidden}
+  .scene .room{position:absolute;left:0;top:56px;width:390px;height:260px;object-fit:cover}
+  .badge{position:absolute;left:12px;top:50px;z-index:4;background:var(--cream);padding:5px 8px;font-size:12px;font-weight:700;display:flex;gap:6px;align-items:center;border:0;text-align:left;cursor:pointer;max-width:250px}
+  .badge i{width:11px;height:11px;background:#f5b82e;box-shadow:0 0 0 2px var(--ink);flex:none}
+  .badge small{display:block;font-weight:400;color:var(--muted);font-size:12px}
+  .bubble{position:absolute;left:40px;bottom:118px;width:172px;z-index:4;background:var(--paper);padding:7px 8px;font-size:12px;line-height:1.4}
+  .bubble small{display:block;color:var(--muted);margin-top:3px}
+  .hr{position:absolute;left:70px;top:210px;width:92px;height:95px;object-fit:contain;image-rendering:pixelated;animation:bob 1.8s ease-in-out infinite;z-index:3}
+  @keyframes bob{50%{transform:translateY(-4px)}}
+  .sbanner{position:absolute;left:0;right:0;bottom:0;z-index:5;padding:6px 12px;font-size:12px;font-weight:700;border-top:3px solid var(--ink);display:none}
+  .hbody{position:absolute;left:0;right:0;top:316px;bottom:84px;border-top:6px solid var(--ink);padding:16px;display:flex;flex-direction:column;gap:12px;background:var(--cream)}
+  .cta{height:68px;background:var(--red);color:#fff;border:0;text-align:left;padding:0 14px;cursor:pointer;box-shadow:0 0 0 1.5px var(--ink),0 4px 0 0 var(--red-d);flex:none}
+  .cta b{display:block;font-size:17px}
+  .cta small{font-size:12px;opacity:.92}
+  .cta.notice{background:var(--paper);color:var(--ink);cursor:default;box-shadow:0 0 0 1.5px var(--ink),0 4px 0 0 var(--shade)}
+  .quick{display:flex;gap:10px;flex:none}
+  .quick button{height:64px;border:0;background:var(--paper);font-size:14px;font-weight:800;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:10px}
+  .quick .chat{flex:2;justify-content:flex-start;padding:0 12px}
+  .quick .chat img{width:52px;height:52px;object-fit:contain}
+  .quick .pouch{flex:1}
+  .tips{flex:1;background:var(--paper);padding:12px 16px;display:flex;flex-direction:column;gap:6px;min-height:0}
+  .tips b{font-size:15px}
+  .tips li{list-style:none;display:flex;align-items:center;gap:12px;font-size:15px}
+  .tips ul{margin:0;padding:0;display:flex;flex-direction:column;justify-content:space-evenly;flex:1}
+  .tips img{width:40px;height:40px;object-fit:contain}
+
+  /* 후보 카드 */
+  .card{display:flex;gap:10px;padding:10px;background:var(--paper);border:0;width:100%;text-align:left;cursor:pointer}
+  .card .no{width:54px;height:54px;flex:none;background:var(--cream2);display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:800;color:var(--muted)}
+  .card b{display:block;font-size:14px}
+  .card small{display:block;font-size:12px;color:var(--muted);line-height:1.5}
+
+  /* 걷기 */
+  .map{position:relative;height:250px;background:#dfe6d2;box-shadow:0 0 0 3px var(--ink);flex:none}
+  .map .lbl{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--paper);padding:6px 10px;font-size:12px;color:var(--muted);box-shadow:0 0 0 2px var(--ink);text-align:center;white-space:nowrap}
+  .pin{position:absolute;width:28px;height:28px;background:var(--paper);box-shadow:0 0 0 2px var(--ink);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800}
+  .pin.done{background:var(--sage)} .pin.next{background:var(--red);color:#fff}
+  .dock{position:absolute;left:0;right:0;bottom:0;background:var(--cream);padding:10px 14px 16px;border-top:2px solid var(--shade);z-index:6}
+  .strip{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:800;margin-bottom:10px}
+  .strip img{width:34px;height:34px;object-fit:contain;image-rendering:pixelated;opacity:.3;filter:grayscale(1)}
+  .strip img.on{opacity:1;filter:none}
+  .strip .now{margin-left:auto;font-size:13px;color:var(--red-d)}
+  .dock .two .btn{height:52px;font-size:15px}
+  .dock .two .btn.red{flex:1.4}
+
+  /* 겹쳐 뜨는 창 */
+  .dim{position:absolute;inset:0;background:rgba(60,40,20,.45);z-index:40;display:none;align-items:center;justify-content:center}
+  .dim.on{display:flex}
+  .sheet{width:330px;background:var(--paper);box-shadow:0 0 0 3px var(--ink);padding:16px;display:flex;flex-direction:column;gap:9px}
+  .sheet .ttl{font-size:17px;font-weight:800}
+  .srow{display:flex;gap:10px;align-items:center;background:var(--cream);padding:8px 10px;font-size:13px}
+  .srow .sn{width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--paper);box-shadow:0 0 0 2px var(--ink);font-size:12px;font-weight:800;flex:none}
+  .srow .sn.done{background:var(--sage)} .srow .sn.cur{background:var(--red);color:#fff}
+  .srow span{flex:1}
+  .srow img{width:40px;height:40px;object-fit:contain;image-rendering:pixelated}
+  .srow img.off{opacity:.3;filter:grayscale(1)}
+  .stampbig{width:150px;height:150px;margin:6px auto;display:block;animation:slam .45s ease-out both}
+  @keyframes slam{0%{transform:scale(2.4);opacity:0}70%{transform:scale(.95);opacity:1}100%{transform:scale(1)}}
+
+  /* 완주 한 장 / 내 여행 카드 */
+  .snap{background:var(--paper);box-shadow:0 0 0 3px var(--ink);padding:14px}
+  .snap .sh{display:flex;justify-content:space-between;align-items:baseline;border-bottom:2px solid var(--cream2);padding-bottom:8px;margin-bottom:6px}
+  .snap .sh b{font-size:16px} .snap .sh span{font-size:12px;color:var(--muted)}
+  .snap .sr{display:flex;align-items:center;gap:10px;padding:5px 0;font-size:14px}
+  .snap .sr i{font-style:normal;width:48px;font-size:12px;font-weight:800;color:var(--muted)}
+  .snap .sr span{flex:1}
+  .snap .sr img{width:36px;height:36px;object-fit:contain}
+  .snap .sf{display:flex;justify-content:space-between;margin-top:8px;border-top:2px solid var(--cream2);padding-top:8px;font-size:12px;color:var(--muted)}
+  .seg{display:flex;gap:8px}
+  .seg button{flex:1;padding:9px 4px;border:0;border-radius:6px;background:var(--paper);font-size:13px;font-weight:700;color:var(--muted);cursor:pointer;box-shadow:0 0 0 1.5px var(--ink),0 4px 0 0 var(--shade)}
+  .seg button.on{background:var(--ink);color:#fff}
+  .empty{display:flex;flex-direction:column;align-items:center;gap:8px;padding:12px;text-align:center}
+  .empty img{width:100%;max-height:210px;object-fit:contain}
+  .empty small{font-size:13px;color:var(--muted)}
+
+  /* 대화 */
+  .log{display:flex;flex-direction:column;gap:10px;flex:1}
+  .msg{display:flex;gap:8px;align-items:flex-end}
+  .msg.me{justify-content:flex-end}
+  .msg img{width:36px;height:36px;object-fit:cover;object-position:50% 0;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink);background:var(--paper)}
+  .bub{max-width:260px;padding:9px 11px;font-size:14px;line-height:1.5;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink);background:var(--paper)}
+  .msg.me .bub{background:#ffe1d6}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chips button{border:0;background:#ffe1d6;font-size:13px;font-weight:800;padding:7px 10px;cursor:pointer;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink)}
+
+  .toast{position:absolute;left:50%;bottom:160px;transform:translateX(-50%);background:var(--ink);color:#fff3e0;padding:8px 12px;font-size:13px;font-weight:700;z-index:60;white-space:nowrap;opacity:0;transition:opacity .2s;pointer-events:none}
+  .toast.on{opacity:1}
+</style>
+</head>
+<body>
+
+<div class="ctrl" role="group" aria-label="시연 조작판 (실제 앱에는 없음)">
+  <b>날씨 상태</b>
+  <button data-wx="normal" class="on">보통</button>
+  <button data-wx="heat">폭염</button>
+  <button data-wx="storm">호우</button>
+  <b style="margin-left:10px">시연</b>
+  <button id="restart">처음부터</button>
+</div>
+<p class="note">앱과 따로 만든 시연용 페이지예요. 서버·티맵·휴대폰 없이 누르며 흐름을 보여 주고, 아무것도 저장하지 않아요. 문구의 [ ] 자리는 확정 전이에요.</p>
+
+<main class="phone" id="phone">
+  <div class="demo-flag">시연용 화면 · 저장되지 않아요</div>
+
+  <!-- 1. 타이틀 -->
+  <section class="view on" id="v-title" aria-label="타이틀">
+    <!-- 바람선 세 줄 (로그인 목업). 꼬리는 팀원 요청으로 앱에서 뺐기 때문에 넣지 않는다 -->
+    <i class="wind w1" style="top:150px;width:160px"></i><i class="wind w2" style="top:240px;width:110px"></i><i class="wind w3" style="top:330px;width:190px"></i>
+    <div class="tt-scene">
+      <img class="tt-book" src="../brand/images/items/ledger_closed_sprite_v1.png" alt="바람 장부">
+      <!-- 능금: 앱의 그림 파일은 배포 사이트에 복사되지 않아, 같은 모양을 칸 그림(svg)으로 그렸다 -->
+      <svg class="tt-apple" viewBox="0 0 12 12" shape-rendering="crispEdges" aria-label="능금"><rect x="5" y="0" width="1" height="2" fill="#7a3b1e"/><rect x="6" y="0" width="3" height="1" fill="#5f8f2a"/><rect x="6" y="1" width="2" height="1" fill="#8bb83a"/><rect x="2" y="2" width="8" height="1" fill="#5b2a22"/><rect x="1" y="3" width="10" height="7" fill="#5b2a22"/><rect x="2" y="10" width="8" height="1" fill="#5b2a22"/><rect x="2" y="3" width="8" height="7" fill="#e53b2f"/><rect x="3" y="2" width="6" height="1" fill="#e53b2f"/><rect x="3" y="10" width="6" height="1" fill="#b8222c"/><rect x="3" y="4" width="2" height="2" fill="#fbd8b0"/><rect x="8" y="7" width="2" height="2" fill="#b8222c"/></svg>
+    </div>
+    <div class="tt-info">
+      <h1>대프리카</h1><h2>히든 퀘스트</h2><small>(가칭)</small>
+      <p>하랑이와 함께 오늘 날씨에 맞는 길을 찾아 걸어요.</p>
+    </div>
+    <div class="tt-acts">
+      <button class="btn red px" id="openBook">바람 장부 열기 <small style="font-weight:400;font-size:11px;margin-left:6px">(시연: 로그인 생략)</small></button>
+    </div>
+  </section>
+
+  <!-- 2. 홈 -->
+  <section class="view" id="v-home" aria-label="홈">
+    <div class="scene">
+      <img class="room" id="room" src="../brand/home/home_room_day_v2.webp" alt="도트 방 배경">
+      <button class="badge px" data-go="weather"><i id="badgeDot"></i><span id="badgeTx"></span></button>
+      <div class="bubble px"><span id="bubTx"></span><small>[승인 대사 대기]</small></div>
+      <img class="hr" id="hr" src="../brand/images/characters/sprites/harangi_pixel_idle_transparent.png" alt="하랑이 (누르면 한마디)">
+      <div class="walker" aria-hidden="true"><img src="../brand/images/characters/sprites/harangi_pixel_walk_side_01_transparent.png" alt=""><img src="../brand/images/characters/sprites/harangi_pixel_walk_side_02_transparent.png" alt=""><img src="../brand/images/characters/sprites/harangi_pixel_walk_side_03_transparent.png" alt=""><img src="../brand/images/characters/sprites/harangi_pixel_walk_side_04_transparent.png" alt=""></div>
+      <div class="sbanner" id="sbanner"></div>
+    </div>
+    <div class="hbody">
+      <button class="cta px" id="cta"><b id="ctaT"></b><small id="ctaS"></small></button>
+      <div class="quick">
+        <button class="chat px" data-go="chat"><img src="../brand/images/characters/ui/harangi_face.webp" alt="">하랑이와 대화하기</button>
+        <button class="pouch px" data-go="pouch">주머니</button>
+      </div>
+      <div class="tips px"><b>오늘 챙길 것</b><ul id="tips"></ul></div>
+    </div>
+    <nav class="tab"><button class="on" data-go="home"><i></i>홈</button><button data-go="ledger"><i></i>장부</button><button data-toast="내 정보는 이 시연판에 없어요"><i></i>내 정보</button></nav>
+  </section>
+
+  <!-- 3. 날씨 상세 -->
+  <section class="view" id="v-weather" aria-label="날씨 상세">
+    <div class="head"><button class="nav l" data-go="home">‹ 홈</button><div class="t">오늘 날씨</div><div class="s">날씨 기준 시각 · [기준 시각]</div></div>
+    <div class="body">
+      <div class="row px" id="wxBan" style="font-weight:700"></div>
+      <div class="row px"><div><b id="wxBig"></b><small>체감 [○]℃ · [기준 시각] 기준</small></div></div>
+      <div class="row px"><div><b>측정 방식</b><small>[AWS 여부 · 확인 필요]</small></div></div>
+    </div>
+  </section>
+
+  <!-- 4. 오늘의 길 후보 -->
+  <section class="view" id="v-picks" aria-label="오늘의 길">
+    <div class="head"><button class="nav l" data-go="home">‹ 홈</button><div class="t">오늘의 길</div><div class="s">날씨에 맞는 길 3개를 골라 왔어요</div></div>
+    <div class="body" id="pickList"></div>
+  </section>
+
+  <!-- 5. 코스 브리핑 -->
+  <section class="view" id="v-brief" aria-label="코스 브리핑">
+    <div class="head"><button class="nav l" data-go="picks">‹ 뒤로</button><div class="t">하랑이가 알려 줄게요</div><div class="s" id="briefWx"></div></div>
+    <div class="body">
+      <div class="row px" style="flex-direction:column;align-items:flex-start"><b id="briefT" style="font-size:18px"></b><small>3곳 · 약 60분 [예시]</small></div>
+      <div id="briefStops" style="display:flex;flex-direction:column;gap:8px"></div>
+      <div class="hara"><b>하랑이</b> [브리핑 대사 · 승인 대기] 오늘 길은 이렇게 걸어 볼까요?</div>
+      <div class="two"><button class="btn px" data-go="picks">이전으로</button><button class="btn red" id="depart">확인</button></div>
+    </div>
+  </section>
+
+  <!-- 6. 걷기 (지도 그림 자리) -->
+  <section class="view" id="v-walk" aria-label="여행 지도">
+    <div class="head"><button class="nav l" data-go="home">‹ 홈</button><div class="t">여행 지도</div><div class="s" id="walkSub"></div></div>
+    <div class="body" style="bottom:130px">
+      <div class="map" id="map"><div class="lbl">[티맵 지도 자리 · 시연]<br><small>실제 앱은 티맵이 길을 그려요</small></div></div>
+      <div id="walkList" style="display:flex;flex-direction:column;gap:8px"></div>
+    </div>
+    <div class="dock">
+      <div class="strip" id="strip"></div>
+      <div class="two"><button class="btn px" id="stampBtn">도장 확인</button><button class="btn red" id="walkBtn"></button></div>
+    </div>
+  </section>
+
+  <!-- 7. 완주 한 장 -->
+  <section class="view" id="v-done" aria-label="완주">
+    <div class="head"><button class="nav l" data-go="walk">‹ 지도</button><div class="t">완주</div><div class="s">하랑이와 함께 끝까지 걸었어요</div></div>
+    <div class="body">
+      <div class="snap" id="doneSnap"></div>
+      <button class="btn red" data-go="ledger" data-bm="trips">장부에서 보기</button>
+      <button class="btn px" data-go="home">홈으로</button>
+    </div>
+  </section>
+
+  <!-- 8. 장부 -->
+  <section class="view" id="v-ledger" aria-label="장부">
+    <div class="head"><div class="t">장부</div><div class="s">하랑이와 함께 걸어 확인한 기록</div></div>
+    <div class="body tabbed">
+      <div class="seg"><button data-bm="map" class="on">지도</button><button data-bm="trips">내 여행</button><button data-bm="album">앨범</button></div>
+      <div id="bmBody" style="display:flex;flex-direction:column;gap:10px"></div>
+    </div>
+    <nav class="tab"><button data-go="home"><i></i>홈</button><button class="on" data-go="ledger"><i></i>장부</button><button data-toast="내 정보는 이 시연판에 없어요"><i></i>내 정보</button></nav>
+  </section>
+
+  <!-- 9. 주머니 -->
+  <section class="view" id="v-pouch" aria-label="주머니">
+    <div class="head"><button class="nav l" data-go="home">‹ 홈</button><div class="t">주머니</div><div class="s">내가 받은 물건</div></div>
+    <div class="body" id="pouchBody"></div>
+  </section>
+
+  <!-- 10. 하랑이와 대화하기 -->
+  <section class="view" id="v-chat" aria-label="하랑이와 대화하기">
+    <div class="head"><button class="nav l" data-go="home">‹ 홈</button><div class="t">하랑이와 대화하기</div><div class="s">궁금한 걸 물어보세요</div></div>
+    <div class="body">
+      <div class="log" id="log"></div>
+      <div class="chips"><button data-q="오늘 뭐 챙길까?">오늘 뭐 챙길까?</button><button data-q="이 장소 이야기 들려줘">이 장소 이야기 들려줘</button><button data-q="내 진행 어디까지?">내 진행 어디까지?</button></div>
+    </div>
+  </section>
+
+  <!-- 열쇠 돌리기 (로그인 목업 #lKey) -->
+  <div class="keyov" id="keyov"><svg width="96" height="96" viewBox="0 0 16 16" shape-rendering="crispEdges" aria-hidden="true"><g transform="translate(0 3)"><polygon fill="#5b2a22" points="3,0 6,0 8,2 8,5 6,7 3,7 1,5 1,2"/><polygon fill="#e8b230" points="4,1 5,1 7,3 7,4 5,6 4,6 2,4 2,3"/><rect fill="#fffaf1" x="4" y="3" width="2" height="2"/><rect fill="#5b2a22" x="8" y="2" width="7" height="4"/><rect fill="#e8b230" x="8" y="3" width="6" height="2"/><rect fill="#5b2a22" x="10" y="6" width="2" height="4"/><rect fill="#e8b230" x="10" y="6" width="1" height="3"/><rect fill="#5b2a22" x="13" y="6" width="2" height="3"/><rect fill="#e8b230" x="13" y="6" width="1" height="2"/></g></svg><span>열쇠가 돌아가요... [날짜]에 열렸어요 [임시]</span></div>
+
+  <!-- 컷씬 ② (첫 완주 때, 건너뛰기 가능. 재생 시점은 팀 결정 전) -->
+  <div class="cut" id="cut">
+    <span class="ctag">컷씬 ② · 창작 시안</span>
+    <iframe id="cutFrame" title="컷씬 ② 그늘 아래 숨 고르기" src="about:blank" data-src="../brand/cutscene/cutscene_02_shade_rest_v1.html"></iframe>
+    <div class="cbar"><button class="btn px" id="cutSkip">건너뛰기</button><button class="btn red" id="cutDone">완주 한 장 보기</button></div>
+  </div>
+
+  <!-- 겹쳐 뜨는 창 -->
+  <div class="dim" id="dim"><div class="sheet" id="sheet"></div></div>
+  <div class="toast" id="toast"></div>
+</main>
+
+<!-- 배포 사이트용: 스크립트가 바꿔 끼우는 그림도 사이트에 복사되도록 태그로 한 번씩 적어 둔다 (화면에는 안 보임, .github/scripts/build_site.py) -->
+<div hidden aria-hidden="true">
+  <img src="../brand/home/home_room_heat_v1.webp" alt=""><img src="../brand/home/home_room_storm_v1.webp" alt="">
+  <img src="../brand/images/items/stamp_nungeum.webp" alt="">
+  <img src="../brand/images/items/item_water_v1.png" alt=""><img src="../brand/images/items/item_sneakers_v1.png" alt="">
+  <img src="../brand/images/items/item_jacket_v1.png" alt=""><img src="../brand/images/items/item_cap_v1.png" alt="">
+  <img src="../brand/images/items/item_sleeves_v1.png" alt=""><img src="../brand/images/items/item_umbrella_v1.png" alt="">
+  <img src="../brand/images/items/item_socks_v1.png" alt="">
+  <img src="../brand/images/characters/base/harangi_view_front_v1.png" alt=""><img src="../brand/images/characters/base/harangi_view_back_v1.png" alt="">
+  <img src="../brand/images/characters/base/harangi_view_left_v1.png" alt=""><img src="../brand/images/characters/base/harangi_view_right_v1.png" alt="">
+  <a href="../brand/cutscene/cutscene_02_shade_rest_v1.html">컷씬 ②</a>
+</div>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)}, $$=function(s){return document.querySelectorAll(s)};
+  var STAMP='../brand/images/items/stamp_nungeum.webp';
+  var EMPTY='../brand/images/characters/ui/harangi_empty_state_v2.webp';
+  var FACE='../brand/images/characters/ui/harangi_face.webp';
+  var ITEM=function(n){return '../brand/images/items/item_'+n+'_v1.png'};
+
+  // 날씨 상태별 홈 (홈 목업 app_home_mockup_v1.html의 상태표를 줄임. 쉼터는 만들지 않기로 해서 안내 문구만)
+  var WX={
+    normal:{room:'../brand/home/home_room_day_v2.webp',dot:'#f5b82e',bg:'#fbefdc',b1:'기온 [○]℃ · 체감 [○]℃',b2:'중구 · [기준 시각] 기준 ▾',
+      bub:'[이름] 님, [대사 자리]',cta:['오늘의 길 고르기','날씨에 맞는 길을 찾아봐요 [임시]',true],banner:null,
+      tips:[['생수','water'],['운동화','sneakers'],['겉옷','jacket']],ban:'야외 길을 그대로 안내해요.',big:'기온 [○]℃'},
+    heat:{room:'../brand/home/home_room_heat_v1.webp',dot:'#d03a2f',bg:'#ffe1d6',b1:'폭염특보 · 체감 [○]℃',b2:'중구 · [기준 시각] 기준 · [AWS 여부] ▾',
+      bub:'[이름] 님, [쉬어 가는 대사]',cta:['야외 길 안내를 멈췄어요 [임시]','',false],banner:['#ffe1d6','#9c2420','[기준 시각] 기준 · 야외 안내 중단'],
+      tips:[['생수','water'],['캡모자','cap'],['쿨토시','sleeves']],ban:'야외 길 안내를 멈췄어요.',big:'폭염특보'},
+    storm:{room:'../brand/home/home_room_storm_v1.webp',dot:'#2f4a6b',bg:'#dfe7f0',b1:'호우 · 강수 [○]mm',b2:'중구 · [기준 시각] 기준 ▾',
+      bub:'[이름] 님, [안전 대사]',cta:['신규 이동을 보류했어요 [임시]','',false],banner:['#ffe1d6','#9c2420','[기준 시각] 기준 · 야외 코스 숨김 · 신규 이동 보류'],
+      tips:[['우산','umbrella'],['여벌 양말','socks'],['운동화','sneakers']],ban:'신규 이동을 보류했어요. 안전한 곳에서 기다려요.',big:'호우·이동 보류'},
+  };
+  // 오늘의 길 후보 (홈 목업의 C01 길 이름과 장소. 2·3번은 자리표시)
+  var ROUTES=[
+    {t:'중구 근대골목 걷기',why:'[추천 이유 한 줄 · 예시] 걷기 좋은 날씨라 야외 길이에요',stops:['동성로','대구 근대골목','대구약령시한의약박물관']},
+    {t:'[길 2 이름 · 예시]',why:'[추천 이유 한 줄 · 예시]',stops:['[장소 2-1]','[장소 2-2]','[장소 2-3]']},
+    {t:'[길 3 이름 · 예시]',why:'[추천 이유 한 줄 · 예시]',stops:['[장소 3-1]','[장소 3-2]','[장소 3-3]']}
+  ];
+  var PINS=[[60,70],[220,30],[290,170]];
+  var START=[40,225]; // 지도 위 하랑이의 출발 자리 (지도 왼쪽 아래)
+  // 지도 위 하랑이 방향별 모습 (지도 목업 MARK)
+  var VIEW='../brand/images/characters/base/harangi_view_';
+  var MARK={front:VIEW+'front_v1.png',back:VIEW+'back_v1.png',left:VIEW+'left_v1.png',right:VIEW+'right_v1.png'};
+  // 하랑이를 누르면 나오는 한마디 (홈 목업 HPOOL: 모두 승인 대기 자리표시, 창작 후보)
+  var HPOOL=['[공통 대사 후보 A · 승인 대기]','[공통 대사 후보 B · 승인 대기]','[날씨 대사 후보 A · 승인 대기]','[날씨 대사 후보 B · 승인 대기]'];
+  var S={wx:'normal',route:0,reached:0,arrived:false,trips:[],pouch:false,bm:'map',chat:[],cutSeen:false,flipped:false};
+
+  var toastT;
+  function toast(t){var el=$('#toast');el.textContent=t;el.classList.add('on');clearTimeout(toastT);toastT=setTimeout(function(){el.classList.remove('on')},1700)}
+  function stamps(n,total,size){var h='';for(var i=0;i<total;i++)h+='<img class="'+(i<n?'on':'')+'" src="'+STAMP+'" alt="'+(i<n?'받은 도장':'빈 도장')+'"'+(size?' style="width:'+size+'px;height:'+size+'px"':'')+'>';return h}
+
+  function show(v){
+    $$('.view').forEach(function(x){x.classList.toggle('on',x.id==='v-'+v)});
+    // 타이틀에 들어올 때마다 바람선이 한 번 지나간다
+    if(v==='title'){var tt=$('#v-title');tt.classList.remove('go');void tt.offsetWidth;tt.classList.add('go')}
+    if(v==='home')renderHome(); if(v==='weather')renderWeather(); if(v==='picks')renderPicks();
+    if(v==='brief')renderBrief(); if(v==='walk')renderWalk(); if(v==='done')renderDone();
+    if(v==='ledger')renderLedger(); if(v==='pouch')renderPouch(); if(v==='chat')renderChat();
+  }
+  function closeSheet(){$('#dim').classList.remove('on')}
+  function openSheet(html){$('#sheet').innerHTML=html;$('#dim').classList.add('on')}
+
+  function renderHome(){
+    var w=WX[S.wx];
+    $('#room').src=w.room;
+    $('#badgeDot').style.background=w.dot; $('.badge').style.background=w.bg;
+    $('#badgeTx').innerHTML=w.b1+'<small>'+w.b2+'</small>';
+    $('#bubTx').textContent=w.bub;
+    var c=$('#cta'); $('#ctaT').textContent=w.cta[0]; $('#ctaS').textContent=w.cta[1];
+    c.classList.toggle('notice',!w.cta[2]); c.dataset.go=w.cta[2]?(S.reached>0&&S.reached<3?'walk':'picks'):'';
+    if(w.cta[2]&&S.reached>0&&S.reached<3){$('#ctaT').textContent='이어하기';$('#ctaS').textContent='다음: '+ROUTES[S.route].stops[S.reached]+' · 3곳 중 '+S.reached+'곳 [시연]';}
+    var b=$('#sbanner'); if(w.banner){b.style.display='block';b.style.background=w.banner[0];b.style.color=w.banner[1];b.textContent=w.banner[2]}else{b.style.display='none'}
+    $('#tips').innerHTML=w.tips.map(function(t){return '<li>'+(t[1]?'<img src="'+ITEM(t[1])+'" alt="">':'')+'<span>'+t[0]+'</span></li>'}).join('');
+  }
+  function renderWeather(){
+    var w=WX[S.wx]; $('#wxBan').textContent=w.ban; $('#wxBan').style.background=w.bg; $('#wxBig').textContent=w.big;
+  }
+  function renderPicks(){
+    $('#pickList').innerHTML=ROUTES.map(function(r,i){
+      return '<button class="card px" data-pick="'+i+'"><div class="no">'+(i+1)+'</div><div><b>'+r.t+'</b><small>3곳 · 약 60분 [예시]</small><small>'+r.stops.join(' → ')+'</small><small style="color:var(--red-d)">'+r.why+'</small></div></button>';
+    }).join('')+'<p class="note" style="margin-top:4px">실제 앱은 서버의 AI가 후보를 골라요. 시연판은 미리 넣어 둔 예시예요.</p>';
+  }
+  function renderBrief(){
+    var r=ROUTES[S.route]; $('#briefT').textContent=r.t; $('#briefWx').textContent='현재 날씨 · '+WX[S.wx].big;
+    $('#briefStops').innerHTML=r.stops.map(function(s,i){return '<div class="row px"><img src="'+STAMP+'" alt="" style="width:36px;height:36px"><div><b>'+(i+1)+'. '+s+'</b><small>[장소 특징 한 줄 · 검수 문구 필요]</small></div></div>'}).join('');
+  }
+  function renderWalk(){
+    var r=ROUTES[S.route], n=S.reached, done=n>=3;
+    $('#walkSub').textContent=r.t+' · 도장 '+n+'/3';
+    $('#map').querySelectorAll('.pin').forEach(function(p){p.remove()});
+    PINS.forEach(function(p,i){var el=document.createElement('span');el.className='pin'+(i<n?' done':i===n&&!done?' next':'');el.style.left=p[0]+'px';el.style.top=p[1]+'px';el.textContent=i+1;$('#map').appendChild(el)});
+    $('#walkList').innerHTML=r.stops.map(function(s,i){var st=i<n?'도장 받음':i===n?(S.arrived?'도착 · 미션 대기':'다음 장소'):'아직';return '<div class="row px"><div><b>'+(i+1)+'. '+s+'</b><small>'+st+'</small></div></div>'}).join('');
+    // 지도 위 하랑이: 도착한 핀 위(정면)에 서 있다. 출발 전에는 지도 왼쪽 아래
+    var me=$('#me'); if(!me){me=document.createElement('img');me.id='me';me.className='me';me.alt='내 위치 (하랑이)';$('#map').appendChild(me)}
+    if(!me.dataset.moving){var at=S.arrived?PINS[n]:(n>0?PINS[n-1]:START);me.style.transition='none';me.style.left=at[0]+14+'px';me.style.top=at[1]+14+'px';me.src=MARK.front;void me.offsetWidth;me.style.transition=''}
+    $('#strip').innerHTML='<span>코스</span>'+stamps(n,3)+'<span class="now">'+(done?'모두 완료':'지금 '+(n+1)+'번 장소')+'</span>';
+    $('#walkBtn').textContent=done?'완주 한 장 보기':S.arrived?'미션 확인하기 · '+(n+1)+'번':'도착했어요 (시연)';
+  }
+  function renderDone(){
+    var r=ROUTES[S.route];
+    $('#doneSnap').innerHTML='<div class="sh"><b>'+r.t+'</b><span>[완주 날짜]</span></div>'+
+      r.stops.map(function(s){return '<div class="sr"><i>[시각]</i><span>'+s+'</span><img src="'+STAMP+'" alt="도장"></div>'}).join('')+
+      '<div class="sf"><span>[하랑이 마무리 대사 · 승인 대기]</span><span>도장 3/3</span></div>';
+  }
+  function renderLedger(){
+    $$('.seg button').forEach(function(b){b.classList.toggle('on',b.dataset.bm===S.bm)});
+    var h='';
+    if(S.bm==='map'){
+      h='<div class="h3">지도 <span>대구 전역 · 구역별 완주율</span></div><div class="row px"><div><b>중구</b><small>내 완주율 '+(S.trips.length?'[시연] 1곳 완주':'[○]%')+' · 나머지 구·군은 준비 중</small></div></div>';
+    } else if(S.bm==='trips'){
+      // 내 여행 카드 (9:16, 앞면·뒷면 뒤집기). 홈 목업의 내 여행 카드를 줄여 옮김
+      h=S.trips.length?'<div class="h3">완주한 여행 <span>카드를 뒤집어 보세요</span></div>'+S.trips.map(function(i){var r=ROUTES[i];
+        return '<div class="tcard'+(S.flipped?' flipped':'')+'" id="tcard"><div class="tinner">'+
+          '<div class="tface"><div class="tpic">[장소 그림 자리 · 창작 후보]</div><div style="font-size:11px;color:var(--muted);margin-top:8px">[완주 날짜]</div><b style="font-size:16px;margin:3px 0 6px">'+r.t+'</b><div style="display:flex;gap:5px">'+stamps(3,3,26)+'</div><div style="display:flex;align-items:center;gap:6px;margin-top:8px;font-size:12px;padding-right:44px"><img src="'+FACE+'" alt="" style="width:30px;height:30px;object-fit:contain">[하랑이 한마디 · 승인 대기]</div></div>'+
+          '<div class="tface tback"><div style="display:flex;justify-content:space-between;font-size:11px;color:var(--muted)"><span>하랑이의 일기</span><span>[완주 날짜]</span></div><b style="font-size:16px;margin:6px 0 8px">'+r.t+'</b>'+
+          r.stops.map(function(s){return '<div style="border-left:4px solid var(--shade);padding:4px 0 4px 8px;margin-bottom:8px;font-size:12px"><b style="font-size:12px">[시각] '+s+'</b><div style="color:var(--muted)">[그날 기록 한 줄]</div></div>'}).join('')+
+          '<div style="margin-top:auto;font-size:12px;border-top:1px dashed var(--shade);padding-top:6px">[마무리 한 줄 · 승인 대기]</div></div>'+
+          '</div><button class="tflip" id="tflip" aria-label="카드 뒤집기">↻</button></div>'}).join('')
+        :'<div class="empty"><img src="'+EMPTY+'" alt="하랑이 빈 상태 그림"><b>아직 빈 칸뿐이에요</b><small>첫 길을 걸으면 여기에 한 장이 남아요.</small></div>';
+    } else {
+      h='<div class="empty"><img src="'+EMPTY+'" alt="하랑이 빈 상태 그림"><b>아직 앨범이 비어 있어요</b><small>같이 걸으면 이야기가 생겨요.</small></div>';
+    }
+    $('#bmBody').innerHTML=h;
+  }
+  function renderPouch(){
+    $('#pouchBody').innerHTML=S.pouch
+      ?'<div class="row px"><div><b>열쇠</b>[날짜]에 처음 열렸어요<small>상징 1개, 모으는 재화가 아니에요</small></div></div><div class="row px"><div><b>손수건</b>하랑이가 빌려 갔어요 (반납 전)</div></div><p class="note">완주 뒤에 받은 물건이에요 [시연]</p>'
+      :'<div class="empty"><img src="'+EMPTY+'" alt="하랑이 빈 상태 그림"><b>아직 받은 물건이 없어요</b><small>길을 끝까지 걸으면 물건이 생겨요 [시연]</small></div>';
+  }
+  var ANS={'오늘 뭐 챙길까?':'[날씨 답변 · 승인 대기] 기준 시각과 함께 챙길 것을 알려 드릴게요.','이 장소 이야기 들려줘':'[장소 이야기 · 승인 대기] 검수된 설명 한 줄이 들어갈 자리예요.','내 진행 어디까지?':null};
+  function renderChat(){
+    if(!S.chat.length)S.chat.push(['h','[하랑이 인사 · 승인 대기] 무엇이 궁금한가요?']);
+    $('#log').innerHTML=S.chat.map(function(m){return m[0]==='me'?'<div class="msg me"><div class="bub">'+m[1]+'</div></div>':'<div class="msg"><img src="'+FACE+'" alt="하랑이"><div class="bub">'+m[1]+'</div></div>'}).join('');
+  }
+
+  // 걷기 버튼: 도착 → 미션 창 → 도장 → (3곳) 완주
+  $('#walkBtn').addEventListener('click',function(){
+    // 3곳 모두 끝: 처음 완주면 컷씬 ②를 먼저 보여 주고, 다음부터는 바로 완주 한 장
+    if(S.reached>=3){if(!S.cutSeen){S.cutSeen=true;openCut()}else{show('done')}return}
+    // 도착: 하랑이가 지금 자리에서 다음 핀까지 걸어간다. 걷는 방향에 맞춰 모습이 바뀐다 (지도 목업 MARK)
+    if(!S.arrived){
+      var me=$('#me'); if(me.dataset.moving)return;
+      var to=PINS[S.reached], fx=parseFloat(me.style.left)-14, fy=parseFloat(me.style.top)-14;
+      var dx=to[0]-fx, dy=to[1]-fy;
+      me.src=Math.abs(dx)>Math.abs(dy)?(dx>0?MARK.right:MARK.left):(dy<0?MARK.back:MARK.front);
+      me.dataset.moving='1'; $('#walkBtn').disabled=true;
+      me.style.left=to[0]+14+'px'; me.style.top=to[1]+14+'px';
+      setTimeout(function(){
+        delete me.dataset.moving; $('#walkBtn').disabled=false; me.src=MARK.front;
+        S.arrived=true; toast((S.reached+1)+'번 장소에 도착했어요 (시연)'); renderWalk();
+      },1650);
+      return;
+    }
+    var r=ROUTES[S.route];
+    openSheet('<div class="ttl">'+(S.reached+1)+'번 장소 미션</div><div>'+r.stops[S.reached]+'</div><div>[미션 종류] · [미션 내용 자리]</div><div class="hara"><b>하랑이</b> [승인 대사 대기 · 미션]</div><button class="btn red" id="mDone">미션 마치기 (시연)</button><button class="btn px" data-close>나중에 하기</button>');
+  });
+  $('#stampBtn').addEventListener('click',function(){
+    var r=ROUTES[S.route];
+    openSheet('<div class="ttl">받은 도장 '+S.reached+'/3</div><div style="font-size:12px;color:var(--muted)">'+r.t+'</div>'+
+      r.stops.map(function(s,i){return '<div class="srow"><span class="sn '+(i<S.reached?'done':i===S.reached?'cur':'')+'">'+(i+1)+'</span><span>'+s+'</span><img class="'+(i<S.reached?'':'off')+'" src="'+STAMP+'" alt=""></div>'}).join('')+
+      '<button class="btn px" data-close>닫기</button>');
+  });
+
+  document.addEventListener('click',function(e){
+    var t=e.target;
+    if(t.closest('#mDone')){
+      S.reached++;S.arrived=false;
+      openSheet('<div class="ttl" style="text-align:center">도장을 받았어요</div><img class="stampbig" src="'+STAMP+'" alt="능금 도장"><div style="text-align:center;font-size:12px;color:var(--muted)">시연이라 저장되지 않아요</div><button class="btn red" data-close>지도로</button>');
+      if(S.reached>=3){if(S.trips.indexOf(S.route)<0)S.trips.push(S.route);S.pouch=true}
+      renderWalk();return;
+    }
+    if(t.closest('[data-close]')||t===$('#dim')){closeSheet();return}
+    var pk=t.closest('[data-pick]'); if(pk){S.route=+pk.dataset.pick;S.reached=0;S.arrived=false;show('brief');return}
+    var bm=t.closest('.seg button'); if(bm){S.bm=bm.dataset.bm;renderLedger();return}
+    var q=t.closest('[data-q]'); if(q){var a=ANS[q.dataset.q];S.chat.push(['me',q.dataset.q]);S.chat.push(['h',a||('[진행 답변 · 승인 대기] '+ROUTES[S.route].t+' 3곳 중 '+S.reached+'곳 완료 [시연]')]);renderChat();return}
+    var ts=t.closest('[data-toast]'); if(ts){toast(ts.dataset.toast);return}
+    var g=t.closest('[data-go]'); if(g&&g.dataset.go){if(g.dataset.bm)S.bm=g.dataset.bm;show(g.dataset.go);return}
+    var wx=t.closest('[data-wx]'); if(wx){S.wx=wx.dataset.wx;$$('[data-wx]').forEach(function(b){b.classList.toggle('on',b===wx)});if($('#v-title').classList.contains('on'))show('home');else{var cur=document.querySelector('.view.on').id.slice(2);show(cur)};return}
+  });
+  // 컷씬 ② 열기·닫기 (iframe은 열 때만 불러와서 처음부터 재생된다)
+  function openCut(){var f=$('#cutFrame');f.src=f.dataset.src;$('#cut').classList.add('on')}
+  function closeCut(){$('#cut').classList.remove('on');$('#cutFrame').src='about:blank';show('done')}
+  $('#cutSkip').addEventListener('click',closeCut);
+  $('#cutDone').addEventListener('click',closeCut);
+
+  // [바람 장부 열기]: 열쇠가 돌아간 뒤 홈으로 (로그인 성공 연출)
+  $('#openBook').addEventListener('click',function(){
+    var k=$('#keyov'); k.classList.remove('on'); void k.offsetWidth; k.classList.add('on');
+    setTimeout(function(){k.classList.remove('on');show('home')},1600);
+  });
+
+  // 하랑이를 누르면 한마디가 바뀐다 (홈 목업 showHarangi)
+  $('#hr').addEventListener('click',function(){$('#bubTx').textContent=HPOOL[Math.floor(Math.random()*HPOOL.length)]});
+
+  // 코스 브리핑 [확인]: 홈으로 돌아가 하랑이가 몸을 돌려 문 쪽으로 걸어 나간 뒤 여행 지도로 (홈 목업 외출 연출)
+  $('#depart').addEventListener('click',function(){
+    S.reached=0; S.arrived=false;
+    show('home');
+    $('#bubTx').textContent='자, 이제 오늘의 길을 걸으러 가요! [창작 후보 · 승인 대기]';
+    var sc=$('#v-home .scene'); sc.classList.remove('going'); void sc.offsetWidth; sc.classList.add('going');
+    setTimeout(function(){$('.bubble').style.visibility='hidden'},2600);
+    setTimeout(function(){sc.classList.remove('going');$('.bubble').style.visibility='';show('walk')},3200);
+  });
+
+  // 내 여행 카드 뒤집기
+  document.addEventListener('click',function(e){if(e.target.closest('#tflip')){S.flipped=!S.flipped;$('#tcard').classList.toggle('flipped',S.flipped)}});
+
+  $('#restart').addEventListener('click',function(){S={wx:S.wx,route:0,reached:0,arrived:false,trips:[],pouch:false,bm:'map',chat:[],cutSeen:false,flipped:false};closeSheet();$('#cut').classList.remove('on');var me=$('#me');if(me)me.remove();show('title');});
+  show('title');
+})();
+</script>
+</body>
+</html>
