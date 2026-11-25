@@ -12,17 +12,26 @@
  *    앱 전체 빨강(COLOR.red)은 팀 결정 전까지 그대로 둔다.
  */
 import { ReactNode } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
+import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, TextInputProps, View } from 'react-native';
 import { BTN_RED, COLOR, pxBox } from '../lib/theme';
-import { PixelBook } from './pixel_book';
 import { CONTENT } from './phone_column';
+
+// 머리글 장부 그림: 타이틀 화면과 같은 닫힌 바람 장부 (원본 516x529). 예전 도형(72x90)과 같은 높이 90으로 보인다.
+// 2026-11-25 팀원 요청으로 임시 도형(PixelBook) 대신 이 그림을 쓴다.
+const BOOK_H = 90;
+const BOOK_W = Math.round((BOOK_H * 516) / 529);
 
 export function AuthFrame({ title, subtitle, children }: { title: string; subtitle: string; children: ReactNode }) {
   return (
     <View style={styles.safe}>
       <View style={styles.art}>
         <View style={styles.artBook}>
-          <PixelBook cell={3} />
+          <Image
+            source={require('../../assets/ledger_closed_sprite_v1.png')}
+            style={{ width: BOOK_W, height: BOOK_H }}
+            resizeMode="contain"
+            accessibilityLabel="바람 장부"
+          />
         </View>
         <View style={styles.artTitleBox}>
           <Text style={styles.artTitle}>{title}</Text>
