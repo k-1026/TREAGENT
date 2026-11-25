@@ -38,6 +38,9 @@ const CUTS: Record<CutKey, { tag: string; art: string; lines: string[] }> = {
 
 const goLedger = () => router.replace({ pathname: '/ledger', params: { tab: 'album' } });
 
+// 다시 보기 끝의 하랑이 한마디: 창작 후보 2개 중 무작위 (목업 #244, 확정 전 [확인 필요])
+const REPLAY_LINES = ['다시 봐도 좀 쑥스럽네요!', '기억하러 와 줘서 고마워요, 헤헤.'];
+
 export default function CutsceneScreen() {
   const params = useLocalSearchParams<{ cut?: string; mode?: string }>();
   const cutKey: CutKey = params.cut === 'c2' ? 'c2' : 'c1';
@@ -45,6 +48,8 @@ export default function CutsceneScreen() {
   const cut = CUTS[cutKey];
   const [idx, setIdx] = useState(0);
   const [done, setDone] = useState(false);
+  // 화면을 열 때 한 번만 고른다 (다시 그려질 때마다 바뀌지 않게)
+  const [replayLine] = useState(() => REPLAY_LINES[Math.floor(Math.random() * REPLAY_LINES.length)]);
 
   const next = () => {
     if (idx < cut.lines.length - 1) setIdx(idx + 1);
@@ -85,15 +90,15 @@ export default function CutsceneScreen() {
       ) : (
         <View style={styles.end}>
           <View style={styles.card}>
-            <Text style={styles.endTitle}>{replay ? '다시 봐도 좀 쑥스럽네요!' : '이 이야기, 앨범에 넣어 둘게요!'}</Text>
+            <Text style={styles.endTitle}>{replay ? '그날 장면을 다시 봤어요' : '이 이야기, 앨범에 넣어 둘게요!'}</Text>
             <Text style={styles.endSub}>
-              {replay ? '앨범에서 다시 본 컷씬이에요. 같은 장면이 매번 나와요.' : '장부의 [앨범] 책갈피에 담겨요. 건너뛰었어도 담겨요.'}
+              {replay ? '앨범에서 다시 본 컷씬이에요.' :'장부의 [앨범] 책갈피에 담겨요. 건너뛰었어도 담겨요.'}
             </Text>
           </View>
           <View style={styles.hara}>
             <Text style={styles.haraText}>
               <Text style={styles.haraName}>하랑이 </Text>
-              {replay ? '다시 봐도 좀 쑥스럽네요!' : '앞으로도 많은 길을 함께 걸어요!'}
+              {replay ? replayLine : '앞으로도 많은 길을 함께 걸어요!'}
             </Text>
           </View>
           {!replay ? <Text style={styles.note}>[확인 필요] 해금을 저장하는 건 서버 기능이 생기면 연결해요. 지금은 저장하지 않아요.</Text> : null}
