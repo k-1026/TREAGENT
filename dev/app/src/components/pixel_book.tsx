@@ -1,30 +1,24 @@
 /*
- * [pixel_book.tsx] 도트 그림 (임시 도형) — 장부
+ * [pixel_book.tsx] 도트 그림 — 칸(View)을 이어 붙여 그리는 작은 그림 (열쇠, 아이콘, 말풍선 꼬리 등)
  *
  * 역할
- *  - 목업(storyboard/app_login_region_mockup_v1.html)의 장부 그림과 능금 그림을 View 칸으로 그린다.
- *  - 그림 파일과 새 라이브러리를 쓰지 않는다.
- *  - 그림은 글자 격자(문자 하나 = 칸 하나)로 적는다. 같은 색이 가로로 이어지면 한 줄로 합쳐 그린다.
+ *  - 그림 파일과 새 라이브러리 없이 글자 격자(문자 하나 = 칸 하나)로 그린다. 같은 색이 가로로 이어지면 한 줄로 합쳐 그린다.
+ *  - 예전의 장부 도형(PixelBook)은 지웠다. 타이틀·로그인·가입의 장부는 이제 그림 파일(assets/ledger_closed_sprite_v1.png)이다 (2026-11-25).
  *
  * 글자 뜻 (PALETTE)
- *  K 잉크 테두리   R 장부 표지   D 장부 책등   L 장부 밝은 선   C 장부 자물쇠 크림   H 장부 밝은 면 (쓰이지 않음)
+ *  K 잉크 테두리
  *  P 능금 빨강     Q 능금 밝은 빨강   E 능금 어두운 빨강   W 능금 반사빛
  *  S 꼭지          G 잎 초록          V 잎 줄기 (진한 초록)
  *  Y 열쇠 금색     F 열쇠 구멍 종이색  . 빈 칸
  *
  * 능금은 이 파일이 아니라 assets/apple_pixel.png 그림을 쓴다.
- * 쓰는 곳: 타이틀(title.tsx), 로그인·가입 헤더(auth_ui.tsx), 로그인 성공 열쇠 연출(key_overlay.tsx)
+ * 쓰는 곳: 로그인 성공 열쇠 연출(key_overlay.tsx), 아이콘(pixel_icons.tsx, pouch_icons.tsx), 말풍선 꼬리·보내기 화살표(index.tsx, chat.tsx)
  */
 import { StyleSheet, View } from 'react-native';
 import { COLOR } from '../lib/theme';
 
 const PALETTE: Record<string, string> = {
   K: COLOR.ink,
-  R: '#a33a2b',
-  D: '#7a2a20',
-  L: '#f3dfc0',
-  C: COLOR.cream,
-  H: COLOR.cream,
   P: '#e53b2f',
   Q: '#ff6a50',
   E: '#b8222c',
@@ -96,28 +90,6 @@ export function fromRects(w: number, h: number, rects: [number, number, number, 
     for (let yy = y; yy < y + rh; yy++) for (let xx = x; xx < x + rw; xx++) g[yy][xx] = ch;
   }
   return g.map((r) => r.join(''));
-}
-
-// 장부 24x30 (목업의 장부 사각형 값 그대로)
-const BOOK = fromRects(24, 30, [
-  [1, 1, 22, 28, 'K'],
-  [2, 2, 20, 26, 'R'],
-  [2, 2, 4, 26, 'D'],
-  [8, 4, 12, 1, 'L'],
-  [8, 25, 12, 1, 'L'],
-  [8, 4, 1, 22, 'L'],
-  [19, 4, 1, 22, 'L'],
-  [10, 7, 3, 1, 'L'],
-  [12, 8, 3, 1, 'L'],
-  [15, 7, 2, 1, 'L'],
-  [11, 12, 4, 4, 'C'],
-  [12, 16, 2, 5, 'C'],
-  [12, 13, 2, 2, 'K'],
-]);
-
-// 장부 그림. cell은 칸 한 개의 크기(px). 장부는 24x30 칸이다.
-export function PixelBook({ cell }: { cell: number }) {
-  return <PixelSprite grid={BOOK} cell={cell} />;
 }
 
 // 열쇠 16x16 (목업 로그인 성공 화면의 열쇠 그림을 칸으로 옮김: 둥근 손잡이 + 몸통 + 이 두 개)
