@@ -1,6 +1,7 @@
 <!doctype html>
 <html lang="ko">
 <head>
+<script src="../dev/app/assets/map/map_hit_grid.js"></script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>앱 홈 화면(S-03) 목업 v1 (도트)</title>
@@ -248,6 +249,12 @@
   .dist small{display:block;font-size:12px;color:var(--muted)}
   .dist.on{background:var(--paper)}
   .dist.on small{color:var(--red-d);font-weight:800}
+  #mapPins{position:absolute;inset:0}
+  .mapcv{position:absolute;inset:0;width:100%;height:100%;cursor:pointer}
+  .dlab{position:absolute;transform:translate(-50%,-50%);text-align:center;line-height:1.1;color:var(--ink);pointer-events:none;white-space:nowrap;font-size:10px;text-shadow:0 0 2px #f3e6d0,0 0 2px #f3e6d0,0 0 3px #f3e6d0}
+  .dlab b{display:block;font-size:11px}
+  .dlab small{display:block;font-size:10px;color:var(--red-d)}
+  .dlab.on small{color:var(--red-d);font-weight:800}
   /* 오늘의 여행 사진 (완주 카드) */
   .photo{background:#fff;padding:12px;display:flex;flex-direction:column;gap:10px}
   .photoin{height:220px;display:flex;align-items:center;justify-content:center;text-align:center;padding:10px;font-size:12px;color:var(--muted);background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px)}
@@ -332,7 +339,7 @@
   .scene.going #dBub{display:block;animation:bubgone 0s linear 2.6s forwards}
   .scene.ready #dBub{display:block}
   .scene.ready #mainBub,.scene.going #mainBub{display:none}
-  .map{position:relative;height:200px;margin-bottom:4px;background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px);box-shadow:0 0 0 2px var(--ink)}
+  .map{position:relative;aspect-ratio:1122/1402;margin-bottom:4px;background:repeating-linear-gradient(135deg,#e8d6b8 0 6px,#f0e2c8 6px 12px);box-shadow:0 0 0 2px var(--ink)}
   .maptx{position:absolute;left:10px;bottom:10px;padding:3px 6px;background:var(--paper);font-size:12px;color:var(--muted)}
   .pin{position:absolute;width:24px;height:24px;display:flex;align-items:center;justify-content:center;background:var(--paper);box-shadow:0 0 0 2px var(--ink);font-size:12px;font-weight:800}
   .pin.on{background:var(--red);color:#fff}
@@ -418,10 +425,9 @@
       <div class="segp" id="bm-map">
         <div class="h3">지도 <span>대구 전역 · 구역별 내 완주율</span></div>
         <div class="map px">
-          <span class="maptx">[대구 전역 그림 자리 · 구역 경계는 예시]</span>
           <div id="mapPins"></div>
         </div>
-        <div class="row px"><div>내 완주율 = 내가 완주한 길 ÷ 전체 길 [기준 확인 필요]. MVP는 중구만 안내해요. 나머지 구·군은 준비 중이에요.</div></div>
+        <div class="row px"><div id="distInfo">내 완주율 = 내가 완주한 길 ÷ 전체 길 [기준 확인 필요]. MVP는 중구만 안내해요. 나머지 구·군은 준비 중이에요.</div></div>
       </div>
 
       <div class="segp" id="bm-trips" hidden>
@@ -767,7 +773,9 @@
   var justStamped=false;
   // 장부 지도: 대구 전역을 구역으로 나눠 길 완주율을 보여 준다 (능금 도장은 오늘의 여행 지도에 찍힘)
   // 완주율 수치는 예시이고 계산 기준은 [정의 확인 필요]. MVP는 중구만 안내
-  var DISTS=[{n:'군위군',c:0,r:0},{n:'북구',c:1,r:0},{n:'동구',c:2,r:0},{n:'서구',c:0,r:1},{n:'중구',c:1,r:1,on:1,rate:33},{n:'수성구',c:2,r:1},{n:'달서구',c:0,r:2},{n:'남구',c:1,r:2},{n:'달성군',c:2,r:2}];
+  // 구역 스프라이트: 원본 시트(1122x1402) 안의 위치와 크기. 파일은 dev/app/assets/map/
+  var MAP_W=1122, MAP_H=1402;
+  var DISTS=[{n:'군위군',k:'gunwi_gun',x:289,y:30,w:712,h:557,lx:631,ly:299},{n:'북구',k:'buk_gu',x:409,y:610,w:196,h:216,lx:521,ly:726},{n:'동구',k:'dong_gu',x:583,y:572,w:253,h:319,lx:710,ly:726},{n:'서구',k:'seo_gu',x:417,y:797,w:105,h:77,lx:469,ly:833},{n:'중구',k:'jung_gu',x:502,y:826,w:102,h:75,lx:551,ly:862,on:1},{n:'수성구',k:'suseong_gu',x:550,y:844,w:232,h:178,lx:666,ly:933},{n:'달서구',k:'dalseo_gu',x:211,y:698,w:214,h:253,lx:312,ly:816},{n:'남구',k:'nam_gu',x:369,y:850,w:201,h:170,lx:461,ly:929},{n:'달성군',k:'dalseong_gun',x:154,y:949,w:557,h:424,lx:406,ly:1133}];
   // 내 완주율 = 내가 완주한 길 수 ÷ 전체 길 수 (기준은 [확인 필요]). 내 여행 목록의 완주 1회를 기본값으로 둠
   var MY_DONE={C01:true};
   function mineRate(){ return Math.round(Object.keys(MY_DONE).length/POOL.length*100) }
@@ -779,8 +787,60 @@
       return '<button class="card px" data-nav="course" data-idx="'+id+'"><div class="th">[코스<br>썸네일]</div><div class="tx">'+c.t+'<small>'+c.m+'</small>'+r.chips+'<div class="route">'+r.stops.join(' → ')+'</div></div></button>'}).join('');
     $('#pickNote').textContent=PAGE?'새로 불러온 길 '+(PAGE+1)+'번째 묶음':'날씨에 맞는 길 3개';
   }
+  // 구역 지도: 면(map_fill_*)은 달성률 색으로 칠하고, 외곽선과 경계선(map_joined_line)은 그대로 얹는다.
+  // 누른 위치는 격자(MAP_HIT_GRID)로 구역을 찾는다. 픽셀을 읽지 않아서 file://에서도 그려진다.
+  function hitCells(){
+    var G=window.MAP_HIT_GRID; if(!G) return null;
+    if(!G._cells){
+      var bin=atob(G.data), n=G.w*G.h, cells=new Uint8Array(n);
+      for(var i=0;i<n;i++){ var b=bin.charCodeAt(i>>1); cells[i]=(i%2===0)?(b>>4):(b&15); }
+      G._cells=cells;
+    }
+    return G;
+  }
   function renderMap(){
-    $('#mapPins').innerHTML=DISTS.map(function(d){return '<span class="dist'+(d.on?' on':'')+'" style="left:'+(6+d.c*118)+'px;top:'+(6+d.r*64)+'px"><b>'+d.n+'</b>'+(d.on?'<small>내 완주율 [예시] '+mineRate()+'%</small>':'<small>준비 중</small>')+'</span>'}).join('');
+    var st=$('#mapPins'); st.innerHTML='';
+    var cv=document.createElement('canvas'); cv.className='mapcv'; cv.width=MAP_W; cv.height=MAP_H;
+    cv.setAttribute('role','img'); cv.setAttribute('aria-label','대구 구역 지도. 구역을 누르면 현황이 보입니다.');
+    st.appendChild(cv);
+    var g=cv.getContext('2d'), lineImg=new Image(), loaded=0, total=DISTS.length+1;
+    var cream=[243,230,208], red=[208,58,47];
+    function done(){ if(++loaded===total) draw(); }
+    function draw(){
+      var t=Math.min(mineRate(),100)/100;
+      g.clearRect(0,0,MAP_W,MAP_H);
+      DISTS.forEach(function(d){
+        var c=d.on?cream.map(function(v,k){return Math.round(v+(red[k]-v)*t)}):cream;
+        var tmp=document.createElement('canvas'); tmp.width=d.img.naturalWidth; tmp.height=d.img.naturalHeight;
+        var tg=tmp.getContext('2d'); tg.drawImage(d.img,0,0);
+        tg.globalCompositeOperation='source-in'; tg.fillStyle='rgb('+c.join(',')+')'; tg.fillRect(0,0,tmp.width,tmp.height);
+        g.drawImage(tmp,d.x,d.y);
+      });
+      g.drawImage(lineImg,0,0);
+      // 라벨: 격자 칸의 무게중심에 둔다
+      var G=hitCells(); if(!G) return;
+      var sx=[],sy=[],cnt=[];
+      for(var i=0;i<G.w*G.h;i++){ var v=G._cells[i]; if(!v) continue; sx[v]=(sx[v]||0)+(i%G.w); sy[v]=(sy[v]||0)+Math.floor(i/G.w); cnt[v]=(cnt[v]||0)+1; }
+      DISTS.forEach(function(d,idx){
+        var v=idx+1; if(!cnt[v]) return;
+        var s=document.createElement('span'); s.className='dlab'+(d.on?' on':'');
+        var lx=(d.lx!=null)?d.lx:(sx[v]/cnt[v]+0.5)*G.cell, ly=(d.ly!=null)?d.ly:(sy[v]/cnt[v]+0.5)*G.cell;
+        s.style.left=(lx/MAP_W*100)+'%'; s.style.top=(ly/MAP_H*100)+'%';
+        s.innerHTML='<b>'+d.n+'</b>'+(d.on?'<small>'+mineRate()+'%</small>':'');
+        st.appendChild(s);
+      });
+    }
+    DISTS.forEach(function(d){ d.img=new Image(); d.img.onload=done; d.img.src='../dev/app/assets/map/map_fill_'+d.k+'.png'; });
+    lineImg.onload=done; lineImg.src='../dev/app/assets/map/map_joined_line.png';
+    cv.onclick=function(e){
+      var G=hitCells(); if(!G) return;
+      var r=cv.getBoundingClientRect();
+      var cx=Math.floor((e.clientX-r.left)/r.width*MAP_W/G.cell), cy=Math.floor((e.clientY-r.top)/r.height*MAP_H/G.cell);
+      if(cx<0||cy<0||cx>=G.w||cy>=G.h) return;
+      var v=G._cells[cy*G.w+cx]; if(!v) return;
+      var d=DISTS[v-1];
+      $('#distInfo').textContent=d.n+' · '+(d.on?'내 완주율 [예시] '+mineRate()+'%':'아직 준비 중이에요');
+    };
   }
   // 장소 → 소개 → 도착했어요 → GPS 확인·미션 안내 → 미션 달성 시 능금 도장
   function renderStop(){

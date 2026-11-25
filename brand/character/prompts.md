@@ -217,6 +217,32 @@ Set of 6 pixel-art sticker emoji of the same character as the reference sheet (H
 - 충돌 확인 필요: 이 파일의 공통 조건(약 26행)은 "꼬리와 얼굴 배는 크림색"이라고 적혀 있어, 이번 꼬리 조건과 어긋납니다. 팀이 꼬리 색을 정하면 공통 조건을 함께 고칩니다 [확인 필요].
 
 
+## P17 · 대구 구역 지도 스프라이트 9장 (2026-11-24, 생성 전 초안)
+
+용도: 장부 화면 '지도' 탭의 구역별 버튼. 한 장에 9개 구·군을 조금씩 띄워 그린 뒤 구역별로 잘라 씁니다. 방문 달성률에 따라 앱에서 색을 입힙니다.
+참고 이미지: `구역 배치 참고` (첨부 이미지 4, 구역 윤곽·이름·상대 위치의 기준). 첨부 이미지 1은 목업 테두리 굵기 참고용입니다.
+
+영문 프롬프트:
+"Flat vector-style map sheet of Daegu Metropolitan City, split into 9 separate district pieces (gu and gun) that are pulled apart from each other like an exploded view, with a clear gap of about 30 px on a 1024 px wide canvas between every pair of neighboring pieces, so each piece can be tapped separately. Use the attached district layout as the exact reference for each piece's shape and relative position: Gunwi-gun at the top; Buk-gu and Dong-gu in the middle; Seo-gu, Jung-gu and Nam-gu as small pieces in the center cluster; Dalseo-gu on the left; Suseong-gu on the lower right; Dalseong-gun as the large piece at the bottom. Each piece is a closed shape with smooth edges, a thin dark brown outline (#5b2a22), about 8 px wide on the 1024 px canvas (roughly 1% of the map width, close to the default tile border in the mockup), of uniform width, and no inner hatching. Every piece uses one identical flat pale cream fill (#f3e6d0): no gradient, no stripes, no pattern, no texture, no shadow, so the app can tint each district later. No labels, no text, no letters, no numbers, no icons, no compass, no grid lines, no background map. Background: fully transparent (alpha 0), true alpha-channel PNG, no white fill. Canvas 1024 px wide by 1280 px tall, all 9 pieces fully inside with a 40 px margin."
+
+한국어 참고: 대구 9개 구·군을 한 장에 그립니다. 실제 윤곽과 상대 위치는 유지하되, 조각마다 조금씩 띄웁니다(분해도처럼). 외곽선은 진한 갈색으로, 1024px 캔버스에서 약 8px의 얇은 일정 굵기 (목업 기본 타일 테두리와 비슷한 정도, 굵기는 `[확인 필요]`로 실제 목업과 대조). 면은 모든 구역이 같은 연한 크림색 하나. 그라데이션·줄무늬·글자 없음. 배경은 투명(불가 시 단색 초록). 조각끼리 닿지 않게 해서 자동으로 잘라낼 수 있게 합니다.
+
+- 1차 결과(조각 간격 불균일, 구역 위치 불확실, 윤곽이 거칠음)는 채택하지 않습니다. 배경은 투명입니다. 알파 채널을 확인했고 모서리 픽셀이 alpha 0입니다 (`3.webp` 1122x1402 RGBA). 흰색으로 보인 것은 화면 표시 때문이었습니다. 2차는 구역 배치 참고 이미지(첨부 4)와 30px 간격으로 고칩니다.
+- 사용 기록 (2026-11-24): 1차 결과(`3.webp`, 1122x1402 RGBA)를 조각 9개로 잘라 `dev/app/assets/map/map_<구 이름 영문>.png`로 저장했습니다 (`gunwi_gun`, `dong_gu`, `buk_gu`, `dalseo_gu`, `seo_gu`, `jung_gu`, `suseong_gu`, `nam_gu`, `dalseong_gun`). 구 이름은 조각 위치로 붙였습니다 (첨부 4 기준). `[확인 필요]`: 팀이 이름을 확인해야 합니다. 조각 테두리는 알파 128 기준으로 나눴고, 각 조각은 자기 영역만 남겼습니다. 생성 결과 자체는 채택 전 단계입니다.
+- 목업 연결 (2026-11-24): `storyboard/app_home_mockup_v1.html` 장부 지도 탭에 구역 버튼 9개로 연결했습니다. 달성률 예시(중구 1/6 = 17%)에 따라 면 색을 크림에서 능금 빨강으로 섞고, 준비 중 구역은 회색으로 둡니다. 누르면 아래 문장에 구역 상태가 뜹니다. `[확인 필요]`: `file://`로 열면 캔버스 제한으로 색이 안 입혀질 수 있어 http 주소에서 확인해야 합니다.
+- 붙이기 (2026-11-24): 조각을 한 장 캔버스에 붙여 그립니다. 조각 사이 틈(약 5px 이내)은 외곽선색으로 메워 경계선이 되고, 누르면 원본 조각 모양으로 구역을 판정합니다. 틈이 넓은 곳은 크림 틈이 남을 수 있습니다. 브라우저 확인은 아직 못 했고, 같은 방식의 Python 렌더로 모양만 확인했습니다.
+- 지도 안 보임 수정 (2026-11-24): 원인은 픽셀 읽기(getImageData)였습니다. `file://`로 연 페이지에서는 브라우저가 이미지 픽셀 읽기를 막아, 지도 그리기가 조용히 멈췄습니다. 그래서 픽셀을 읽지 않는 방식으로 바꿨습니다: 구역별 면 마스크 `dev/app/assets/map/map_fill_<구>.png`(9장), 외곽선·경계선 `map_joined_line.png`, 누름 판정 격자 `map_hit_grid.js`(6px 칸, 4비트). 페이지는 면을 색으로 칠하고 외곽선을 얹습니다. 브라우저 확인은 아직 못 했습니다 (미리보기 주소가 `data:`라 파일을 불러오지 못함).
+- 글자 위치 = 무게중심 (2026-11-24): 구역별 면 마스크(`map_fill_<구>.png`)의 무게중심을 계산해 DISTS의 lx, ly에 넣었습니다. 9곳 모두 무게중심이 구역 안에 있습니다. `[확인 필요]` 브라우저 확인 전입니다.
+- 원본 간격 + 글자 재배치 (2026-11-24): 조각은 원본 `3.webp`의 간격과 위치를 그대로 씁니다. 외곽선은 흰 찌꺼기를 뺀 갈색 선입니다. 구역 이름은 자동 위치 대신 지정 좌표(DISTS의 lx, ly)에 둡니다. 작은 구역(서구, 중구)은 선에 닿지 않게 옮겼습니다. `[확인 필요]` 브라우저에서 확인 전입니다.
+- 선 정리 (2026-11-24): 틈을 메우던 방식은 선이 두 겹으로 보여서 버렸습니다. 지금은 조각마다 같은 굵기의 갈색 외곽선만 그리고, 조각 사이 틈은 원본 간격 그대로 둡니다. 구역 이름은 한 줄로 줄여 `text-shadow`로 선 위에서도 읽히게 했고, "준비 중" 글자는 뺐습니다. 중구는 이름 아래에 달성률만 표시합니다. `[확인 필요]` 이 방식은 조각이 떨어져 있으므로, 처음 요청한 "합치기"와는 다릅니다.
+- 흰 테두리 수정 (2026-11-24): 원본 `3.webp`의 반투명 흰 테두리(밝고 알파 1~199인 픽셀)와 알파 1~39 잡음이 선 주변에 남아 있었습니다. 알파 40 미만을 지우고, 외곽선은 브랜드 갈색(#5b2a22)으로 다시 칠했습니다. 조각 사이 틈은 두 조각 모두에서 5px 이내인 곳만 메워서 바깥 테두리는 두꺼워지지 않게 했습니다. 결과 파일(`map_*.png`, `map_fill_*.png`, `map_joined_line.png`)에는 밝은 픽셀이 0개입니다. 지도 화면 좌표(DISTS)는 새 크기로 맞췄습니다. 브라우저 확인은 아직 못 했습니다.
+- 색 수정 (2026-11-24): 준비 중 구역의 회색을 없애고 원본 크림색으로 되돌렸습니다. 활성 구역(중구)만 크림→능금 빨강으로 달성률에 따라 섞입니다. 예시 17%는 거의 크림에 가까운 색입니다. `[확인 필요]` 준비 중과 달성률 0%가 같은 크림색이 되므로, 구분은 글자("준비 중")로 합니다.
+- 확인할 것: 결과를 구역 배치 참고(첨부 4)에 겹쳐 보고 구역 위치가 맞는지 봅니다. 어긋나면 해당 구역만 다시 요청합니다.
+- 확인할 것: 면이 모두 같은 크림색인지 (색 입히기 전제), 조각이 서로 닿지 않는지 봅니다.
+- 색 계열 (사용자 선택, 2026-11-24, 후보 A): 달성률 0%는 기본 크림(#f3e6d0), 달성률이 오를수록 능금 빨강(#d03a2f 계열)으로 입힙니다. 팀 확인 전 `[확인 필요]`.
+- 결정 필요: 달성률 색 단계 수 (예: 몇 단계로 나눌지). 완주율 계산식은 `[기준 확인 필요]`입니다 (첨부 이미지 1 하단 설명).
+- MVP 범위: 첨부 목업 기준으로 MVP는 중구만 활성이고 나머지는 "준비 중"입니다. 9장은 전부 만들되, 활성 여부는 앱에서 정합니다.
+
 ## C0 · 컷씬 기본 프롬프트 (표준 양식, 2026-11-23 초안, 팀 확인 전)
 
 - 출처 파일 이전: `brand/cutscene/cutscene_base_prompt_v1.md`에서 옮김. 장면마다 `{SCENE}`, `{PROPS}`만 바꿔 씁니다.
