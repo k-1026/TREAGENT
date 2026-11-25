@@ -23,6 +23,7 @@ Supabase SQL Editor에서 위에서부터 하나씩 실행합니다. 날짜가 �
 | 9 | `create_profiles.sql` | `profiles` 표 (닉네임·나이대) | 아니요 (이미 있으면 오류) |
 | 10 | `create_parties.sql` | `parties`, `party_members`, `party_routes` 표 (일행) | 아니요 (이미 있으면 오류) |
 | 11 | `create_party_route_candidates.sql` | `party_route_candidates` 표 (일행 후보 길) | 10번 다음에 실행. 아니요 (이미 있으면 오류) |
+| 12 | `create_agent_runs.sql` | `agent_runs`, `agent_run_ends`, `agent_run_steps` 표 (에이전트 실행 기록, 추가만 가능) | 다른 표와 무관. 아니요 (이미 있으면 오류) |
 
 - 7번은 새 43곳을 모두 `status = open`으로 노출합니다. 허가 확인 전인 민간 시설과 미검증 장소도 포함되어 있어서, 서버가 `permission_state`를 거르기에 쓸지는 서버 PR에서 정합니다 `[결정 필요]`.
 - 8번의 `is_estimated = true` 값(엑셀의 "추정:")은 공간 유형만 보고 넣은 값이라 거르는 데 쓰지 않습니다 `[확인 필요]`.

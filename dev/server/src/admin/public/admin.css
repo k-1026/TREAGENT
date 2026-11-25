@@ -1,0 +1,104 @@
+:root {
+  --bg: #f6f7f9; --panel: #fff; --text: #1d2330; --muted: #667085; --line: #c8cfdb; --border: #e3e7ee;
+  --accent: #2f6fed; --ok: #1f9d55; --fail: #d92d20; --warn: #dc7a0b; --llm: #e8efff; --code: #eef6ee; --human: #fff3e0;
+}
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #12151b; --panel: #1b2029; --text: #e7eaf0; --muted: #98a2b3; --line: #4a5365; --border: #2b3240;
+    --accent: #6c9bff; --ok: #4cc380; --fail: #ff6b5e; --warn: #f0a050; --llm: #243457; --code: #213328; --human: #46371f;
+  }
+}
+* { box-sizing: border-box; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 14px/1.5 system-ui, -apple-system, "Segoe UI", "Malgun Gothic", sans-serif; }
+a { color: var(--accent); }
+.banner { display: flex; align-items: center; gap: 20px; padding: 10px 20px; background: var(--panel); border-bottom: 1px solid var(--border); position: sticky; top: 0; z-index: 2; flex-wrap: wrap; }
+.brand { font-size: 16px; }
+nav { display: flex; gap: 4px; }
+nav a { padding: 6px 14px; border-radius: 6px; color: var(--muted); text-decoration: none; }
+nav a:hover { background: var(--bg); }
+nav a.active { background: var(--accent); color: #fff; }
+.banner-right { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+.chip { display: inline-block; margin-right: 6px; padding: 2px 10px; border: 1px solid var(--border); border-radius: 999px; color: var(--muted); font-size: 12px; background: var(--bg); }
+.chip.running { color: var(--accent); border-color: var(--accent); }
+.chip.ok { color: var(--ok); border-color: var(--ok); }
+.chip.fail { color: var(--fail); border-color: var(--fail); }
+.chip.warn { color: var(--warn); border-color: var(--warn); }
+button { font: inherit; padding: 5px 12px; border: 1px solid var(--border); border-radius: 6px; background: var(--panel); color: var(--text); cursor: pointer; }
+button:hover:not(:disabled) { border-color: var(--accent); }
+button:disabled { opacity: 0.5; cursor: default; }
+button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+main { padding: 20px; max-width: 1280px; margin: 0 auto; }
+h2 { margin: 0 0 12px; font-size: 18px; }
+h3 { margin: 16px 0 8px; font-size: 15px; }
+h3.section { margin-top: 24px; padding-bottom: 4px; border-bottom: 2px solid var(--border); }
+.muted { color: var(--muted); }
+.notice { padding: 10px 14px; border: 1px solid var(--warn); border-radius: 8px; color: var(--warn); margin-bottom: 14px; }
+.grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(560px, 1fr)); gap: 14px; }
+.group { grid-column: 1 / -1; padding: 4px 12px 12px; border: 1px dashed var(--line); border-radius: 12px; }
+.group > h3 { margin-top: 8px; }
+.card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; margin-bottom: 8px; }
+.card-link { display: block; color: inherit; text-decoration: none; margin-bottom: 0; }
+.card-link:hover { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent); }
+.card-head { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; flex-wrap: wrap; }
+.card-head h2, .card-head h3 { margin: 0; }
+.cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 13px; }
+th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--border); vertical-align: top; }
+th { color: var(--muted); font-weight: 600; white-space: nowrap; }
+tr.clickable { cursor: pointer; }
+tr.clickable:hover td, tr.picked td { background: var(--bg); }
+pre { margin: 4px 0 0; padding: 6px 8px; background: var(--bg); border-radius: 6px; max-width: 420px; overflow: auto; white-space: pre-wrap; word-break: break-all; font-size: 12px; }
+details summary { cursor: pointer; color: var(--muted); }
+.summary { display: flex; flex-wrap: wrap; gap: 10px; margin: 8px 0 12px; }
+.stat { min-width: 110px; padding: 6px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--bg); }
+.scenario { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.scenario > div { flex: 1; }
+.verdict-pass { color: var(--ok); }
+.verdict-fail, .verdict-error { color: var(--fail); font-weight: 600; }
+.running-row td { color: var(--accent); }
+.dot { display: inline-block; width: 9px; height: 9px; border-radius: 50%; background: var(--accent); margin-right: 6px; animation: blink 1s ease-in-out infinite; }
+
+/* 로그인 */
+.login { max-width: 360px; margin: 40px auto; display: grid; gap: 12px; }
+.login label { display: grid; gap: 4px; color: var(--muted); font-size: 13px; }
+.login input { font: inherit; padding: 7px 10px; border: 1px solid var(--border); border-radius: 6px; background: var(--bg); color: var(--text); }
+.login input:focus { outline: 2px solid var(--accent); outline-offset: 0; }
+button[hidden] { display: none; }
+
+/* 에이전트 이름 카드: 구조도 없이 이름만 보이고, 지금 움직이면 깜빡인다 */
+.grid.names { grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); }
+.agent-name { padding: 10px 14px; }
+.agent-name .card-head { margin-bottom: 4px; }
+.agent-name.live { border-color: var(--accent); animation: live 1s ease-in-out infinite; }
+.agent-name.mine { border-color: var(--warn); box-shadow: 0 0 0 2px var(--warn); }
+.user-agents { margin-top: 10px; padding: 10px 12px; border: 1px dashed var(--line); border-radius: 8px; }
+.name-chip { display: inline-block; margin: 6px 8px 0 0; padding: 4px 12px; border: 1px solid var(--border); border-radius: 999px; color: var(--text); text-decoration: none; background: var(--bg); }
+.name-chip:hover { border-color: var(--accent); }
+.name-chip.live { border-color: var(--accent); color: var(--accent); animation: live 1s ease-in-out infinite; }
+@keyframes live { 0%, 100% { background: var(--panel); } 50% { background: var(--llm); } }
+@media (prefers-reduced-motion: reduce) { .agent-name.live, .name-chip.live { animation: none; } }
+
+/* 구조도 */
+svg.graph { width: 100%; height: auto; display: block; }
+svg.graph text { fill: var(--text); font-size: 12px; text-anchor: middle; pointer-events: none; }
+svg.graph text.kind { fill: var(--muted); font-size: 10px; }
+svg.graph text.badge { fill: var(--fail); font-weight: 700; font-size: 11px; }
+/* 되돌이·소진 글자: 배경(윤곽선)을 깔아서 화살표나 노드 위에 올라가도 읽힌다 */
+svg.graph text.loop-label { fill: var(--warn); font-weight: 700; font-size: 11px; paint-order: stroke; stroke: var(--panel); stroke-width: 5px; stroke-linejoin: round; }
+svg.graph text.loop-label.exhaust { fill: var(--fail); }
+svg.graph .node rect { fill: var(--panel); stroke: var(--line); stroke-width: 1.5; }
+svg.graph .node.kind-llm rect { fill: var(--llm); }
+svg.graph .node.kind-code rect { fill: var(--code); }
+svg.graph .node.kind-human rect { fill: var(--human); }
+svg.graph .node.optional rect { stroke-dasharray: 5 4; opacity: 0.8; }
+svg.graph .node.done rect { stroke: var(--ok); }
+svg.graph .node.failed rect { stroke: var(--fail); stroke-width: 2.5; }
+svg.graph .node.current rect { stroke: var(--accent); stroke-width: 3; animation: blink 1s ease-in-out infinite; }
+svg.graph .edge { fill: none; stroke: var(--line); stroke-width: 1.5; }
+svg.graph .loop { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 4 3; opacity: 0.45; }
+svg.graph .loop.hit { stroke: var(--warn); stroke-width: 2.5; opacity: 1; }
+svg.graph .loop.exhausted { stroke: var(--fail); stroke-width: 2.5; stroke-dasharray: none; opacity: 1; }
+svg.graph .arrow-fill { fill: var(--line); }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+@media (prefers-reduced-motion: reduce) { .dot, svg.graph .node.current rect { animation: none; } }
