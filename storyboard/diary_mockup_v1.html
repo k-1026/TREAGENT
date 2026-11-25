@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>하랑이 일기 목업 v1 (완주 뒤 일기)</title>
+<meta name="description">완주 뒤 하랑이 일기 화면 목업. 방문 기록으로만 쓴 일기를 보여 줍니다. 상태: 정상 일기, 틀 일기(AI 실패 때 폴백), 기록 없음(일기 없음). 근거: plan/spec/agent_architecture_v1.md (기록 정리 에이전트 3), storyboard/game_flow_story_v1.md 7-4절. 본문은 자리표시이며 승인 전 [확인 필요].</meta>
+<style>
+  :root{
+    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#a85a24; --paper:#fffaf1; --red:#d03a2f; --red-d:#9c2420;
+    --muted:#7a5a4c; --shade:#d9bf98;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#e9e4dc;color:var(--ink);font-family:var(--font)}
+  body{display:flex;flex-direction:column;align-items:center;padding:12px 12px 28px;gap:10px}
+  .ctrl{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;justify-content:center;font-size:14px;max-width:760px}
+  .ctrl select{font:inherit;padding:5px 8px;border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:0}
+  .phone{position:relative;width:390px;height:844px;background:var(--cream);overflow:hidden;box-shadow:0 0 0 3px var(--ink),0 14px 36px rgba(60,40,20,.28)}
+  .status{position:absolute;left:0;top:0;width:390px;height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:13px;font-weight:700;color:#fff3e0;background:var(--beam);z-index:20}
+  .top{position:absolute;left:0;top:40px;width:390px;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:var(--beam);border-bottom:3px solid var(--ink);z-index:19}
+  .top .ttl{color:#fff;text-align:center;line-height:1.2}
+  .top .ttl b{display:block;font-size:18px;text-shadow:2px 2px 0 var(--ink)}
+  .top .ttl small{font-size:12px;color:#fff3e0}
+  .navbtn{border:0;background:var(--cream);padding:6px 11px;font-size:14px;font-weight:800;cursor:pointer;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink);color:var(--ink);font-family:inherit}
+  .pbody{position:absolute;left:0;top:100px;width:390px;bottom:0;overflow:hidden;padding:14px 18px 12px;display:flex;flex-direction:column;gap:10px}
+  .banner{padding:12px 14px;font-size:14px;line-height:1.5;font-weight:700;box-shadow:0 0 0 2px var(--ink)}
+  .banner.grey{background:#e6e1da}
+  .banner.warn{background:#ffe1d6;color:var(--red-d)}
+  #diary{flex:1;display:flex;flex-direction:column}
+  .paper .end{margin-top:auto;display:flex;flex-direction:column;gap:10px}
+  .paper{flex:1;background:var(--paper);padding:18px 18px 16px;box-shadow:0 0 0 2px var(--ink);display:flex;flex-direction:column;gap:14px}
+  .paper .date{font-size:13px;color:var(--muted);display:flex;justify-content:space-between}
+  .paper h2{margin:0;font-size:19px;line-height:1.4}
+  .paper p{margin:0;font-size:15px;line-height:1.7}
+  .paper .vis{display:flex;align-items:center;gap:10px;border-left:3px solid var(--shade);padding-left:12px}
+  .paper .vis .vtx{flex:1}
+  .paper .vis .mk{width:34px;height:34px;flex:none;object-fit:contain}
+  .paper .vis small{display:block;font-size:12px;color:var(--muted);margin-top:4px}
+  .paper .stamp-row{display:flex;gap:8px;align-items:center;font-size:13px;color:var(--muted)}
+  .paper .stamp-row img{width:28px;height:28px;object-fit:contain}
+  .tag{display:inline-block;font-size:12px;font-weight:800;padding:3px 8px;background:var(--cream2);box-shadow:0 0 0 2px var(--ink);align-self:flex-start}
+  .hara{font-size:15px;line-height:1.6;background:var(--paper);padding:12px 14px;box-shadow:0 0 0 2px var(--ink)}
+  .hara b{color:var(--beam)}
+  .btn{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:52px;padding:0;line-height:1;border:0;background:var(--paper);color:var(--ink);font-weight:800;font-size:16px;cursor:pointer;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink);font-family:inherit}
+  .btn.primary{background:var(--red);color:#fff}
+  .row2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .toast{position:absolute;left:24px;right:24px;bottom:24px;background:var(--ink);color:#fff8ea;padding:12px 14px;font-size:15px;text-align:center;z-index:30;display:none}
+</style>
+</head>
+<body>
+
+<div class="ctrl" role="group" aria-label="목업 조작 (실제 화면에는 없음)">
+  <label>상태 <select id="st">
+    <option value="ok">정상 일기 (AI가 씀)</option>
+    <option value="fallback">틀 일기 (AI 실패, 사실만 채움)</option>
+  </select></label>
+</div>
+
+<main class="phone" id="phone">
+  <div class="status"><span>9:41</span><span>●●● ▮</span></div>
+  <header class="top">
+    <button class="navbtn" id="back" aria-label="뒤로">‹ 뒤로</button>
+    <div class="ttl"><b>하랑이의 일기</b><small id="sub">완주한 날의 한 편</small></div>
+    <button class="navbtn" id="home" aria-label="홈">⌂ 홈</button>
+  </header>
+
+  <section class="pbody">
+    <!-- 정상 / 틀 일기 공통 -->
+    <div id="diary">
+      <div class="paper">
+        <div class="date"><span>[완주 날짜]</span><span>[날씨 한 줄 · 기준 시각]</span></div>
+        <h2>[여행 이름 예시] 한 바퀴</h2>
+        <div class="vis"><div class="vtx"><p>[시각] [장소 1 이름]에 도착했어요. [사실 1: 그날 보여 준 설명]</p><small>방문 기록 · 장소 1 · [미션 종류]</small></div><img class="mk" src="../brand/images/items/stamp_nungeum.webp" alt="장소 1 도장"></div>
+        <div class="vis"><div class="vtx"><p>[시각] [장소 2 이름]에서 [사실 2: 퀴즈 결과 또는 설명, 범위는 결정 필요]</p><small>방문 기록 · 장소 2 · [미션 종류]</small></div><img class="mk" src="../brand/images/items/stamp_nungeum.webp" alt="장소 2 도장"></div>
+        <div class="vis"><div class="vtx"><p>[시각] [장소 3 이름]까지 걸었어요. [사실 3]</p><small>방문 기록 · 장소 3 · [미션 종류]</small></div><img class="mk" src="../brand/images/items/stamp_nungeum.webp" alt="장소 3 도장"></div>
+        <div class="end">
+          <p id="closing">[하랑이 마무리 한 줄]</p>
+          <div class="stamp-row"><img src="../brand/images/items/stamp_nungeum.webp" alt="">도장 3/3 · 이름은 {이름} 님 (호칭 규칙)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 틀 일기 안내 -->
+    <div id="fbBan" hidden class="banner warn">이 일기는 하랑이 말투 대신 사실을 채운 기본 글이에요. [확인 필요: 다시 쓰기 가능 여부]</div>
+
+
+    <div class="row2" id="acts">
+      <button class="btn primary" id="save">저장하기</button>
+      <button class="btn" id="close">닫기</button>
+    </div>
+  </section>
+
+  <div class="toast" id="toast"></div>
+</main>
+
+<script>
+(function(){
+  var $=function(s){return document.querySelector(s)};
+  var toastT;
+  function toast(t){var el=$('#toast');el.textContent=t;el.style.display='block';clearTimeout(toastT);toastT=setTimeout(function(){el.style.display='none'},1800)}
+
+  // 상태별 화면. 틀 일기는 같은 자리에 사실만 채운 글이 나오고 "기본 글" 안내를 붙임
+  function render(){
+    var k=$('#st').value;
+    $('#fbBan').hidden = (k!=='fallback');
+  }
+  // 하랑이 마무리 한 줄: 창작 후보 2개 중 무작위 (팀이 확정하기 전까지 [확인 필요])
+  var CLOSING=['오늘도 같이 걸어 줘서 고마워요! 제 장부에 한 칸이 또 채워졌어요, 헤헤.','오늘 길은 {이름} 님이랑 걸은 한 장이에요. 다음에도 같이 가요!'];
+  $('#closing').textContent=CLOSING[Math.floor(Math.random()*CLOSING.length)];
+  $('#st').addEventListener('change',render);
+
+  $('#save').addEventListener('click',function(){ toast('저장했어요 (목업: 장부 [내 여행]에 추가됨)'); });
+  $('#close').addEventListener('click',function(){ if(history.length>1){ history.back(); } else { location.href='app_home_mockup_v1.html'; } });
+  $('#back').addEventListener('click',function(){ if(history.length>1){ history.back(); } else { location.href='app_home_mockup_v1.html'; } });
+  $('#home').addEventListener('click',function(){ location.href='app_home_mockup_v1.html'; });
+
+  var P=new URLSearchParams(location.search);
+  if(P.get('st')&&['ok','fallback'].indexOf(P.get('st'))>=0) $('#st').value=P.get('st');
+  render();
+})();
+</script>
+</body>
+</html>

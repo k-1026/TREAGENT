@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>대화 말풍선 색 3안 비교 v1</title>
+<meta name="description">하랑이와 대화하기 화면의 말풍선 색 3안 비교. 원래 버전, 후보 B(흰 종이 + 연분홍), 하랑이 흰 종이 + 이용자 붉은색. 하랑이 말풍선과 이용자 말풍선이 쉽게 구분되는지 기준으로 고릅니다. 색 값은 임시이며 팀 결정 전 [결정 필요].</meta>
+<style>
+  :root{
+    --ink:#5b2a22; --cream:#fbefdc; --cream2:#f3dfc0; --beam:#a85a24; --paper:#fffaf1; --red:#d03a2f; --red-d:#9c2420;
+    --muted:#7a5a4c; --shade:#d9bf98;
+    --font:'Malgun Gothic','Apple SD Gothic Neo','Noto Sans KR',sans-serif;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;background:#e9e4dc;color:var(--ink);font-family:var(--font);line-height:1.6}
+  body{padding:16px}
+  main{max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+  h1{font-size:22px;margin:8px 0 0}
+  h2{font-size:17px;margin:0 0 8px;padding-bottom:6px;border-bottom:3px solid var(--ink)}
+  p{margin:0 0 6px;font-size:14px}
+  ul{margin:0;padding-left:18px;font-size:13px;line-height:1.6}
+  .lead{font-size:14px;color:var(--muted)}
+  .tag{display:inline-block;font-size:11px;font-weight:800;padding:2px 7px;background:var(--cream2);box-shadow:0 0 0 2px var(--ink);margin-right:4px}
+  .tag.w{background:#ffe1d6;color:var(--red-d)}
+  .sec{background:var(--cream);padding:16px;box-shadow:0 0 0 3px var(--ink)}
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .panel{background:var(--paper);padding:12px;box-shadow:0 0 0 2px var(--ink);display:flex;flex-direction:column;gap:10px}
+  .panel .hd{display:flex;justify-content:space-between;align-items:center;gap:8px}
+  .panel .hd b{font-size:15px}
+  .spec{font-size:12px;color:var(--muted);background:#fff;padding:6px 8px;box-shadow:0 0 0 1px var(--shade)}
+
+  /* 샘플 대화 */
+  .chat{background:var(--cream);padding:10px;display:flex;flex-direction:column;gap:10px;box-shadow:0 0 0 1px var(--shade)}
+  .msg{display:flex;gap:8px;align-items:flex-end}
+  .msg.me{justify-content:flex-end}
+  .av{width:32px;height:32px;flex:none;object-fit:cover;object-position:50% 0;background:var(--paper);border-radius:6px;box-shadow:0 0 0 1.5px var(--ink)}
+  .bub{max-width:76%;padding:8px 10px;font-size:13px;line-height:1.45;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink)}
+  .hara{--bg:#fffaf1;--fg:var(--ink)}
+  .user{--bg:#f3dfc0;--fg:var(--ink)}
+  .bub{background:var(--bg);color:var(--fg)}
+  .v1 .hara{--bg:#fffaf1} .v1 .user{--bg:#f3dfc0}
+  .v2 .hara{--bg:#fffaf1} .v2 .user{--bg:#ffe1d6}
+  .v3 .hara{--bg:#fffaf1} .v3 .user{--bg:#d03a2f;--fg:#fff}
+
+  .pick{display:flex;align-items:center;gap:8px;font-size:14px;font-weight:800;cursor:pointer;padding:10px 12px;background:#fff;box-shadow:0 0 0 2px var(--ink);border-radius:6px}
+  .pick input{width:18px;height:18px;margin:0}
+  .sum{display:flex;flex-direction:column;gap:10px}
+  textarea{width:100%;min-height:110px;font:inherit;font-size:13px;padding:10px;border:2px solid var(--ink);background:#fff;color:var(--ink);resize:vertical}
+  .go{height:44px;padding:0 16px;border:0;background:var(--red);color:#fff;font:inherit;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 0 0 1.5px var(--ink);border-radius:6px}
+  .src{font-size:12px;color:var(--muted);padding-left:16px}
+  @media (max-width:760px){ .grid{grid-template-columns:1fr} }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <span class="tag">비교 목업</span><span class="tag w">결정 필요</span>
+    <h1>하랑이 말풍선 색 3안 비교</h1>
+    <p class="lead">하랑이 말풍선과 이용자 말풍선이 확실히 구분되는지 기준으로 고르세요. 하랑이 말풍선은 세 안 모두 흰 종이색(#fffaf1)입니다. 색 값은 임시입니다.</p>
+  </header>
+
+  <section class="sec">
+    <h2>3안 한눈에 보기</h2>
+    <div class="grid">
+
+      <div class="panel v1">
+        <div class="hd"><b>1안 · 원래 버전</b><span class="tag">기준</span></div>
+        <div class="chat">
+          <div class="msg"><img class="av" src="../brand/images/characters/base/harangi_face_v1.png" alt=""><div class="bub hara">무엇이 궁금한가요?</div></div>
+          <div class="msg me"><div class="bub user">오늘 뭐 챙길까?</div></div>
+          <div class="msg"><img class="av" src="../brand/images/characters/base/harangi_face_v1.png" alt=""><div class="bub hara">[날씨 답변 · 승인 대기]</div></div>
+        </div>
+        <div class="spec">하랑 #fffaf1 · 이용자 #f3dfc0 (두 색이 가까움)</div>
+        <ul><li>색 차이가 작아 말풍선 주인이 한눈에 안 보일 수 있습니다.</li><li>차분하고 기존 톤과 가깝습니다.</li></ul>
+      </div>
+
+      <div class="panel v2">
+        <div class="hd"><b>2안 · 후보 B</b><span class="tag">흰 종이 + 연분홍</span></div>
+        <div class="chat">
+          <div class="msg"><img class="av" src="../brand/images/characters/base/harangi_face_v1.png" alt=""><div class="bub hara">무엇이 궁금한가요?</div></div>
+          <div class="msg me"><div class="bub user">오늘 뭐 챙길까?</div></div>
+          <div class="msg"><img class="av" src="../brand/images/characters/base/harangi_face_v1.png" alt=""><div class="bub hara">[날씨 답변 · 승인 대기]</div></div>
+        </div>
+        <div class="spec">하랑 #fffaf1 · 이용자 #ffe1d6</div>
+        <ul><li>종이 느낌과 연한 분홍으로 구분됩니다.</li><li>두 색이 모두 밝아서 대비는 중간입니다.</li></ul>
+      </div>
+
+      <div class="panel v3">
+        <div class="hd"><b>3안 · 붉은 이용자</b><span class="tag">대비 강함</span></div>
+        <div class="chat">
+          <div class="msg"><img class="av" src="../brand/images/characters/base/harangi_face_v1.png" alt=""><div class="bub hara">무엇이 궁금한가요?</div></div>
+          <div class="msg me"><div class="bub user">오늘 뭐 챙길까?</div></div>
+          <div class="msg"><img class="av" src="../brand/images/characters/base/harangi_face_v1.png" alt=""><div class="bub hara">[날씨 답변 · 승인 대기]</div></div>
+        </div>
+        <div class="spec">하랑 #fffaf1 · 이용자 #d03a2f (글씨 흰색)</div>
+        <ul><li>누가 말했는지 가장 확실히 보입니다.</li><li>붉은색이 강해서 화면 전체가 무거워질 수 있습니다.</li><li>빨간 보내기 버튼과 색이 겹칩니다.</li></ul>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>선택</h2>
+    <div class="sum">
+      <label class="pick"><input type="radio" name="pick" value="1"> 1안 · 원래 버전</label>
+      <label class="pick"><input type="radio" name="pick" value="2" checked> 2안 · 후보 B (흰 종이 + 연분홍)</label>
+      <label class="pick"><input type="radio" name="pick" value="3"> 3안 · 붉은 이용자</label>
+      <textarea id="out" readonly></textarea>
+      <div><button class="go" id="copy">결과 복사</button></div>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>결정 필요</h2>
+    <ul>
+      <li>말풍선 색 1·2·3안 중 선택 [결정 필요]</li>
+      <li>선택한 안의 색 값은 디자인 토큰으로 정할지 [결정 필요]</li>
+    </ul>
+  </section>
+
+  <section class="sec">
+    <h2>출처</h2>
+    <ul class="src">
+      <li>storyboard/chat_harangi_mockup_v1.html (현재 말풍선 색 정의)</li>
+      <li>brand/images/characters/base/harangi_face_v1.png (하랑이 얼굴 크롭)</li>
+    </ul>
+  </section>
+</main>
+
+<script>
+(function(){
+  var NAME={'1':'1안 원래 버전','2':'2안 후보 B (흰 종이 + 연분홍)','3':'3안 붉은 이용자'};
+  function build(){
+    var c=document.querySelector('input[name="pick"]:checked');
+    document.getElementById('out').value='[하랑이 대화 말풍선 색 선택 결과 v1]\n- 선택: '+(c?NAME[c.value]:'미선택')+'\n- 팀 확정 전 [결정 필요]';
+  }
+  document.querySelectorAll('input[name="pick"]').forEach(function(r){ r.addEventListener('change',build); });
+  document.getElementById('copy').addEventListener('click',function(){
+    var t=document.getElementById('out'); t.select();
+    try{ navigator.clipboard.writeText(t.value); }catch(e){ document.execCommand('copy'); }
+    this.textContent='복사했어요'; var b=this; setTimeout(function(){b.textContent='결과 복사'},1500);
+  });
+  build();
+})();
+</script>
+</body>
+</html>

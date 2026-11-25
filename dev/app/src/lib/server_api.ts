@@ -99,6 +99,20 @@ export async function getCourses(): Promise<ApiResult<CourseCard[]>> {
   return r.ok ? { ok: true, data: r.data.courses } : r;
 }
 
+// 지금 날씨 (홈 날씨 배지). 서버 POST /weather, 좌표는 본문으로만 보낸다.
+// 서버가 기상청을 못 읽으면 status: 'unavailable'을 돌려준다 (이전 값을 쓰지 않음).
+export type WeatherNow =
+  | { status: 'ok'; temperatureC: number; apparentTemperatureC: number | null; hour: number; baseTime: string | null }
+  | { status: 'unavailable' };
+
+export function getWeatherNow(latitude: number, longitude: number) {
+  return request<WeatherNow>('/weather', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ latitude, longitude }),
+  });
+}
+
 export function getRoute(courseId: string, latitude: number, longitude: number) {
   return request<RouteResult>(`/courses/${encodeURIComponent(courseId)}/route`, {
     method: 'POST',

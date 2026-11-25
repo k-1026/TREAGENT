@@ -13,7 +13,7 @@
 
 | 항목 | 값 | 왜 굳이 | 없으면 깨지는 것 |
 |---|---|---|---|
-| 컨셉 `[확정]` | 단순하고 귀여운 도트 | 하랑이 도트 시트와 같은 결 (brand/character/images/harangi_fullbody_pixel.webp) | 홈만 다른 화풍이면 캐릭터가 떠 보입니다 |
+| 컨셉 `[확정]` | 단순하고 귀여운 도트 | 하랑이 도트 시트와 같은 결 (brand/images/characters/sprites/harangi_fullbody_pixel.webp) | 홈만 다른 화풍이면 캐릭터가 떠 보입니다 |
 | 구도 `[확정]` | 혼합형: 위 약 40% 도트 장면(하랑이, 말풍선), 아래 카드 | 캐릭터 느낌과 기능을 함께 둡니다 | 장면형은 정보가 안 들어가고, 목록형은 컨셉이 약해집니다 |
 | 날씨 `[확정]` | 작은 도트 배지를 항상 표시 | 오늘의 길을 권하는 근거입니다 (storyboard/app_screen_storyboard_v1.md S-14) | 근거 없이 길만 권하게 됩니다 |
 | 하단 탭 `[확정]` | 홈 · 장부 · 내 정보 3개 | 게임 요소를 최소로 둡니다 (README.md) | 탭이 늘면 홈이 목록처럼 됩니다 |
@@ -93,7 +93,7 @@
 8. 오늘의 빈 칸 한 줄(A): 조건이 장부의 빈 칸과 맞을 때만 말풍선에 나옵니다 (brand/worldview.md 4-3절). 칸을 채우라는 독촉 문구는 쓰지 않습니다 (5-3절).
 
 **선택**
-- 도장 미리보기(B): 능금 도장(brand/character/images/stamp_nungeum.webp) 3칸. 진행 중이면 "오늘 길 · 도장 2/3"처럼, 아니면 최근 한 장의 도장을 보여 줍니다. 아직 못 받은 자리는 흐리게 보입니다. 탭하면 장부 [칸]의 "내가 채운 칸만 보기"로 갑니다. 자리가 남을 때만 넣습니다.
+- 도장 미리보기(B): 능금 도장(brand/images/items/stamp_nungeum.webp) 3칸. 진행 중이면 "오늘 길 · 도장 2/3"처럼, 아니면 최근 한 장의 도장을 보여 줍니다. 아직 못 받은 자리는 흐리게 보입니다. 탭하면 장부 [칸]의 "내가 채운 칸만 보기"로 갑니다. 자리가 남을 때만 넣습니다.
 
 **쓰지 않음**: 호감도 수치·게이지, 포인트·재화, 랭킹, 칸 채우기 독촉 문구, 정령·도사 수 언급 (worldview.md 2-1절, 3-3절, 4-10절).
 
@@ -167,7 +167,7 @@
 - plan/spec/treagent_tech_spec_v1.md (F-03 :451, 날씨 시나리오 :504-512, D-04, D-06)
 - brand/worldview.md (2-1절, 2-4절, 3-3절, 4-3절, 4-10절, 5-3절)
 - brand/character/profile/harangi_character.md (예문 17 낮잠에서 깸)
-- brand/character/images/harangi_fullbody_pixel.webp (도트 화풍 기준)
-- brand/character/images/harangi_fullbody_pixel_transparent.png (투명 배경 하랑이, 목업 스프라이트로 사용)
+- brand/images/characters/sprites/harangi_fullbody_pixel.webp (도트 화풍 기준)
+- brand/images/characters/sprites/harangi_fullbody_pixel_transparent.png (투명 배경 하랑이, 목업 스프라이트로 사용)
 - CLAUDE.md (민감한 소재, 브랜드·캐릭터 작업)
 - 사용자 제공 (대화, 2026-11-17): 요소 선택, 방 장면, 외출 구조, 날씨·시간대 변형, 지도 API 사용

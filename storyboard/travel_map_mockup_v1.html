@@ -19,15 +19,15 @@
   .ctrl button{cursor:pointer;font-weight:700;background:var(--paper)}
   .phone{position:relative;width:390px;height:844px;background:var(--cream);overflow:hidden;box-shadow:0 0 0 3px var(--ink),0 14px 36px rgba(60,40,20,.28)}
   button{font-family:inherit;color:var(--ink)}
-  .px{box-shadow:0 -3px 0 0 var(--ink),0 3px 0 0 var(--ink),-3px 0 0 0 var(--ink),3px 0 0 0 var(--ink),0 6px 0 0 var(--shade)}
+  .px{border-radius:6px;box-shadow:0 0 0 1.5px var(--ink),0 4px 0 0 var(--shade)}
 
   /* 상태 바 + 헤더 (기본/확대 공통) */
   .status{position:absolute;left:0;top:0;width:390px;height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:13px;font-weight:700;color:#fff3e0;background:var(--beam);z-index:20}
   .top{position:absolute;left:0;top:40px;width:390px;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:var(--beam);border-bottom:3px solid var(--ink);z-index:19}
   .top .ttl{color:#fff;text-align:center;line-height:1.2}
-  .top .ttl b{display:block;font-size:17px;text-shadow:2px 2px 0 var(--ink)}
+  .top .ttl b{display:block;font-size:18px;text-shadow:2px 2px 0 var(--ink)}
   .top .ttl small{font-size:12px;color:#fff3e0}
-  .navbtn{border:0;background:var(--cream);padding:6px 11px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 0 2px var(--ink)}
+  .navbtn{border:0;background:var(--cream);padding:6px 11px;font-size:14px;font-weight:800;cursor:pointer;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink)}
 
   /* 지도 */
   .map{position:absolute;left:16px;top:116px;width:358px;height:290px;background:var(--cream2);box-shadow:0 0 0 3px var(--ink);z-index:2;overflow:hidden}
@@ -64,7 +64,7 @@
   @keyframes slam{0%{transform:scale(2.6);opacity:0}60%{transform:scale(.92);opacity:1}80%{transform:scale(1.04)}100%{transform:scale(1)}}
   @media (prefers-reduced-motion:reduce){.slam{animation:none}}
   .row2{display:grid;grid-template-columns:1fr 1.4fr;gap:8px}
-  .sub,.cta{display:block;height:52px;border:0;font-weight:800;font-size:15px;cursor:pointer;box-shadow:0 0 0 3px var(--ink)}
+  .sub,.cta{display:block;height:52px;border:0;font-weight:800;font-size:15px;cursor:pointer;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink)}
   .sub{background:var(--paper)}
   .cta{background:var(--red);color:#fff}
   .cta:disabled,.sub:disabled{background:#b9b2a8;color:#fff;cursor:not-allowed}
@@ -162,7 +162,7 @@
       <span class="pin" id="pin1" style="left:70px;top:90px">1</span>
       <span class="pin" id="pin2" style="left:230px;top:40px">2</span>
       <span class="pin" id="pin3" style="left:290px;top:200px">3</span>
-      <img class="me" id="me" src="../brand/character/images/harangi_view_front_v1.png" alt="내 위치 (하랑이)" style="left:160px;top:230px">
+      <img class="me" id="me" src="../brand/images/characters/base/harangi_view_front_v1.png" alt="내 위치 (하랑이)" style="left:160px;top:230px">
     </div>
     <button class="expand" id="expand" aria-label="지도 확대">⤢ 확대</button>
   </section>
@@ -225,7 +225,8 @@
   <!-- 첫 완주 때 컷씬 ② 자리 (재생 시점은 팀 결정 전, 건너뛰기 가능) -->
   <section class="vfull" id="cut" aria-label="컷씬 ② 자리">
     <div class="cutbox">
-      <p><b>컷씬 ② 자리</b><br>첫 완주일 때 한 번 나옵니다. 건너뛰어도 앨범에 저장돼요.</p>
+      <p><b>컷씬 ② 보기</b><br>첫 완주일 때 한 번 나옵니다. 건너뛰어도 앨범에 저장돼요.</p>
+      <button class="cta px" id="cutplay" style="width:100%;margin-bottom:10px">컷씬 ② 보기</button>
       <button class="cta px" id="cutskip" style="width:100%">건너뛰기</button>
     </div>
   </section>
@@ -255,7 +256,7 @@
 (function(){
   var $=function(s){return document.querySelector(s)};
   var phone=$('#phone');
-  var IMG='../brand/character/images/stamp_nungeum.webp';
+  var IMG='../brand/images/items/stamp_nungeum.webp';
   var NAMES=['[장소 1 이름 예시]','[장소 2 이름 예시]','[장소 3 이름 예시]'];
   var PIN_POS=['pin1','pin2','pin3'];
   var toastT, phase='arrive';
@@ -336,6 +337,11 @@
     $('#done').classList.add('on');
   }
   $('#cutskip').addEventListener('click',function(){ $('#cut').classList.remove('on'); openDone(); });
+  // 컷씬 ② 재생 화면으로 이동. 돌아왔을 때 도장·컷씬 상태를 이어 쓰도록 sessionStorage에 남김 (목업용)
+  $('#cutplay').addEventListener('click',function(){
+    try{ sessionStorage.setItem('mockMapState',JSON.stringify({stamps:$('#stamps').value,cutShown:true})); }catch(e){}
+    location.href='cutscene_mockup_v1.html?cut=c2&mode=first';
+  });
   $('#doneBack').addEventListener('click',function(){ $('#done').classList.remove('on'); });
   $('#doneLedger').addEventListener('click',function(){ toast('→ 장부 (자리)'); });
   $('#doneHome').addEventListener('click',function(){ toast('→ 홈 (S-03, 자리)'); });
@@ -368,7 +374,7 @@
 
   // 내 위치 마커: 이동 상태에 따라 하랑이 방향 시안을 바꿈
   var MARK={stop:'harangi_view_front_v1.png',fwd:'harangi_view_back_v1.png',left:'harangi_view_left_v1.png',right:'harangi_view_right_v1.png'};
-  $('#mv').addEventListener('change',function(){ $('#me').src='../brand/character/images/'+MARK[$('#mv').value]; });
+  $('#mv').addEventListener('change',function(){ $('#me').src='../brand/images/characters/base/'+MARK[$('#mv').value]; });
   $('#alertBtn').addEventListener('click',function(){ openDim('#alert'); });
   $('#altgo').addEventListener('click',function(){ closeAll(); toast('대체 길 안내 (S-07)'); });
   $('#altlater').addEventListener('click',function(){ closeAll(); toast('보류했어요. 다음 재평가 때 다시 알려 드려요'); });
@@ -378,6 +384,8 @@
   try{
     var got=sessionStorage.getItem('mockStamp');
     if(got){ $('#stamps').value=got; phase='arrive'; sessionStorage.removeItem('mockStamp'); }
+    var ms=sessionStorage.getItem('mockMapState');
+    if(ms){ var st=JSON.parse(ms); $('#stamps').value=String(st.stamps); cutShown=!!st.cutShown; phase='arrive'; sessionStorage.removeItem('mockMapState'); }
   }catch(e){}
   render(-1);
   // 홈의 경로 변경 진입(?alert=1): 알림창을 바로 띄움

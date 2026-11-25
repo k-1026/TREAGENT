@@ -17,7 +17,7 @@
 |---|---|---|
 | 기획 | 기획서, 고객 전략 v1, 유저 플로우 v1, 화면 구조 도식 7장 (`design/user_flow_images/`) | 코스 C01 제목·소요 시간과 장소별 미션 확정 (인증 방식은 GPS+미션으로 결정) |
 | 스토리보드 | 게임 스토리보드 v1 (`storyboard/20261110_game_storyboard_v1.md`) | 앱 화면 기준 스토리보드 (유저 플로우 v1 반영본) |
-| 캐릭터·에셋 | 하랑이 시트·표정·픽셀 전신·능금 도장·스티커 (`brand/character/images/`) | 앱용 분리 에셋(투명 PNG), 화면별 일러스트, 아이콘 세트 |
+| 캐릭터·에셋 | 하랑이 시트·표정·픽셀 전신·능금 도장·스티커 (`brand/images/characters/`, 소품·도장은 `brand/images/items/`) | 앱용 분리 에셋(투명 PNG), 화면별 일러스트, 아이콘 세트 |
 | 앱 | Expo 앱: 로그인·가입, 위치와 구·군 선택(중구만), 코스 목록, 코스 상세·오늘의 길 (`dev/app/`) | 홈, 미션과 GPS 인증, 여행·도장 저장, 장부 |
 | 서버·DB | Node 서버(날씨, 모드 규칙, 장소, 코스)와 Supabase 테이블 `places`·`courses`·`course_routes` (`dev/server/`, `dev/supabase/`) | 여행·방문·도장 저장, 인증, 장부, 운영자 기능 |
 | 운영자 웹 | 없음 (도식만 있음) | 전부 |
@@ -633,7 +633,7 @@ flowchart TD
 - 동작: 장소의 미션을 마칠 때마다 능금 도장 1개를 표시합니다 (한 코스 3곳, 도장 3개) `[결정 2026-11-17]`. 경로별 완주 조건 충족 시 ‘내 여행 한 장’(날짜·방문 장소·스탬프·하랑이 마무리 대사).
 - 기술: `visits` 저장과 동일 트랜잭션에서 완주 판정. `journal_entries` 생성.
 - `[결정]` 경로별 완주 조건(대체 길로 바뀐 경우 포함).
-- 자산: 능금 도장(`brand/character/images/stamp_nungeum.webp`, 앱용 투명 PNG 필요), ‘내 여행 한 장’ 카드 템플릿.
+- 자산: 능금 도장(`brand/images/items/stamp_nungeum.webp`, 앱용 투명 PNG 필요), ‘내 여행 한 장’ 카드 템플릿.
 
 | 담당 | 할 일 |
 |---|---|
@@ -819,7 +819,7 @@ flowchart TD
 
 | 번호 | 에셋 | 현재 상태 | 필요한 형태 | 담당 |
 |---|---|---|---|---|
-| A-01 | 하랑이 기준 시트 | 있음 (`brand/character/images/harangi_sheet.webp`) | 기준 이미지 유지 | CON |
+| A-01 | 하랑이 기준 시트 | 있음 (`brand/images/characters/base/harangi_sheet.webp`) | 기준 이미지 유지 | CON |
 | A-02 | 하랑이 표정 | 있음 (`harangi_expressions.webp`: 행복·차분·놀람 `[확인 필요]`) | 표정별 투명 PNG 분리 (최소 5종 `[확인 필요]`: 행복·차분·놀람·응원·쉼터) | CON, DES |
 | A-03 | 하랑이 전신 픽셀 | 있음 (`harangi_fullbody_pixel.webp`) | 투명 PNG, 앱 크기별 | CON |
 | A-04 | 능금 도장 | 있음 (`stamp_nungeum.webp`) | 투명 PNG, 획득 연출용 프레임 | CON, DES |
@@ -1526,6 +1526,6 @@ flowchart TD
 - `storyboard/20261110_game_storyboard_v1.md` A-1~A-4
 - `_local_drafts/spec/spec.md`, `ia.md`, `userflow.md` (Day14 서비스 명세 v0)
 - `dev/app/package.json`, `dev/app/App.tsx`, `dev/app/src/data/courseA.ts` (현재 앱 데모)
-- `brand/character/prompts.md`, `brand/character/images/` 파일 목록, `brand/game_items_v1.md`
+- `brand/character/prompts.md`, `brand/images/characters/` 파일 목록, `brand/game_items_v1.md`
 - `.github/ISSUE_TEMPLATE/task.md`, `git-convention.md`, `CLAUDE.md`
 - 확인하지 못한 자료: 외부 `TREAGENT 무료 MVP 기능 명세`, 외부 발표안 링크(ChatGPT 라이브러리), 기상청 API 상세 사양, Figma 시안

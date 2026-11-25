@@ -9,7 +9,7 @@
 
 ## 1. 바탕 설정 (확정 사항으로 보는 것)
 
-- 정체: 대프리카의 골목에 바람을 전하는 바람 도사 견습생 (brand/character/profile/harangi_squirrel.md v2 근처 시트 설명, 시트 이미지 `brand/character/images/harangi_sheet.webp`).
+- 정체: 대프리카의 골목에 바람을 전하는 바람 도사 견습생 (brand/character/profile/harangi_squirrel.md v2 근처 시트 설명, 시트 이미지 `brand/images/characters/base/harangi_sheet.webp`).
 - 외형 설정: 머리 위 능금 이파리, 짧은 조끼와 납작만두 포쉐트 (발표 자료 07-2 장).
 - 역할: 오늘 날씨에 맞는 길로 이용자를 안내하는 마스코트 가이드 (harangi_character.md 1절).
 

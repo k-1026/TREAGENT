@@ -41,5 +41,5 @@
 
 - brand/worldview.md (1절 바람, 2-3절 정령은 보이지 않음, 3-5절 컷씬 규칙·컷씬 ②·가게 주인과 포쉐트)
 - brand/character/profile/harangi_character.md (6절 외형, 6-3절 시각 방향, 8절 예문 18)
-- brand/character/images/harangi_sheet.webp (외형 기준: 다람쥐, 능금 빨강 몸, 크림색 얼굴·배·꼬리 끝, 파란 눈, 머리 이파리)
+- brand/images/characters/base/harangi_sheet.webp (외형 기준: 다람쥐, 능금 빨강 몸, 크림색 얼굴·배·꼬리 끝, 파란 눈, 머리 이파리)
 - CLAUDE.md (민감한 소재, HTML 산출물과 배포 기준)

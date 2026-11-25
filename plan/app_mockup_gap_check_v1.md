@@ -35,7 +35,7 @@
 - 목업 기준 브랜치: PR #198(병합 완료, `dev`의 `593f8e1`)에 모든 목업 변경이 들어 있습니다.
 - 이식 절차: `storyboard/design_system_v1.md` 16절.
 - 먼저 정할 것: 위 1번 표의 "결정 필요" 항목 (닉네임 기본값, 지역 변경 화면, 첫 화면 순서).
-- 이미지: 앱에 옮길 스프라이트는 `brand/character/images/`에 있습니다. 사용 허가는 확인 필요입니다 (`archive/metadata.csv`).
+- 이미지: 앱에 옮길 스프라이트는 `brand/images/characters/`에 있습니다. 사용 허가는 확인 필요입니다 (`archive/metadata.csv`).
 
 ## 출처
 

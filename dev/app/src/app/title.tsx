@@ -15,7 +15,7 @@
  *  - 능금이 오른쪽에서 몸을 돌리며 굴러오고, 도착하면 한 번 통통 튄다.
  *
  * 그림
- *  - 장부·능금은 임시 도형이다. 실제 그림은 따로 만든다. (pixel_book.tsx)
+ *  - 장부: 닫힌 바람 장부 그림(assets/ledger_closed_sprite_v1.png). 능금: assets/apple_pixel.png
  *  - 꼬리는 없앴다 (사용자 요청).
  *
  * 버튼 문구
@@ -26,10 +26,11 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Animated, Easing, Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { BTN_RED, COLOR, pxBox } from '../lib/theme';
-import { PixelBook } from '../components/pixel_book';
 
-// 장부 칸 한 개 = 7px → 168x210 (목업 .book 크기). 능금은 참고 그림에 맞춰 칸 3px → 45x45 (장부보다 작게).
-const CELL = 7;
+// 장부 그림: brand/images/items/ledger_closed_sprite_v1.png (원본 516x529)를 높이 210(목업 .book 높이)에 맞춰 보인다.
+// 2026-11-25 팀원 요청으로 임시 도형(PixelBook) 대신 이 그림을 쓴다.
+const BOOK_H = 210;
+const BOOK_W = Math.round((BOOK_H * 516) / 529);
 // 능금 그림(assets/apple_pixel.png)은 원본 그대로 쓴다. 화면에서의 크기만 여기서 정한다.
 const APPLE_SIZE = 54;
 
@@ -105,7 +106,12 @@ export default function TitleScreen() {
 
       <View style={styles.scene}>
         <View style={styles.bookWrap}>
-          <PixelBook cell={CELL} />
+          <Image
+            source={require('../../assets/ledger_closed_sprite_v1.png')}
+            style={{ width: BOOK_W, height: BOOK_H }}
+            resizeMode="contain"
+            accessibilityLabel="바람 장부"
+          />
           <Animated.View
             style={[
               styles.applePos,
@@ -156,9 +162,9 @@ const styles = StyleSheet.create({
 
   // 장면: 남은 세로 공간의 가운데에 장부를 둔다
   scene: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  bookWrap: { width: 24 * CELL, height: 30 * CELL },
+  bookWrap: { width: BOOK_W, height: BOOK_H },
   // 능금: 장부 오른쪽 바닥 모서리에 살짝 걸쳐 멈춘다. 굴러올 때는 오른쪽에서 들어온다.
-  applePos: { position: 'absolute', left: 24 * CELL - 16, bottom: 0 },
+  applePos: { position: 'absolute', left: BOOK_W - 16, bottom: 0 },
 
   // 제목과 소개
   info: { alignItems: 'center', paddingHorizontal: 30, gap: 2 },

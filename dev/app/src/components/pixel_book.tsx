@@ -38,7 +38,18 @@ const PALETTE: Record<string, string> = {
 
 // 칸 하나 = cell(px). 그림의 가로·세로 칸 수는 격자에서 정해진다.
 // tint를 주면 빈 칸('.')이 아닌 모든 칸을 그 색 하나로 칠한다 (탭·버튼 아이콘처럼 한 가지 색인 그림)
-export function PixelSprite({ grid, cell, tint }: { grid: string[]; cell: number; tint?: string }) {
+// palette를 주면 기본 글자 뜻(PALETTE)에 더하거나 덮어쓴다 (예: 주머니 아이콘의 손수건 색)
+export function PixelSprite({
+  grid,
+  cell,
+  tint,
+  palette,
+}: {
+  grid: string[];
+  cell: number;
+  tint?: string;
+  palette?: Record<string, string>;
+}) {
   const width = grid[0].length * cell;
   const height = grid.length * cell;
   return (
@@ -54,7 +65,7 @@ export function PixelSprite({ grid, cell, tint }: { grid: string[]; cell: number
                 top: y * cell,
                 width: run.len * cell,
                 height: cell,
-                backgroundColor: tint ?? PALETTE[run.ch] ?? 'transparent',
+                backgroundColor: tint ?? palette?.[run.ch] ?? PALETTE[run.ch] ?? 'transparent',
               },
             ]}
           />
@@ -79,7 +90,7 @@ function runs(row: string) {
 }
 
 // 사각형들을 격자에 채운다 (뒤에 오는 사각형이 앞 색을 덮는다)
-function fromRects(w: number, h: number, rects: [number, number, number, number, string][]) {
+export function fromRects(w: number, h: number, rects: [number, number, number, number, string][]) {
   const g = Array.from({ length: h }, () => Array<string>(w).fill('.'));
   for (const [x, y, rw, rh, ch] of rects) {
     for (let yy = y; yy < y + rh; yy++) for (let xx = x; xx < x + rw; xx++) g[yy][xx] = ch;

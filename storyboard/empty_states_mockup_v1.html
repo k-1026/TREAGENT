@@ -20,15 +20,15 @@
   .status{position:absolute;left:0;top:0;width:390px;height:40px;display:flex;justify-content:space-between;align-items:center;padding:0 18px;font-size:13px;font-weight:700;color:#fff3e0;background:var(--beam);z-index:20}
   .top{position:absolute;left:0;top:40px;width:390px;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 12px;background:var(--beam);border-bottom:3px solid var(--ink);z-index:19}
   .top b{color:#fff;font-size:18px;text-shadow:2px 2px 0 var(--ink)}
-  .navbtn{border:0;background:var(--cream);padding:6px 11px;font-size:14px;font-weight:800;cursor:pointer;box-shadow:0 0 0 2px var(--ink);color:var(--ink)}
+  .navbtn{border:0;background:var(--cream);padding:6px 11px;font-size:14px;font-weight:800;cursor:pointer;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink);color:var(--ink)}
   .body{position:absolute;left:0;top:100px;width:390px;bottom:0;padding:24px 18px;display:flex;flex-direction:column;gap:16px;align-items:stretch}
   .art{height:220px;background:var(--cream2);box-shadow:0 0 0 2px var(--ink);display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--muted)}
   .msg{background:var(--paper);padding:18px 18px;box-shadow:0 0 0 2px var(--ink)}
   .msg b{display:block;font-size:18px;line-height:1.4}
   .msg p{margin:8px 0 0;font-size:15px;line-height:1.6;color:var(--ink)}
   .msg small{display:block;margin-top:8px;font-size:13px;color:var(--muted)}
-  .cta{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:56px;padding:0;line-height:1;border:0;background:var(--red);color:#fff;font-weight:800;font-size:17px;cursor:pointer;box-shadow:0 0 0 3px var(--ink)}
-  .sub{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:52px;padding:0;line-height:1;border:0;background:var(--paper);color:var(--ink);font-weight:800;font-size:16px;cursor:pointer;box-shadow:0 0 0 3px var(--ink)}
+  .cta{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:56px;padding:0;line-height:1;border:0;background:var(--red);color:#fff;font-weight:800;font-size:17px;cursor:pointer;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink)}
+  .sub{display:flex;align-items:center;justify-content:center;text-align:center;width:100%;height:52px;padding:0;line-height:1;border:0;background:var(--paper);color:var(--ink);font-weight:800;font-size:16px;cursor:pointer;border-radius:6px;box-shadow:0 0 0 1.5px var(--ink)}
 </style>
 </head>
 <body>
@@ -51,7 +51,7 @@
   </header>
 
   <section class="body">
-    <div class="art" id="art">[빈 상태 일러스트 자리]</div>
+    <div class="art" id="art"><img src="../brand/images/characters/ui/harangi_empty_state_v2.webp" alt="하랑이 빈 상태 일러스트 (능금을 든 납작만두)" style="height:100%;width:100%;object-fit:contain"></div>
     <div class="msg">
       <b id="head"></b>
       <p id="line"></p>
@@ -84,8 +84,15 @@
     $('#go').textContent=k.go;
   }
   $('#kind').addEventListener('change',render);
-  $('#go').addEventListener('click',function(){ toast('→ '+$('#go').textContent+' (자리)'); });
-  $('#back2').addEventListener('click',function(){ toast('→ 홈 (S-03, 자리)'); });
+  // 빈 상태 화면의 버튼은 모두 '길 걸으러 가기' 계열이라 오늘의 길 화면으로 간다
+  var GO={
+    ledger:'app_home_mockup_v1.html?view=picks',
+    album:'app_home_mockup_v1.html?view=picks',
+    pouch:'app_home_mockup_v1.html?view=picks',
+    today:'app_home_mockup_v1.html?view=picks'
+  };
+  $('#go').addEventListener('click',function(){ location.href=GO[$('#kind').value]; });
+  $('#back2').addEventListener('click',function(){ location.href='app_home_mockup_v1.html'; });
   $('#back').addEventListener('click',function(){ if(history.length>1){ history.back(); } else { toast('이전 화면 (자리)'); } });
   render();
 })();

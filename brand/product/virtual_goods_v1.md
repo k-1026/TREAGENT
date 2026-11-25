@@ -125,7 +125,7 @@
 **프로젝트 연결 (저장소 근거)**
 - 외형 요소(능금 빨강 몸, 머리 이파리, 후드 조끼, 포쉐트)는 하랑이 설정과 같습니다 (brand/character/profile/harangi_character.md 5절).
 - 피규어류는 실물 굿즈 후보입니다 (brand/game_concept.md 9절).
-- 하랑이 3D 디자인 시안과 외형 비교가 필요합니다 (brand/character/images/harangi_3d_turnaround.webp).
+- 하랑이 3D 디자인 시안과 외형 비교가 필요합니다 (brand/images/characters/base/harangi_3d_turnaround.webp).
 
 **창작 (후보 2개씩)**
 - 굿즈 이름 (창작)
@@ -140,7 +140,7 @@
 
 ## 공통 확인 필요
 
-- 인형의 캐릭터가 하랑이인지 `[확인 필요]`. 하랑이 3D 디자인 시안(`brand/character/images/harangi_3d_turnaround.webp`)과 외형을 비교해 팀이 확인합니다.
+- 인형의 캐릭터가 하랑이인지 `[확인 필요]`. 하랑이 3D 디자인 시안(`brand/images/characters/base/harangi_3d_turnaround.webp`)과 외형을 비교해 팀이 확인합니다.
 - 굿즈 이미지의 제작 방식(AI 생성 여부, 프롬프트) `[확인 필요]`. 프롬프트는 `brand/character/prompts.md`에 기록합니다.
 - 굿즈 보상과 판매 구분은 보류 상태입니다 (brand/game_concept.md 9절, plan/daeprica_hidden_quest_plan.md:315).
 - 음식 굿즈와 쉼터 할인권은 소상공인 협업 조건을 정한 뒤 다룹니다 `[확인 필요]`.

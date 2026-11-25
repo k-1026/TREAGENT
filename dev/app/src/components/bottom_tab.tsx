@@ -2,8 +2,8 @@
  * [bottom_tab.tsx] 하단 탭 — 홈 · 장부 · 내 정보 (홈 목업 storyboard/app_home_mockup_v1.html의 nav.tab)
  *
  * 모양: 높이 84, 종이색 바탕, 위쪽 잉크색 3px 선. 지금 화면의 탭은 잉크색, 나머지는 흐린 갈색.
- * 이동: 홈 → /, 장부 → 준비 중(/soon), 내 정보 → /me
- * 쓰는 곳: 홈 화면(app/index.tsx)
+ * 이동: 홈 → /, 장부 → /ledger, 내 정보 → /me (홈·장부는 탭끼리 바꾸는 것이라 replace)
+ * 쓰는 곳: 홈 화면(app/index.tsx), 장부(app/ledger.tsx)
  */
 import { router } from 'expo-router';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
@@ -14,7 +14,7 @@ type TabKey = 'home' | 'ledger' | 'me';
 
 const TABS: { key: TabKey; label: string; icon: PixelIconName; go: () => void }[] = [
   { key: 'home', label: '홈', icon: 'home', go: () => router.replace('/') },
-  { key: 'ledger', label: '장부', icon: 'book', go: () => router.push({ pathname: '/soon', params: { what: '장부' } }) },
+  { key: 'ledger', label: '장부', icon: 'book', go: () => router.replace('/ledger') },
   { key: 'me', label: '내 정보', icon: 'me', go: () => router.push('/me') },
 ];
 

@@ -2,9 +2,12 @@
 // 내 위치는 처음 경로를 받을 때와 "새 경로 보기"를 누를 때만 서버로 보낸다. 걷는 동안의 위치는 기기 안에서만 쓴다.
 import { router } from 'expo-router';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Image, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { CoursePlacesCard } from '../components/course_places_card';
+import { CONTENT } from '../components/phone_column';
+import { ScreenHead } from '../components/screen_head';
 import { TmapView } from '../components/tmap_view';
+import { DoneSheet, MissionSheet, StampSheet } from '../components/travel_sheets';
 import { getCurrentLocation } from '../lib/location';
 import { getWalk, WalkPlace, WalkResult } from '../lib/server_api';
 import { BTN_RED, COLOR, pxBox } from '../lib/theme';
@@ -47,6 +50,7 @@ export default function TravelScreen() {
   const [offRoute, setOffRoute] = useState(false); // 새 경로를 제안 중인가
   const [rerouting, setRerouting] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
+  const [sheet, setSheet] = useState<'stamps' | 'mission' | 'done' | null>(null); // 겹쳐 뜨는 창 (travel_sheets.tsx)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // 개발용 시뮬레이션 (컴퓨터에서 걸어 볼 수 없어서)
   const [sim, setSim] = useState(false);
@@ -201,12 +205,29 @@ export default function TravelScreen() {
 
   if (!route) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream, padding: 20, gap: 12 }}>
-        <Text style={{ color: COLOR.ink }}>고른 길이 없어요.</Text>
-        <Pressable onPress={() => router.replace('/today')}>
-          <Text style={{ color: COLOR.red, fontWeight: '700' }}>오늘의 길 받으러 가기</Text>
-        </Pressable>
-      </SafeAreaView>
+      // 고른 길이 없을 때: 다른 화면과 같은 머리글 + 안내 + 큰 버튼 (홈 목업 갱신본의 머리글·칸 모양)
+      <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
+        <ScreenHead
+          title="여행 지도"
+          sub="고른 길이 있어야 지도를 볼 수 있어요"
+          backLabel="‹ 홈"
+          onBack={() => (router.canGoBack() ? router.back() : router.replace('/'))}
+        />
+        <View style={[CONTENT, { padding: 18, gap: 14 }]}>
+          <View style={[pxBox(), { padding: 16 }]}>
+            <Text style={{ color: COLOR.ink, fontSize: 17, fontWeight: '800' }}>고른 길이 없어요</Text>
+            <Text style={{ color: COLOR.muted, fontSize: 14, lineHeight: 21, marginTop: 6 }}>
+              오늘의 길을 먼저 고르면 지도에서 걸을 길을 볼 수 있어요.
+            </Text>
+          </View>
+          <Pressable
+            onPress={() => router.replace('/today')}
+            style={({ pressed }) => [pxBox(COLOR.red, COLOR.redDark), { height: 56, alignItems: 'center', justifyContent: 'center' }, pressed && { opacity: 0.85 }]}
+          >
+            <Text style={{ color: '#fff', fontSize: 17, fontWeight: '800' }}>오늘의 길 받으러 가기</Text>
+          </Pressable>
+        </View>
+      </View>
     );
   }
 
@@ -244,39 +265,21 @@ export default function TravelScreen() {
     if (router.canGoBack()) router.back(); // 이전 화면이 있으면 그곳으로
     else router.replace('/today'); // 없으면 오늘의 길로
   };
-  const navBtn = { backgroundColor: COLOR.cream, borderWidth: 2, borderColor: COLOR.ink, paddingVertical: 6, paddingHorizontal: 11 };
-  const smallBtn = { backgroundColor: COLOR.paper, borderWidth: 2, borderColor: COLOR.ink, paddingVertical: 6, paddingHorizontal: 10 };
+  // 작은 버튼: 목업의 칸 모양 (모서리 6, 잉크 1.5px)
+  const smallBtn = { backgroundColor: COLOR.paper, borderWidth: 1.5, borderColor: COLOR.ink, borderRadius: 6, paddingVertical: 6, paddingHorizontal: 10 };
+  const placeNames = route.places.map((p) => p.name);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
-      {/* 헤더 */}
-      <View
-        style={{
-          flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between',
-          paddingHorizontal: 12, paddingVertical: 10, backgroundColor: COLOR.beam,
-          borderBottomWidth: 3, borderBottomColor: COLOR.ink,
-        }}
-      >
-        <Pressable onPress={goBack} style={navBtn}>
-          <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 14 }}>{full ? '‹ 줄이기' : '‹ 뒤로'}</Text>
-        </Pressable>
-        <View style={{ alignItems: 'center', flex: 1, paddingHorizontal: 6 }}>
-          <Text
-            style={{
-              color: '#fff', fontWeight: '800', fontSize: 17,
-              textShadowColor: COLOR.ink, textShadowOffset: { width: 2, height: 2 }, textShadowRadius: 0,
-            }}
-          >
-            여행 지도
-          </Text>
-          <Text numberOfLines={1} style={{ color: '#fff3e0', fontSize: 12 }}>
-            {route.title} · 도장 {reached}/{total}
-          </Text>
-        </View>
-        <Pressable onPress={() => router.dismissTo('/')} style={navBtn}>
-          <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 14 }}>⌂ 홈</Text>
-        </Pressable>
-      </View>
+    <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
+      {/* 머리글: 다른 화면과 같은 모양 (목업: 뒤로 · 제목+설명 · 홈). 확대 중이면 [‹ 줄이기] */}
+      <ScreenHead
+        title="여행 지도"
+        sub={`${route.title} · 도장 ${reached}/${total}`}
+        backLabel={full ? '‹ 줄이기' : '‹ 뒤로'}
+        onBack={goBack}
+        rightLabel="⌂ 홈"
+        onRight={() => router.dismissTo('/')}
+      />
 
       {/* 지도 영역 (확대하면 남는 공간을 모두 쓴다) */}
       <View
@@ -411,15 +414,15 @@ export default function TravelScreen() {
           </View>
           <View style={{ flexDirection: 'row', gap: 8 }}>
             <Pressable
-              onPress={() => showToast('도장 확인은 준비 중이에요')}
+              onPress={() => setSheet('stamps')}
               style={[pxBox(), { flex: 1, height: 52, alignItems: 'center', justifyContent: 'center' }]}
             >
               <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 15 }}>도장 확인</Text>
             </Pressable>
+            {/* 큰 버튼: 도착 확인 → (도착하면) 미션 창 → (모두 걸으면) 완주 한 장 */}
             <Pressable
-              onPress={onArrive}
-              disabled={reached >= total}
-              style={[pxBox(BTN_RED, COLOR.redDark), { flex: 1.4, height: 52, alignItems: 'center', justifyContent: 'center', opacity: reached >= total ? 0.5 : 1 }]}
+              onPress={reached >= total ? () => setSheet('done') : arrived ? () => setSheet('mission') : onArrive}
+              style={[pxBox(BTN_RED, COLOR.redDark), { flex: 1.4, height: 52, alignItems: 'center', justifyContent: 'center' }]}
             >
               <Text style={{ color: '#fff', fontWeight: '800', fontSize: 15 }}>
                 {reached >= total ? '완주 한 장 보기' : arrived ? `미션 확인하기 · ${reached + 1}번 장소` : '도착 확인하기'}
@@ -442,6 +445,22 @@ export default function TravelScreen() {
         </View>
       ) : null}
 
+      {/* 겹쳐 뜨는 창: 도장 확인 · 미션 · 완주 한 장 (모양만. 도장 저장은 서버 기능 전) */}
+      {sheet === 'stamps' ? <StampSheet title={route.title} names={placeNames} reached={reached} onClose={() => setSheet(null)} /> : null}
+      {sheet === 'mission' ? (
+        <MissionSheet
+          placeNo={reached + 1}
+          placeName={placeNames[reached] ?? ''}
+          onStart={() => { setSheet(null); router.push('/mission'); }}
+          // 개발 중에만: 도장 저장 기능이 생기기 전에 다음 장소로 넘어가 보는 임시 버튼 (기존 동작 그대로)
+          onTemp={__DEV__ ? () => { setSheet(null); onArrive(); } : undefined}
+          onLater={() => setSheet(null)}
+        />
+      ) : null}
+      {sheet === 'done' ? (
+        <DoneSheet title={route.title} names={placeNames} reached={reached} onClose={() => setSheet(null)} onHome={() => { setSheet(null); router.dismissTo('/'); }} />
+      ) : null}
+
       {/* 토스트 */}
       {toast ? (
         <View style={{ position: 'absolute', left: 0, right: 0, bottom: 140, alignItems: 'center' }} pointerEvents="none">
@@ -450,6 +469,6 @@ export default function TravelScreen() {
           </Text>
         </View>
       ) : null}
-    </SafeAreaView>
+    </View>
   );
 }

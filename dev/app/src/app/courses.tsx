@@ -1,11 +1,19 @@
-// 코스 목록 (주소: /courses) — 스토리보드 S-14 → S-04의 첫 단계
+/*
+ * [courses.tsx] 모든 길 (주소: /courses) — 목업 storyboard/app_home_mockup_v1.html의 #v-all (스토리보드 S-14 → S-04의 첫 단계)
+ * 머리글은 다른 화면과 같은 ScreenHead, 길 한 줄은 .row.px 칸 모양. 불러오기·오류 처리 동작은 그대로다.
+ * 홈에서는 "중구 밖" 상태의 [중구 코스 둘러보기] 큰 버튼으로 온다 (홈 목업 갱신본에서 빠른 버튼의 [모든 길]이 빠짐).
+ */
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { CONTENT } from '../components/phone_column';
+import { ScreenHead } from '../components/screen_head';
 import { ERROR_LABEL, TYPE_LABEL } from '../lib/labels';
 import { usePlace } from '../lib/place_context';
 import { CourseCard, getCourses } from '../lib/server_api';
-import { CONTENT } from '../components/phone_column';
+import { COLOR, pxBox } from '../lib/theme';
+
+const goBack = () => (router.canGoBack() ? router.back() : router.replace('/'));
 
 export default function CoursesScreen() {
   const { place } = usePlace();
@@ -37,52 +45,63 @@ export default function CoursesScreen() {
   // 위치를 아직 안 정했으면 처음 화면으로 돌려보낸다 (앱을 다시 켜면 메모리가 비기 때문)
   if (!place) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: '#fbf6ee', padding: 20, gap: 12 }}>
-        <Text style={{ color: '#2b2118' }}>위치를 먼저 정해 주세요.</Text>
-        <Pressable onPress={() => router.replace('/')}>
-          <Text style={{ color: '#a8242a', fontWeight: '600' }}>처음으로</Text>
-        </Pressable>
-      </SafeAreaView>
+      <View style={styles.safe}>
+        <ScreenHead title="모든 길" sub="중구 안의 모든 길" backLabel="‹ 홈" onBack={goBack} />
+        <View style={[CONTENT, styles.body]}>
+          <View style={[pxBox(), styles.card]}>
+            <Text style={styles.big}>위치를 먼저 정해 주세요</Text>
+          </View>
+          <Pressable onPress={() => router.replace('/')} style={({ pressed }) => [pxBox(COLOR.red, COLOR.redDark), styles.btn, pressed && { opacity: 0.85 }]}>
+            <Text style={styles.btnText}>처음으로</Text>
+          </Pressable>
+        </View>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: '#fbf6ee' }}>
-      <ScrollView contentContainerStyle={[{ padding: 20, gap: 12 }, CONTENT]}>
-        <Text style={{ fontSize: 22, fontWeight: '700', color: '#2b2118' }}>코스 둘러보기</Text>
-
-        {loading && <ActivityIndicator color="#a8242a" />}
+    <View style={styles.safe}>
+      <ScreenHead title="모든 길" sub="중구 안의 모든 길" backLabel="‹ 홈" onBack={goBack} />
+      <ScrollView contentContainerStyle={[CONTENT, styles.body]}>
+        {loading && <ActivityIndicator color={COLOR.red} />}
 
         {error && (
           <>
-            <Text style={{ color: '#2b2118' }}>{ERROR_LABEL[error] ?? ERROR_LABEL.SERVER}</Text>
-            <Pressable onPress={retry}>
-              <Text style={{ color: '#a8242a', fontWeight: '600' }}>다시 해 보기</Text>
+            <View style={[pxBox(), styles.card]}>
+              <Text style={styles.big}>{ERROR_LABEL[error] ?? ERROR_LABEL.SERVER}</Text>
+            </View>
+            <Pressable onPress={retry} style={({ pressed }) => [pxBox(COLOR.red, COLOR.redDark), styles.btn, pressed && { opacity: 0.85 }]}>
+              <Text style={styles.btnText}>다시 해 보기</Text>
             </Pressable>
           </>
         )}
 
         {!loading && !error && courses?.length === 0 && (
-          <Text style={{ color: '#2b2118' }}>아직 열린 코스가 없어요.</Text>
+          <View style={[pxBox(), styles.card]}>
+            <Text style={styles.big}>아직 열린 코스가 없어요</Text>
+          </View>
         )}
 
         {courses?.map((c) => (
-          <Pressable
-            key={c.id}
-            onPress={() => router.push(`/course/${c.id}`)}
-            style={{ backgroundColor: '#fff', borderWidth: 1.5, borderColor: '#e6dccd', borderRadius: 12, padding: 14, gap: 4 }}
-          >
-            <Text style={{ fontSize: 17, fontWeight: '700', color: '#2b2118' }}>{c.title}</Text>
-            <Text style={{ color: '#7a6a5a' }}>
+          <Pressable key={c.id} onPress={() => router.push(`/course/${c.id}`)} style={[pxBox(), styles.card]}>
+            <Text style={styles.title}>{c.title}</Text>
+            <Text style={styles.sub}>
               {c.district ?? ''} · 약 {c.durationMin}분 · {c.types.map((t) => TYPE_LABEL[t] ?? t).join('·')}
             </Text>
           </Pressable>
         ))}
-
-        <Pressable onPress={() => router.back()} style={{ alignItems: 'center', padding: 12 }}>
-          <Text style={{ color: '#a8242a', fontWeight: '600' }}>뒤로</Text>
-        </Pressable>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
+
+const styles = StyleSheet.create({
+  safe: { flex: 1, backgroundColor: COLOR.cream },
+  body: { paddingTop: 14, paddingHorizontal: 16, paddingBottom: 16, gap: 12 },
+  card: { paddingVertical: 12, paddingHorizontal: 14, gap: 4 },
+  big: { fontSize: 15, fontWeight: '800', color: COLOR.ink },
+  title: { fontSize: 15, fontWeight: '800', color: COLOR.ink },
+  sub: { fontSize: 12, color: COLOR.muted, lineHeight: 18 },
+  btn: { height: 52, alignItems: 'center', justifyContent: 'center' },
+  btnText: { color: '#fff', fontSize: 16, fontWeight: '800' },
+});
