@@ -7,7 +7,7 @@
  *
  * 배치 (위에서 아래로)
  *  - 장면: 가운데 장부. 능금은 장부 오른쪽 바닥 옆으로 굴러와 멈춘다.
- *  - 제목: 대프리카 / 히든 퀘스트 / (가칭), 그 아래 한 줄 소개
+ *  - 제목: 로고 이미지(대프리카 / 히든 퀘스트, assets/title_logo.png)
  *  - 버튼: 아래쪽에 두 개 (바람 장부 열기 / 처음이에요)
  *
  * 연출 (한 번만 재생하고 멈춘다)
@@ -15,7 +15,7 @@
  *  - 능금이 오른쪽에서 몸을 돌리며 굴러오고, 도착하면 한 번 통통 튄다.
  *
  * 그림
- *  - 장부·능금은 임시 도형이다. 실제 그림은 따로 만든다. (pixel_book.tsx)
+ *  - 장부: 닫힌 바람 장부 그림(assets/ledger_closed_sprite_v1.png). 능금: assets/apple_pixel.png
  *  - 꼬리는 없앴다 (사용자 요청).
  *
  * 버튼 문구
@@ -26,12 +26,17 @@ import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Animated, Easing, Image, Pressable, SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import { BTN_RED, COLOR, pxBox } from '../lib/theme';
-import { PixelBook } from '../components/pixel_book';
 
-// 장부 칸 한 개 = 7px → 168x210 (목업 .book 크기). 능금은 참고 그림에 맞춰 칸 3px → 45x45 (장부보다 작게).
-const CELL = 7;
+// 장부 그림: brand/images/items/ledger_closed_sprite_v1.png (원본 516x529)를 높이 210(목업 .book 높이)에 맞춰 보인다.
+// 2026-11-25 팀원 요청으로 임시 도형(PixelBook) 대신 이 그림을 쓴다.
+const BOOK_H = 210;
+const BOOK_W = Math.round((BOOK_H * 516) / 529);
 // 능금 그림(assets/apple_pixel.png)은 원본 그대로 쓴다. 화면에서의 크기만 여기서 정한다.
-const APPLE_SIZE = 54;
+const APPLE_SIZE = 162; // 300% 키움 (기존 54)
+
+// 제목 로고: assets/title_logo.png (원본 1807x870, 투명 배경). 280~320px 폭에서 읽히도록 폭 290으로 고정한다.
+const LOGO_W = 290;
+const LOGO_H = Math.round((LOGO_W * 870) / 1807);
 
 // 애니메이션 값은 화면이 처음 그려질 때 한 번만 만든다 (렌더 중 ref 접근을 피한다).
 function createMotion() {
@@ -46,8 +51,8 @@ function createMotion() {
     windX: winds.map((v) => v.interpolate({ inputRange: [0, 1], outputRange: [-200, 420] })),
     windOpacity: winds.map((v) => v.interpolate({ inputRange: [0, 0.85, 1], outputRange: [0.9, 0.9, 0] })),
     // 능금: 화면 오른쪽 끝에서 제자리로 굴러온다.
-    // 반지름 약 27px → 둘레 약 170px. 두 바퀴(약 339px)를 가면 도착할 때 똑바로 선다.
-    appleX: apple.interpolate({ inputRange: [0, 1], outputRange: [339, 0] }),
+    // 반지름 약 81px(300% 키운 능금) → 둘레 약 509px. 두 바퀴(약 1017px)를 가면 도착할 때 똑바로 선다.
+    appleX: apple.interpolate({ inputRange: [0, 1], outputRange: [1017, 0] }),
     appleRot: apple.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '-720deg'] }),
     appleY: bounce.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, -10, 0] }),
   };
@@ -105,7 +110,12 @@ export default function TitleScreen() {
 
       <View style={styles.scene}>
         <View style={styles.bookWrap}>
-          <PixelBook cell={CELL} />
+          <Image
+            source={require('../../assets/ledger_closed_sprite_v1.png')}
+            style={{ width: BOOK_W, height: BOOK_H }}
+            resizeMode="contain"
+            accessibilityLabel="바람 장부"
+          />
           <Animated.View
             style={[
               styles.applePos,
@@ -120,10 +130,12 @@ export default function TitleScreen() {
       </View>
 
       <View style={styles.info}>
-        <Text style={styles.logoMain}>대프리카</Text>
-        <Text style={styles.logoSub}>히든 퀘스트</Text>
-        <Text style={styles.logoNote}>(가칭)</Text>
-        <Text style={styles.catch}>하랑이와 함께 오늘 날씨에 맞는 길을 찾아 걸어요.</Text>
+        <Image
+          source={require('../../assets/title_logo.png')}
+          style={{ width: LOGO_W, height: LOGO_H }}
+          resizeMode="contain"
+          accessibilityLabel="대프리카 히든 퀘스트"
+        />
       </View>
 
       <View style={styles.actions}>
@@ -156,21 +168,17 @@ const styles = StyleSheet.create({
 
   // 장면: 남은 세로 공간의 가운데에 장부를 둔다
   scene: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  bookWrap: { width: 24 * CELL, height: 30 * CELL },
+  bookWrap: { width: BOOK_W, height: BOOK_H },
   // 능금: 장부 오른쪽 바닥 모서리에 살짝 걸쳐 멈춘다. 굴러올 때는 오른쪽에서 들어온다.
-  applePos: { position: 'absolute', left: 24 * CELL - 16, bottom: 0 },
+  applePos: { position: 'absolute', left: Math.round(BOOK_W * 0.5) - 15, bottom: -45 }, // 책갈피 오른쪽, 장부 아래쪽 (장부 가로의 50% 지점)
 
-  // 제목과 소개
-  info: { alignItems: 'center', paddingHorizontal: 30, gap: 2 },
-  logoMain: { fontSize: 34, fontWeight: '800', letterSpacing: 2, color: COLOR.ink },
-  logoSub: { fontSize: 26, fontWeight: '800', color: COLOR.redDark, letterSpacing: 1 },
-  logoNote: { fontSize: 11, color: COLOR.muted, marginTop: 2 },
-  catch: { marginTop: 18, textAlign: 'center', fontSize: 13, lineHeight: 20, color: COLOR.ink },
+  // 제목과 소개 (장면 아래, 40px 위로 올림: 장부 자리는 그대로)
+  info: { alignItems: 'center', paddingHorizontal: 30, gap: 2, marginTop: -50 },
 
   // 버튼 (아래쪽 고정)
-  actions: { paddingHorizontal: 24, paddingTop: 28, paddingBottom: 40, gap: 14 },
+  actions: { paddingHorizontal: 24, paddingTop: 28, paddingBottom: 120, gap: 14 }, // 아래 여백 120: 버튼을 조금 더 위로 (30px)
   button: { paddingVertical: 13, paddingHorizontal: 14, alignItems: 'center' },
   pressed: { opacity: 0.85 },
-  buttonMain: { color: '#fff', fontSize: 16, fontWeight: '800' },
-  buttonSmall: { color: '#fff', fontSize: 11, marginTop: 2 },
+  buttonMain: { color: '#fff', fontSize: 19, fontWeight: '800' }, // 120% (기존 16)
+  buttonSmall: { color: '#fff', fontSize: 13, marginTop: 2 }, // 120% (기존 11)
 });
