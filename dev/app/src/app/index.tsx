@@ -1,4 +1,4 @@
-/*
+﻿/*
  * [index.tsx] 홈 화면 S-03 (주소: /) — 로그인하면 가장 먼저 보이는 화면
  *
  * 역할
@@ -30,7 +30,6 @@ import { Animated, Easing, Image, Pressable, StyleSheet, Text, useWindowDimensio
 import { BottomTab } from '../components/bottom_tab';
 import { APP_MAX_WIDTH } from '../components/phone_column';
 import { PixelSprite } from '../components/pixel_book';
-import { PixelIcon } from '../components/pixel_icons';
 import { findDistrict } from '../lib/districts';
 import { BADGE_TONE, HOME_STATES, HomeGo, ROOM_IMAGE, TIP_ICON } from '../lib/home_state';
 import { usePlace } from '../lib/place_context';
@@ -43,7 +42,7 @@ import { useToday } from '../lib/today_context';
 // 하단 탭 높이, 본문 최소 높이(여백 32 + 큰 버튼 68 + 빠른 버튼 64 + 간격 24 + 챙길 것 최소 150)
 const TAB_HEIGHT = 84;
 const BODY_MIN = 32 + 68 + 64 + 24 + 150;
-const TIP_GAP = 8;
+const TIP_GAP = 12; // 목업 .tiplist 간격 12
 
 // 말풍선 꼬리 7x7 (K 잉크 테두리, F 종이색 속)
 const BUBBLE_TAIL = ['KFFFFFK', 'KFFFFK.', 'KFFFK..', 'KFFK...', 'KFK....', 'KK.....', 'K......'];
@@ -111,7 +110,7 @@ export default function HomeScreen() {
   const [bubbleH, setBubbleH] = useState(0);
   const BADGE_H = 44;
   const bubbleBottom = Math.min(118 * k, sceneH - (badgeTop + BADGE_H + 6) - bubbleH);
-  const iconSize = tipsAreaH > 0 ? Math.max(28, Math.min(48, (tipsAreaH - 2 * TIP_GAP) / 3)) : 48;
+  const iconSize = tipsAreaH > 0 ? Math.max(24, Math.min(48, (tipsAreaH - 2 * TIP_GAP) / 3)) : 48;
   const [bob] = useState(createBob);
   // 오늘 페이지 라벨의 뜨기 (목업 bob 1s steps(2): 0.5초마다 위·아래)
   const [markUp, setMarkUp] = useState(false);
@@ -129,6 +128,8 @@ export default function HomeScreen() {
   const [walkFrame, setWalkFrame] = useState(0);
   const [bubbleGone, setBubbleGone] = useState(false);
   const [nextShown, setNextShown] = useState(false);
+  const [readyOff, setReadyOff] = useState(false); // '나가지 않기'를 누르면 출발 준비를 접는다 (목업 cancelready)
+  const ready = depart === 'idle' && !!route && !readyOff; // 출발 준비 상태: 현관문 화살표와 출발 대사가 보인다
   const turn = useRef(new Animated.Value(1)).current; // 정면 그림 가로 배율 1 → 0.1
   const walk = useRef(new Animated.Value(0)).current; // 걷기 진행 0 → 1 (1.5초)
   const departTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
@@ -164,11 +165,12 @@ export default function HomeScreen() {
     setWalking(false);
     setBubbleGone(false);
     setNextShown(false);
+    setReadyOff(false);
   };
 
   // 말풍선은 한 칸을 돌려 쓴다: 출발 전에는 출발 대사, 걷는 동안 잠깐 같은 칸에 걸으러 가는 대사, 그다음에는 숨김 (기본 말풍선과 겹치지 않음)
   const bubbleMode: 'main' | 'depart' | 'none' =
-    depart === 'idle' ? (route ? 'depart' : 'main') : bubbleGone ? 'none' : 'depart';
+    depart === 'idle' ? (ready ? 'depart' : 'main') : bubbleGone ? 'none' : 'depart';
   const departText =
     depart === 'idle' ? `오늘은 ${route?.title ?? '오늘의'} 길로 가 볼까요?` : '자, 이제 오늘의 길을 걸으러 가요!';
 
@@ -271,7 +273,7 @@ export default function HomeScreen() {
         />
 
         {/* 출발 준비: 현관문(누르면 출발)과 노란 화살표 (목업 .door-hot, .exitarrow: 0.5초마다 8px 뜸) */}
-        {depart === 'idle' && route ? (
+        {ready ? (
           <>
             <Pressable
               onPress={startDepart}
@@ -286,6 +288,16 @@ export default function HomeScreen() {
               <DepartArrow s={k} />
             </Pressable>
           </>
+        ) : null}
+
+        {/* 나가지 않기 (목업 .backbtn: 출발 준비 상태에서만, 오른쪽 위 268) */}
+        {ready ? (
+          <Pressable
+            onPress={() => setReadyOff(true)}
+            style={{ position: 'absolute', right: 12 * k, top: 268 * k - crop, zIndex: 7, backgroundColor: COLOR.paper, paddingVertical: 7, paddingHorizontal: 10 }}
+          >
+            <Text style={{ fontSize: 12, fontWeight: '800', color: COLOR.ink }}>나가지 않기</Text>
+          </Pressable>
         ) : null}
 
         {/* 옆모습 걷기 4프레임 (목업 .walker: 왼쪽 문 쪽으로 1.5초, 끝에서 흐려짐) */}
@@ -362,7 +374,7 @@ export default function HomeScreen() {
             <Text style={[styles.quickText, styles.chatText]}>하랑이와 대화하기</Text>
           </Pressable>
           <Pressable onPress={() => router.push('/pouch')} style={({ pressed }) => [styles.quickButton, pressed && styles.pressed]}>
-            <PixelIcon name="pouch" color={COLOR.ink} />
+            <Image source={require('../../assets/icon_pouch.png')} style={{ width: 20, height: 18 }} />
             <Text style={styles.quickText}>주머니</Text>
           </Pressable>
         </View>
@@ -374,7 +386,7 @@ export default function HomeScreen() {
             {tipRows.map((t) => (
               <View key={t.label} style={styles.tipRow}>
                 {t.icon ? <Image source={t.icon} style={{ width: iconSize, height: iconSize }} /> : null}
-                <Text style={styles.tipText}>{t.label}</Text>
+                <Text style={styles.tipText} numberOfLines={1}>{t.label}</Text>
               </View>
             ))}
           </View>
@@ -441,20 +453,20 @@ const styles = StyleSheet.create({
 
   // 본문
   // 스크롤 없는 본문: 남은 높이를 모두 쓰고, 넘치면 잘리지 않게 챙길 것 카드가 줄어든다
-  body: { flex: 1, backgroundColor: COLOR.cream, borderTopWidth: 6, borderTopColor: COLOR.ink, padding: 16, gap: 12, overflow: 'hidden' },
+  body: { flex: 1, backgroundColor: COLOR.cream, borderTopWidth: 6, borderTopColor: COLOR.ink, paddingTop: 8, paddingHorizontal: 16, paddingBottom: 16, gap: 0, overflow: 'hidden' }, // 위 여백 8 (버튼을 올려 준비물 칸을 넓힘)
   pressed: { opacity: 0.85 },
 
   // 큰 버튼 (목업 .cta: 높이 68, 왼쪽 정렬)
-  cta: { ...pxBox(COLOR.red, COLOR.redDark), height: 68, paddingHorizontal: 14, justifyContent: 'center' },
+  cta: { ...pxBox(COLOR.red, COLOR.redDark), height: 68, paddingHorizontal: 14, justifyContent: 'center', marginTop: 2, marginBottom: 8 }, // 칸 사이 간격을 늘려 화면을 채움 (목업 2/4보다 넓게)
   ctaMain: { color: '#fff', fontSize: 17, fontWeight: '800' },
   ctaSub: { color: '#fff', fontSize: 12, opacity: 0.92, marginTop: 3 },
 
   // 안내 상자: 큰 버튼 자리에서 누를 곳이 없을 때 (종이색 바탕)
-  notice: { ...pxBox(COLOR.paper), height: 68, paddingHorizontal: 14, justifyContent: 'center' },
+  notice: { ...pxBox(COLOR.paper), height: 68, paddingHorizontal: 14, justifyContent: 'center', marginTop: 2, marginBottom: 8 },
   noticeText: { color: COLOR.ink, fontSize: 15, fontWeight: '800' },
 
   // 빠른 버튼 (목업 .quick: 높이 64, 간격 10, 글씨 14 굵게)
-  quick: { flexDirection: 'row', gap: 10 },
+  quick: { flexDirection: 'row', gap: 10, marginBottom: 8 }, // 칸 사이 간격 확대 (기존 4)
   quickButton: { ...pxBox(COLOR.paper), flex: 1, height: 64, alignItems: 'center', justifyContent: 'center', gap: 5 },
   // 하랑이와 대화하기: 2칸 폭, 얼굴 그림(58px) + 글씨를 가로로 놓는다
   chatButton: { flex: 2, flexDirection: 'row', justifyContent: 'flex-start', gap: 12, paddingHorizontal: 14, backgroundColor: '#ffe1d6' }, // 대화하기 창의 코랄 연분홍 (chat.tsx와 같은 값)
@@ -463,9 +475,10 @@ const styles = StyleSheet.create({
   chatText: { fontSize: 16 }, // 하랑이와 대화하기 글자만 키움 (기존 14)
 
   // 오늘 챙길 것 (목업 .wxcard: 남은 높이를 채운다)
-  tips: { ...pxBox(COLOR.paper), flex: 1, paddingVertical: 12, paddingHorizontal: 16, gap: 8 },
+  tips: { ...pxBox(COLOR.paper), flex: 1, paddingVertical: 10, paddingHorizontal: 16, gap: 8 }, // 목업 .wxcard: 안쪽 14/16, 간격 10 (남은 높이를 모두 쓴다)
   tipRows: { flex: 1, justifyContent: 'space-evenly', gap: TIP_GAP },
   tipsTitle: { fontSize: 16, fontWeight: '800', color: COLOR.ink }, // 기존 15
   tipRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
   tipText: { fontSize: 17, color: COLOR.ink }, // 준비물 글자 (기존 15)
 });
+
