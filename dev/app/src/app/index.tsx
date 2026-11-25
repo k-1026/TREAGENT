@@ -25,7 +25,7 @@
  *  - 하랑이 대사: 승인 대사 대기. 목업 자리 표시를 그대로 둔다 [창작, 승인 필요]
  */
 import { router } from 'expo-router';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Image, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { BottomTab } from '../components/bottom_tab';
 import { APP_MAX_WIDTH } from '../components/phone_column';
@@ -38,6 +38,7 @@ import { displayName } from '../lib/profile';
 import { useProfile } from '../lib/profile_context';
 import { COLOR, pxBox } from '../lib/theme';
 import { useHomeWeather } from '../lib/use_home_weather';
+import { useToday } from '../lib/today_context';
 
 // 하단 탭 높이, 본문 최소 높이(여백 32 + 큰 버튼 68 + 빠른 버튼 64 + 간격 24 + 챙길 것 최소 150)
 const TAB_HEIGHT = 84;
@@ -46,6 +47,31 @@ const TIP_GAP = 8;
 
 // 말풍선 꼬리 7x7 (K 잉크 테두리, F 종이색 속)
 const BUBBLE_TAIL = ['KFFFFFK', 'KFFFFK.', 'KFFFK..', 'KFFK...', 'KFK....', 'KK.....', 'K......'];
+// 출발 연출 (목업 .walker 옆모습 걷기 4프레임, .exitarrow 노란 화살표)
+const WALK_FRAMES = [
+  require('../../assets/harangi_walk_side_01.png'),
+  require('../../assets/harangi_walk_side_02.png'),
+  require('../../assets/harangi_walk_side_03.png'),
+  require('../../assets/harangi_walk_side_04.png'),
+];
+// 출발 화살표 (56 기준 칸). 픽셀 칸이 아니라 삼각형·사각형으로 그린다.
+// 테두리 2.5px: 바깥 잉크 도형 위에 안쪽 노랑 도형을 올린다. 안쪽 좌표는 바깥 변을 2.5px 안으로 민 값
+// (빗변: 중심선 기준 안쪽 교차점 x=28±18.56, 꼭짓점 y=3.84, 촉 밑변 y=25.5, 기둥 x=20.5~35.5, 아래 y=53.5)으로 계산했다.
+const ARROW_INK = COLOR.ink;
+const ARROW_YELLOW = '#f5b82e';
+function DepartArrow({ s }: { s: number }) {
+  const u = (v: number) => v * s;
+  return (
+    <View style={{ width: u(56), height: u(56) }}>
+      {/* 화살촉: 바깥(잉크) → 안쪽(노랑) */}
+      <View style={{ position: 'absolute', left: u(4), top: 0, width: 0, height: 0, borderLeftWidth: u(24), borderRightWidth: u(24), borderBottomWidth: u(28), borderLeftColor: 'transparent', borderRightColor: 'transparent', borderBottomColor: ARROW_INK }} />
+      <View style={{ position: 'absolute', left: u(9.44), top: u(3.84), width: 0, height: 0, borderLeftWidth: u(18.56), borderRightWidth: u(18.56), borderBottomWidth: u(21.66), borderLeftColor: 'transparent', borderRightColor: 'transparent', borderBottomColor: ARROW_YELLOW }} />
+      {/* 기둥: 바깥(잉크) → 안쪽(노랑) */}
+      <View style={{ position: 'absolute', left: u(18), top: u(28), width: u(20), height: u(28), backgroundColor: ARROW_INK }} />
+      <View style={{ position: 'absolute', left: u(20.5), top: u(25.5), width: u(15), height: u(28), backgroundColor: ARROW_YELLOW }} />
+    </View>
+  );
+}
 
 // 하랑이 숨쉬기: 위아래 4px (위치 확인 화면과 같은 움직임)
 function createBob() {
@@ -93,6 +119,58 @@ export default function HomeScreen() {
     const id = setInterval(() => setMarkUp((v) => !v), 500);
     return () => clearInterval(id);
   }, []);
+
+  // 출발 연출: 현관문을 누르면 목업 .going과 같은 순서로 움직인다 (ms: 몸 돌리기 900, 걷기 1300~2800, 말풍선 끝 2600, 지도 버튼 2900)
+  const today = useToday();
+  const route = today.chosen !== null ? today.result?.routes?.[today.chosen] : undefined;
+  const [depart, setDepart] = useState<'idle' | 'going'>('idle');
+  const [turned, setTurned] = useState(false); // 몸 돌리기가 끝나 정면 그림을 숨겼는가
+  const [walking, setWalking] = useState(false); // 옆모습 걷기 중인가
+  const [walkFrame, setWalkFrame] = useState(0);
+  const [bubbleGone, setBubbleGone] = useState(false);
+  const [nextShown, setNextShown] = useState(false);
+  const turn = useRef(new Animated.Value(1)).current; // 정면 그림 가로 배율 1 → 0.1
+  const walk = useRef(new Animated.Value(0)).current; // 걷기 진행 0 → 1 (1.5초)
+  const departTimers = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+  useEffect(() => () => departTimers.current.forEach(clearTimeout), []);
+  useEffect(() => {
+    if (!walking) return;
+    const id = setInterval(() => setWalkFrame((f) => (f + 1) % 4), 140); // 프레임 한 장 0.14초
+    return () => clearInterval(id);
+  }, [walking]);
+
+  const startDepart = () => {
+    if (depart !== 'idle') return;
+    setDepart('going');
+    Animated.timing(turn, { toValue: 0.1, duration: 270, delay: 900, easing: Easing.linear, useNativeDriver: true }).start();
+    Animated.timing(walk, { toValue: 1, duration: 1500, delay: 1300, easing: Easing.linear, useNativeDriver: true }).start();
+    const at = (ms: number, fn: () => void) => departTimers.current.push(setTimeout(fn, ms));
+    at(1170, () => setTurned(true));
+    at(1300, () => setWalking(true));
+    at(2600, () => setBubbleGone(true));
+    at(2800, () => setWalking(false));
+    at(2900, () => setNextShown(true));
+  };
+
+  // 개발용: 출발 모션을 처음부터 다시 본다 (타이머와 값을 원래대로)
+  const resetDepart = () => {
+    departTimers.current.forEach(clearTimeout);
+    departTimers.current = [];
+    turn.setValue(1);
+    walk.setValue(0);
+    setDepart('idle');
+    setTurned(false);
+    setWalking(false);
+    setBubbleGone(false);
+    setNextShown(false);
+  };
+
+  // 말풍선은 한 칸을 돌려 쓴다: 출발 전에는 출발 대사, 걷는 동안 잠깐 같은 칸에 걸으러 가는 대사, 그다음에는 숨김 (기본 말풍선과 겹치지 않음)
+  const bubbleMode: 'main' | 'depart' | 'none' =
+    depart === 'idle' ? (route ? 'depart' : 'main') : bubbleGone ? 'none' : 'depart';
+  const departText =
+    depart === 'idle' ? `오늘은 ${route?.title ?? '오늘의'} 길로 가 볼까요?` : '자, 이제 오늘의 길을 걸으러 가요!';
 
   useEffect(() => {
     const loop = Animated.loop(
@@ -154,31 +232,103 @@ export default function HomeScreen() {
         </View>
 
         {/* 말풍선 (목업 .bubble: 왼쪽 40, 아래에서 118, 폭 172) */}
-        <View
-          style={[styles.bubble, { left: 40 * k, bottom: bubbleBottom, width: 172 * k }]}
-          onLayout={(e) => setBubbleH(e.nativeEvent.layout.height)}
-        >
-          <Text style={styles.bubbleText}>{s.bubble.replace('{name}', name)}</Text>
-          <Text style={styles.bubbleMuted}>[승인 대사 대기]</Text>
-          {s.bubbleAlert ? <Text style={styles.bubbleAlert}>오늘 비어 있는 장소가 있어요 [임시]</Text> : null}
-          {/* 말풍선 꼬리 (목업 .tail: 왼쪽 120, 계단 모양) */}
-          <View style={[styles.tail, { left: 120 * k - 3 }]}>
-            <PixelSprite grid={BUBBLE_TAIL} cell={3} />
+        {bubbleMode !== 'none' ? (
+          <View
+            style={[styles.bubble, { left: 40 * k, bottom: bubbleBottom, width: 172 * k }]}
+            onLayout={(e) => setBubbleH(e.nativeEvent.layout.height)}
+          >
+            {bubbleMode === 'depart' ? (
+              <>
+                <Text style={styles.bubbleText}>{departText}</Text>
+                <Text style={styles.bubbleMuted}>[승인 대사 대기 · 창작 후보 A]</Text>
+              </>
+            ) : (
+              <>
+                <Text style={styles.bubbleText}>{s.bubble.replace('{name}', name)}</Text>
+                <Text style={styles.bubbleMuted}>[승인 대사 대기]</Text>
+                {s.bubbleAlert ? <Text style={styles.bubbleAlert}>오늘 비어 있는 장소가 있어요 [임시]</Text> : null}
+              </>
+            )}
+            {/* 말풍선 꼬리 (목업 .tail: 왼쪽 120, 계단 모양) */}
+            <View style={[styles.tail, { left: 120 * k - 3 }]}>
+              <PixelSprite grid={BUBBLE_TAIL} cell={3} />
+            </View>
           </View>
-        </View>
+        ) : null}
 
         <Animated.Image
           source={require('../../assets/harangi_pixel_idle_transparent.png')}
           style={{
             position: 'absolute',
             left: 70 * k,
-            top: 210 * k - crop,
+            top: 208 * k - crop, // 기본 하랑이 위치 (기존 210에서 5px 위, 다시 3px 아래)
             width: 92 * k,
             height: 95 * k,
-            transform: [{ translateY: bob.y }],
+            opacity: turned ? 0 : 1,
+            transform: [{ translateY: bob.y }, { scaleX: turn }],
           }}
           resizeMode="contain"
         />
+
+        {/* 출발 준비: 현관문(누르면 출발)과 노란 화살표 (목업 .door-hot, .exitarrow: 0.5초마다 8px 뜸) */}
+        {depart === 'idle' && route ? (
+          <>
+            <Pressable
+              onPress={startDepart}
+              accessibilityLabel="현관문으로 나가기"
+              style={{ position: 'absolute', left: 8 * k, top: 116 * k - crop, width: 72 * k, height: 124 * k, zIndex: 6 }}
+            />
+            <Pressable
+              onPress={startDepart}
+              accessibilityLabel="나가기"
+              style={{ position: 'absolute', left: 14 * k, top: 246 * k - crop, zIndex: 6, transform: [{ translateY: markUp ? -8 : 0 }] }}
+            >
+              <DepartArrow s={k} />
+            </Pressable>
+          </>
+        ) : null}
+
+        {/* 옆모습 걷기 4프레임 (목업 .walker: 왼쪽 문 쪽으로 1.5초, 끝에서 흐려짐) */}
+        {walking ? (
+          <Animated.View
+            pointerEvents="none"
+            style={{
+              position: 'absolute',
+              left: 69 * k,
+              top: 196 * k - crop,
+              width: 117 * k,
+              height: 121 * k,
+              zIndex: 3,
+              opacity: walk.interpolate({ inputRange: [0, 0.8, 1], outputRange: [1, 1, 0] }),
+              transform: [
+                { translateX: walk.interpolate({ inputRange: [0, 0.8, 1], outputRange: [0, -52 * k, -66 * k] }) },
+                { scaleX: -1 },
+              ],
+            }}
+          >
+            <Image source={WALK_FRAMES[walkFrame]} style={{ width: '100%', height: '100%' }} resizeMode="contain" />
+          </Animated.View>
+        ) : null}
+
+        {/* 개발용 버튼: 출발 모션 보기 / 다시 보기 (배포 빌드에는 나오지 않음) */}
+        {__DEV__ ? (
+          <Pressable
+            onPress={depart === 'idle' ? startDepart : resetDepart}
+            style={{ position: 'absolute', left: 12 * k, bottom: 6 * k, zIndex: 7, backgroundColor: '#fff3e0', borderWidth: 1.5, borderColor: COLOR.ink, paddingVertical: 4, paddingHorizontal: 8 }}
+          >
+            <Text style={{ fontSize: 11, fontWeight: '800', color: COLOR.ink }}>{depart === 'idle' ? '[개발] 출발 모션 보기' : '[개발] 다시 보기'}</Text>
+          </Pressable>
+        ) : null}
+
+        {/* 지도로 가기 (목업 .nextgo: 오른쪽 아래, 출발 후 나타남) */}
+        {nextShown ? (
+          <Pressable
+            onPress={() => router.push('/travel')}
+            style={[pxBox(COLOR.red, COLOR.redDark), { borderWidth: 2.5, boxShadow: 'none', position: 'absolute', right: 12 * k, bottom: 50 * k, zIndex: 7, paddingVertical: 8, paddingHorizontal: 12 }]}
+          >
+            <Text style={{ color: '#fff', fontSize: 13, fontWeight: '800' }}>여행 지도 보기 ›</Text>
+          </Pressable>
+        ) : null}
 
         {/* 알림 띠 (목업 .sbanner: 장면 맨 아래, 경고는 분홍, 알림은 노랑) */}
         {s.banner ? (
@@ -209,7 +359,7 @@ export default function HomeScreen() {
         <View style={styles.quick}>
           <Pressable onPress={() => router.push('/chat')} style={({ pressed }) => [styles.quickButton, styles.chatButton, pressed && styles.pressed]}>
             <Image source={require('../../assets/harangi_face_v2.webp')} style={styles.chatFace} resizeMode="contain" />
-            <Text style={styles.quickText}>하랑이와 대화하기</Text>
+            <Text style={[styles.quickText, styles.chatText]}>하랑이와 대화하기</Text>
           </Pressable>
           <Pressable onPress={() => router.push('/pouch')} style={({ pressed }) => [styles.quickButton, pressed && styles.pressed]}>
             <PixelIcon name="pouch" color={COLOR.ink} />
@@ -307,14 +457,15 @@ const styles = StyleSheet.create({
   quick: { flexDirection: 'row', gap: 10 },
   quickButton: { ...pxBox(COLOR.paper), flex: 1, height: 64, alignItems: 'center', justifyContent: 'center', gap: 5 },
   // 하랑이와 대화하기: 2칸 폭, 얼굴 그림(58px) + 글씨를 가로로 놓는다
-  chatButton: { flex: 2, flexDirection: 'row', justifyContent: 'flex-start', gap: 12, paddingHorizontal: 14 },
+  chatButton: { flex: 2, flexDirection: 'row', justifyContent: 'flex-start', gap: 12, paddingHorizontal: 14, backgroundColor: '#ffe1d6' }, // 대화하기 창의 코랄 연분홍 (chat.tsx와 같은 값)
   chatFace: { width: 58, height: 58 },
-  quickText: { fontSize: 14, fontWeight: '800', color: COLOR.ink },
+  quickText: { fontSize: 16, fontWeight: '800', color: COLOR.ink }, // 주머니·하랑이와 대화하기 (기존 14)
+  chatText: { fontSize: 16 }, // 하랑이와 대화하기 글자만 키움 (기존 14)
 
   // 오늘 챙길 것 (목업 .wxcard: 남은 높이를 채운다)
   tips: { ...pxBox(COLOR.paper), flex: 1, paddingVertical: 12, paddingHorizontal: 16, gap: 8 },
   tipRows: { flex: 1, justifyContent: 'space-evenly', gap: TIP_GAP },
-  tipsTitle: { fontSize: 15, fontWeight: '800', color: COLOR.ink },
+  tipsTitle: { fontSize: 16, fontWeight: '800', color: COLOR.ink }, // 기존 15
   tipRow: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  tipText: { fontSize: 15, color: COLOR.ink },
+  tipText: { fontSize: 17, color: COLOR.ink }, // 준비물 글자 (기존 15)
 });
