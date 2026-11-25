@@ -6,6 +6,10 @@
  *  - 카드 오른쪽 아래 ⛶: 전체보기. 전체보기는 화면을 채우고, 평소엔 버튼이 없다. 화면을 누르면 [닫기]와 뒤집기가 나왔다 사라진다.
  *  - [저장], [공유]는 아직 기능이 없다 → 짧은 안내만 보인다 [확인 필요: 앨범 저장, 공유 방식]
  *  - 카드 내용은 예시 자료(trip_card_data.ts)이고 실제 여행 기록이 저장되면 바꾼다.
+ *
+ * 완주 모드 (주소: /trip_card?done=1&title=길이름&names=장소1|장소2|장소3) — 여행 지도의 [완주 한 장 보기]로 연다
+ *  - 목업 app_home_mockup_v1.html의 #v-done(renderDone): 방금 걸은 길로 9:16 카드를 채운다. 머리글은 "완주", 뒤로는 홈.
+ *  - 날짜는 오늘, 장소는 걸은 길의 장소 이름. 시각·일기 문단·대사는 기록 저장 전이라 자리표시 [확인 필요]
  */
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
@@ -16,12 +20,13 @@ import { TripCard } from '../components/trip_card';
 import { displayName } from '../lib/profile';
 import { useProfile } from '../lib/profile_context';
 import { COLOR } from '../lib/theme';
-import { SAMPLE_TRIPS } from '../lib/trip_card_data';
+import { doneTrip, SAMPLE_TRIPS } from '../lib/trip_card_data';
 
 export default function TripCardScreen() {
-  const params = useLocalSearchParams<{ i?: string }>();
+  const params = useLocalSearchParams<{ i?: string; done?: string; title?: string; names?: string }>();
+  const isDone = params.done === '1';
   const idx = Math.max(0, Math.min(SAMPLE_TRIPS.length - 1, parseInt(params.i ?? '0', 10) || 0));
-  const trip = SAMPLE_TRIPS[idx];
+  const trip = isDone ? doneTrip(params.title ?? '', (params.names ?? '').split('|').filter(Boolean)) : SAMPLE_TRIPS[idx];
   const { profile } = useProfile();
   const name = displayName(profile);
   const { width: winW, height: winH } = useWindowDimensions();
@@ -45,10 +50,15 @@ export default function TripCardScreen() {
   const fullW = Math.min(appW, (winH * 9) / 16);
 
   const back = () => (router.canGoBack() ? router.back() : router.replace('/ledger'));
+  const home = () => (router.canDismiss() ? router.dismissTo('/') : router.replace('/'));
 
   return (
     <View style={styles.safe}>
-      <ScreenHead title="내 여행" sub="지난 여행 한 장" backLabel="‹ 장부" onBack={back} />
+      {isDone ? (
+        <ScreenHead title="완주" sub="하랑이와 함께 끝까지 걸었어요" backLabel="‹ 홈" onBack={home} />
+      ) : (
+        <ScreenHead title="내 여행" sub="지난 여행 한 장" backLabel="‹ 장부" onBack={back} />
+      )}
       <View style={[CONTENT, styles.body]}>
         <View style={{ alignItems: 'center', flex: 1, justifyContent: 'center' }}>
           <TripCard trip={trip} width={Math.max(160, prevW)} name={name} flipped={flipped} onFlip={() => setFlipped((f) => !f)} onFull={() => { setFull(true); setChrome(false); }} />

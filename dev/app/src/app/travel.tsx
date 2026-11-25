@@ -7,7 +7,7 @@ import { CoursePlacesCard } from '../components/course_places_card';
 import { CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
 import { TmapView } from '../components/tmap_view';
-import { DoneSheet, MissionSheet, StampSheet } from '../components/travel_sheets';
+import { MissionSheet, StampSheet } from '../components/travel_sheets';
 import { getCurrentLocation } from '../lib/location';
 import { getWalk, WalkPlace, WalkResult } from '../lib/server_api';
 import { BTN_RED, COLOR, pxBox } from '../lib/theme';
@@ -50,7 +50,7 @@ export default function TravelScreen() {
   const [offRoute, setOffRoute] = useState(false); // 새 경로를 제안 중인가
   const [rerouting, setRerouting] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const [sheet, setSheet] = useState<'stamps' | 'mission' | 'done' | null>(null); // 겹쳐 뜨는 창 (travel_sheets.tsx)
+  const [sheet, setSheet] = useState<'stamps' | 'mission' | null>(null); // 겹쳐 뜨는 창 (travel_sheets.tsx)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // 개발용 시뮬레이션 (컴퓨터에서 걸어 볼 수 없어서)
   const [sim, setSim] = useState(false);
@@ -421,7 +421,7 @@ export default function TravelScreen() {
             </Pressable>
             {/* 큰 버튼: 도착 확인 → (도착하면) 미션 창 → (모두 걸으면) 완주 한 장 */}
             <Pressable
-              onPress={reached >= total ? () => setSheet('done') : arrived ? () => setSheet('mission') : onArrive}
+              onPress={reached >= total ? () => router.push({ pathname: '/trip_card', params: { done: '1', title: route.title, names: placeNames.join('|') } }) : arrived ? () => setSheet('mission') : onArrive}
               style={[pxBox(BTN_RED, COLOR.redDark), { flex: 1.4, height: 52, alignItems: 'center', justifyContent: 'center' }]}
             >
               <Text style={{ color: '#fff', fontWeight: '800', fontSize: 15 }}>
@@ -445,7 +445,7 @@ export default function TravelScreen() {
         </View>
       ) : null}
 
-      {/* 겹쳐 뜨는 창: 도장 확인 · 미션 · 완주 한 장 (모양만. 도장 저장은 서버 기능 전) */}
+      {/* 겹쳐 뜨는 창: 도장 확인 · 미션 (모양만. 도장 저장은 서버 기능 전). 완주 한 장은 9:16 카드 화면(/trip_card?done=1)으로 연다 */}
       {sheet === 'stamps' ? <StampSheet title={route.title} names={placeNames} reached={reached} onClose={() => setSheet(null)} /> : null}
       {sheet === 'mission' ? (
         <MissionSheet
@@ -456,9 +456,6 @@ export default function TravelScreen() {
           onTemp={__DEV__ ? () => { setSheet(null); onArrive(); } : undefined}
           onLater={() => setSheet(null)}
         />
-      ) : null}
-      {sheet === 'done' ? (
-        <DoneSheet title={route.title} names={placeNames} reached={reached} onClose={() => setSheet(null)} onHome={() => { setSheet(null); router.dismissTo('/'); }} />
       ) : null}
 
       {/* 토스트 */}

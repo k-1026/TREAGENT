@@ -18,6 +18,23 @@ export type Trip = {
 
 const ent = (p: string, fact: string, n: number): TripEntry => ({ t: '[시각]', p, fact, rec: `방문 기록 · 장소 ${n} · [미션 종류]` });
 
+const WD = ['일', '월', '화', '수', '목', '금', '토'];
+
+// 완주 카드: 방금 걸은 길로 채운다 (목업 renderDone). 시각·일기·대사는 기록 저장 전이라 자리표시
+export function doneTrip(title: string, names: string[]): Trip {
+  const d = new Date();
+  const date = `${d.getFullYear()}.${String(d.getMonth() + 1).padStart(2, '0')}.${String(d.getDate()).padStart(2, '0')} (${WD[d.getDay()]})`;
+  return {
+    date,
+    wx: '[지난 날씨 기록] · [기준 시각]',
+    title: title || '[길 이름]',
+    say: '[하랑이 한마디 · 승인 대기]',
+    name: '[이름]',
+    ents: names.map((p) => ({ t: '[시각]', p: `${p}에 도착했어요.`, fact: '[하랑이 일기 문단 자리 · 기록 정리 결과 · 승인 대기]', rec: `방문 기록 · ${p} · [미션 종류]` })),
+    close: '[하랑이 마무리 대사 · 승인 대기]',
+  };
+}
+
 export const SAMPLE_TRIPS: Trip[] = [
   {
     date: '[완주 날짜 1]', wx: '[날씨 한 줄] · [기준 시각]', title: '중구 근대골목 걷기', say: '오늘도 같이 걸어 줘서 고마워요!', name: '[이름]',
