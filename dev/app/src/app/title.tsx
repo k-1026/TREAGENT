@@ -129,7 +129,6 @@ export default function TitleScreen() {
         <Text style={styles.logoMain}>대프리카</Text>
         <Text style={styles.logoSub}>히든 퀘스트</Text>
         <Text style={styles.logoNote}>(가칭)</Text>
-        <Text style={styles.catch}>하랑이와 함께 오늘 날씨에 맞는 길을 찾아 걸어요.</Text>
       </View>
 
       <View style={styles.actions}>
@@ -168,15 +167,14 @@ const styles = StyleSheet.create({
 
   // 제목과 소개 (장면 아래, 40px 위로 올림: 장부 자리는 그대로)
   info: { alignItems: 'center', paddingHorizontal: 30, gap: 2, marginTop: -50 },
-  logoMain: { fontSize: 34, fontWeight: '800', letterSpacing: 2, color: COLOR.ink },
-  logoSub: { fontSize: 26, fontWeight: '800', color: COLOR.redDark, letterSpacing: 1 },
+  logoMain: { fontSize: 41, fontWeight: '800', letterSpacing: 2, color: COLOR.ink }, // 120% (기존 34)
+  logoSub: { fontSize: 31, fontWeight: '800', color: COLOR.redDark, letterSpacing: 1 }, // 120% (기존 26)
   logoNote: { fontSize: 11, color: COLOR.muted, marginTop: 2 },
-  catch: { marginTop: 18, textAlign: 'center', fontSize: 13, lineHeight: 20, color: COLOR.ink },
 
   // 버튼 (아래쪽 고정)
-  actions: { paddingHorizontal: 24, paddingTop: 28, paddingBottom: 90, gap: 14 }, // 아래 여백 40 → 90: 버튼이 50px 위로
+  actions: { paddingHorizontal: 24, paddingTop: 28, paddingBottom: 120, gap: 14 }, // 아래 여백 120: 버튼을 조금 더 위로 (30px)
   button: { paddingVertical: 13, paddingHorizontal: 14, alignItems: 'center' },
   pressed: { opacity: 0.85 },
-  buttonMain: { color: '#fff', fontSize: 16, fontWeight: '800' },
-  buttonSmall: { color: '#fff', fontSize: 11, marginTop: 2 },
+  buttonMain: { color: '#fff', fontSize: 19, fontWeight: '800' }, // 120% (기존 16)
+  buttonSmall: { color: '#fff', fontSize: 13, marginTop: 2 }, // 120% (기존 11)
 });
