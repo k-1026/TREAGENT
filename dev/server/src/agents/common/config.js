@@ -2,8 +2,8 @@
 // 아래 숫자는 모두 임시값이다. [결정 D-19] 팀이 정하면 이 파일만 고친다. 테스트는 값을 직접 넣으므로 이 숫자에 의존하지 않는다.
 export const AGENT_LIMITS = Object.freeze({
   maxLlmCalls: 8, // 한 요청에서 쓸 수 있는 LLM 호출 수
-  deadlineMs: 20000, // 한 요청 전체 시간 상한
-  llmTimeoutMs: 8000, // LLM 호출 1회 시간 상한
+  deadlineMs: 90000, // 한 요청 전체 시간 상한 (키·모델 전환으로 여러 번 부를 수 있어 넉넉히 둔다)
+  llmTimeoutMs: 30000, // LLM 호출 1회 시간 상한 (전환 시도까지 포함)
   dailyMax: 30, // 이용자 1명의 하루 요청 수 상한 (에이전트 요청 기준)
   maxLoopAttempts: 2, // 되돌이 한 곳에서 시도할 수 있는 최대 횟수 (다 쓰면 대체 코스·폴백으로 간다)
 });

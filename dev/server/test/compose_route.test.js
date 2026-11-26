@@ -126,3 +126,17 @@ test('AI에게 보여 주는 후보는 상한(12곳)까지만', async () => {
   const lines = llm.calls[0].user.split('\n').filter((l) => l.startsWith('- id='));
   assert.equal(lines.length, 12);
 });
+test('좌표가 있는 후보가 충분하면 좌표 없는 장소는 고르지 않는다 (도보 경로가 막히지 않게)', async () => {
+  const noCoord = ['x', 'y'].map((id) => P({ id, name: id.toUpperCase(), lat: undefined, lng: undefined }));
+  const compose = createComposeRoute({ llm: null });
+  const r = await compose({ mode: 'EXPLORE', places: [...noCoord, ...PLACES], prefs: PREFS, start: START });
+  assert.ok(r.places.every((p) => !['x', 'y'].includes(p.id)));
+});
+
+test('좌표 있는 후보가 모자라면 좌표 없는 장소도 쓴다 (예전 동작)', async () => {
+  const noCoord = ['x', 'y'].map((id) => P({ id, name: id.toUpperCase(), lat: undefined, lng: undefined }));
+  const compose = createComposeRoute({ llm: null });
+  const r = await compose({ mode: 'EXPLORE', places: [...noCoord, PLACES[0]], prefs: PREFS, start: START });
+  assert.equal(r.ok, true);
+  assert.equal(r.places.length, 3);
+});

@@ -28,6 +28,23 @@ import { createMemoryRunStore } from './agents/common/run_store_memory.js';
 import { createPgRunStore } from './agents/common/run_store_pg.js';
 import { AGENT_LIMITS, PRESENCE } from './agents/common/config.js';
 import { createPresence } from './admin/presence.js';
+import { isCourseAgentOn } from './agents/course/config.js';
+import { createAgents } from './agents/index.js';
+import { prepareImage } from './agents/mission/prepare_image.js';
+import { createPoolFromEnv } from './agents/common/failover.js';
+import { createImageGenFromEnv } from './agents/card/image_gen.js';
+import { createGeminiLlmsWithPool } from './agents/common/gemini.js';
+import { createMemoryGameStores, createPgGameStores } from './agents/stores/game_stores.js';
+import { createDailyLimit } from './agents/common/daily_limit.js';
+import { createAgentsRouter } from './routes/agents.js';
+import { runGolden } from './agents/golden/golden_set.js';
+import { createTryAgent } from './admin/try_agent.js';
+import { COURSE_SCHEMAS } from './agents/course/gemini.js';
+import { CHAT_SCHEMAS } from './agents/chat/agent.js';
+import { DIARY_SCHEMAS } from './agents/diary/agent.js';
+import { MISSION_SCHEMAS } from './agents/mission/agent.js';
+import { CARD_SCHEMAS } from './agents/card/agent.js';
+import { PLACE_DB_SCHEMAS } from './agents/place_db/agent.js';
 
 // ① 요청 로그: 요청 한 건이 끝나면 딱 한 줄만 남긴다.
 function requestLogger(req, res, next) {
@@ -84,8 +101,16 @@ export function createApp({
     const query = (text, params) => (sharedQuery ??= createPgQuery())(text, params);
   placeLoader ??= createPlaceLoader({ query });
   courseLoader ??= createCourseLoader({ query });
-    // AI 길 구성: GOOGLE_API_KEY와 GEMINI_MODEL이 .env에 없으면 llm이 null이라 규칙 결과만 쓴다.
-  composeRoute ??= createComposeRoute({ llm: createLlmFromEnv(), cache: createRouteCache() });
+  // 실행 기록: DATABASE_URL이 있으면 DB(agent_runs 등)에, 없으면 서버 메모리에 쓴다. 에이전트와 관리자 화면이 같은 저장소를 본다.
+  const useDb = Boolean(process.env.DATABASE_URL);
+  const memoryStore = createMemoryRunStore();
+  const loggedStore = createLoggedStore(useDb ? createPgRunStore({ query }) : memoryStore);
+  // 에이전트: 키·모델 전환 풀 하나를 모두가 같이 쓴다. GOOGLE_API_KEYS와 GEMINI_MODELS(쉼표로 여러 개)가 없으면 LLM 에이전트는 꺼진다.
+  // 코스 설계 에이전트는 COURSE_AGENT=on일 때만 /recommend에 끼운다 (기본 꺼짐). 꺼져 있으면 예전과 똑같이 동작한다.
+  const gameStores = useDb ? createPgGameStores({ query }) : createMemoryGameStores();
+  const aiPool = createPoolFromEnv();
+  const agents = createAgents({ pool: aiPool, stores: gameStores, recorder: createRecorder({ store: loggedStore }), courseOn: isCourseAgentOn(), prepareImage, imageGen: createImageGenFromEnv() });
+  composeRoute ??= createComposeRoute({ llm: createLlmFromEnv(), cache: createRouteCache(), courseAgent: agents.course });
   // 하랑이 대사와 오늘의 길 브리핑: 키와 모델이 없으면 makeModel이 null이라 고정 문장만 쓴다.
   harangiLine ??= createHarangiLine({ makeModel: createHarangiFactoryFromEnv(), cache: createRouteCache() });
   // 일행 저장소와 Supabase 로그인 확인. SUPABASE_URL 등이 .env에 없으면 tokenVerifier가 null이라 일행 API는 503으로 답한다.
@@ -114,7 +139,9 @@ export function createApp({
   app.use(requestLogger); // ① 가장 먼저: 모든 요청을 기록 대상으로
   app.use(devCors);
   // ② 요청 본문(JSON)을 읽어 req.body에 넣는다. 좌표만 받으니 1KB로 작게 제한한다.
-  app.use(express.json({ limit: '1kb' }));
+  // /agents는 사진·긴 입력이 있어서 라우터 안에서 따로 읽는다.
+  const smallJson = express.json({ limit: '1kb' });
+  app.use((req, res, next) => (req.path.startsWith('/agents') ? next() : smallJson(req, res, next)));
 
   // ③ 라우트
   app.get('/health', (req, res) => {
@@ -131,13 +158,11 @@ export function createApp({
   );
   app.use('/profile', createProfileRouter({ store: profileStore, verifier: tokenVerifier, now }));
   app.use('/courses', requireLogin, createCoursesRouter({ weatherService, placeLoader, courseLoader, now }));
+  app.use('/agents', requireLogin, createDailyLimit({ max: AGENT_LIMITS.dailyMax }), createAgentsRouter({ agents, stores: gameStores, placeLoader }));
   app.use('/walk', requireLogin, createWalkRouter({ placeLoader, poiFinder: createPoiFinder() }));
   // 관리자 확인 화면: 관리자 전용 아이디·비밀번호(ADMIN_USERNAME, ADMIN_PASSWORD_HASH, ADMIN_SESSION_SECRET)로 로그인한다.
   // 설정(또는 로컬 전용 ADMIN_DEV_OPEN)이 없으면 /admin/api는 닫혀 있다 (503).
   // DATABASE_URL이 있으면 실행 기록을 DB(agent_runs 등)에 쓰고, 없으면 서버 메모리에만 쓴다.
-  const useDb = Boolean(process.env.DATABASE_URL);
-  const memoryStore = createMemoryRunStore();
-  const loggedStore = createLoggedStore(useDb ? createPgRunStore({ query }) : memoryStore);
   const adminAuth = createAdminAuthFromEnv(process.env);
   app.use(
     '/admin',
@@ -151,6 +176,22 @@ export function createApp({
       limits: AGENT_LIMITS,
       presence,
       presenceConfig: PRESENCE,
+      ai: {
+        pool: aiPool,
+        placeDb: agents.placeDb,
+        agentsOn: Object.fromEntries(Object.entries(agents).filter(([k]) => k !== 'pool').map(([k, v]) => [k, Boolean(v)])),
+        candidates: gameStores.candidates,
+        storeKind: gameStores.kind,
+        // 에이전트 시험 실행: 실제 에이전트를 샘플 입력으로 한 번 돌려 결과와 실행 기록을 만든다 (관리자 화면)
+        tryAgent: createTryAgent({ agents, placeLoader, now }),
+        // 골든셋: mock은 가짜 LLM(비용 0원), live는 진짜 LLM(호출 비용이 든다)
+        runGolden: (opts) => {
+          const schemas = { course: COURSE_SCHEMAS, chat: CHAT_SCHEMAS, diary: DIARY_SCHEMAS, mission: MISSION_SCHEMAS, card: CARD_SCHEMAS, place_db: PLACE_DB_SCHEMAS };
+          const cache = {};
+          const liveLlm = (agent, name) => (cache[agent] ??= createGeminiLlmsWithPool(schemas[agent], aiPool))?.[name];
+          return runGolden({ ...opts, liveLlm });
+        },
+      },
     }),
   );
   

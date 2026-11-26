@@ -69,7 +69,8 @@ export function createRecorder({
         if (ended) return fn(); // 끝난 실행에는 더 쓰지 않는다
         seq += 1; // 순서 번호는 시작할 때 매긴다 (동시에 도는 단계도 서로 다른 번호)
         const mySeq = seq;
-        const startMs = now();
+        // startedAtMs·durationMs: 이미 끝난 단계를 나중에 옮겨 적을 때만 쓴다 (미션이 종류를 고른 뒤 앞 단계를 기록할 때).
+        const startMs = Number.isFinite(meta.startedAtMs) ? meta.startedAtMs : now();
         const inputSummary = clean(meta.summary ?? null);
         const prompt = cleanPrompt(meta.prompt ?? null);
 
@@ -83,7 +84,7 @@ export function createRecorder({
             kind: meta.kind,
             attempt: meta.attempt ?? 1,
             startedAt: iso(startMs),
-            durationMs: Math.max(0, now() - startMs),
+            durationMs: Number.isFinite(meta.durationMs) ? Math.max(0, meta.durationMs) : Math.max(0, now() - startMs),
             inputSummary,
             prompt,
             model: null,

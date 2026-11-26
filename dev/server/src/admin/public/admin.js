@@ -11,6 +11,8 @@ const state = {
   graphs: null, limits: null, scenarios: [],
   runs: [], health: null, presence: null, error: null,
   runId: null, detail: null, check: null, busy: false,
+  tryOut: null, tryBusy: null, stats: null, range: 'day', approvals: null, statsAt: 0,
+  ai: null, golden: null, places: null, form: { name: '', type: 'indoor', district: '중구', sourceUrl: '', lat: '', lng: '', openHour: '', closeHour: '', caution: '' }, note: null,
   userId: null, // ① 접속 현황에서 누른 사람 (그 사람이 쓰는 에이전트를 아래에 보여 준다)
 };
 let lastSig = '';
@@ -331,16 +333,69 @@ function presenceSection() {
 }
 
 // ---------- 페이지 ----------
+// ---------- 대시보드 (통계) ----------
+const pct = (v) => (v == null ? '-' : `${Math.round(v * 100)}%`);
+const num = (v) => (v == null ? '-' : v.toLocaleString('ko-KR'));
+const RANGE_LABEL = { day: '최근 24시간', week: '최근 7일', all: '전체' };
+
+function kpi(label, value, sub, cls = '') {
+  return h('div', { class: `kpi ${cls}` }, h('div', { class: 'kpi-label' }, label), h('div', { class: 'kpi-value' }, value), sub ? h('div', { class: 'muted' }, sub) : null);
+}
+function rateChip(v, goodHigh = true) {
+  if (v == null) return h('span', { class: 'chip' }, '-');
+  const good = goodHigh ? v >= 0.8 : v <= 0.1;
+  const bad = goodHigh ? v < 0.5 : v > 0.3;
+  return h('span', { class: `chip ${good ? 'ok' : bad ? 'fail' : 'warn'}` }, pct(v));
+}
+function bars(daily) {
+  const max = Math.max(1, ...daily.map((d) => d.runs));
+  return h('div', { class: 'bars' }, daily.map((d) => h('div', { class: 'bar-col', title: `${d.day}: 실행 ${d.runs}건 · 정상 외 ${d.notNormal}건` },
+    h('div', { class: 'bar-stack' }, h('div', { class: 'bar bar-ok', style: `height:${((d.runs - d.notNormal) / max) * 100}%` }), h('div', { class: 'bar bar-bad', style: `height:${(d.notNormal / max) * 100}%` })),
+    h('div', { class: 'bar-label' }, d.day.slice(5)), h('div', { class: 'bar-label' }, String(d.runs)))));
+}
+function table(head, rows, empty) {
+  if (rows.length === 0) return h('p', { class: 'muted' }, empty);
+  return h('div', { class: 'table-wrap' }, h('table', {}, h('thead', {}, h('tr', {}, head.map((t) => h('th', {}, t)))), h('tbody', {}, rows.map((r) => h('tr', {}, r.map((c) => h('td', {}, c)))))));
+}
+
 function pageDashboard() {
-  const total = state.runs.length;
-  const running = state.runs.filter((r) => r.view?.status === 'running').length;
-  const notNormal = state.runs.filter((r) => r.view?.status === 'ended' && r.outcome !== 'normal').length;
+  const st = state.stats;
+  const t = st?.totals;
   const c = state.presence?.counts;
-  return h('div', {}, h('h2', {}, '대시보드'),
-    h('div', { class: 'cols' },
-      h('div', { class: 'card' }, h('h3', {}, '최근 실행 (이 화면 기준)'), h('p', {}, `전체 ${total}건 · 진행 중 ${running}건 · 정상 외 ${notNormal}건`), h('p', { class: 'muted' }, '통계(성공률, 소요 시간, 토큰 합계, 실패 사유)는 다음 단계에서 들어옵니다.')),
-      h('div', { class: 'card' }, h('h3', {}, '접속 현황'), c ? h('p', {}, `접속 ${c.connected}명 · 사용 중 ${c.using}명 · 최근 사용 ${c.recent}명 · 미사용 ${c.idle}명`) : h('p', { class: 'muted' }, '-'), h('p', { class: 'muted' }, '사람별 보기는 [에이전트] 페이지에 있습니다.')),
-      h('div', { class: 'card' }, h('h3', {}, '저장 상태'), healthLine() ?? h('p', { class: 'muted' }, '-'))));
+  const ap = state.approvals;
+  const rangeBtns = h('div', { class: 'seg' }, Object.entries(RANGE_LABEL).map(([k, label]) => h('button', { type: 'button', class: state.range === k ? 'primary' : '', onclick: () => { state.range = k; loadStats(true); } }, label)));
+  const b = st?.budget;
+  return h('div', {}, h('div', { class: 'card-head' }, h('h2', {}, '대시보드'), rangeBtns),
+    !st ? h('p', { class: 'muted' }, '통계를 불러오는 중…') : [
+      st.store === 'memory' ? h('p', { class: 'notice' }, '저장소가 서버 메모리라서 서버를 다시 켜면 통계가 사라집니다 (DB 아님).') : null,
+      st.capped ? h('p', { class: 'muted' }, '실행이 1000건을 넘어서 가장 최근 1000건만 계산했습니다.') : null,
+      h('div', { class: 'kpis' },
+        kpi('실행', num(t.runs), `끝남 ${num(t.ended)} · 진행 중 ${num(t.running)} · 중단됨 ${num(t.stale)}`),
+        kpi('통과율 (정상)', pct(t.passRate), `대체 코스 ${pct(t.substituteRate)}`, t.passRate != null && t.passRate < 0.5 ? 'bad' : ''),
+        kpi('폴백 비율', pct(t.fallbackRate), `${num(t.fallback)}건`, t.fallbackRate != null && t.fallbackRate > 0.3 ? 'bad' : ''),
+        kpi('평균 소요', fmtMs(t.avgDurationMs), `느린 쪽 5%: ${fmtMs(t.p95DurationMs)}`),
+        kpi('LLM 호출', num(t.llmCalls), `토큰 ${num(t.tokens.total)}${t.tokens.unknownCalls ? ` (모름 ${t.tokens.unknownCalls}회 제외)` : ''}`)),
+      h('div', { class: 'cols' },
+        h('div', { class: 'card' }, h('h3', {}, '최근 7일 (한국 시간)'), bars(st.daily), h('p', { class: 'muted' }, '위쪽 붉은 칸이 정상 외(대체·폴백) 실행입니다.')),
+        h('div', { class: 'card' }, h('h3', {}, '호출 예산·비용 한도'),
+          b ? h('div', {}, h('p', {}, `실행당 평균 호출 ${b.avgCallsPerRun ?? '-'}회 · 가장 많이 쓴 실행 ${b.maxCallsInRun ?? '-'}회 / 상한 ${b.maxLlmCallsPerRun ?? '-'}회`),
+            h('p', {}, `상한의 절반을 넘긴 실행 ${b.runsOverHalfBudget ?? '-'}건`), h('p', { class: 'muted' }, `이용자 1명의 하루 요청 상한 ${b.dailyMax ?? '-'}건 (임시값, 팀 결정 전)`)) : null),
+        h('div', { class: 'card' }, h('h3', {}, '접속 현황'), c ? h('p', {}, `접속 ${c.connected}명 · 사용 중 ${c.using}명 · 최근 사용 ${c.recent}명 · 미사용 ${c.idle}명`) : h('p', { class: 'muted' }, '-'), h('p', { class: 'muted' }, '사람별 보기는 [에이전트] 페이지에 있습니다.'),
+          h('h3', {}, '저장 상태'), healthLine() ?? h('p', { class: 'muted' }, '-')),
+        h('div', { class: 'card' }, h('h3', {}, '승인 대기'),
+          ap ? h('div', {}, h('p', {}, `장소 DB 갱신 후보 ${ap.placeCandidates.pending}건 (주의 소재 ${ap.placeCandidates.caution}건) `, h('a', { href: '#/db' }, '검수하러 가기')),
+            h('p', { class: 'muted' }, '미션 출제 검수, 주의 장소 설명 검수는 아직 없습니다 (새 장소 미션 처리는 팀 결정 전).')) : h('p', { class: 'muted' }, '-'))),
+      h('h3', { class: 'section' }, '에이전트별'),
+      table(['에이전트', '실행', '정상', '대체', '폴백', '통과율', '폴백 비율', '평균 소요', 'LLM 호출', '토큰'],
+        st.byAgent.map((a) => [titleOf(a.agent), num(a.runs), num(a.normal), num(a.substitute), num(a.fallback), rateChip(a.passRate), rateChip(a.fallbackRate, false), fmtMs(a.avgDurationMs), num(a.llmCalls), num(a.totalTokens)]), '이 기간에 실행이 없습니다.'),
+      h('div', { class: 'cols' },
+        h('div', { class: 'card' }, h('h3', {}, '많이 막힌 이유 (코드 판정·오류)'),
+          table(['에이전트', '노드', '사유 코드', '횟수'], st.topReasons.map((r) => [titleOf(r.agent), r.node, r.reasonCode, num(r.count)]), '막힌 기록이 없습니다.')),
+        h('div', { class: 'card' }, h('h3', {}, '폴백·대체 사유'),
+          table(['결과', '사유', '횟수'], st.fallbackReasons.map((r) => [r.outcome === 'fallback' ? '폴백' : '대체', r.reason, num(r.count)]), '폴백·대체가 없습니다.'))),
+      h('h3', { class: 'section' }, '모델별'),
+      table(['모델', 'LLM 호출', '오류', '토큰', '평균 소요'], st.byModel.map((m) => [m.model, num(m.calls), num(m.errors), num(m.totalTokens), fmtMs(m.avgMs)]), 'LLM 호출 기록이 없습니다.'),
+    ]);
 }
 
 function agentCard(key) {
@@ -431,9 +486,73 @@ function pageAgentDetail(key) {
     picked ? [h('h3', { class: 'section' }, '실행 상세'), runDetail(picked, { withGraph: false })] : null);
 }
 
+// ---------- DB: 장소 후보 승인 ----------
+const CAND_STATE = { pending: ['warn', '승인 대기'], held: ['', '보류'], applied: ['ok', '반영됨'] };
+function candidateRow(c, approvalId) {
+  const [cls, label] = CAND_STATE[c.status] ?? ['', c.status];
+  const act = (decision) => () => decide(approvalId, decision);
+  return h('tr', {},
+    h('td', {}, c.name, c.caution ? h('span', { class: 'chip warn' }, c.caution) : null),
+    h('td', {}, `${c.type} · ${c.district ?? '-'}`),
+    h('td', {}, `${c.openHour ?? '-'}~${c.closeHour ?? '-'}시`),
+    h('td', {}, h('span', { class: 'muted' }, c.sourceUrl)),
+    h('td', {}, h('span', { class: `chip ${cls}` }, label)),
+    h('td', {}, c.status === 'pending' && approvalId
+      ? [h('button', { type: 'button', class: 'primary', disabled: state.busy, onclick: act('approve') }, '승인'), ' ', h('button', { type: 'button', disabled: state.busy, onclick: act('reject') }, '거절')]
+      : null));
+}
 function pageDb() {
-  return h('div', {}, h('h2', {}, 'DB'),
-    h('div', { class: 'card' }, h('p', { class: 'muted' }, '장소 목록, 장소 직접 추가, 에이전트가 낸 후보의 승인 대기는 다음 단계에서 들어옵니다.')));
+  const p = state.places;
+  const f = state.form;
+  const field = (key, label, attrs = {}) => h('label', { class: 'field' }, label, h('input', { value: f[key], ...attrs, oninput: (e) => { f[key] = e.target.value; } }));
+  const approvalOf = (id) => p?.pending.find((x) => x.candidateIds.includes(id))?.approvalId ?? null;
+  return h('div', {}, h('h2', {}, 'DB · 장소 후보 승인'),
+    h('p', { class: 'muted' }, '에이전트(LLM)는 places에 직접 쓰지 못합니다. 후보 보관소에 올리면 확인자(코드)가 출처·운영 시간·좌표·중복을 검사하고, 사람이 승인한 것만 코드가 places에 반영합니다. 웹 검색이 연결되기 전에는 아래에서 출처를 붙여 직접 올립니다.'),
+    state.note ? h('p', { class: 'notice' }, state.note) : null,
+    h('div', { class: 'card' }, h('h3', {}, '후보 직접 올리기 (수동 등록)'),
+      h('div', { class: 'form-grid' },
+        field('name', '이름', { maxlength: 60 }), field('type', '유형 (outdoor·shade·indoor·exhibit)', { maxlength: 20 }), field('district', '구·군', { maxlength: 20 }),
+        field('sourceUrl', '출처 주소 (https)', { maxlength: 300 }), field('lat', '위도(장소)', { inputmode: 'decimal' }), field('lng', '경도(장소)', { inputmode: 'decimal' }),
+        field('openHour', '여는 시(0~24, 비워도 됨)', { inputmode: 'numeric' }), field('closeHour', '닫는 시', { inputmode: 'numeric' }), field('caution', '주의 (식민지·전쟁 소재면 적기)', { maxlength: 100 })),
+      h('button', { type: 'button', class: 'primary', disabled: state.busy, onclick: submitManual }, '확인자에게 보내기')),
+    h('h3', {}, '후보 목록'),
+    !p ? h('p', { class: 'muted' }, '불러오는 중…') : p.candidates.length === 0 ? h('p', { class: 'muted' }, '아직 후보가 없습니다.')
+      : h('div', { class: 'table-wrap' }, h('table', {}, h('thead', {}, h('tr', {}, ['이름', '유형·구', '운영', '출처', '상태', ''].map((t) => h('th', {}, t)))),
+        h('tbody', {}, p.candidates.map((c) => candidateRow(c, approvalOf(c.id)))))));
+}
+
+// ---------- AI 키·모델, 골든셋 ----------
+function pageAi() {
+  const a = state.ai;
+  const g = state.golden;
+  const last = g?.last;
+  return h('div', {}, h('h2', {}, 'AI · 골든셋'),
+    state.note ? h('p', { class: 'notice' }, state.note) : null,
+    h('div', { class: 'card' }, h('div', { class: 'card-head' }, h('h3', {}, '키·모델 전환'),
+      h('button', { type: 'button', disabled: state.busy || !a?.configured, onclick: resetAi }, '쉬는 키 풀어 주기')),
+      h('p', { class: 'muted' }, '호출이 실패하면(쿼터 초과, 인증 오류, 과부하 등) 그 키·모델을 잠시 쉬게 하고 다음 짝으로 자동으로 넘어갑니다. 키 값은 화면에 나오지 않고 번호만 보입니다. 서버 .env의 GOOGLE_API_KEYS, GEMINI_MODELS(쉼표로 여러 개)를 바꾸고 서버를 다시 켜면 목록이 바뀝니다.'),
+      !a ? h('p', { class: 'muted' }, '불러오는 중…') : !a.configured ? h('p', { class: 'notice' }, 'AI 키가 설정되지 않았습니다. LLM 에이전트는 꺼져 있고 고정 문장·규칙 결과만 나갑니다.')
+        : h('div', { class: 'table-wrap' }, h('table', {}, h('thead', {}, h('tr', {}, ['순서', '키·모델', '상태', '성공', '실패', '마지막 오류'].map((t) => h('th', {}, t)))),
+          h('tbody', {}, a.entries.map((e, i) => h('tr', {}, h('td', {}, String(i + 1)), h('td', {}, e.label, e.inUse ? h('span', { class: 'chip running' }, '사용 중') : null),
+            h('td', {}, h('span', { class: `chip ${e.state === 'ready' ? 'ok' : 'warn'}` }, e.state === 'ready' ? '정상' : `쉬는 중 ${Math.ceil(e.coolingMs / 1000)}초`)),
+            h('td', {}, String(e.successes)), h('td', {}, String(e.failures)), h('td', {}, e.lastCode ?? '-')))))),
+      a ? h('p', { class: 'muted' }, `에이전트: ${Object.entries(a.agentsOn).map(([k, v]) => `${k} ${v ? '켜짐' : '꺼짐'}`).join(' · ')} · 저장소: ${a.storeKind === 'db' ? 'DB' : '메모리 (DB 아님)'}`) : null),
+    h('div', { class: 'card' }, h('div', { class: 'card-head' }, h('h3', {}, '에이전트 시험 실행')),
+      h('p', { class: 'muted' }, '실제 장소 자료로 샘플 입력을 만들어 에이전트를 한 번 돌리고 결과를 바로 봅니다. 진짜 LLM을 부르므로 호출 비용이 듭니다. 실행 기록은 시연 유저(demo:admin)로 남아 [에이전트] 페이지와 대시보드에 나옵니다.'),
+      h('div', { class: 'seg' }, [['course', '코스 설계'], ['chat', '이야기하기'], ['mission', '미션 시작'], ['diary', '기록 정리'], ['card', '하랑이 카드']].map(([k, label]) =>
+        h('button', { type: 'button', disabled: state.tryBusy !== null, onclick: () => runTry(k) }, state.tryBusy === k ? `${label}…` : label))),
+      state.tryOut ? h('div', { style: 'margin-top:10px' },
+        h('p', {}, h('span', { class: `chip ${state.tryOut.ok ? 'ok' : 'fail'}` }, `${titleOf(state.tryOut.agent ?? '')}`), state.tryOut.ok ? h('span', { class: 'muted' }, ` ${fmtMs(state.tryOut.ms)} 걸림`) : h('span', { class: 'notice' }, ` ${state.tryOut.error}${state.tryOut.hint ? ` · ${state.tryOut.hint}` : ''}`)),
+        state.tryOut.ok ? h('pre', { class: 'try-out' }, JSON.stringify(state.tryOut.result, null, 2)) : null) : null),
+    h('div', { class: 'card' }, h('div', { class: 'card-head' }, h('h3', {}, '골든셋'),
+      h('button', { type: 'button', class: 'primary', disabled: state.busy, onclick: () => runGoldenSet('mock') }, '가짜 LLM으로 실행 (무료)'),
+      h('button', { type: 'button', disabled: state.busy || !g?.canLive, title: g?.canLive ? '' : 'AI 키가 필요합니다', onclick: () => { if (confirm('진짜 LLM을 부릅니다. 호출 비용이 듭니다. 실행할까요?')) runGoldenSet('live'); } }, '진짜 LLM으로 실행 (비용 발생)')),
+      h('p', { class: 'muted' }, '에이전트가 반드시 지켜야 하는 것(후보 밖 장소 금지, 닫힌 곳 금지, 금칙어, 정답 노출 금지, GPS 밖 도장 금지 등)을 고정 문제로 시험합니다. 모델·키·프롬프트를 바꿀 때마다 돌려서 비교합니다. 합격 기준은 모두 코드가 확인합니다.'),
+      !last ? h('p', { class: 'muted' }, '아직 실행하지 않았습니다.') : [
+        h('p', {}, h('span', { class: `chip ${last.failed === 0 ? 'ok' : 'fail'}` }, `${last.passed}/${last.total} 통과`), h('span', { class: 'chip' }, last.mode === 'live' ? '진짜 LLM' : '가짜 LLM'), h('span', { class: 'muted' }, ` ${fmtTime(last.ranAt)}`)),
+        h('div', { class: 'table-wrap' }, h('table', {}, h('thead', {}, h('tr', {}, ['문제', '에이전트', '결과', '시간'].map((t) => h('th', {}, t)))),
+          h('tbody', {}, last.results.map((r) => h('tr', {}, h('td', {}, r.title), h('td', {}, r.agent),
+            h('td', {}, h('span', { class: `chip ${r.ok ? 'ok' : 'fail'}` }, r.ok ? '통과' : '실패'), r.detail ? h('span', { class: 'muted' }, ` ${r.detail}`) : null), h('td', {}, fmtMs(r.ms)))))))]));
 }
 
 function pageTest() {
@@ -449,14 +568,14 @@ function pageTest() {
 
 function route() {
   const [page, key] = location.hash.replace(/^#\/?/, '').split('/');
-  const known = ['dashboard', 'agents', 'db', 'test'].includes(page) ? page : 'agents';
+  const known = ['dashboard', 'agents', 'db', 'ai', 'test'].includes(page) ? page : 'agents';
   return { page: known, key: known === 'agents' && key && state.graphs?.[key] ? key : null };
 }
 
 function render(force = false) {
   const { page, key } = route();
   const tick = page === 'agents' && !key ? Math.floor(Date.now() / 5000) : 0; // "n분 전" 글자를 가끔 새로 그린다
-  const sig = JSON.stringify([page, key, tick, state.runs, state.health, state.presence, state.detail, state.check, state.error, state.runId, state.busy, state.userId, state.auth, state.loginError, state.loginBusy]);
+  const sig = JSON.stringify([page, key, tick, state.runs, state.health, state.presence, state.detail, state.check, state.error, state.runId, state.busy, state.tryOut, state.tryBusy, state.stats, state.range, state.approvals, state.ai, state.golden, state.places, state.note, state.userId, state.auth, state.loginError, state.loginBusy]);
   if (!force && sig === lastSig) return;
   lastSig = sig;
   for (const a of document.querySelectorAll('#nav a')) a.classList.toggle('active', a.dataset.page === page);
@@ -467,8 +586,75 @@ function render(force = false) {
   else if (state.auth === 'closed') content = pageClosed();
   else if (state.error) content = h('p', { class: 'notice' }, state.error);
   else if (!state.graphs) content = h('p', { class: 'muted' }, '불러오는 중…');
-  else content = page === 'agents' ? (key ? pageAgentDetail(key) : pageAgents()) : { dashboard: pageDashboard, db: pageDb, test: pageTest }[page]();
+  else content = page === 'agents' ? (key ? pageAgentDetail(key) : pageAgents()) : { dashboard: pageDashboard, db: pageDb, ai: pageAi, test: pageTest }[page]();
   main.replaceChildren(content);
+}
+
+
+
+// ---------- 통계 불러오기 ----------
+async function loadStats(force = false) {
+  if (!force && Date.now() - state.statsAt < 10000) return; // 통계는 10초에 한 번만 (DB 부담을 줄인다)
+  state.statsAt = Date.now();
+  try {
+    const [st, ap] = await Promise.all([api(`stats?range=${state.range}`), api('approvals')]);
+    state.stats = st;
+    state.approvals = ap;
+  } catch (err) {
+    if (!needLogin(err)) state.note = explain(err);
+  }
+  render(true);
+}
+
+// ---------- AI·승인 동작 ----------
+async function refreshPage() {
+  const { page } = route();
+  try {
+    if (page === 'ai') [state.ai, state.golden] = await Promise.all([api('ai/status'), api('golden')]);
+    if (page === 'db') state.places = await api('place-db/candidates');
+    if (page === 'dashboard') await loadStats(true);
+  } catch (err) {
+    if (!needLogin(err)) state.note = explain(err);
+  }
+  render(true);
+}
+const post = (path, body) => api(path, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body ?? {}) });
+async function runTry(name) {
+  state.tryBusy = name; state.tryOut = null; state.note = null; render(true);
+  try { state.tryOut = await post(`try/${name}`, {}); }
+  catch (err) { state.tryOut = { ok: false, agent: name, error: err.body?.error ?? `서버 오류 (${err.status ?? '네트워크'})` }; }
+  state.tryBusy = null;
+  render(true);
+}
+async function resetAi() {
+  await post('ai/reset').catch(() => null);
+  await refreshPage();
+}
+async function runGoldenSet(mode) {
+  state.busy = true; state.note = null; render(true);
+  try { state.golden = { ...(state.golden ?? {}), ...(await post('golden/run', { mode })) }; }
+  catch (err) { state.note = err.body?.error === 'NO_AI_KEY' ? 'AI 키가 없어서 진짜 LLM으로는 실행할 수 없습니다.' : explain(err); }
+  state.busy = false; render(true);
+}
+const CODE_TEXT = { NO_SOURCE: '출처 주소가 https가 아닙니다', SOURCE_NOT_FOUND: '출처를 찾지 못했습니다', BAD_HOURS: '운영 시간이 맞지 않습니다', OUT_OF_AREA: '좌표가 대구 중구 범위 밖입니다', DUPLICATE: '이미 있는 이름입니다', BAD_FIELDS: '입력이 비었거나 형식이 맞지 않습니다' };
+async function submitManual() {
+  const f = state.form;
+  const num = (v) => (String(v).trim() === '' ? null : Number(v));
+  state.busy = true; state.note = null; render(true);
+  try {
+    const out = await post('place-db/manual', { name: f.name, type: f.type, district: f.district, sourceUrl: f.sourceUrl, lat: Number(f.lat), lng: Number(f.lng), openHour: num(f.openHour), closeHour: num(f.closeHour), caution: f.caution || undefined });
+    if (out.status === 'waiting_approval') { state.note = '확인자를 통과했습니다. 아래 목록에서 승인하거나 거절하세요.'; state.form = { ...f, name: '', sourceUrl: '', lat: '', lng: '', caution: '' }; }
+    else state.note = `확인자가 거부했습니다: ${CODE_TEXT[out.reason] ?? out.reason ?? '이유 미상'}`;
+  } catch (err) { state.note = err.status === 400 ? '입력을 확인해 주세요 (이름·유형·출처·좌표는 필수입니다).' : explain(err); }
+  state.busy = false;
+  await refreshPage();
+}
+async function decide(approvalId, decision) {
+  state.busy = true; state.note = null; render(true);
+  try { await post('place-db/decide', { approvalId, decision }); state.note = decision === 'approve' ? '승인했습니다. 코드가 places에 반영했습니다 (status는 unknown이라 담당자가 확인한 뒤 open으로 바꿉니다).' : '거절해서 보류했습니다.'; }
+  catch (err) { state.note = explain(err); }
+  state.busy = false;
+  await refreshPage();
 }
 
 // ---------- 동작 ----------
@@ -512,6 +698,7 @@ async function poll() {
     state.health = health;
     state.presence = presence;
     if (state.userId && !presence.users.some((u) => u.id === state.userId)) state.userId = null; // 접속 목록에서 사라진 사람은 선택을 푼다
+    if (route().page === 'dashboard') loadStats();
     if (state.runId) state.detail = (await api(`runs/${state.runId}`).catch(() => null))?.run ?? null;
     if (state.error && state.error.startsWith('서버')) state.error = null;
   } catch (err) {
@@ -539,12 +726,15 @@ async function load() {
 async function boot() {
   document.getElementById('logout-btn').addEventListener('click', logout);
   window.addEventListener('hashchange', () => {
+    state.note = null;
+    refreshPage();
     state.runId = null;
     state.detail = null;
     state.check = null;
     render(true);
   });
   await load();
+  await refreshPage();
   setInterval(() => { if (!document.hidden && state.auth === 'ok') poll(); }, POLL_MS);
 }
 boot();

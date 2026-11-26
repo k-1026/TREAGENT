@@ -13,8 +13,9 @@ export function createHarangiModelFactory({ apiKey, model, temperature = 0.7 }) 
 
 // 환경 변수에서 만든다. 키나 모델 이름이 없으면 null (그러면 서버는 고정 대사만 쓴다).
 export function createHarangiFactoryFromEnv(env = process.env) {
-  const apiKey = env.GOOGLE_API_KEY;
-  const model = env.GEMINI_MODEL;
+  const first = (v) => String(v ?? '').split(',')[0].trim(); // 쉼표로 여러 개 적어도 첫 번째 것을 쓴다
+  const apiKey = first(env.GOOGLE_API_KEYS ?? env.GOOGLE_API_KEY);
+  const model = first(env.GEMINI_MODELS ?? env.GEMINI_MODEL).toLowerCase().replace(/\s+/g, '-');
   if (!apiKey || !model) return null;
   return createHarangiModelFactory({ apiKey, model });
 }
