@@ -37,7 +37,8 @@ export default function TeamCreateScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead title="팀 만들기" sub="테마와 동행을 골라요" backLabel="‹ 뒤로" onBack={() => router.back()} />
-      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
+      {/* 내용은 남은 화면 가운데에 둔다 (flexGrow + justifyContent: center) */}
+      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12, flexGrow: 1, justifyContent: 'center' }, CONTENT]}>
         <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.ink }}>테마</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
           {THEME_OPTIONS.map((o) => (

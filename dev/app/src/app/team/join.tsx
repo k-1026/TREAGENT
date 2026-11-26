@@ -43,7 +43,8 @@ export default function TeamJoinScreen() {
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead title="초대 코드" sub="친구가 알려 준 코드를 입력해요" backLabel="‹ 뒤로" onBack={() => router.back()} />
-      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
+      {/* 내용은 남은 화면 가운데에 둔다 (flexGrow + justifyContent: center) */}
+      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12, flexGrow: 1, justifyContent: 'center' }, CONTENT]}>
         <TextInput
           value={code}
           onChangeText={(t) => {

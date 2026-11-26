@@ -72,8 +72,8 @@ export default function TeamLobbyScreen() {
       <ScreenHead
         title="우리 팀"
         sub={info ? `${info.memberCount}명이 모였어요` : '팀 정보를 불러오는 중이에요'}
-        backLabel="‹ 홈"
-        onBack={() => router.dismissTo('/')}
+        backLabel="‹ 뒤로"
+        onBack={() => (router.canGoBack() ? router.back() : router.dismissTo('/'))}
       />
       <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
         {error && <Text style={{ color: COLOR.ink }}>{ERROR_LABEL[error] ?? ERROR_LABEL.SERVER}</Text>}
