@@ -17,6 +17,7 @@ import { useEffect, useRef, useState } from 'react';
 import { Animated, Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
+import { LiveMission } from '../components/live_mission';
 import { WxButton, WxCard, wxText } from '../components/weather_ui';
 import { COLOR } from '../lib/theme';
 
@@ -82,7 +83,8 @@ function Half({ label, primary, onPress }: { label: string; primary?: boolean; o
 }
 
 export default function MissionScreen() {
-  const params = useLocalSearchParams<{ kind?: string; result?: string; scr?: string }>();
+  const params = useLocalSearchParams<{ kind?: string; result?: string; scr?: string; placeId?: string; placeName?: string }>();
+  const live = typeof params.placeId === 'string' && params.placeId.length > 0; // 장소 id가 있으면 서버 미션 에이전트와 이어진 화면
   const kind = params.kind === 'quiz' ? 'quiz' : 'receipt';
   const preview = __DEV__;
   const previewResult: Result = preview && isResult(params.result) ? params.result : 'ok';
@@ -182,9 +184,10 @@ export default function MissionScreen() {
 
   return (
     <View style={styles.safe}>
-      <ScreenHead title={TITLE[step]} backLabel="‹ 뒤로" onBack={back} rightLabel="⌂ 홈" onRight={() => router.replace('/')} />
+      <ScreenHead title={live ? '미션' : TITLE[step]} backLabel="‹ 뒤로" onBack={back} rightLabel="⌂ 홈" onRight={() => router.replace('/')} />
       <ScrollView contentContainerStyle={[CONTENT, styles.scroll]}>
-        {step === 'g' ? (
+        {live ? <LiveMission placeId={params.placeId as string} placeName={params.placeName} /> : null}
+        {!live && step === 'g' ? (
           <>
             <Frame>{'[장소 사진 자리]\n인증 지점 설명은 S-06과 같음'}</Frame>
             <Tag label={kind === 'receipt' ? '영수증형' : '퀴즈형'} />
@@ -207,7 +210,7 @@ export default function MissionScreen() {
           </>
         ) : null}
 
-        {step === 'r' ? (
+        {!live && step === 'r' ? (
           <>
             <View style={[styles.banner, { backgroundColor: '#e6e1da' }]}>
               <Text style={[styles.bannerText, { color: COLOR.ink }]}>카드 번호와 금액은 가리면 더 좋아요. 가리지 않아도 인증할 수 있어요.</Text>
@@ -233,7 +236,7 @@ export default function MissionScreen() {
           </>
         ) : null}
 
-        {step === 'q' ? (
+        {!live && step === 'q' ? (
           <>
             <Tag label={easy ? '쉬움' : '기본'} />
             <WxCard>
@@ -274,7 +277,7 @@ export default function MissionScreen() {
           </>
         ) : null}
 
-        {step === 'd' ? (
+        {!live && step === 'd' ? (
           <>
             <Animated.View
               style={[

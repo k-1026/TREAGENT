@@ -325,17 +325,21 @@ export type WalkResult = {
   legEnds: number[]; // 각 구간이 끝나는 path 위치
   steps: WalkStep[]; // 길 안내 지점
   startIncluded: boolean;
+  mode?: 'walk' | 'transit';
+  fare?: number; // 대중교통 요금 합계(원). 대중교통 모드에서만 온다
+  // 대중교통 모드: 구간마다 걸었는지(walk) 탔는지(transit)와 탄 노선 정보
+  segments?: { type: 'walk' | 'transit'; time: number; distance: number; fare: number | null; transfers: number; legs: { mode: string; route: string | null; time: number; distance: number; from: string | null; to: string | null; stops: number | null }[] }[];
 };
 
 // 장소 순서대로 도보 경로를 받는다. start(내 위치)를 주면 내 위치부터 잡는다. 좌표는 본문으로만 보낸다.
-export function getWalk(placeIds: string[], start?: { latitude: number; longitude: number }) {
+export function getWalk(placeIds: string[], start?: { latitude: number; longitude: number }, mode: 'walk' | 'transit' = 'walk') {
   return request<WalkResult>(
     '/walk',
     {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ placeIds, ...(start ?? {}) }),
+      body: JSON.stringify({ placeIds, ...(start ?? {}), ...(mode === 'transit' ? { mode } : {}) }),
     },
-    20000, // 좌표가 없는 장소는 TMAP 검색이 먼저 일어나서 시간 제한을 넉넉히 둔다
+    mode === 'transit' ? 30000 : 20000, // 좌표가 없는 장소는 TMAP 검색이 먼저 일어나고, 대중교통은 구간마다 부른다
   );
 }

@@ -44,3 +44,6 @@ yarn-error.*
 .env
 .env.*
 !.env.example
+
+# 지도 시험 페이지 (T맵 키가 들어 있어서 올리지 않는다)
+map_preview.html
