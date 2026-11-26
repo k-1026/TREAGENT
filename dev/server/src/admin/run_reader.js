@@ -15,6 +15,10 @@ export function createMemoryRunReader(store) {
     async getRun(id) {
       return all().find((r) => r.id === id) ?? null;
     },
+    // 통계용: since(ISO) 이후에 시작한 실행
+    async listForStats({ since = null, limit = 1000 } = {}) {
+      return all().filter((r) => !since || r.startedAt >= since).slice(0, limit);
+    },
   };
 }
 
@@ -24,6 +28,20 @@ from public.agent_runs r
 left join public.agent_run_ends e on e.run_id = r.id
 order by r.started_at desc
 limit $1`;
+
+// 통계용: 기간 안의 실행과, 단계는 통계에 필요한 열만 읽는다 (프롬프트·출력 원문은 읽지 않는다).
+export const STATS_RUNS_SQL = `select r.id, r.agent, r.started_at as "startedAt",
+  e.ended_at as "endedAt", e.outcome, e.fallback_reason as "fallbackReason"
+from public.agent_runs r
+left join public.agent_run_ends e on e.run_id = r.id
+where ($1::timestamptz is null or r.started_at >= $1)
+order by r.started_at desc
+limit $2`;
+
+export const STATS_STEPS_SQL = `select run_id as "runId", node, kind, verdict, reason_code as "reasonCode", model,
+  duration_ms as "durationMs", llm_calls as "llmCalls", input_tokens as "inputTokens", output_tokens as "outputTokens", total_tokens as "totalTokens"
+from public.agent_run_steps
+where run_id = any($1::uuid[])`;
 
 export const RUN_ONE_SQL = `select r.id, r.agent, r.actor_key as "actorKey", r.started_at as "startedAt",
   e.ended_at as "endedAt", e.outcome, e.fallback_reason as "fallbackReason"
@@ -68,6 +86,13 @@ export function createPgRunReader({ query }) {
     async listRuns({ limit = 30 } = {}) {
       const runs = await query(RUNS_SQL, [limit]);
       const byRun = await stepsOf(runs.map((r) => r.id));
+      return runs.map((r) => toRun(r, byRun.get(r.id) ?? []));
+    },
+    async listForStats({ since = null, limit = 1000 } = {}) {
+      const runs = await query(STATS_RUNS_SQL, [since, limit]);
+      const rows = runs.length ? await query(STATS_STEPS_SQL, [runs.map((r) => r.id)]) : [];
+      const byRun = new Map();
+      for (const row of rows) (byRun.get(row.runId) ?? byRun.set(row.runId, []).get(row.runId)).push(row);
       return runs.map((r) => toRun(r, byRun.get(r.id) ?? []));
     },
     async getRun(id) {

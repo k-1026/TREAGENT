@@ -4,6 +4,7 @@ import { GRAPHS } from './agent_graphs.js';
 import { describeRun } from './run_view.js';
 import { SCENARIOS, runScenario, DEMO_DELAY_MS } from './scenarios.js';
 import { checkConsistency } from './run_reader.js';
+import { computeStats, parseRange, sinceOf } from './stats.js';
 import { describeUsers, restoreUsersFromRuns, DEMO_PREFIX } from './user_status.js';
 import { sameOriginOnly } from './admin_guard.js';
 import { sessionCookie, clearedCookie } from './admin_session.js';
@@ -23,7 +24,7 @@ const STALE_MARGIN_MS = 10_000; // 호출 예산의 전체 시간 상한 + 이�
 
 const DEMO_USERS = ['A', 'B', 'C']; // 시나리오를 돌릴 때 번갈아 쓰는 시연 유저 (가짜)
 
-export function createAdminRouter({ guard, auth, reader, recorder, loggedStore, storeKind, limits, presence, presenceConfig, delayMs = DEMO_DELAY_MS, now = Date.now }) {
+export function createAdminRouter({ guard, auth, reader, recorder, loggedStore, storeKind, limits, presence, presenceConfig, ai = {}, delayMs = DEMO_DELAY_MS, now = Date.now }) {
   const router = express.Router();
   const active = new Map(); // runId → run (아직 안 끝난 시나리오)
   let demoSeq = 0;
@@ -98,6 +99,65 @@ export function createAdminRouter({ guard, auth, reader, recorder, loggedStore, 
     res.json({ store: storeKind, recorderFailures: recorder.failures, activeRuns: active.size });
   });
 
+  // ---- AI 키·모델 상태, 장소 후보 승인, 골든셋 ----
+  const json = express.json({ limit: '4kb' });
+  const bad = (res) => res.status(400).json({ error: 'INVALID_INPUT' });
+  let lastGolden = null;
+
+  // 키·모델 전환 풀의 상태. 키 값은 내보내지 않는다 ("키 #번호"만).
+  router.get('/api/ai/status', (req, res) => {
+    res.json({ configured: Boolean(ai.pool), entries: ai.pool?.status() ?? [], agentsOn: ai.agentsOn ?? {}, storeKind: ai.storeKind ?? null });
+  });
+  router.post('/api/ai/reset', (req, res) => {
+    ai.pool?.reset();
+    res.json({ ok: true });
+  });
+
+  // 에이전트 시험 실행: 샘플 입력으로 실제 에이전트를 한 번 돌린다 (진짜 LLM을 부르므로 호출 비용이 든다). 실행 기록은 'demo:admin' 시연 유저로 남는다.
+  router.post('/api/try/:agent', json, async (req, res) => {
+    if (!ai.tryAgent) return res.status(503).json({ error: 'NOT_AVAILABLE' });
+    const q = req.body?.question;
+    if (q !== undefined && (typeof q !== 'string' || q.length > 200)) return bad(res);
+    const out = await ai.tryAgent(req.params.agent, { question: q });
+    res.status(out.error === 'UNKNOWN_AGENT' ? 404 : 200).json(out);
+  });
+
+  router.get('/api/place-db/candidates', async (req, res) => {
+    res.json({ candidates: ai.candidates ? await ai.candidates.list() : [], pending: ai.placeDb?.pendingList() ?? [] });
+  });
+  // 수동 등록: 운영자가 출처를 붙여 올린 후보. LLM 없이 확인자(코드)와 보관, 사람 승인을 거친다.
+  router.post('/api/place-db/manual', json, async (req, res) => {
+    const c = req.body ?? {};
+    const str = (v, n) => typeof v === 'string' && v.trim().length > 0 && v.length <= n;
+    const hour = (v) => v === null || v === undefined || Number.isInteger(v);
+    if (!ai.placeDb || !str(c.name, 60) || !str(c.type, 20) || !str(c.sourceUrl, 300) || !Number.isFinite(c.lat) || !Number.isFinite(c.lng) || !hour(c.openHour) || !hour(c.closeHour)) return bad(res);
+    const out = await ai.placeDb.discover({ area: 'manual', manual: { name: c.name.trim(), type: c.type.trim(), district: str(c.district, 20) ? c.district.trim() : '중구', sourceUrl: c.sourceUrl.trim(), lat: c.lat, lng: c.lng, openHour: c.openHour ?? null, closeHour: c.closeHour ?? null, caution: str(c.caution, 100) ? c.caution.trim() : null } });
+    res.json(out);
+  });
+  router.post('/api/place-db/discover', json, async (req, res) => {
+    const area = req.body?.area;
+    if (!ai.placeDb || typeof area !== 'string' || area.length === 0 || area.length > 40) return bad(res);
+    res.json(await ai.placeDb.discover({ area }));
+  });
+  router.post('/api/place-db/decide', json, async (req, res) => {
+    const { approvalId, decision, reason } = req.body ?? {};
+    if (!ai.placeDb || typeof approvalId !== 'string' || !UUID.test(approvalId) || !['approve', 'reject'].includes(decision) || (reason !== undefined && (typeof reason !== 'string' || reason.length > 100))) return bad(res);
+    const out = await ai.placeDb.decide({ approvalId, decision, reason });
+    res.status(out.ok ? 200 : 404).json(out);
+  });
+
+  // 골든셋: mock은 가짜 LLM(비용 0원), live는 진짜 LLM(호출 비용이 든다. 키가 있어야 한다).
+  router.get('/api/golden', (req, res) => {
+    res.json({ last: lastGolden, canLive: Boolean(ai.pool) });
+  });
+  router.post('/api/golden/run', json, async (req, res) => {
+    const mode = req.body?.mode === 'live' ? 'live' : 'mock';
+    if (!ai.runGolden || (mode === 'live' && !ai.pool)) return res.status(400).json({ error: mode === 'live' ? 'NO_AI_KEY' : 'NOT_AVAILABLE' });
+    const only = Array.isArray(req.body?.only) && req.body.only.length <= 20 && req.body.only.every((x) => typeof x === 'string' && x.length <= 40) ? req.body.only : null; // 일부 문제만 다시 돌릴 때
+    lastGolden = await ai.runGolden({ mode, only });
+    res.json({ last: lastGolden });
+  });
+
   // 접속 현황: 최근에 서버를 쓴 사람과, 그중 지금 에이전트를 쓰는 사람. 해시 키의 앞부분만 내보낸다.
   // 서버를 다시 켜서 메모리가 비었어도, 최근에 에이전트를 쓴 사람은 실행 기록(DB)에서 다시 채운다 (restored: true).
   router.get('/api/presence', async (req, res) => {
@@ -111,6 +171,21 @@ export function createAdminRouter({ guard, auth, reader, recorder, loggedStore, 
     const users = restoreUsersFromRuns({ users: presence.snapshot(), runs, now: now(), windowMs: presenceConfig.windowMs, stable: presence.stable });
     const result = describeUsers({ users, runs, now: now(), recentMs: presenceConfig.recentMs });
     res.json({ stable: presence.stable, windowMs: presenceConfig.windowMs, recentMs: presenceConfig.recentMs, ...result });
+  });
+
+  // 대시보드 통계 (plan/spec/agent_architecture_v2.md 5-2장 지표): 통과율, 폴백 비율, 소요 시간, 호출 수, 토큰, 실패 사유, 호출 예산
+  router.get('/api/stats', async (req, res) => {
+    const range = parseRange(req.query.range);
+    const runs = await reader.listForStats({ since: sinceOf(range, now()), limit: 1000 });
+    const stats = computeStats(runs, { now: now(), range, limits, staleAfterMs });
+    res.json({ ...stats, capped: runs.length >= 1000, store: storeKind });
+  });
+
+  // 승인 대기: 장소 DB 갱신 후보 (미션 출제 검수와 주의 장소 설명 검수는 아직 없다)
+  router.get('/api/approvals', async (req, res) => {
+    const list = ai.candidates ? await ai.candidates.list() : [];
+    const pending = list.filter((c) => c.status === 'pending');
+    res.json({ placeCandidates: { pending: pending.length, caution: pending.filter((c) => c.caution).length }, missionReview: null, cautionExplain: null });
   });
 
   router.get('/api/runs', async (req, res) => {
