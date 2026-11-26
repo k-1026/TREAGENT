@@ -22,7 +22,7 @@
  */
 import { useState } from 'react';
 import { Link } from 'expo-router';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import { supabase } from '../lib/supabase';
 import { COLOR } from '../lib/theme';
 import { AuthFrame, PxButton, PxInput, PxMessage } from '../components/auth_ui';
@@ -66,8 +66,6 @@ export default function SignupScreen() {
 
   return (
     <AuthFrame title="처음이에요" subtitle="가입">
-      <Text style={styles.lead}>하랑이와 걷기 전에 이메일과 비밀번호를 정해요</Text>
-
       <PxInput
         placeholder="이메일"
         value={email}
@@ -103,6 +101,5 @@ export default function SignupScreen() {
 }
 
 const styles = StyleSheet.create({
-  lead: { fontSize: 12, color: COLOR.ink, lineHeight: 18 },
   link: { color: COLOR.redDark, fontWeight: '700', fontSize: 13, textAlign: 'center', padding: 8 },
 });

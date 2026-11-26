@@ -26,11 +26,13 @@ import { ActivityIndicator, Animated, Easing, Image, Linking, Pressable, ScrollV
 import { findDistrict } from '../lib/districts';
 import { getCurrentLocation, LocationResult } from '../lib/location';
 import { usePlace } from '../lib/place_context';
-import { useProfile } from '../lib/profile_context';
-import { displayName } from '../lib/profile';
-import { BTN_RED, COLOR } from '../lib/theme';
+import { BTN_RED, COLOR, pxBox } from '../lib/theme';
 import { PxButton, PxMessage } from '../components/auth_ui';
-import { APP_MAX_WIDTH, CONTENT, CONTENT_MAX_WIDTH } from '../components/phone_column';
+import { PixelSprite } from '../components/pixel_book';
+import { APP_MAX_WIDTH, CONTENT } from '../components/phone_column';
+
+// 말풍선 꼬리 7x7 (홈 index.tsx와 같은 그림: K 잉크 테두리, F 종이색 속)
+const BUBBLE_TAIL = ['KFFFFFK', 'KFFFFK.', 'KFFFK..', 'KFFK...', 'KFK....', 'KK.....', 'K......'];
 
 // 하랑이 숨쉬기: 위아래로 4px을 0.9초마다 오간다. 화면을 떠나면 멈춘다.
 function createBob() {
@@ -39,8 +41,6 @@ function createBob() {
 }
 
 export default function LocationScreen() {
-  const { profile } = useProfile();
-  const name = displayName(profile);
   const [bob] = useState(createBob);
   const [loading, setLoading] = useState(false);
   // 장면 크기: 목업(390 x 316)을 화면 폭에 맞춘다. 그림을 확대·자르지 않는다 (2026-11-23 요청).
@@ -95,13 +95,17 @@ export default function LocationScreen() {
           resizeMode="cover"
         />
 
-        {/* 말풍선과 하랑이: 말풍선은 목업 좌표(104,92), 하랑이는 목업(84,222)보다 왼쪽·위로 조금 옮긴 (70,210). 배율 k를 곱한다 */}
-        <View style={[styles.bubble, { left: 104 * k, top: 92 * k, width: 210 * k }]}>
+        {/* 말풍선과 하랑이: 말풍선 위치는 홈(index.tsx)과 같다 (왼쪽 40, 아래에서 118). 하랑이는 목업(84,222)보다 왼쪽·위로 조금 옮긴 (70,210). 배율 k를 곱한다 */}
+        <View style={[styles.bubble, { left: 40 * k, bottom: 118 * k, width: 190 * k }]}>
           <Text style={styles.bubbleText}>
             {location?.status === 'unavailable'
               ? '어라, 위치를 못 읽었어요... 구·군을 골라 줄래요?'
               : '오늘의 길을 고르려면 어디쯤인지 알아야 해요. 위치는 앱 쓰는 동안만 쓰고 저장은 안 해요!'}
           </Text>
+          {/* 말풍선 꼬리 (홈과 같은 픽셀 꼬리, 하랑이 쪽을 가리킨다) */}
+          <View style={[styles.tail, { left: 120 * k - 3 }]}>
+            <PixelSprite grid={BUBBLE_TAIL} cell={3} />
+          </View>
         </View>
 
         <Animated.Image
@@ -113,13 +117,6 @@ export default function LocationScreen() {
           resizeMode="contain"
         />
 
-        {/* 인사말과 내 정보 버튼은 화면 폭 전체 기준으로 양끝에 둔다 (내용 최대 폭 안에서) */}
-        <View style={styles.topRow}>
-          <Text style={styles.hello}>{name} 님, 안녕하세요</Text>
-          <Pressable onPress={() => router.push('/me')} style={styles.myPage}>
-            <Text style={styles.myPageText}>내 정보</Text>
-          </Pressable>
-        </View>
       </View>
 
       {/* 아래쪽 패널: 제목, 안내, 버튼, 상태 문구 */}
@@ -197,22 +194,11 @@ const styles = StyleSheet.create({
   // 위쪽 장면 (목업 .scene: 높이 316, 주황 바탕)
   scene: { backgroundColor: COLOR.beam, overflow: 'hidden' },
   room: { position: 'absolute' },
-  topRow: { position: 'absolute', top: 56, zIndex: 2, width: '100%', maxWidth: CONTENT_MAX_WIDTH, paddingHorizontal: 16, flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
-  // 인사말: 방 그림 위에서도 읽히도록 종이색 칸에 넣는다 (내 정보 버튼과 같은 모양)
-  hello: { backgroundColor: COLOR.paper, paddingVertical: 4, paddingHorizontal: 8, borderWidth: 2, borderColor: COLOR.ink, color: COLOR.ink, fontSize: 12, fontWeight: '800' },
-  myPage: { backgroundColor: COLOR.paper, paddingVertical: 4, paddingHorizontal: 10, borderWidth: 2, borderColor: COLOR.ink },
-  myPageText: { color: COLOR.ink, fontSize: 12, fontWeight: '800' },
 
-  // 말풍선 (목업 .bubble)
-  bubble: {
-    position: 'absolute',
-    backgroundColor: COLOR.paper,
-    paddingVertical: 8,
-    paddingHorizontal: 10,
-    borderWidth: 3,
-    borderColor: COLOR.ink,
-  },
-  bubbleText: { fontSize: 11, lineHeight: 16, color: COLOR.ink },
+  // 말풍선: 홈(index.tsx)과 같은 양식 (종이색 칸, 테두리 2.5, 글씨 12)
+  bubble: { ...pxBox(COLOR.paper), borderWidth: 2.5, boxShadow: 'none', position: 'absolute', zIndex: 4, paddingVertical: 14, paddingHorizontal: 8 },
+  bubbleText: { fontSize: 13.5, lineHeight: 19, color: COLOR.ink }, // 글자 12 → 13.5 (홈보다 조금 크게)
+  tail: { position: 'absolute', top: '100%' },
 
   // 하랑이 (목업 .spr: 92x95, 왼쪽 84 / 위 222)
   harangi: { position: 'absolute' },
@@ -223,7 +209,7 @@ const styles = StyleSheet.create({
   panelContent: { paddingTop: 18, paddingHorizontal: 20, paddingBottom: 28, gap: 14 },
   block: { gap: 10 },
   title: { fontSize: 18, fontWeight: '800', color: COLOR.ink },
-  note: { fontSize: 11, color: COLOR.muted, lineHeight: 16 },
+  note: { fontSize: 12.5, color: COLOR.muted, lineHeight: 18 }, // 안내 문구 11 → 12.5 (조금 더 크게)
   row: { flexDirection: 'row', gap: 12 },
   flex: { flex: 1 },
   loading: { flexDirection: 'row', alignItems: 'center', gap: 8 },
