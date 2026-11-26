@@ -58,7 +58,7 @@ export default function DistrictScreen() {
           })}
         </View>
 
-        <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} style={styles.close}>
+        <Pressable onPress={() => (router.canGoBack() ? router.back() : router.replace('/'))} style={({ pressed }) => [styles.close, pxBox(COLOR.paper, COLOR.shade), pressed && styles.pressed]}>
           <Text style={styles.closeText}>닫기</Text>
         </Pressable>
       </ScrollView>
@@ -95,9 +95,10 @@ const styles = StyleSheet.create({
   tile: { width: '48%', paddingVertical: 14, paddingHorizontal: 10, alignItems: 'center' },
   tileOff: { opacity: 0.5 },
   pressed: { opacity: 0.85 },
-  tileName: { fontSize: 15, fontWeight: '800' },
-  tileSmall: { fontSize: 10, marginTop: 3 },
+  tileName: { fontSize: 18, fontWeight: '800' },
+  tileSmall: { fontSize: 12, marginTop: 4 },
 
-  close: { alignItems: 'center', padding: 12 },
-  closeText: { color: COLOR.redDark, fontWeight: '700', fontSize: 13 },
+  // 닫기: 버튼 모양 (종이색 칸, 잉크 테두리)
+  close: { alignItems: 'center', paddingVertical: 14 },
+  closeText: { color: COLOR.ink, fontWeight: '800', fontSize: 17 },
 });
