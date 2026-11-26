@@ -124,7 +124,7 @@ export default function LocationScreen() {
         {/* 패널은 세 묶음(① 제목·안내 ② 위치 고르기·상태 ③ 출발 버튼)을 위에서부터 붙여 쌓는다 */}
         <View style={styles.block}>
           <Text style={styles.title}>어디서 시작할까요?</Text>
-          <Text style={styles.note}>위치는 앱을 쓰는 동안만 써요. 좌표는 저장하지 않고 화면에도 보이지 않아요.</Text>
+          <Text style={styles.note}>위치는 앱을 쓰는 동안만 쓰고, 좌표를 저장하지 않아요.</Text>
         </View>
 
         <View style={styles.block}>
