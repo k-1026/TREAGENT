@@ -2,6 +2,7 @@
  * [travel_sheets.tsx] 여행 지도의 겹쳐 뜨는 창 2개 — 목업 storyboard/travel_map_mockup_v1.html
  *  - StampSheet: [도장 확인] 받은 도장 목록 (목업 #stampsheet)
  *  - MissionSheet: 도착 확인 뒤 [미션 확인하기] 창 (목업 #mission)
+ *  - CutSheet: 첫 완주 때 [완주 한 장 보기] 앞에 한 번 뜨는 컷씬 ② 안내 (목업 #cut)
  *  - (완주 한 장은 9:16 카드 화면 app/trip_card.tsx?done=1로 옮겼다 — 목업 app_home_mockup_v1.html #v-done)
  *
  * 이 파일은 모양만 그린다. 도장·방문 기록은 서버에서만 정해야 해서 (dev 절대 규칙 3) 여기서 저장하거나 계산하지 않고,
@@ -101,6 +102,20 @@ export function MissionSheet({
         <Btn label="미션 시작하기" primary onPress={onStart} />
         {onTemp ? <Btn label="임시: 미션 마치기 (개발용)" onPress={onTemp} /> : null}
         <Btn label="나중에 하기" onPress={onLater} />
+      </View>
+    </Dialog>
+  );
+}
+
+// 첫 완주 컷씬 ② 안내: [컷씬 ② 보기] 또는 [건너뛰기] (목업 #cut). 바깥을 눌러도 건너뛰기와 같다.
+export function CutSheet({ onPlay, onSkip }: { onPlay: () => void; onSkip: () => void }) {
+  return (
+    <Dialog onClose={onSkip}>
+      <Text style={[styles.ttl, { textAlign: 'center' }]}>컷씬 ② 보기</Text>
+      <Text style={[styles.body, { textAlign: 'center' }]}>첫 완주일 때 한 번 나와요. 건너뛰어도 앨범에 저장돼요.</Text>
+      <View style={{ gap: 8, marginTop: 4 }}>
+        <Btn label="컷씬 ② 보기" primary onPress={onPlay} />
+        <Btn label="건너뛰기" onPress={onSkip} />
       </View>
     </Dialog>
   );

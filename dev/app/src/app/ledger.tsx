@@ -127,7 +127,7 @@ export default function LedgerScreen() {
                 </Pressable>
               </>
             ) : (
-              <EmptyState title="아직 빈 칸뿐이에요" sub="첫 길을 걸으러 갈까요? 길을 마치면 여기 기록이 남아요." />
+              <EmptyState title="아직 빈 칸뿐이에요" sub="첫 길을 걸으러 갈까요? 길을 마치면 여기 기록이 남아요." action={{ label: '오늘의 길 고르기', onPress: () => router.push('/today') }} />
             )}
             <View style={[pxBox(), styles.row]}>
               <Text style={styles.rowText}>한 장에는 실제로 방문한 장소와 날짜만 담겨요. 좌표는 담지 않아요.</Text>
@@ -154,7 +154,7 @@ export default function LedgerScreen() {
                 </View>
               </Pressable>
             ) : (
-              <EmptyState title="아직 앨범이 비어 있어요" sub="같이 걸으면 이야기가 생겨요." />
+              <EmptyState title="아직 앨범이 비어 있어요" sub="같이 걸으면 이야기가 생겨요." action={{ label: '길 걸으러 가기', onPress: () => router.push('/today') }} />
             )}
           </View>
         ) : null}

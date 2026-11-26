@@ -4,7 +4,8 @@
  *
  * 보이는 것: 9:16 카드(앞면/뒷면 뒤집기) → [저장] [공유] (하랑이 일기 보기 버튼은 팀 요청으로 뺐다, 2026-11-24)
  *  - 카드 오른쪽 아래 ⛶: 전체보기. 전체보기는 화면을 채우고, 평소엔 버튼이 없다. 화면을 누르면 [닫기]와 뒤집기가 나왔다 사라진다.
- *  - [저장], [공유]는 아직 기능이 없다 → 짧은 안내만 보인다 [확인 필요: 앨범 저장, 공유 방식]
+ *  - [저장]은 아직 기능이 없다 → 짧은 안내만 보인다 [확인 필요: 앨범 저장]
+ *  - [공유]를 누르면 인스타그램·카카오톡·링크 복사 칩이 나온다 (목업 #tcChips). 칩을 눌러도 아직 안내만 보인다 [확인 필요: 공유 방식]
  *  - 카드 내용은 예시 자료(trip_card_data.ts)이고 실제 여행 기록이 저장되면 바꾼다.
  *
  * 완주 모드 (주소: /trip_card?done=1&title=길이름&names=장소1|장소2|장소3) — 여행 지도의 [완주 한 장 보기]로 연다
@@ -22,6 +23,13 @@ import { displayName } from '../lib/profile';
 import { useProfile } from '../lib/profile_context';
 import { COLOR } from '../lib/theme';
 import { doneTrip, SAMPLE_TRIPS } from '../lib/trip_card_data';
+
+// 공유할 곳 (목업 #tcChips 순서 그대로)
+const SHARE_TO = [
+  { label: '인스타그램', toast: '인스타그램으로 공유' },
+  { label: '카카오톡', toast: '카카오톡으로 공유' },
+  { label: '링크 복사', toast: '링크 복사' },
+];
 
 export default function TripCardScreen() {
   const params = useLocalSearchParams<{ i?: string; done?: string; title?: string; names?: string; ids?: string }>();
@@ -50,6 +58,7 @@ export default function TripCardScreen() {
   const [full, setFull] = useState(false);
   const [chrome, setChrome] = useState(false); // 전체보기에서 닫기·뒤집기 버튼 보임
   const [toast, setToast] = useState<string | null>(null);
+  const [shareOpen, setShareOpen] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
   useEffect(() => () => { if (timer.current) clearTimeout(timer.current); }, []);
 
@@ -60,8 +69,8 @@ export default function TripCardScreen() {
   };
 
   const appW = Math.min(winW, APP_MAX_WIDTH);
-  // 미리보기 카드: 머리글(100)과 아래 버튼 영역(약 210)을 빼고 남는 높이에 맞춘다
-  const prevW = Math.min(appW - 36, ((winH - 100 - 210) * 9) / 16);
+  // 미리보기 카드: 머리글(100)과 아래 버튼 영역(약 210, 공유 칩이 열리면 약 250)을 빼고 남는 높이에 맞춘다
+  const prevW = Math.min(appW - 36, ((winH - 100 - (shareOpen ? 250 : 210)) * 9) / 16);
   // 전체보기 카드: 화면을 꽉 채운다 (폭과 높이 중 작은 쪽에 맞춤)
   const fullW = Math.min(appW, (winH * 9) / 16);
 
@@ -83,10 +92,20 @@ export default function TripCardScreen() {
           <Pressable onPress={() => say('앨범 daeprica 폴더에 저장')} style={[styles.act, styles.save]}>
             <Text style={[styles.actText, { color: '#fff' }]}>저장</Text>
           </Pressable>
-          <Pressable onPress={() => say('SNS 공유 (9:16 카드)')} style={styles.act}>
+          <Pressable onPress={() => setShareOpen((o) => !o)} style={styles.act}>
             <Text style={styles.actText}>공유</Text>
           </Pressable>
         </View>
+        {/* 공유 칩: [공유]를 누르면 나왔다 들어간다 (목업 #tcChips). 실제 공유는 아직 없다 [확인 필요: 공유 방식] */}
+        {shareOpen ? (
+          <View style={styles.chips}>
+            {SHARE_TO.map((c) => (
+              <Pressable key={c.label} onPress={() => say(c.toast)} style={styles.chip}>
+                <Text style={styles.chipText}>{c.label}</Text>
+              </Pressable>
+            ))}
+          </View>
+        ) : null}
       </View>
 
       {full ? (
@@ -117,6 +136,10 @@ const styles = StyleSheet.create({
   act: { width: 150, height: 50, alignItems: 'center', justifyContent: 'center', backgroundColor: COLOR.paper, borderRadius: 6, borderWidth: 1.5, borderColor: COLOR.ink, boxShadow: `0px 4px 0px 0px ${COLOR.shade}` },
   save: { backgroundColor: COLOR.red },
   actText: { fontSize: 16, fontWeight: '800', color: COLOR.ink },
+  // 공유 칩: 목업 .tc-chips span (종이 바탕, 1.5px 테두리, 작은 글자)
+  chips: { flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', gap: 6 },
+  chip: { backgroundColor: COLOR.paper, borderWidth: 1.5, borderColor: COLOR.ink, paddingVertical: 6, paddingHorizontal: 10 },
+  chipText: { fontSize: 13, fontWeight: '700', color: COLOR.ink },
 
   full: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, backgroundColor: '#2b1814', alignItems: 'center', justifyContent: 'center', zIndex: 70 },
   close: { position: 'absolute', left: 16, top: 14, paddingVertical: 7, paddingHorizontal: 12, backgroundColor: COLOR.paper, borderRadius: 6, borderWidth: 1.5, borderColor: COLOR.ink },
