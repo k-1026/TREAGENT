@@ -1,20 +1,21 @@
 // 여행 지도 (주소: /travel) — 목업 "여행 지도 (S-05)" + 길 안내.
 // 내 위치는 처음 경로를 받을 때와 "새 경로 보기"를 누를 때만 서버로 보낸다. 걷는 동안의 위치는 기기 안에서만 쓴다.
-import { router } from 'expo-router';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { CoursePlacesCard } from '../components/course_places_card';
 import { CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
 import { TmapView } from '../components/tmap_view';
 import { MissionSheet, StampSheet } from '../components/travel_sheets';
+import { getStamps } from '../lib/agents_api';
 import { getCurrentLocation } from '../lib/location';
 import { getWalk, WalkPlace, WalkResult } from '../lib/server_api';
 import { BTN_RED, COLOR, pxBox } from '../lib/theme';
 import type { MapState } from '../lib/tmap_html';
 import { useToday } from '../lib/today_context';
 import { useLiveLocation } from '../lib/use_live_location';
-import { buildTrack, distM, LatLng, nextStep, pointAt, project, remainingPath, turnMark } from '../lib/walk_nav';
+import { buildTrack, distM, LatLng, nextStep, passedPath, pointAt, project, remainingPath, turnMark } from '../lib/walk_nav';
 
 const APP_KEY = process.env.EXPO_PUBLIC_TMAP_APP_KEY ?? '';
 const STAMP = require('../../assets/stamp_nungeum.webp');
@@ -34,6 +35,7 @@ type Phase =
 
 type Focus = { n: number; index: number | null }; // n은 누를 때마다 늘어난다. null이면 경로 전체
 
+const nowMs = () => Date.now(); // 이벤트 처리 안에서만 부른다
 const distText = (m: number) => (m >= 1000 ? `${(m / 1000).toFixed(1)}km` : `${Math.round(m)}m`);
 const minText = (sec: number) => `${Math.max(1, Math.round(sec / 60))}분`;
 
@@ -43,6 +45,8 @@ export default function TravelScreen() {
   const [phase, setPhase] = useState<Phase>({ name: 'loading' });
   const [attempt, setAttempt] = useState(0); // "다시 시도"를 누르면 늘어난다
   const [full, setFull] = useState(false); // 확대(전체 화면) 모드
+  const [mode, setMode] = useState<'walk' | 'transit'>('walk'); // 이동 방법: 도보 | 대중교통(버스·지하철, 가까운 구간은 걷기)
+  const [missionDismissed, setMissionDismissed] = useState(-1); // [나중에 하기]를 누른 장소 번호 (같은 장소에서 미션 창이 계속 다시 뜨지 않게)
   const [focus, setFocus] = useState<Focus | null>(null);
   const [follow, setFollow] = useState(true); // 걸을 때 지도가 내 위치를 따라간다
   const [reached, setReached] = useState(0); // 도착을 확인한 장소 수 (TODO(PR F): 서버의 방문 기록·도장으로 바꾼다)
@@ -64,6 +68,29 @@ export default function TravelScreen() {
   };
   useEffect(() => () => { if (toastTimer.current) clearTimeout(toastTimer.current); }, []);
 
+  // 미션 화면에서 돌아오면 서버 도장 장부로 "어디까지 왔는지"를 다시 센다 (앞에서부터 도장이 이어진 만큼). 서버를 못 읽으면 그대로 둔다.
+  const routeIds = route?.places.map((p) => p.id).join('|') ?? '';
+  useFocusEffect(
+    useCallback(() => {
+      if (!routeIds) return;
+      let alive = true;
+      getStamps().then((r) => {
+        if (!alive || !r.ok) return;
+        const have = new Set(r.data.stamps.map((s) => s.placeId));
+        let n = 0;
+        for (const id of routeIds.split('|')) {
+          if (!have.has(id)) break;
+          n += 1;
+        }
+        setReached((cur) => (n > cur ? n : cur));
+        if (n > 0) setArrived(false);
+      });
+      return () => {
+        alive = false;
+      };
+    }, [routeIds]),
+  );
+
   // 처음 경로 받기: 내 위치를 한 번 읽어 서버에 보낸다. 위치를 못 읽으면 첫 장소부터 경로를 잡는다.
   useEffect(() => {
     if (!route) return;
@@ -75,8 +102,10 @@ export default function TravelScreen() {
       const r = await getWalk(
         route.places.map((p) => p.id),
         loc.status === 'ok' ? { latitude: loc.latitude, longitude: loc.longitude } : undefined,
+        'walk',
       );
       if (!alive) return;
+      setMode('walk');
       setPhase(r.ok ? { name: 'ready', all: r.data.places, walk: r.data, offset: 0 } : { name: 'error' });
       if (r.ok) setFocus({ n: 1, index: null }); // 경로 전체가 보이게 한 번 맞춘다
     })();
@@ -135,14 +164,14 @@ export default function TravelScreen() {
   const keepRoute = () => {
     setOffRoute(false);
     offSince.current = null;
-    snoozeUntil.current = Date.now() + SNOOZE_SEC * 1000;
+    snoozeUntil.current = nowMs() + SNOOZE_SEC * 1000;
   };
   const acceptReroute = async () => {
     if (!all || !me) return;
     setOffRoute(false);
     setRerouting(true);
     // 아직 도착하지 않은 장소들로, 지금 내 위치에서 새 경로를 받는다
-    const r = await getWalk(all.slice(reached).map((p) => p.id), { latitude: me.lat, longitude: me.lng });
+    const r = await getWalk(all.slice(reached).map((p) => p.id), { latitude: me.lat, longitude: me.lng }, mode);
     setRerouting(false);
     if (!r.ok) {
       showToast('새 경로를 못 찾았어요. 지금 경로를 유지해요');
@@ -151,6 +180,41 @@ export default function TravelScreen() {
     }
     setPhase({ name: 'ready', all, walk: r.data, offset: reached });
     setFocus((f) => ({ n: (f?.n ?? 0) + 1, index: null })); // 새 경로가 다 보이게 맞춘다
+    setSimOff(false);
+    setSimAlong(0);
+    offSince.current = null;
+  };
+
+  // 도착 자동 감지: 다음 장소에서 ARRIVE_M 안이면 도착으로 보고 미션 창을 바로 띄운다 (값을 계산만 하고 상태는 바꾸지 않는다).
+  const nearNext = !!me && !!all && reached < all.length && distM(me, all[reached]) <= ARRIVE_M;
+  const isArrived = arrived || nearNext;
+  const autoMission = nearNext && !sheet && missionDismissed !== reached;
+
+  // 길 안내를 시작할 때 내 위치를 아직 못 읽었다면(첫 장소부터 잡힌 경로), 위치가 잡힌 뒤 한 번 내 위치에서 다시 잡는다.
+  const lateTried = useRef(false);
+  useEffect(() => { lateTried.current = false; }, [route, attempt]);
+  useEffect(() => {
+    if (!ready || !all || !me || walk?.startIncluded || lateTried.current) return;
+    lateTried.current = true;
+    (async () => {
+      const r = await getWalk(all.slice(reached).map((p) => p.id), { latitude: me.lat, longitude: me.lng }, mode);
+      if (r.ok) setPhase({ name: 'ready', all, walk: r.data, offset: reached });
+    })();
+  }, [ready, all, me, walk, reached, mode]);
+
+  // 이동 방법 바꾸기: 지금 내 위치(없으면 지금 경로의 시작)에서 남은 장소들까지 새로 받는다. 진행 상황(도착한 장소 수)은 그대로 둔다.
+  const switchMode = async (next: 'walk' | 'transit') => {
+    if (next === mode || !all || rerouting) return;
+    setRerouting(true);
+    const r = await getWalk(all.slice(reached).map((p) => p.id), me ? { latitude: me.lat, longitude: me.lng } : undefined, next);
+    setRerouting(false);
+    if (!r.ok) {
+      showToast(next === 'transit' ? '대중교통 경로를 못 찾았어요. 도보로 유지해요' : '도보 경로를 못 찾았어요');
+      return;
+    }
+    setMode(next);
+    setPhase({ name: 'ready', all, walk: r.data, offset: reached });
+    setFocus((f) => ({ n: (f?.n ?? 0) + 1, index: null }));
     setSimOff(false);
     setSimAlong(0);
     offSince.current = null;
@@ -184,6 +248,9 @@ export default function TravelScreen() {
     () => (track ? remainingPath(track, prog && prog.off <= OFF_ROUTE_M ? prog.along : lastAlong.current) : []),
     [track, prog],
   );
+  // 지나온 경로는 점선(점점점)으로 남긴다. 경로에서 벗어났으면 경로에서 가장 가까운 지점까지만 지나온 것으로 본다.
+  const alongNow = prog ? prog.along : 0;
+  const passedLine = useMemo(() => (track ? passedPath(track, alongNow) : []), [track, alongNow]);
   // 걸을 때 지도가 내 위치를 따라간다. 위치 정확도가 낮으면(컴퓨터 브라우저 등) 따라가지 않는다.
   const followOn = follow && !!me && (sim || (gps?.accuracy ?? Infinity) <= 100);
 
@@ -197,11 +264,15 @@ export default function TravelScreen() {
         status: i < reached ? ('done' as const) : i === reached ? ('next' as const) : ('todo' as const),
       })),
       path: shownPath,
+      passed: passedLine,
+      full: walk.path,
+      along: alongNow,
+      steps: walk.steps.map((st) => ({ lat: st.lat, lng: st.lng, turn: st.turn })),
       me,
       follow: followOn,
       focus: focus ? { n: focus.n, target: target ? { lat: target.lat, lng: target.lng } : null, points: walk.path } : undefined,
     };
-  }, [all, walk, me, focus, reached, shownPath, followOn]);
+  }, [all, walk, me, focus, reached, shownPath, passedLine, alongNow, followOn]);
 
   if (!route) {
     return (
@@ -256,7 +327,8 @@ export default function TravelScreen() {
           const j = i - offset;
           const leg = walk.startIncluded ? walk.legs[j] : walk.legs[j - 1];
           if (j < 0 || !leg) return undefined;
-          return `${j === 0 && walk.startIncluded ? '내 위치에서' : '앞 장소에서'} 도보 약 ${minText(leg.time)}`;
+          const seg = walk.segments?.[walk.startIncluded ? j : j - 1];
+          return `${j === 0 && walk.startIncluded ? '내 위치에서' : '앞 장소에서'} ${seg ? (seg.type === 'transit' ? '대중교통' : '도보') : '도보'} 약 ${minText(leg.time)}`;
         })
       : [];
 
@@ -298,7 +370,7 @@ export default function TravelScreen() {
         ) : null}
         {phase.name === 'error' ? (
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 20 }}>
-            <Text style={{ color: COLOR.ink }}>도보 경로를 불러오지 못했어요.</Text>
+            <Text style={{ color: COLOR.ink }}>경로를 불러오지 못했어요.</Text>
             <Pressable
               onPress={() => setAttempt((n) => n + 1)}
               style={[pxBox(BTN_RED, COLOR.redDark), { paddingVertical: 10, paddingHorizontal: 20 }]}
@@ -310,8 +382,22 @@ export default function TravelScreen() {
         {ready && state && all ? (
           <>
             <TmapView appKey={APP_KEY} center={all[0]} state={state} />
+            {/* 경로 이탈: 지도 위에서 바로 보이게 한다. 자동으로 바꾸지 않고 [다시 길 찾기]를 누르면 지금 위치에서 새 경로를 받는다 */}
+            {offRoute ? (
+              <View style={{ position: 'absolute', top: 8, left: 8, right: 8, zIndex: 6, backgroundColor: '#ffe1d6', borderWidth: 2, borderColor: COLOR.redDark, padding: 10, gap: 8 }}>
+                <Text style={{ color: COLOR.redDark, fontWeight: '800', fontSize: 14 }}>경로에서 벗어났어요. 지금 위치에서 다시 길을 찾을까요?</Text>
+                <View style={{ flexDirection: 'row', gap: 8 }}>
+                  <Pressable onPress={acceptReroute} style={[smallBtn, { backgroundColor: COLOR.red, borderColor: COLOR.redDark }]}>
+                    <Text style={{ color: '#fff', fontWeight: '800', fontSize: 14 }}>다시 길 찾기</Text>
+                  </Pressable>
+                  <Pressable onPress={keepRoute} style={smallBtn}>
+                    <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 14 }}>그대로 가기</Text>
+                  </Pressable>
+                </View>
+              </View>
+            ) : null}
             {/* 길 안내 한 줄: 다음 안내 지점까지 남은 거리와 문장 */}
-            {step ? (
+            {step && !offRoute ? (
               <View
                 style={{
                   position: 'absolute', top: 8, left: 8, right: 8, zIndex: 5, backgroundColor: COLOR.paper,
@@ -334,6 +420,13 @@ export default function TravelScreen() {
               </Text>
             </Pressable>
             <Pressable
+              onPress={acceptReroute}
+              accessibilityLabel="지금 위치에서 다시 길 찾기"
+              style={{ position: 'absolute', left: 10, bottom: 46, zIndex: 5, backgroundColor: COLOR.paper, borderWidth: 2, borderColor: COLOR.ink, paddingVertical: 5, paddingHorizontal: 8 }}
+            >
+              <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 12 }}>{rerouting ? '찾는 중…' : '다시 길 찾기'}</Text>
+            </Pressable>
+            <Pressable
               onPress={() => setFull((v) => !v)}
               style={{ position: 'absolute', right: 10, bottom: 10, zIndex: 5, backgroundColor: COLOR.ink, paddingVertical: 6, paddingHorizontal: 9 }}
             >
@@ -346,22 +439,34 @@ export default function TravelScreen() {
       {/* 안내 영역 (기본 화면만) */}
       {!full ? (
         <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingTop: 14, gap: 10 }}>
-          {offRoute ? (
-            <View style={{ backgroundColor: '#ffe1d6', padding: 10, gap: 6 }}>
-              <Text style={{ color: COLOR.redDark, fontWeight: '700', fontSize: 13 }}>
-                경로에서 벗어났어요. 지금 위치에서 새 경로를 찾을까요?
-              </Text>
-              <View style={{ flexDirection: 'row', gap: 8 }}>
-                <Pressable onPress={acceptReroute} style={smallBtn}>
-                  <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 13 }}>새 경로 보기</Text>
-                </Pressable>
-                <Pressable onPress={keepRoute} style={smallBtn}>
-                  <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 13 }}>그대로 가기</Text>
-                </Pressable>
+          {rerouting ? <ActivityIndicator color={COLOR.red} /> : null}
+
+          {ready ? (
+            <View style={{ gap: 6 }}>
+              <View style={{ flexDirection: 'row', gap: 8, alignItems: 'center' }}>
+                <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.ink }}>이동 방법</Text>
+                {(['walk', 'transit'] as const).map((m) => (
+                  <Pressable key={m} onPress={() => switchMode(m)} accessibilityRole="button" accessibilityState={{ selected: mode === m }}
+                    style={[smallBtn, mode === m && { backgroundColor: COLOR.red, borderColor: COLOR.redDark }]}>
+                    <Text style={{ color: mode === m ? '#fff' : COLOR.ink, fontWeight: '800', fontSize: 13 }}>{m === 'walk' ? '도보' : '대중교통'}</Text>
+                  </Pressable>
+                ))}
               </View>
+              {mode === 'transit' && walk?.segments ? (
+                <View style={{ backgroundColor: COLOR.paper, borderWidth: 1.5, borderColor: COLOR.ink, borderRadius: 6, padding: 8, gap: 3 }}>
+                  {walk.segments.map((sg, i) => (
+                    <Text key={i} style={{ fontSize: 12, color: COLOR.ink }}>
+                      {`${(walk.startIncluded ? reached + i : reached + i) + 1}번 장소 구간 · ${sg.type === 'transit'
+                        ? sg.legs.filter((l) => l.mode !== 'WALK').map((l) => `${l.mode === 'SUBWAY' ? '지하철' : '버스'}${l.route ? ` ${l.route}` : ''}`).join(' → ') || '대중교통'
+                        : '도보'} ${minText(sg.time)}${sg.fare ? ` · ${sg.fare.toLocaleString('ko-KR')}원` : ''}`}
+                    </Text>
+                  ))}
+                  {walk.fare ? <Text style={{ fontSize: 12, fontWeight: '800', color: COLOR.redDark }}>{`요금 합계 약 ${walk.fare.toLocaleString('ko-KR')}원`}</Text> : null}
+                </View>
+              ) : null}
             </View>
           ) : null}
-          {rerouting ? <ActivityIndicator color={COLOR.red} /> : null}
+
 
           {ready && __DEV__ ? (
             <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
@@ -380,8 +485,8 @@ export default function TravelScreen() {
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: 13, color: COLOR.muted, flexShrink: 1 }}>
                 {remain !== null && remainSec !== null
-                  ? `남은 ${distText(remain)} · 도보 약 ${minText(remainSec)}`
-                  : `전체 ${distText(walk.distance)} · 도보 약 ${minText(walk.time)}`}
+                  ? `남은 ${distText(remain)} · ${mode === 'transit' ? '대중교통' : '도보'} 약 ${minText(remainSec)}`
+                  : `전체 ${distText(walk.distance)} · ${mode === 'transit' ? '대중교통' : '도보'} 약 ${minText(walk.time)}`}
               </Text>
               <Pressable onPress={showAll}>
                 <Text style={{ fontSize: 13, color: COLOR.red, fontWeight: '800' }}>전체 경로 보기</Text>
@@ -421,11 +526,11 @@ export default function TravelScreen() {
             </Pressable>
             {/* 큰 버튼: 도착 확인 → (도착하면) 미션 창 → (모두 걸으면) 완주 한 장 */}
             <Pressable
-              onPress={reached >= total ? () => router.push({ pathname: '/trip_card', params: { done: '1', title: route.title, names: placeNames.join('|') } }) : arrived ? () => setSheet('mission') : onArrive}
+              onPress={reached >= total ? () => router.push({ pathname: '/trip_card', params: { done: '1', title: route.title, names: placeNames.join('|'), ids: route.places.map((p) => p.id).join('|') } }) : isArrived ? () => setSheet('mission') : onArrive}
               style={[pxBox(BTN_RED, COLOR.redDark), { flex: 1.4, height: 52, alignItems: 'center', justifyContent: 'center' }]}
             >
               <Text style={{ color: '#fff', fontWeight: '800', fontSize: 15 }}>
-                {reached >= total ? '완주 한 장 보기' : arrived ? `미션 확인하기 · ${reached + 1}번 장소` : '도착 확인하기'}
+                {reached >= total ? '완주 한 장 보기' : isArrived ? `미션 확인하기 · ${reached + 1}번 장소` : '도착 확인하기'}
               </Text>
             </Pressable>
           </View>
@@ -434,7 +539,7 @@ export default function TravelScreen() {
               ? '위치 권한이 없어서 길 안내를 쓸 수 없어요.'
               : reached >= total
                 ? ''
-                : arrived
+                : isArrived
                   ? '도착이 확인됐어요. 이 자리에서 미션을 할 수 있어요.'
                   : toNext !== null
                     ? `${reached + 1}번 장소까지 ${distText(toNext)}`
@@ -447,14 +552,14 @@ export default function TravelScreen() {
 
       {/* 겹쳐 뜨는 창: 도장 확인 · 미션 (모양만. 도장 저장은 서버 기능 전). 완주 한 장은 9:16 카드 화면(/trip_card?done=1)으로 연다 */}
       {sheet === 'stamps' ? <StampSheet title={route.title} names={placeNames} reached={reached} onClose={() => setSheet(null)} /> : null}
-      {sheet === 'mission' ? (
+      {sheet === 'mission' || autoMission ? (
         <MissionSheet
           placeNo={reached + 1}
           placeName={placeNames[reached] ?? ''}
-          onStart={() => { setSheet(null); router.push('/mission'); }}
+          onStart={() => { setSheet(null); setMissionDismissed(reached); router.push({ pathname: '/mission', params: { placeId: route.places[reached]?.id ?? '', placeName: placeNames[reached] ?? '' } }); }}
           // 개발 중에만: 도장 저장 기능이 생기기 전에 다음 장소로 넘어가 보는 임시 버튼 (기존 동작 그대로)
           onTemp={__DEV__ ? () => { setSheet(null); onArrive(); } : undefined}
-          onLater={() => setSheet(null)}
+          onLater={() => { setSheet(null); setMissionDismissed(reached); }}
         />
       ) : null}
 

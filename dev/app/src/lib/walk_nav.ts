@@ -83,3 +83,17 @@ export function turnMark(turn: number | null): string {
   if (turn === 14) return '↩';
   return '⬆';
 }
+// 출발점에서 내 위치(along)까지 지나온 경로선. 지도에 점선으로 그린다.
+export function passedPath(track: Track, along: number): LatLng[] {
+  const { path, cum } = track;
+  if (path.length === 0 || along <= 0) return [];
+  const out: LatLng[] = [path[0]];
+  for (let i = 1; i < path.length; i++) {
+    if (cum[i] <= along) out.push(path[i]);
+    else {
+      out.push(pointAt(track, along));
+      break;
+    }
+  }
+  return out;
+}

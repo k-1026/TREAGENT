@@ -17,16 +17,32 @@ import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-na
 import { APP_MAX_WIDTH, CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
 import { TripCard } from '../components/trip_card';
+import { makeDiary } from '../lib/agents_api';
 import { displayName } from '../lib/profile';
 import { useProfile } from '../lib/profile_context';
 import { COLOR } from '../lib/theme';
 import { doneTrip, SAMPLE_TRIPS } from '../lib/trip_card_data';
 
 export default function TripCardScreen() {
-  const params = useLocalSearchParams<{ i?: string; done?: string; title?: string; names?: string }>();
+  const params = useLocalSearchParams<{ i?: string; done?: string; title?: string; names?: string; ids?: string }>();
   const isDone = params.done === '1';
   const idx = Math.max(0, Math.min(SAMPLE_TRIPS.length - 1, parseInt(params.i ?? '0', 10) || 0));
-  const trip = isDone ? doneTrip(params.title ?? '', (params.names ?? '').split('|').filter(Boolean)) : SAMPLE_TRIPS[idx];
+  // 완주 모드: 서버 기록 정리 에이전트(POST /agents/diary)가 쓴 하랑이 일기를 마무리 문단에 넣는다. 방문 사실은 서버 도장 장부가 정한다.
+  const [diary, setDiary] = useState<{ state: 'loading' | 'ok' | 'fail'; text: string }>({ state: 'loading', text: '' });
+  useEffect(() => {
+    if (!isDone || !params.ids) return;
+    let alive = true;
+    const d = new Date();
+    const day = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+    makeDiary(params.title ?? '', day, params.ids.split('|').filter(Boolean)).then((r) => {
+      if (alive) setDiary(r.ok ? { state: 'ok', text: r.data.text } : { state: 'fail', text: '' });
+    });
+    return () => { alive = false; };
+  }, [isDone, params.ids, params.title]);
+  const base = isDone ? doneTrip(params.title ?? '', (params.names ?? '').split('|').filter(Boolean)) : SAMPLE_TRIPS[idx];
+  const trip = isDone && params.ids && diary.state !== 'fail'
+    ? { ...base, close: diary.state === 'ok' ? diary.text : '하랑이가 일기를 쓰고 있어요…' }
+    : base;
   const { profile } = useProfile();
   const name = displayName(profile);
   const { width: winW, height: winH } = useWindowDimensions();
