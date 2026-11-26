@@ -100,7 +100,7 @@ export default function LocationScreen() {
           <Text style={styles.bubbleText}>
             {location?.status === 'unavailable'
               ? '어라, 위치를 못 읽었어요... 구·군을 골라 줄래요?'
-              : '오늘의 길을 고르려면 어디쯤인지 알아야 해요. 위치는 앱 쓰는 동안만 쓰고 저장은 안 해요!'}
+              : '오늘의 길을 고르려면 어디쯤인지 알아야 해요. 위치는 앱 쓰는 동안만 쓰고, 저장은 안 해요!'}
           </Text>
           {/* 말풍선 꼬리 (홈과 같은 픽셀 꼬리, 하랑이 쪽을 가리킨다) */}
           <View style={[styles.tail, { left: 120 * k - 3 }]}>
@@ -162,7 +162,9 @@ export default function LocationScreen() {
           )}
 
           {selectedDistrict && (
-            <PxMessage tone="ok">{`선택한 동네: ${selectedDistrict.name}`}</PxMessage>
+            <View style={[styles.pickedBox, pxBox('#e4efd9', '#a8bd96')]}>
+              <Text style={styles.pickedText}>{`선택한 동네: ${selectedDistrict.name}`}</Text>
+            </View>
           )}
           {/* 새로 고르지 않았으면 지금 쓰고 있는 시작 위치(홈에서 정한 기본 중구 등)를 보여 준다 */}
           {!selectedDistrict && !loading && location?.status !== 'ok' && place && (
@@ -212,6 +214,9 @@ const styles = StyleSheet.create({
   note: { fontSize: 12.5, color: COLOR.muted, lineHeight: 18 }, // 안내 문구 11 → 12.5 (조금 더 크게)
   row: { flexDirection: 'row', gap: 12 },
   flex: { flex: 1 },
+  // 선택한 동네 칸: 가운데 정렬, 글자 15 (칸과 글자 모두 키움)
+  pickedBox: { paddingVertical: 14, paddingHorizontal: 12, alignItems: 'center' },
+  pickedText: { fontSize: 15, fontWeight: '800', color: COLOR.ink, textAlign: 'center' },
   loading: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   link: { color: COLOR.redDark, fontWeight: '700', fontSize: 13, padding: 6 },
   goBox: { gap: 10 },

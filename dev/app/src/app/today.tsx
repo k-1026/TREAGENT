@@ -58,7 +58,7 @@ export default function TodayScreen() {
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
-      <ScreenHead title="오늘의 길" sub="AI가 오늘 날씨에 맞는 길 3개를 골라 줘요" backLabel="‹ 홈" onBack={() => router.back()} />
+      <ScreenHead title="오늘의 길" sub="하랑이가 오늘 날씨에 맞는 길 3개를 골라 줘요" backLabel="‹ 홈" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
         <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.ink }}>테마</Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
