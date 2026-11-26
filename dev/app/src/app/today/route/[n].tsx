@@ -93,8 +93,11 @@ export default function RouteBriefScreen() {
           </Pressable>
           <Pressable
             onPress={() => {
-              today.choose(index); // 고른 길을 기억해 둔다 (출발·여행 화면은 아직 없다)
-              router.push('/travel');
+              // 고른 길을 기억하고 홈으로 돌아간다. 홈은 "오늘은 ○○ 길로 가 볼까요?" 출발 준비 상태가 되고,
+              // 현관문을 누르면 외출 연출 뒤 [여행 지도 보기]로 이어진다 (목업 app_home_mockup_v1 readyHome·walkout)
+              today.choose(index);
+              if (router.canDismiss()) router.dismissTo('/');
+              else router.replace('/');
             }}
             style={[pxBox(COLOR.red, COLOR.redDark), { flex: 1, height: 52, alignItems: 'center', justifyContent: 'center' }]}
           >

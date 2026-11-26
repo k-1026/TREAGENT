@@ -64,7 +64,7 @@ export default function PouchScreen() {
             );
           })
         ) : (
-          <EmptyState title="아직 받은 물건이 없어요" sub="[승인 대사 대기 · 주머니 비어 있음]" />
+          <EmptyState title="아직 받은 물건이 없어요" sub="[승인 대사 대기 · 주머니 비어 있음]" action={{ label: '길 걸으러 가기', onPress: () => router.push('/today') }} />
         )}
       </ScrollView>
     </View>

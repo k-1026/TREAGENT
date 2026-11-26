@@ -7,7 +7,7 @@ import { CoursePlacesCard } from '../components/course_places_card';
 import { CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
 import { TmapView } from '../components/tmap_view';
-import { MissionSheet, StampSheet } from '../components/travel_sheets';
+import { CutSheet, MissionSheet, StampSheet } from '../components/travel_sheets';
 import { getStamps } from '../lib/agents_api';
 import { getCurrentLocation } from '../lib/location';
 import { getWalk, WalkPlace, WalkResult } from '../lib/server_api';
@@ -35,6 +35,10 @@ type Phase =
 
 type Focus = { n: number; index: number | null }; // n은 누를 때마다 늘어난다. null이면 경로 전체
 
+// 첫 완주 컷씬 ②를 이미 띄웠는가 (목업 cutShown). 완주 기록이 서버에 저장되기 전이라 앱을 켜 둔 동안만 기억한다
+// [확인 필요: 첫 완주 판정과 앨범 해금은 서버 기록으로 바꾼다 — 재생 시점도 팀 결정 전]
+let firstCutShown = false;
+
 const nowMs = () => Date.now(); // 이벤트 처리 안에서만 부른다
 const distText = (m: number) => (m >= 1000 ? `${(m / 1000).toFixed(1)}km` : `${Math.round(m)}m`);
 const minText = (sec: number) => `${Math.max(1, Math.round(sec / 60))}분`;
@@ -54,7 +58,7 @@ export default function TravelScreen() {
   const [offRoute, setOffRoute] = useState(false); // 새 경로를 제안 중인가
   const [rerouting, setRerouting] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const [sheet, setSheet] = useState<'stamps' | 'mission' | null>(null); // 겹쳐 뜨는 창 (travel_sheets.tsx)
+  const [sheet, setSheet] = useState<'stamps' | 'mission' | 'cut' | null>(null); // 겹쳐 뜨는 창 (travel_sheets.tsx)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // 개발용 시뮬레이션 (컴퓨터에서 걸어 볼 수 없어서)
   const [sim, setSim] = useState(false);
@@ -340,6 +344,11 @@ export default function TravelScreen() {
   // 작은 버튼: 목업의 칸 모양 (모서리 6, 잉크 1.5px)
   const smallBtn = { backgroundColor: COLOR.paper, borderWidth: 1.5, borderColor: COLOR.ink, borderRadius: 6, paddingVertical: 6, paddingHorizontal: 10 };
   const placeNames = route.places.map((p) => p.name);
+  // 완주 한 장(/trip_card?done=1)에 넘길 값: 길 이름과 장소 이름·id만 (좌표는 넘기지 않는다)
+  const doneParams = () => ({ done: '1', title: route.title, names: placeNames.join('|'), ids: route.places.map((p) => p.id).join('|') });
+  const openDone = () => router.push({ pathname: '/trip_card', params: doneParams() });
+  // [완주 한 장 보기]: 첫 완주면 컷씬 ② 안내를 먼저 한 번 띄운다 (목업 #act → #cut → openDone)
+  const onFinish = () => (firstCutShown ? openDone() : setSheet('cut'));
 
   return (
     <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
@@ -526,7 +535,7 @@ export default function TravelScreen() {
             </Pressable>
             {/* 큰 버튼: 도착 확인 → (도착하면) 미션 창 → (모두 걸으면) 완주 한 장 */}
             <Pressable
-              onPress={reached >= total ? () => router.push({ pathname: '/trip_card', params: { done: '1', title: route.title, names: placeNames.join('|'), ids: route.places.map((p) => p.id).join('|') } }) : isArrived ? () => setSheet('mission') : onArrive}
+              onPress={reached >= total ? onFinish : isArrived ? () => setSheet('mission') : onArrive}
               style={[pxBox(BTN_RED, COLOR.redDark), { flex: 1.4, height: 52, alignItems: 'center', justifyContent: 'center' }]}
             >
               <Text style={{ color: '#fff', fontWeight: '800', fontSize: 15 }}>
@@ -551,6 +560,12 @@ export default function TravelScreen() {
       ) : null}
 
       {/* 겹쳐 뜨는 창: 도장 확인 · 미션 (모양만. 도장 저장은 서버 기능 전). 완주 한 장은 9:16 카드 화면(/trip_card?done=1)으로 연다 */}
+      {sheet === 'cut' ? (
+        <CutSheet
+          onPlay={() => { firstCutShown = true; setSheet(null); router.push({ pathname: '/cutscene', params: { cut: 'c2', mode: 'first', ...doneParams() } }); }}
+          onSkip={() => { firstCutShown = true; setSheet(null); openDone(); }}
+        />
+      ) : null}
       {sheet === 'stamps' ? <StampSheet title={route.title} names={placeNames} reached={reached} onClose={() => setSheet(null)} /> : null}
       {sheet === 'mission' || autoMission ? (
         <MissionSheet

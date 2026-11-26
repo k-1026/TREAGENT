@@ -168,6 +168,11 @@ export default function HomeScreen() {
     setReadyOff(false);
   };
 
+  // 브리핑에서 길을 새로 고르고 돌아오면 출발 준비 상태부터 다시 보여 준다 ('나가지 않기'나 지난 출발 연출을 지운다)
+  // (타이머·애니메이션 값도 함께 되돌려야 해서 렌더 중이 아니라 effect에서 한다)
+  // eslint-disable-next-line react-hooks/set-state-in-effect, react-hooks/exhaustive-deps
+  useEffect(() => { if (today.chosen !== null) resetDepart(); }, [today.chosen]);
+
   // 말풍선은 한 칸을 돌려 쓴다: 출발 전에는 출발 대사, 걷는 동안 잠깐 같은 칸에 걸으러 가는 대사, 그다음에는 숨김 (기본 말풍선과 겹치지 않음)
   const bubbleMode: 'main' | 'depart' | 'none' =
     depart === 'idle' ? (ready ? 'depart' : 'main') : bubbleGone ? 'none' : 'depart';

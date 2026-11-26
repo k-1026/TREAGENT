@@ -10,7 +10,9 @@
  *  - 일러스트: 목업의 [일러스트 자리] 그대로
  *  - 해금 저장: 계정 기준 해금은 서버 기능이 필요하다 [확인 필요]. 이 화면은 저장하지 않는다 (dev 절대 규칙 3).
  *  - 대사: 창작 후보 초안이다 (컷씬 ①은 게임 흐름 6-6 예문, 컷씬 ②는 9-1절 초안). 확정은 팀이 한다 [창작, 승인 필요].
- *  - 첫 완주 때 컷씬 ②를 띄우는 곳(여행 지도)은 재생 시점이 정해지지 않아 연결하지 않았다.
+ *  - 첫 완주 때 컷씬 ②: 여행 지도의 [완주 한 장 보기]에서 한 번 안내한다 (travel.tsx CutSheet, 목업 travel_map_mockup_v1 #cut).
+ *    이때는 done·title·names·ids를 함께 받아, 끝 화면에서 [완주 한 장 보기]로 완주 카드(/trip_card?done=1)를 연다.
+ *    재생 시점은 팀 결정 전이라 목업대로 연결했다 [확인 필요].
  */
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
@@ -42,7 +44,11 @@ const goLedger = () => router.replace({ pathname: '/ledger', params: { tab: 'alb
 const REPLAY_LINES = ['다시 봐도 좀 쑥스럽네요!', '기억하러 와 줘서 고마워요, 헤헤.'];
 
 export default function CutsceneScreen() {
-  const params = useLocalSearchParams<{ cut?: string; mode?: string }>();
+  const params = useLocalSearchParams<{ cut?: string; mode?: string; done?: string; title?: string; names?: string; ids?: string }>();
+  // 여행 지도의 첫 완주에서 왔으면 끝난 뒤 완주 카드로 이어 준다
+  const fromDone = params.done === '1';
+  const openDone = () =>
+    router.replace({ pathname: '/trip_card', params: { done: '1', title: params.title ?? '', names: params.names ?? '', ids: params.ids ?? '' } });
   const cutKey: CutKey = params.cut === 'c2' ? 'c2' : 'c1';
   const replay = params.mode === 'replay';
   const cut = CUTS[cutKey];
@@ -103,12 +109,25 @@ export default function CutsceneScreen() {
           </View>
           {!replay ? <Text style={styles.note}>[확인 필요] 해금을 저장하는 건 서버 기능이 생기면 연결해요. 지금은 저장하지 않아요.</Text> : null}
           <View style={styles.row2}>
-            <Pressable onPress={goLedger} style={[styles.btn, styles.primary]}>
-              <Text style={[styles.btnText, { color: '#fff' }]}>앨범에서 보기</Text>
-            </Pressable>
-            <Pressable onPress={() => (router.canGoBack() ? router.back() : goLedger())} style={styles.btn}>
-              <Text style={styles.btnText}>닫기</Text>
-            </Pressable>
+            {fromDone ? (
+              <>
+                <Pressable onPress={openDone} style={[styles.btn, styles.primary]}>
+                  <Text style={[styles.btnText, { color: '#fff' }]}>완주 한 장 보기</Text>
+                </Pressable>
+                <Pressable onPress={goLedger} style={styles.btn}>
+                  <Text style={styles.btnText}>앨범에서 보기</Text>
+                </Pressable>
+              </>
+            ) : (
+              <>
+                <Pressable onPress={goLedger} style={[styles.btn, styles.primary]}>
+                  <Text style={[styles.btnText, { color: '#fff' }]}>앨범에서 보기</Text>
+                </Pressable>
+                <Pressable onPress={() => (router.canGoBack() ? router.back() : goLedger())} style={styles.btn}>
+                  <Text style={styles.btnText}>닫기</Text>
+                </Pressable>
+              </>
+            )}
           </View>
         </View>
       )}
