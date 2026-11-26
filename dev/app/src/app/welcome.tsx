@@ -24,11 +24,11 @@ export default function WelcomeScreen() {
   const checkName = async () => {
     const nick = checkNickname(nickname);
     if (!nick.ok) {
-      setNickNote(`닉네임은 한글·영문·숫자·밑줄로 ${NICKNAME_MIN}~${NICKNAME_MAX}자까지 쓸 수 있어요`);
+      setNickNote(`닉네임은 한글, 영문, 숫자, 밑줄로 ${NICKNAME_MIN}~${NICKNAME_MAX}자까지 쓸 수 있어요.`);
       return;
     }
     if (nick.value === null) {
-      setNickNote('닉네임을 먼저 입력해 주세요');
+      setNickNote('닉네임을 먼저 입력해 주세요.');
       return;
     }
     setNickNote('확인하는 중이에요');
@@ -43,11 +43,11 @@ export default function WelcomeScreen() {
   const submit = async () => {
     const nick = checkNickname(nickname);
     if (!nick.ok) {
-      setError(`닉네임은 한글·영문·숫자·밑줄로 ${NICKNAME_MIN}~${NICKNAME_MAX}자까지 쓸 수 있어요`);
+      setError(`닉네임은 한글, 영문, 숫자, 밑줄로 ${NICKNAME_MIN}~${NICKNAME_MAX}자까지 쓸 수 있어요.`);
       return;
     }
     if (nick.value === null) {
-      setError('닉네임을 정해 주세요');
+      setError('닉네임을 정해 주세요.');
       return;
     }
     if (!ageGroup) {
@@ -63,15 +63,12 @@ export default function WelcomeScreen() {
   };
 
   return (
-    <AuthFrame title="처음 만나요" subtitle="프로필 한 번 정하기">
+    <AuthFrame title="처음 만나요" subtitle="프로필 정하기">
       <Text style={styles.lead}>
-        하랑이가 뭐라고 부르면 좋을까요? 닉네임과 나이대는 꼭 정해야 시작할 수 있어요.
+        하랑이가 뭐라고 부르면 좋을까요? (필수)
       </Text>
 
-      <Text style={styles.label}>닉네임 (필수)</Text>
-      <Text style={styles.note}>
-        한 번 정하면 바꿀 수 없어요. 다른 사람과 같은 이름은 못 써요. {NICKNAME_MIN}~{NICKNAME_MAX}자
-      </Text>
+      <Text style={styles.note}>한 번 정하면 바꿀 수 없어요. 다른 사람과 같은 이름은 못 써요.</Text>
       {/* 목업 ⑥: 입력칸과 [중복 확인]을 한 줄에 둔다 */}
       <View style={styles.nickRow}>
         <PxInput
@@ -80,7 +77,7 @@ export default function WelcomeScreen() {
             setNickname(t);
             setNickNote(null); // 이름을 고치면 앞의 확인 결과는 지운다
           }}
-          placeholder={`${NICKNAME_MAX}자까지`}
+          placeholder={`${NICKNAME_MIN}~${NICKNAME_MAX}자`}
           maxLength={NICKNAME_MAX}
           autoCapitalize="none"
           autoCorrect={false}
@@ -92,8 +89,8 @@ export default function WelcomeScreen() {
       </View>
       {nickNote && <Text style={styles.checkNote}>{nickNote}</Text>}
 
-      <Text style={styles.label}>나이대</Text>
-      <Text style={styles.note}>걷는 시간을 맞추는 데 써요. 한 번만 받아요.</Text>
+      <Text style={[styles.label, styles.ageLabel]}>나이대 (필수)</Text>
+      <Text style={styles.note}>걷는 시간을 맞추는 데 써요.</Text>
       <View style={styles.chips}>
         {AGE_OPTIONS.map((o) => (
           <Chip
@@ -102,6 +99,7 @@ export default function WelcomeScreen() {
             selected={ageGroup === o.value}
             onPress={() => setAgeGroup(o.value)}
             style={styles.ageChip}
+            textStyle={styles.ageChipText}
           />
         ))}
       </View>
@@ -114,9 +112,10 @@ export default function WelcomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  lead: { fontSize: 13, color: COLOR.ink, lineHeight: 19 },
-  label: { fontSize: 13, fontWeight: '800', color: COLOR.ink },
-  note: { fontSize: 11, color: COLOR.muted, lineHeight: 16 },
+  lead: { fontSize: 15, fontWeight: '800', color: COLOR.ink, lineHeight: 21 }, // 맨 위 문구는 닉네임 라벨을 대신해 볼드로 둔다 (13 → 15)
+  label: { fontSize: 15, fontWeight: '800', color: COLOR.ink }, // 나이대 (13 → 15)
+  ageLabel: { marginTop: 14 }, // 닉네임 입력과 나이대 사이 간격을 넓힘
+  note: { fontSize: 12.5, color: COLOR.muted, lineHeight: 18 }, // 안내 문구 (11 → 12.5)
   nickRow: { flexDirection: 'row', alignItems: 'stretch', gap: 8 },
   nickInput: { flex: 1 },
   checkButton: { justifyContent: 'center', paddingHorizontal: 10 },
@@ -125,4 +124,5 @@ const styles = StyleSheet.create({
   // 목업 ⑥: 나이대는 3칸씩 두 줄
   chips: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 8 },
   ageChip: { width: '31.5%' },
+  ageChipText: { fontSize: 15 }, // 나이대 버튼 글자 (12 → 15)
 });
