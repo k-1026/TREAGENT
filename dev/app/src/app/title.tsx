@@ -7,7 +7,7 @@
  *
  * 배치 (위에서 아래로)
  *  - 장면: 가운데 장부. 능금은 장부 오른쪽 바닥 옆으로 굴러와 멈춘다.
- *  - 제목: 대프리카 / 히든 퀘스트 / (가칭), 그 아래 한 줄 소개
+ *  - 제목: 로고 그림(assets/title_logo.webp, 대프리카 히든 퀘스트)
  *  - 버튼: 아래쪽에 두 개 (바람 장부 열기 / 처음이에요)
  *
  * 연출 (한 번만 재생하고 멈춘다)
@@ -32,7 +32,7 @@ import { BTN_RED, COLOR, pxBox } from '../lib/theme';
 const BOOK_H = 210;
 const BOOK_W = Math.round((BOOK_H * 516) / 529);
 // 능금 그림(assets/apple_pixel.png)은 원본 그대로 쓴다. 화면에서의 크기만 여기서 정한다.
-const APPLE_SIZE = 54;
+const APPLE_SIZE = 162; // 300% 키움 (기존 54)
 
 // 애니메이션 값은 화면이 처음 그려질 때 한 번만 만든다 (렌더 중 ref 접근을 피한다).
 function createMotion() {
@@ -47,8 +47,8 @@ function createMotion() {
     windX: winds.map((v) => v.interpolate({ inputRange: [0, 1], outputRange: [-200, 420] })),
     windOpacity: winds.map((v) => v.interpolate({ inputRange: [0, 0.85, 1], outputRange: [0.9, 0.9, 0] })),
     // 능금: 화면 오른쪽 끝에서 제자리로 굴러온다.
-    // 반지름 약 27px → 둘레 약 170px. 두 바퀴(약 339px)를 가면 도착할 때 똑바로 선다.
-    appleX: apple.interpolate({ inputRange: [0, 1], outputRange: [339, 0] }),
+    // 반지름 약 81px(300% 키운 능금) → 둘레 약 509px. 두 바퀴(약 1017px)를 가면 도착할 때 똑바로 선다.
+    appleX: apple.interpolate({ inputRange: [0, 1], outputRange: [1017, 0] }),
     appleRot: apple.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '-720deg'] }),
     appleY: bounce.interpolate({ inputRange: [0, 0.5, 1], outputRange: [0, -10, 0] }),
   };
@@ -126,10 +126,7 @@ export default function TitleScreen() {
       </View>
 
       <View style={styles.info}>
-        <Text style={styles.logoMain}>대프리카</Text>
-        <Text style={styles.logoSub}>히든 퀘스트</Text>
-        <Text style={styles.logoNote}>(가칭)</Text>
-        <Text style={styles.catch}>하랑이와 함께 오늘 날씨에 맞는 길을 찾아 걸어요.</Text>
+        <Image source={require('../../assets/title_logo.webp')} style={styles.logo} resizeMode="contain" accessibilityLabel="대프리카 히든 퀘스트" />
       </View>
 
       <View style={styles.actions}>
@@ -161,22 +158,21 @@ const styles = StyleSheet.create({
   wind: { position: 'absolute', left: 0, height: 3, backgroundColor: '#fff' },
 
   // 장면: 남은 세로 공간의 가운데에 장부를 둔다
-  scene: { flex: 1, alignItems: 'center', justifyContent: 'center' },
+  scene: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingTop: 80 }, // 책·사과 위치 (paddingTop 80)
   bookWrap: { width: BOOK_W, height: BOOK_H },
   // 능금: 장부 오른쪽 바닥 모서리에 살짝 걸쳐 멈춘다. 굴러올 때는 오른쪽에서 들어온다.
-  applePos: { position: 'absolute', left: BOOK_W - 16, bottom: 0 },
+  applePos: { position: 'absolute', left: Math.round(BOOK_W * 0.5) - 15, bottom: -45 }, // 책갈피 오른쪽, 장부 아래쪽 (장부 가로의 50% 지점)
 
-  // 제목과 소개
-  info: { alignItems: 'center', paddingHorizontal: 30, gap: 2 },
-  logoMain: { fontSize: 34, fontWeight: '800', letterSpacing: 2, color: COLOR.ink },
-  logoSub: { fontSize: 26, fontWeight: '800', color: COLOR.redDark, letterSpacing: 1 },
-  logoNote: { fontSize: 11, color: COLOR.muted, marginTop: 2 },
-  catch: { marginTop: 18, textAlign: 'center', fontSize: 13, lineHeight: 20, color: COLOR.ink },
+  // 제목과 소개 (장면 아래, 40px 위로 올림: 장부 자리는 그대로)
+  info: { alignItems: 'center', paddingHorizontal: 30, marginTop: -45 }, // 로고를 아래로 (-55 → -45)
+  // 로고 그림(assets/title_logo.webp, 원본 1807x870): 가로 320에 맞춘다
+  // marginLeft 14: 로고 그림의 보이는 중심을 책+능금 묶음의 보이는 중심(약 x=487)에 맞춘다 (약 7px 오른쪽)
+  logo: { width: 320, height: 154, marginLeft: 14 },
 
   // 버튼 (아래쪽 고정)
-  actions: { paddingHorizontal: 24, paddingTop: 28, paddingBottom: 40, gap: 14 },
+  actions: { paddingHorizontal: 24, paddingTop: 28, paddingBottom: 150, gap: 14 }, // 아래 여백 150: 버튼을 조금 더 위로 (120 → 150)
   button: { paddingVertical: 13, paddingHorizontal: 14, alignItems: 'center' },
   pressed: { opacity: 0.85 },
-  buttonMain: { color: '#fff', fontSize: 16, fontWeight: '800' },
-  buttonSmall: { color: '#fff', fontSize: 11, marginTop: 2 },
+  buttonMain: { color: '#fff', fontSize: 19, fontWeight: '800' }, // 120% (기존 16)
+  buttonSmall: { color: '#fff', fontSize: 13, marginTop: 2 }, // 120% (기존 11)
 });
