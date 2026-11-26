@@ -28,7 +28,7 @@ export default function WelcomeScreen() {
       return;
     }
     if (nick.value === null) {
-      setNickNote('닉네임을 먼저 입력해 주세요');
+      setNickNote('닉네임을 먼저 입력해 주세요.');
       return;
     }
     setNickNote('확인하는 중이에요');
@@ -99,6 +99,7 @@ export default function WelcomeScreen() {
             selected={ageGroup === o.value}
             onPress={() => setAgeGroup(o.value)}
             style={styles.ageChip}
+            textStyle={styles.ageChipText}
           />
         ))}
       </View>
@@ -111,10 +112,10 @@ export default function WelcomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  lead: { fontSize: 13, fontWeight: '800', color: COLOR.ink, lineHeight: 19 }, // 맨 위 문구는 닉네임 라벨을 대신해 볼드로 둔다
-  label: { fontSize: 13, fontWeight: '800', color: COLOR.ink },
+  lead: { fontSize: 15, fontWeight: '800', color: COLOR.ink, lineHeight: 21 }, // 맨 위 문구는 닉네임 라벨을 대신해 볼드로 둔다 (13 → 15)
+  label: { fontSize: 15, fontWeight: '800', color: COLOR.ink }, // 나이대 (13 → 15)
   ageLabel: { marginTop: 14 }, // 닉네임 입력과 나이대 사이 간격을 넓힘
-  note: { fontSize: 11, color: COLOR.muted, lineHeight: 16 },
+  note: { fontSize: 12.5, color: COLOR.muted, lineHeight: 18 }, // 안내 문구 (11 → 12.5)
   nickRow: { flexDirection: 'row', alignItems: 'stretch', gap: 8 },
   nickInput: { flex: 1 },
   checkButton: { justifyContent: 'center', paddingHorizontal: 10 },
@@ -123,4 +124,5 @@ const styles = StyleSheet.create({
   // 목업 ⑥: 나이대는 3칸씩 두 줄
   chips: { flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', rowGap: 8 },
   ageChip: { width: '31.5%' },
+  ageChipText: { fontSize: 15 }, // 나이대 버튼 글자 (12 → 15)
 });

@@ -1,4 +1,4 @@
-import { Pressable, Text, ViewStyle } from 'react-native';
+import { Pressable, Text, TextStyle, ViewStyle } from 'react-native';
 import { COLOR } from '../lib/theme';
 
 export function Chip({
@@ -6,11 +6,13 @@ export function Chip({
   selected,
   onPress,
   style,
+  textStyle,
 }: {
   label: string;
   selected: boolean;
   onPress: () => void;
   style?: ViewStyle;
+  textStyle?: TextStyle; // 글자 크기 등을 칸마다 바꿀 때 (기본 12)
 }) {
   return (
     <Pressable
@@ -27,7 +29,7 @@ export function Chip({
         ...style,
       }}
     >
-      <Text style={{ color: selected ? '#fff' : COLOR.muted, fontWeight: '700', fontSize: 12 }}>{label}</Text>
+      <Text style={[{ color: selected ? '#fff' : COLOR.muted, fontWeight: '700', fontSize: 12 }, textStyle]}>{label}</Text>
     </Pressable>
   );
 }
