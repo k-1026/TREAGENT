@@ -33,6 +33,7 @@ import { doneTrip, SAMPLE_TRIPS } from '../lib/trip_card_data';
 const SHARE_TO: { label: string; app: string | null }[] = [
   { label: '인스타그램', app: '인스타그램' },
   { label: '카카오톡', app: '카카오톡' },
+  { label: '문자', app: '문자' },
   { label: '링크 복사', app: null },
 ];
 
@@ -40,6 +41,7 @@ const SHARE_TO: { label: string; app: string | null }[] = [
 const SHARE_ICON: Record<string, ImageSourcePropType | 'link'> = {
   인스타그램: require('../../assets/share_instagram.png'),
   카카오톡: require('../../assets/share_kakaotalk.png'),
+  문자: require('../../assets/share_sms.png'),
   '링크 복사': 'link',
 };
 
@@ -181,7 +183,7 @@ export default function TripCardScreen() {
                 </Pressable>
               );
             })}
-            <Pressable onPress={() => setShareOpen(false)} style={[pxBox(), { height: 48, alignItems: 'center', justifyContent: 'center' }]}>
+            <Pressable onPress={() => setShareOpen(false)} style={[pxBox(), { height: 48, alignItems: 'center', justifyContent: 'center', marginTop: 10 }]}>
               <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.ink }}>닫기</Text>
             </Pressable>
           </View>
