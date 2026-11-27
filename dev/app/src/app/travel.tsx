@@ -344,6 +344,7 @@ export default function TravelScreen() {
   // 작은 버튼: 목업의 칸 모양 (모서리 6, 잉크 1.5px)
   const smallBtn = { backgroundColor: COLOR.paper, borderWidth: 1.5, borderColor: COLOR.ink, borderRadius: 6, paddingVertical: 6, paddingHorizontal: 10 };
   const placeNames = route.places.map((p) => p.name);
+  const nextPlace = route.places[Math.min(reached, route.places.length - 1)]; // 지도 실패 안내에 쓸 다음 장소
   // 완주 한 장(/trip_card?done=1)에 넘길 값: 길 이름과 장소 이름·id만 (좌표는 넘기지 않는다)
   const doneParams = () => ({ done: '1', title: route.title, names: placeNames.join('|'), ids: route.places.map((p) => p.id).join('|') });
   const openDone = () => router.push({ pathname: '/trip_card', params: doneParams() });
@@ -380,6 +381,25 @@ export default function TravelScreen() {
         {phase.name === 'error' ? (
           <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center', gap: 12, padding: 20 }}>
             <Text style={{ color: COLOR.ink }}>경로를 불러오지 못했어요.</Text>
+            {/* 지도 실패 안내 (목업 travel_map_mockup_v1 #fallback, 명세 F-07 수용 기준): 지도 없이도 다음 장소를 찾아가게 주소와 인증 지점을 보여 준다.
+                인증 지점 설명은 저장할 곳이 아직 없어 목업 자리표시 그대로다 [확인 필요: 명세 9장 verification_points] */}
+            {nextPlace ? (
+              <View style={{ alignSelf: 'stretch', backgroundColor: '#fff0b8', borderWidth: 1.5, borderColor: COLOR.ink, padding: 10, gap: 4 }}>
+                <Text style={{ color: COLOR.ink, fontSize: 13, lineHeight: 19 }}>지도를 열 수 없어요. 대신 아래 정보로 찾아가 주세요.</Text>
+                <Text style={{ color: COLOR.ink, fontSize: 13, lineHeight: 19 }}>
+                  <Text style={{ fontWeight: '800' }}>{`${reached + 1}번 장소`}</Text>
+                  {`: ${nextPlace.name}`}
+                </Text>
+                <Text style={{ color: COLOR.ink, fontSize: 13, lineHeight: 19 }}>
+                  <Text style={{ fontWeight: '800' }}>주소</Text>
+                  {`: ${nextPlace.address ?? '주소 정보가 아직 없어요'}`}
+                </Text>
+                <Text style={{ color: COLOR.ink, fontSize: 13, lineHeight: 19 }}>
+                  <Text style={{ fontWeight: '800' }}>인증 지점</Text>
+                  {': [인증 지점 설명 자리]'}
+                </Text>
+              </View>
+            ) : null}
             <Pressable
               onPress={() => setAttempt((n) => n + 1)}
               style={[pxBox(BTN_RED, COLOR.redDark), { paddingVertical: 10, paddingHorizontal: 20 }]}

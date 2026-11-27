@@ -134,6 +134,7 @@ export type TodayPlace = {
   zone: string | null;
   hoursText: string | null;
   caution: string | null;
+  address?: string | null; // 장소 주소. 지도가 안 될 때 안내용 (서버가 아직 안 보내면 없음)
 };
 
 export type TodayRoute = {
