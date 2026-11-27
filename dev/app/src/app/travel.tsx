@@ -2,12 +2,12 @@
 // 내 위치는 처음 경로를 받을 때와 "새 경로 보기"를 누를 때만 서버로 보낸다. 걷는 동안의 위치는 기기 안에서만 쓴다.
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Image, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Linking, Pressable, Text, View } from 'react-native';
 import { CoursePlacesCard } from '../components/course_places_card';
 import { CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
 import { TmapView } from '../components/tmap_view';
-import { CutSheet, MissionSheet, StampSheet } from '../components/travel_sheets';
+import { ArriveFailKind, ArriveFailSheet, CutSheet, MissionSheet, StampSheet } from '../components/travel_sheets';
 import { getStamps } from '../lib/agents_api';
 import { getCurrentLocation } from '../lib/location';
 import { getWalk, WalkPlace, WalkResult } from '../lib/server_api';
@@ -58,6 +58,7 @@ export default function TravelScreen() {
   const [rerouting, setRerouting] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
   const [sheet, setSheet] = useState<'stamps' | 'mission' | 'cut' | null>(null); // 겹쳐 뜨는 창 (travel_sheets.tsx)
+  const [arriveFail, setArriveFail] = useState<{ kind: ArriveFailKind; meters?: number } | null>(null); // 도착 확인 실패 카드 (S-06)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // 개발용 시뮬레이션 (컴퓨터에서 걸어 볼 수 없어서)
   const [sim, setSim] = useState(false);
@@ -234,7 +235,7 @@ export default function TravelScreen() {
       return;
     }
     if (!me) {
-      showToast('내 위치를 아직 못 읽었어요');
+      setArriveFail({ kind: denied ? 'denied' : 'fail' });
       return;
     }
     const d = distM(me, all[reached]);
@@ -242,7 +243,7 @@ export default function TravelScreen() {
       setArrived(true);
       showToast('도착 확인됨 · 이제 미션을 할 수 있어요');
     } else {
-      showToast(`아직 ${Math.round(d)}m 남았어요`);
+      setArriveFail({ kind: 'far', meters: d });
     }
   };
 
@@ -560,6 +561,15 @@ export default function TravelScreen() {
           // 개발 중에만: 도장 저장 기능이 생기기 전에 다음 장소로 넘어가 보는 임시 버튼 (기존 동작 그대로)
           onTemp={__DEV__ ? () => { setSheet(null); onArrive(); } : undefined}
           onLater={() => { setSheet(null); setMissionDismissed(reached); }}
+        />
+      ) : null}
+      {arriveFail ? (
+        <ArriveFailSheet
+          kind={arriveFail.kind}
+          meters={arriveFail.meters}
+          onRetry={() => { setArriveFail(null); onArrive(); }}
+          onSettings={() => { Linking.openSettings(); }}
+          onClose={() => setArriveFail(null)}
         />
       ) : null}
 
