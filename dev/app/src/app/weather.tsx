@@ -30,7 +30,7 @@ export default function WeatherScreen() {
 
   return (
     <View style={styles.safe}>
-      <ScreenHead title="오늘 날씨" sub={`날씨 기준 시각 · ${baseText}`} backLabel="‹ 홈" onBack={goHome} />
+      <ScreenHead title="오늘 날씨" sub={`날씨 기준 시각 · ${baseText}`} backLabel="‹ 뒤로" onBack={goHome} />
       <ScrollView contentContainerStyle={[CONTENT, styles.scroll]}>
         <WxBanner kind={kind} />
 

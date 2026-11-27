@@ -33,7 +33,7 @@ export default function TodayPageScreen() {
 
   return (
     <View style={styles.safe}>
-      <ScreenHead title="오늘 페이지" sub="펼친 장부의 오늘 페이지" backLabel="‹ 홈" onBack={goHome} />
+      <ScreenHead title="오늘 페이지" sub="펼친 장부의 오늘 페이지" backLabel="‹ 뒤로" onBack={goHome} />
       <ScrollView contentContainerStyle={[CONTENT, styles.scroll]}>
         <View style={[pxBox(), styles.row]}>
           <Text style={styles.rowText}>

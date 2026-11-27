@@ -46,7 +46,7 @@ export default function CoursesScreen() {
   if (!place) {
     return (
       <View style={styles.safe}>
-        <ScreenHead title="모든 길" sub="중구 안의 모든 길" backLabel="‹ 홈" onBack={goBack} />
+        <ScreenHead title="모든 길" sub="중구 안의 모든 길" backLabel="‹ 뒤로" onBack={goBack} />
         <View style={[CONTENT, styles.body]}>
           <View style={[pxBox(), styles.card]}>
             <Text style={styles.big}>위치를 먼저 정해 주세요</Text>
@@ -61,7 +61,7 @@ export default function CoursesScreen() {
 
   return (
     <View style={styles.safe}>
-      <ScreenHead title="모든 길" sub="중구 안의 모든 길" backLabel="‹ 홈" onBack={goBack} />
+      <ScreenHead title="모든 길" sub="중구 안의 모든 길" backLabel="‹ 뒤로" onBack={goBack} />
       <ScrollView contentContainerStyle={[CONTENT, styles.body]}>
         {loading && <ActivityIndicator color={COLOR.red} />}
 

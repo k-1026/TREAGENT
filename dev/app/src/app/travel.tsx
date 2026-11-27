@@ -285,7 +285,7 @@ export default function TravelScreen() {
         <ScreenHead
           title="여행 지도"
           sub="고른 길이 있어야 지도를 볼 수 있어요"
-          backLabel="‹ 홈"
+          backLabel="‹ 뒤로"
           onBack={() => (router.canGoBack() ? router.back() : router.replace('/'))}
         />
         <View style={[CONTENT, { padding: 18, gap: 14 }]}>

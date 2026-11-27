@@ -34,7 +34,7 @@ export default function PouchScreen() {
 
   return (
     <View style={styles.safe}>
-      <ScreenHead title="주머니" sub="내가 받은 물건" backLabel="‹ 홈" onBack={goHome} />
+      <ScreenHead title="주머니" sub="내가 받은 물건" backLabel="‹ 뒤로" onBack={goHome} />
       <ScrollView contentContainerStyle={[CONTENT, styles.scroll]}>
         {filled ? (
           ITEMS.map((it) => {

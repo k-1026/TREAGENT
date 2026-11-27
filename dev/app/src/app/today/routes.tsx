@@ -57,7 +57,7 @@ export default function RoutesScreen() {
       <ScreenHead
         title="오늘의 길"
         sub={today.rounds ? `새로 불러온 길 ${today.rounds + 1}번째 묶음` : `날씨에 맞는 길 ${routes.length}개`}
-        backLabel="‹ 홈"
+        backLabel="‹ 뒤로"
         onBack={() => router.dismissTo('/')}
       />
       <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>

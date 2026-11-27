@@ -16,7 +16,7 @@ export default function SoonScreen() {
       <ScreenHead
         title={what ?? '준비 중'}
         sub="준비 중이에요"
-        backLabel="‹ 홈"
+        backLabel="‹ 뒤로"
         onBack={() => (router.canGoBack() ? router.back() : router.replace('/'))}
       />
       <View style={[styles.body, CONTENT]}>
