@@ -8,6 +8,7 @@
  */
 import { useEffect, useRef } from 'react';
 import { Animated, Easing, Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import type { ComponentRef, Ref } from 'react';
 import { COLOR } from '../lib/theme';
 import type { Trip } from '../lib/trip_card_data';
 
@@ -25,6 +26,8 @@ export function TripCard({
   onFull,
   square,
   showFlip = true,
+  capture,
+  rootRef,
 }: {
   trip: Trip;
   width: number;
@@ -34,6 +37,8 @@ export function TripCard({
   onFull?: () => void; // 없으면 전체보기 버튼을 그리지 않는다
   square?: boolean; // true면 테두리를 없애고 모서리를 각지게 (전체보기)
   showFlip?: boolean; // false면 뒤집기 버튼을 숨긴다 (전체보기는 화면을 눌렀을 때만 보임)
+  capture?: 'front' | 'back'; // 저장용: 이 면만 보이게 하고 뒤집기 움직임을 쓰지 않는다
+  rootRef?: Ref<ComponentRef<typeof View>>; // 저장용 캡처 대상
 }) {
   const u = width / 100; // 목업의 1cqw
   const btn = Math.max(30, 10 * u); // 목업 #264: 10cqw (최소 30)
@@ -46,15 +51,25 @@ export function TripCard({
   }, [flipped, spin]);
   const frontTurn = spin.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '180deg'] });
   const backTurn = spin.interpolate({ inputRange: [0, 1], outputRange: ['180deg', '360deg'] });
+  // 저장용 캡처일 때는 면을 움직이지 않고, 보여 줄 면만 보이게 한다
+  const Wrap = (capture ? View : Animated.View) as typeof Animated.View;
+  const sideStyle = (turn: Animated.AnimatedInterpolation<string | number>, show: boolean) =>
+    capture
+      ? [StyleSheet.absoluteFill, { display: show ? ('flex' as const) : ('none' as const) }]
+      : [StyleSheet.absoluteFill, { transform: [{ perspective: 1000 }, { rotateY: turn }], backfaceVisibility: 'hidden' as const }];
 
   return (
-    <View style={{ width, height: (width * 16) / 9 }}>
-      <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ perspective: 1000 }, { rotateY: frontTurn }], backfaceVisibility: 'hidden' }]}>
+    <View ref={rootRef} collapsable={false} style={{ width, height: (width * 16) / 9 }}>
+      <Wrap style={sideStyle(frontTurn, capture !== 'back')}>
         <View style={face}>
           <View style={[styles.pic, { padding: 3 * u }]}>
             <Text style={{ fontSize: 3 * u, color: COLOR.muted, textAlign: 'center' }}>[장소 그림 자리 · 창작 후보]</Text>
           </View>
-          <Text style={{ fontSize: 3.1 * u, color: COLOR.muted, marginTop: 3 * u }}>{trip.date}</Text>
+          {/* 날짜와 날씨 한 줄 (목업: 날짜 옆에 날씨를 같은 줄로 둔다) */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6, marginTop: 3 * u }}>
+            <Text style={{ fontSize: 3.1 * u, color: COLOR.muted }}>{trip.date}</Text>
+            <Text style={{ flexShrink: 1, fontSize: 3.1 * u, color: COLOR.muted, textAlign: 'right' }}>{trip.wx}</Text>
+          </View>
           <Text style={{ fontSize: 5.6 * u, fontWeight: '800', color: COLOR.ink, marginTop: 1 * u, marginBottom: 2.5 * u, lineHeight: 5.6 * u * 1.3 }}>
             {trip.title}
           </Text>
@@ -63,15 +78,13 @@ export function TripCard({
               <Image key={i} source={STAMP} style={{ width: 10 * u, height: 10 * u }} />
             ))}
           </View>
-          {/* 날씨 한 줄 (목업: 앞면에도 날씨 한 줄을 둔다) */}
-          <Text style={{ fontSize: 3.1 * u, color: COLOR.muted, marginTop: 2 * u }}>{trip.wx}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 1 * u, marginTop: 2.5 * u, paddingRight: 25 * u }}>
             <Image source={FACE} style={{ width: 11 * u, height: 11 * u }} resizeMode="contain" />
             <Text style={{ flex: 1, fontSize: 3.4 * u, lineHeight: 3.4 * u * 1.4, color: COLOR.ink }}>{trip.say}</Text>
           </View>
         </View>
-      </Animated.View>
-      <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ perspective: 1000 }, { rotateY: backTurn }], backfaceVisibility: 'hidden' }]}>
+      </Wrap>
+      <Wrap style={sideStyle(backTurn, capture === 'back')}>
         <View style={face}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 6 }}>
             <Text style={{ fontSize: 3.1 * u, color: COLOR.muted }}>하랑이의 일기</Text>
@@ -111,10 +124,10 @@ export function TripCard({
             <Text style={{ flex: 1, fontSize: 3.1 * u, color: COLOR.muted }}>{`도장 3/3 · 이름은 ${call(trip.name, name)} 님 (호칭 규칙)`}</Text>
           </View>
         </View>
-      </Animated.View>
+      </Wrap>
 
       {/* 뒤집기·전체보기: 카드 오른쪽 아래 동그란 버튼 (카드 위 따로 놓인 층) */}
-      {showFlip ? (
+      {showFlip && !capture ? (
         <Pressable onPress={onFlip} accessibilityLabel="카드 뒤집기" style={[styles.round, { width: btn, height: btn, right: 3 * u, bottom: 3.5 * u }]}>
           <Text style={[styles.roundText, { fontSize: 5 * u }]}>↻</Text>
         </Pressable>

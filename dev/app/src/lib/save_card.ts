@@ -70,3 +70,36 @@ export async function shareCardImage(target: CardRef): Promise<ShareResult> {
     return 'failed';
   }
 }
+
+const ALBUM = 'daeprica'; // 사진첩 앨범 이름 (대구 프리카 폴더)
+
+/** 앞면·뒷면을 각각 PNG로 찍어 사진첩 'daeprica' 앨범에 넣는다. 웹에서는 두 파일을 내려받는다. */
+export async function saveCardImages(front: CardRef, back: CardRef): Promise<SaveResult> {
+  try {
+    if (Platform.OS === 'web') {
+      for (const [target, side] of [[front, 'front'], [back, 'back']] as const) {
+        const uri = await captureRef(target, { format: 'png', result: 'data-uri' });
+        const a = document.createElement('a');
+        a.href = uri;
+        a.download = fileName().replace('.png', `_${side}.png`);
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+      }
+      return 'downloaded';
+    }
+    const perm = await MediaLibrary.requestPermissionsAsync(true); // 사진 추가만 (읽기 권한은 묻지 않음)
+    if (!perm.granted) return 'denied';
+    for (const [target, side] of [[front, 'front'], [back, 'back']] as const) {
+      const uri = await captureRef(target, { format: 'png', result: 'tmpfile', fileName: fileName().replace('.png', `_${side}`) });
+      const asset = await MediaLibrary.createAssetAsync(uri);
+      const album = await MediaLibrary.getAlbumAsync(ALBUM);
+      if (album) await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+      else await MediaLibrary.createAlbumAsync(ALBUM, asset, false);
+    }
+    return 'saved';
+  } catch (e) {
+    if (__DEV__) console.warn('[save_card] 앞뒤 저장 실패', e);
+    return 'failed';
+  }
+}

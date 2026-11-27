@@ -24,7 +24,7 @@ import { TripCard } from '../components/trip_card';
 import { makeDiary } from '../lib/agents_api';
 import { displayName } from '../lib/profile';
 import { useProfile } from '../lib/profile_context';
-import { saveCardImage, SaveResult, shareCardImage } from '../lib/save_card';
+import { SaveResult, saveCardImages, shareCardImage } from '../lib/save_card';
 import { COLOR, pxBox } from '../lib/theme';
 import { doneTrip, SAMPLE_TRIPS } from '../lib/trip_card_data';
 
@@ -76,6 +76,8 @@ export default function TripCardScreen() {
 
   // [저장]·공유 칩: 미리보기 카드 칸을 이미지로 찍는다
   const cardRef = useRef<ComponentRef<typeof View>>(null);
+  const frontRef = useRef<ComponentRef<typeof View>>(null); // 저장용 앞면 (화면에 보이지 않는 복사본)
+  const backRef = useRef<ComponentRef<typeof View>>(null); // 저장용 뒷면
   const [busy, setBusy] = useState<'save' | 'share' | null>(null);
   const saving = busy !== null; // 찍는 동안에는 카드 위 버튼(⛶·뒤집기)을 숨겨서 이미지에 안 들어가게 한다
   const hideCardButtons = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 50)));
@@ -89,7 +91,7 @@ export default function TripCardScreen() {
     if (busy) return;
     setBusy('save');
     await hideCardButtons();
-    show(SAVE_MSG[await saveCardImage(cardRef)]);
+    show(SAVE_MSG[await saveCardImages(frontRef, backRef)]);
     setBusy(null);
   };
   const onShare = async (c: (typeof SHARE_TO)[number]) => {
@@ -162,6 +164,11 @@ export default function TripCardScreen() {
         </Pressable>
       ) : null}
 
+      {/* 저장용 앞뒷면 복사본: 화면 밖에 두고 한 면씩 찍는다 */}
+      <View pointerEvents="none" style={{ position: 'absolute', left: -10000, top: 0 }}>
+        <TripCard trip={trip} width={360} name={name} flipped={false} onFlip={() => {}} capture="front" rootRef={frontRef} />
+        <TripCard trip={trip} width={360} name={name} flipped={false} onFlip={() => {}} capture="back" rootRef={backRef} />
+      </View>
       {toast ? (
         <View style={styles.toast}>
           <Text style={styles.toastText}>{toast}</Text>
