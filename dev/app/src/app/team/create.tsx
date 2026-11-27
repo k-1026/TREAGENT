@@ -1,7 +1,7 @@
 // 팀 만들기 (주소: /team/create) — 테마와 동행을 고르면 팀이 만들어지고, 대기실에서 초대 코드를 받는다
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, Text, View  } from 'react-native';
 import { Chip } from '../../components/chip';
 import { ScreenHead } from '../../components/screen_head';
 import { useAuth } from '../../lib/auth_context';
@@ -35,7 +35,7 @@ export default function TeamCreateScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
+    <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead title="팀 만들기" sub="테마와 동행을 골라요" backLabel="‹ 뒤로" onBack={() => router.back()} />
       {/* 내용은 남은 화면 가운데에 둔다 (flexGrow + justifyContent: center) */}
       <ScrollView contentContainerStyle={[{ padding: 16, gap: 12, flexGrow: 1, justifyContent: 'center' }, CONTENT]}>
@@ -64,6 +64,6 @@ export default function TeamCreateScreen() {
           <Text style={{ color: '#fff', fontWeight: '800', fontSize: 16 }}>팀 만들기</Text>
         </Pressable>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

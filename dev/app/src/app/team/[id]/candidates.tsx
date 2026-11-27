@@ -1,7 +1,7 @@
 // 팀 후보 길 (주소: /team/ID/candidates, 방장만) — 후보 3개 중 하나를 골라 팀의 길로 정한다
 import { router, useLocalSearchParams } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 import { RouteCard } from '../../../components/route_card';
 import { ScreenHead } from '../../../components/screen_head';
 import { useAuth } from '../../../lib/auth_context';
@@ -85,7 +85,7 @@ export default function TeamCandidatesScreen() {
   const loading = data === null && error === null;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
+    <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead
         title="팀 후보 길"
         sub={data ? `후보 ${data.routes.length}개 · ${data.setNo}번째 묶음` : '후보를 불러오는 중이에요'}
@@ -113,6 +113,6 @@ export default function TeamCandidatesScreen() {
           </Pressable>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

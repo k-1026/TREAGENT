@@ -61,7 +61,10 @@ export default function LocationScreen() {
   }, [bob]);
   const [location, setLocation] = useState<LocationResult | null>(null);
   // /district에서 넘어온 값 (없으면 undefined)
-  const { district } = useLocalSearchParams<{ district?: string }>();
+  // from=me: 내 정보에서 열었을 때만 뒤로 버튼을 보인다 (최초 시작 때는 안 보임)
+  const { district, from } = useLocalSearchParams<{ district?: string; from?: string }>();
+  const fromMe = from === 'me';
+  const goBackToMe = () => (router.canGoBack() ? router.back() : router.replace('/me'));
   const selectedDistrict = findDistrict(district);
   const { place, setPlace } = usePlace();
   // 위치를 읽었으면 그 좌표, 아니면 구·군 기준점(코스가 있는 지역만)을 쓴다.
@@ -86,6 +89,12 @@ export default function LocationScreen() {
 
   return (
     <View style={styles.safe}>
+      {/* 내 정보에서 열었을 때만 보이는 뒤로 버튼 (위치는 홈 머리글 뒤로와 같다) */}
+      {fromMe && (
+        <Pressable onPress={goBackToMe} style={styles.backButton}>
+          <Text style={styles.backText}>‹ 뒤로</Text>
+        </Pressable>
+      )}
       {/* 위쪽 장면: 방 그림, 하랑이, 말풍선 */}
       <View style={[styles.scene, { height: 316 * k }]}>
         {/* 방 그림: 목업 위치(위 56) 그대로, 화면 폭에 맞춘 크기 */}
@@ -133,7 +142,7 @@ export default function LocationScreen() {
               <PxButton label="현재 위치 사용" onPress={onPressLocation} disabled={loading} />
             </View>
             <View style={styles.flex}>
-              <PxButton label="구·군 선택하기" variant="sub" onPress={() => router.push('/district')} />
+              <PxButton label="구·군 선택하기" variant="sub" onPress={() => router.push({ pathname: '/district', params: fromMe ? { from: 'me' } : {} })} />
             </View>
           </View>
 
@@ -192,6 +201,20 @@ export default function LocationScreen() {
 
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLOR.cream },
+  // 홈 머리글의 뒤로 버튼과 같은 모양·같은 위치 (top 50, left 12)
+  backButton: {
+    position: 'absolute',
+    top: 50,
+    left: 12,
+    zIndex: 6,
+    backgroundColor: COLOR.cream,
+    paddingVertical: 6,
+    paddingHorizontal: 11,
+    borderRadius: 6,
+    borderWidth: 1.5,
+    borderColor: COLOR.ink,
+  },
+  backText: { color: COLOR.ink, fontSize: 14, fontWeight: '800' },
 
   // 위쪽 장면 (목업 .scene: 높이 316, 주황 바탕)
   scene: { backgroundColor: COLOR.beam, overflow: 'hidden' },

@@ -16,13 +16,15 @@
  *
  * 규칙: 좌표는 다루지 않는다. 선택값은 저장하지 않는다 (앱을 다시 켜면 사라진다).
  */
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { DISTRICTS } from '../lib/districts';
 import { BTN_RED, COLOR, pxBox } from '../lib/theme';
 import { CONTENT } from '../components/phone_column';
 
 export default function DistrictScreen() {
+  // from=me를 받아 위치 화면으로 되돌려 보낼 때 그대로 넘긴다 (뒤로 버튼 유지)
+  const { from } = useLocalSearchParams<{ from?: string }>();
   return (
     <View style={styles.safe}>
       {/* 위쪽 주황 헤더 (목업 .head2) */}
@@ -43,7 +45,7 @@ export default function DistrictScreen() {
               <Pressable
                 key={d.code}
                 disabled={!open}
-                onPress={() => router.dismissTo({ pathname: '/location', params: { district: d.code } })}
+                onPress={() => router.dismissTo({ pathname: '/location', params: { district: d.code, ...(from ? { from } : {}) } })}
                 style={({ pressed }) => [
                   styles.tile,
                   open ? pxBox(BTN_RED, COLOR.redDark) : pxBox(COLOR.paper, COLOR.shade),

@@ -1,7 +1,7 @@
 // 오늘의 길 후보 (주소: /today/routes) — 목업 "오늘의 길 3개". 카드를 누르면 하랑이 브리핑(/today/route/N)으로 간다.
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 import { RouteCard } from '../../components/route_card';
 import { ScreenHead } from '../../components/screen_head';
 import { ERROR_LABEL } from '../../lib/labels';
@@ -22,12 +22,12 @@ export default function RoutesScreen() {
 
   if (!today.prefs || routes.length === 0) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream, padding: 20, gap: 12 }}>
+      <View style={{ flex: 1, backgroundColor: COLOR.cream, padding: 20, gap: 12 }}>
         <Text style={{ color: COLOR.ink }}>받아 둔 길이 없어요.</Text>
         <Pressable onPress={() => router.replace('/today')}>
           <Text style={{ color: COLOR.red, fontWeight: '700' }}>오늘의 길 받으러 가기</Text>
         </Pressable>
-      </SafeAreaView>
+      </View>
     );
   }
 
@@ -53,7 +53,7 @@ export default function RoutesScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
+    <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead
         title="오늘의 길"
         sub={today.rounds ? `새로 불러온 길 ${today.rounds + 1}번째 묶음` : `날씨에 맞는 길 ${routes.length}개`}
@@ -84,6 +84,6 @@ export default function RoutesScreen() {
           </Text>
         </Pressable>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

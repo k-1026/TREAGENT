@@ -1,7 +1,7 @@
 // 오늘의 길 조건 고르기 (주소: /today) — 나이대·테마·동행을 고르고 받으면 후보 길 3개 화면(/today/routes)으로 간다
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
 import { Chip } from '../components/chip';
 import { ScreenHead } from '../components/screen_head';
 import { COLOR, pxBox } from '../lib/theme';
@@ -47,17 +47,17 @@ export default function TodayScreen() {
 
   if (!place) {
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream, padding: 20, gap: 12 }}>
+      <View style={{ flex: 1, backgroundColor: COLOR.cream, padding: 20, gap: 12 }}>
         <Text style={{ color: COLOR.ink }}>위치를 먼저 정해 주세요.</Text>
         <Pressable onPress={() => router.replace('/')}>
           <Text style={{ color: COLOR.red, fontWeight: '700' }}>처음으로</Text>
         </Pressable>
-      </SafeAreaView>
+      </View>
     );
   }
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
+    <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead title="오늘의 길" sub="하랑이가 오늘 날씨에 맞는 길 3개를 골라 줘요" backLabel="‹ 홈" onBack={() => router.back()} />
       <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
         <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.ink }}>테마</Text>
@@ -91,6 +91,6 @@ export default function TodayScreen() {
         {error && <Text style={{ color: COLOR.ink }}>{ERROR_LABEL[error] ?? ERROR_LABEL.SERVER}</Text>}
         {empty && <Text style={{ color: COLOR.ink }}>{empty}</Text>}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

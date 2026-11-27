@@ -8,7 +8,7 @@
 import { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { WeatherKind } from '../lib/use_home_weather';
-import { COLOR } from '../lib/theme';
+import { COLOR, pxBox } from '../lib/theme';
 
 export const WX: Record<
   WeatherKind,
@@ -36,7 +36,7 @@ export const WX: Record<
 export function WxBanner({ kind }: { kind: WeatherKind }) {
   const w = WX[kind];
   return (
-    <View style={[styles.banner, { backgroundColor: w.bannerBg }]}>
+    <View style={[styles.banner, pxBox(w.bannerBg)]}>
       <Text style={[styles.bannerText, { color: w.bannerFg }]}>{w.banner}</Text>
     </View>
   );
@@ -70,10 +70,10 @@ export const wxText = StyleSheet.create({
 });
 
 const styles = StyleSheet.create({
-  // 목업 .banner / .card: 잉크 2px 테두리
-  banner: { paddingVertical: 14, paddingHorizontal: 16, borderWidth: 2, borderColor: COLOR.ink },
+  // 안내 띠와 카드는 앱 공통 칸 모양(pxBox: 잉크 1.5px 테두리 + 아래 그림자)을 쓴다
+  banner: { paddingVertical: 14, paddingHorizontal: 16 },
   bannerText: { fontSize: 16, lineHeight: 24, fontWeight: '700' },
-  card: { backgroundColor: COLOR.paper, paddingVertical: 16, paddingHorizontal: 18, borderWidth: 2, borderColor: COLOR.ink },
+  card: { paddingVertical: 16, paddingHorizontal: 18, ...pxBox(COLOR.paper) },
   row: {
     flexDirection: 'row',
     justifyContent: 'space-between',
