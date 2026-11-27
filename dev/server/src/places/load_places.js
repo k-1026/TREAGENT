@@ -1,11 +1,13 @@
 import pg from 'pg';
 
-// 서버가 쓰는 이름(camelCase)으로 SQL에서 바로 바꿔 온다. 주소와 사용자 좌표는 다루지 않는다.
+// 서버가 쓰는 이름(camelCase)으로 SQL에서 바로 바꿔 온다. 사용자 좌표는 다루지 않는다.
+// 장소 주소(address)는 공개 정보라 앱에 보낸다: 지도가 안 될 때 주소로 찾아가게 하는 안내용 (명세 F-07 수용 기준).
 // 장소의 좌표(lat, lng)는 방문 순서를 계산하는 데만 쓰고, 응답에는 내보내지 않는다.
 // place_mode_fit(장소×모드 적합도)을 한 행으로 합쳐서 fit 객체로 가져온다.
 //   fit 예: { EXPLORE: { fit: 'good', estimated: false }, SHADE: { ... } }
 const columns = (extra) => `
   p.id, p.name, p.district, p.type,
+  p.address,
   p.role,
   p.lat, p.lng,
   p.permission_state as "permissionState",

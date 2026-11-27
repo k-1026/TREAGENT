@@ -17,6 +17,7 @@ export function toPublicPlace(place) {
     zone: place.zone ?? null,
     hoursText: place.hoursText ?? null,
     caution: place.caution ?? null,
+    address: place.address ?? null, // 지도 실패 안내용 장소 주소 (사용자 좌표 아님). 없으면 null
   };
 }
 
