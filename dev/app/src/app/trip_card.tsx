@@ -108,7 +108,7 @@ export default function TripCardScreen() {
 
   const appW = Math.min(winW, APP_MAX_WIDTH);
   // 미리보기 카드: 머리글(100)과 아래 버튼 영역(약 210, 공유 칩이 열리면 약 250)을 빼고 남는 높이에 맞춘다
-  const prevW = Math.min(appW - 36, ((winH - 100 - (shareOpen ? 250 : 210)) * 9) / 16);
+  const prevW = Math.min(appW - 36, ((winH - 100 - 210) * 9) / 16);
   // 전체보기 카드: 화면을 꽉 채운다 (폭과 높이 중 작은 쪽에 맞춤)
   const fullW = Math.min(appW, (winH * 9) / 16);
 
@@ -132,7 +132,7 @@ export default function TripCardScreen() {
           <Pressable onPress={onSave} disabled={saving} style={[styles.act, styles.save, saving && { opacity: 0.6 }]}>
             <Text style={[styles.actText, { color: '#fff' }]}>{busy === 'save' ? '저장 중…' : '저장'}</Text>
           </Pressable>
-          <Pressable onPress={() => setShareOpen((o) => !o)} style={styles.act}>
+          <Pressable onPress={() => setShareOpen(true)} style={styles.act}>
             <Text style={styles.actText}>공유</Text>
           </Pressable>
         </View>
@@ -141,17 +141,30 @@ export default function TripCardScreen() {
             <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 15 }}>장부에서 보기</Text>
           </Pressable>
         ) : null}
-        {/* 공유 칩: [공유]를 누르면 나왔다 들어간다 (목업 #tcChips). 인스타그램·카카오톡은 휴대폰 공유창을 연다 */}
-        {shareOpen ? (
-          <View style={styles.chips}>
+      </View>
+
+      {/* 공유 선택 팝업: [공유]를 누르면 가운데에 뜬다. 뒤의 화면은 움직이지 않는다 (목업 #tcChips를 팝업으로 바꿈) */}
+      {shareOpen ? (
+        <View pointerEvents="box-none" style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 40, alignItems: 'center', justifyContent: 'center' }}>
+          <Pressable onPress={() => setShareOpen(false)} accessibilityLabel="닫기" style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(60,40,20,0.45)' }} />
+          <View style={{ width: 280, padding: 18, gap: 10, backgroundColor: COLOR.paper, borderWidth: 3, borderColor: COLOR.ink, borderRadius: 16 }}>
+            <Text style={{ fontSize: 16, fontWeight: '800', color: COLOR.ink, textAlign: 'center' }}>카드 공유하기</Text>
             {SHARE_TO.map((c) => (
-              <Pressable key={c.label} onPress={() => onShare(c)} disabled={saving} style={[styles.chip, saving && { opacity: 0.6 }]}>
-                <Text style={styles.chipText}>{c.label}</Text>
+              <Pressable
+                key={c.label}
+                onPress={() => { setShareOpen(false); onShare(c); }}
+                disabled={saving}
+                style={[pxBox(), { height: 48, alignItems: 'center', justifyContent: 'center' }, saving && { opacity: 0.6 }]}
+              >
+                <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.ink }}>{c.label}</Text>
               </Pressable>
             ))}
+            <Pressable onPress={() => setShareOpen(false)} style={{ height: 44, alignItems: 'center', justifyContent: 'center' }}>
+              <Text style={{ fontSize: 14, color: COLOR.muted, fontWeight: '700' }}>닫기</Text>
+            </Pressable>
           </View>
-        ) : null}
-      </View>
+        </View>
+      ) : null}
 
       {full ? (
         <Pressable onPress={() => setChrome((c) => !c)} style={styles.full}>
@@ -187,9 +200,6 @@ const styles = StyleSheet.create({
   save: { backgroundColor: COLOR.red },
   actText: { fontSize: 16, fontWeight: '800', color: COLOR.ink },
   // 공유 칩: 목업 .tc-chips span (종이 바탕, 1.5px 테두리, 작은 글자)
-  chips: { flexDirection: 'row', justifyContent: 'center', flexWrap: 'wrap', gap: 6 },
-  chip: { backgroundColor: COLOR.paper, borderWidth: 1.5, borderColor: COLOR.ink, paddingVertical: 6, paddingHorizontal: 10 },
-  chipText: { fontSize: 13, fontWeight: '700', color: COLOR.ink },
 
   full: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, backgroundColor: '#2b1814', alignItems: 'center', justifyContent: 'center', zIndex: 70 },
   close: { position: 'absolute', left: 16, top: 14, paddingVertical: 7, paddingHorizontal: 12, backgroundColor: COLOR.paper, borderRadius: 6, borderWidth: 1.5, borderColor: COLOR.ink },
