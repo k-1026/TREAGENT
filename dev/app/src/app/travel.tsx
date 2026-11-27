@@ -556,6 +556,11 @@ export default function TravelScreen() {
                       ? ''
                       : '내 위치를 찾는 중이에요'}
           </Text>
+          {reached < total ? (
+            <Pressable onPress={() => router.push('/reroute')} style={[pxBox(), { marginTop: 10, height: 44, alignItems: 'center', justifyContent: 'center' }]}>
+              <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 15 }}>대체 길 보기</Text>
+            </Pressable>
+          ) : null}
         </View>
       ) : null}
 

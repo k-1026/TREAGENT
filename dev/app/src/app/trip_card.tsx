@@ -21,7 +21,7 @@ import { TripCard } from '../components/trip_card';
 import { makeDiary } from '../lib/agents_api';
 import { displayName } from '../lib/profile';
 import { useProfile } from '../lib/profile_context';
-import { COLOR } from '../lib/theme';
+import { COLOR, pxBox } from '../lib/theme';
 import { doneTrip, SAMPLE_TRIPS } from '../lib/trip_card_data';
 
 // 공유할 곳 (목업 #tcChips 순서 그대로)
@@ -96,6 +96,11 @@ export default function TripCardScreen() {
             <Text style={styles.actText}>공유</Text>
           </Pressable>
         </View>
+        {isDone ? (
+          <Pressable onPress={() => router.push('/ledger')} style={[pxBox(), { marginTop: 10, height: 48, alignItems: 'center', justifyContent: 'center' }]}>
+            <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 15 }}>장부에서 보기</Text>
+          </Pressable>
+        ) : null}
         {/* 공유 칩: [공유]를 누르면 나왔다 들어간다 (목업 #tcChips). 실제 공유는 아직 없다 [확인 필요: 공유 방식] */}
         {shareOpen ? (
           <View style={styles.chips}>
