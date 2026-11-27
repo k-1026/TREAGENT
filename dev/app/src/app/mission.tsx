@@ -54,13 +54,19 @@ function Tag({ label }: { label: string }) {
   );
 }
 
+// 하랑이 얼굴 그림 (미션 화면 말풍선 옆)
+const HARA_FACE = require('../../assets/harangi_face_mission_v1.webp');
+
 function Hara({ text }: { text: string }) {
   return (
-    <View style={styles.hara}>
-      <Text style={styles.haraText}>
-        <Text style={styles.haraName}>하랑이 </Text>
-        {text}
-      </Text>
+    <View style={styles.haraRow}>
+      <Image source={HARA_FACE} style={styles.haraFace} resizeMode="contain" />
+      <View style={[styles.hara, { flex: 1 }]}>
+        <Text style={styles.haraText}>
+          <Text style={styles.haraName}>하랑이 </Text>
+          {text}
+        </Text>
+      </View>
     </View>
   );
 }
@@ -97,6 +103,7 @@ export default function MissionScreen() {
   const [picked, setPicked] = useState<{ i: number; right: boolean } | null>(null);
   const [hint, setHint] = useState<string | null>(null);
   const [toast, setToast] = useState<string | null>(null);
+  const [info, setInfo] = useState(false); // 미션 내용 보기 펼침
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const [stamp] = useState(() => new Animated.Value(0));
 
@@ -198,7 +205,7 @@ export default function MissionScreen() {
             <Hara text="[승인 대사 대기 · S-15]" />
             <WxButton label="미션 시작" primary onPress={() => (kind === 'receipt' ? setStep('r') : startQuiz(false))} />
             <View style={styles.row2}>
-              <Half label="미션 내용 보기" onPress={() => router.push({ pathname: '/soon', params: { what: '미션 내용 보기' } })} />
+              <Half label={info ? '내용 닫기' : '미션 내용 보기'} onPress={() => setInfo((v) => !v)} />
               <Half
                 label="나중에 하기"
                 onPress={() => {
@@ -207,6 +214,24 @@ export default function MissionScreen() {
                 }}
               />
             </View>
+            {info ? (
+              <View style={styles.info}>
+                <Text style={styles.infoTitle}>미션 내용</Text>
+                {kind === 'receipt' ? (
+                  <>
+                    <Text style={styles.infoLine}>1. 가게에서 결제한 영수증을 찍어 올려요. 가게 이름이 글자로 보여야 인증돼요.</Text>
+                    <Text style={styles.infoLine}>2. 영수증 인증이 3번 실패하면 쉬운 퀴즈로 바꿔 드려요.</Text>
+                    <Text style={styles.infoLine}>3. 영수증이 없으면 [영수증 없이 하기]로 기본 퀴즈를 풀 수 있어요.</Text>
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.infoLine}>1. 이 장소에 대한 퀴즈를 풀어요. 3문제예요.</Text>
+                    <Text style={styles.infoLine}>2. 어려우면 쉬운 퀴즈로 바꿀 수 있어요.</Text>
+                  </>
+                )}
+                <Text style={styles.infoNote}>문구와 문제 내용은 팀 확정 전 자리표시입니다 [확인 필요]</Text>
+              </View>
+            ) : null}
           </>
         ) : null}
 
@@ -318,7 +343,13 @@ const styles = StyleSheet.create({
   frameText: { fontSize: 14, lineHeight: 21, color: COLOR.muted, textAlign: 'center' },
   tag: { alignSelf: 'flex-start', ...pxBox(COLOR.cream2), paddingVertical: 4, paddingHorizontal: 10 },
   tagText: { fontSize: 13, fontWeight: '800', color: COLOR.ink },
+  haraRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  haraFace: { width: 64, height: 64 },
   hara: { ...pxBox(COLOR.paper), paddingVertical: 12, paddingHorizontal: 14 },
+  info: { ...pxBox(COLOR.paper), padding: 14, gap: 8 },
+  infoTitle: { fontSize: 15, fontWeight: '800', color: COLOR.ink },
+  infoLine: { fontSize: 14, lineHeight: 21, color: COLOR.ink },
+  infoNote: { fontSize: 12, lineHeight: 18, color: COLOR.muted },
   haraText: { fontSize: 15, lineHeight: 22, color: COLOR.ink },
   haraName: { fontWeight: '800', color: COLOR.beam },
   banner: { paddingVertical: 14, paddingHorizontal: 16, ...pxBox() },
