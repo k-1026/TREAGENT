@@ -2,7 +2,7 @@
 // 내 위치는 처음 경로를 받을 때와 "새 경로 보기"를 누를 때만 서버로 보낸다. 걷는 동안의 위치는 기기 안에서만 쓴다.
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, Text, View } from 'react-native';
 import { CoursePlacesCard } from '../components/course_places_card';
 import { CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
@@ -18,7 +18,6 @@ import { useLiveLocation } from '../lib/use_live_location';
 import { buildTrack, distM, LatLng, nextStep, passedPath, pointAt, project, remainingPath, turnMark } from '../lib/walk_nav';
 
 const APP_KEY = process.env.EXPO_PUBLIC_TMAP_APP_KEY ?? '';
-const STAMP = require('../../assets/stamp_nungeum.webp');
 
 // 아래 기준값은 팀이 정하기 전의 임시 값이다 (dev/CLAUDE.md "결정 필요": 이탈 기준 N미터·M초, 도착 판정).
 const OFF_ROUTE_M = 40; // 경로에서 이만큼 벗어나면 이탈 후보
@@ -356,10 +355,9 @@ export default function TravelScreen() {
       {/* 머리글: 다른 화면과 같은 모양 (목업: 뒤로 · 제목+설명 · 홈). 확대 중이면 [‹ 줄이기] */}
       <ScreenHead
         title="여행 지도"
-        sub={`${route.title} · 도장 ${reached}/${total}`}
         backLabel={full ? '‹ 줄이기' : '‹ 뒤로'}
         onBack={goBack}
-        rightLabel="⌂ 홈"
+        rightIcon={require('../../assets/tab_home.png')}
         onRight={() => router.dismissTo('/')}
       />
 
@@ -369,7 +367,7 @@ export default function TravelScreen() {
           { overflow: 'hidden', backgroundColor: COLOR.cream2 },
           full
             ? { flex: 1 }
-            : { height: 290, marginHorizontal: 16, marginTop: 12, borderWidth: 3, borderColor: COLOR.ink },
+            : { height: 290, marginHorizontal: 16, marginTop: 12, ...pxBox(COLOR.cream2) },
         ]}
       >
         {phase.name === 'loading' ? (
@@ -463,11 +461,23 @@ export default function TravelScreen() {
             </Pressable>
           </>
         ) : null}
+        {ready && __DEV__ ? (
+            <View style={{ position: 'absolute', left: 10, top: 10, zIndex: 6, flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+              <Pressable onPress={() => { setSimAlong(prog?.along ?? 0); setSimOff(false); setFollow(true); setSim((v) => !v); }} style={smallBtn}>
+                <Text style={{ color: COLOR.ink, fontSize: 12, fontWeight: '800' }}>{sim ? '■ 시뮬레이션 끄기' : '▶ 걷기 시뮬레이션 (개발용)'}</Text>
+              </Pressable>
+              {sim ? (
+                <Pressable onPress={() => setSimOff((v) => !v)} style={smallBtn}>
+                  <Text style={{ color: COLOR.ink, fontSize: 12, fontWeight: '800' }}>{simOff ? '경로로 돌아가기' : '경로 벗어나기'}</Text>
+                </Pressable>
+              ) : null}
+            </View>
+          ) : null}
       </View>
 
       {/* 안내 영역 (기본 화면만) */}
       {!full ? (
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingTop: 14, gap: 10 }}>
+        <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 0, gap: 10, overflow: 'hidden' }}>
           {rerouting ? <ActivityIndicator color={COLOR.red} /> : null}
 
           {ready ? (
@@ -496,21 +506,10 @@ export default function TravelScreen() {
             </View>
           ) : null}
 
-
-          {ready && __DEV__ ? (
-            <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-              <Pressable onPress={() => { setSimAlong(prog?.along ?? 0); setSimOff(false); setFollow(true); setSim((v) => !v); }} style={smallBtn}>
-                <Text style={{ color: COLOR.ink, fontSize: 12, fontWeight: '800' }}>{sim ? '■ 시뮬레이션 끄기' : '▶ 걷기 시뮬레이션 (개발용)'}</Text>
-              </Pressable>
-              {sim ? (
-                <Pressable onPress={() => setSimOff((v) => !v)} style={smallBtn}>
-                  <Text style={{ color: COLOR.ink, fontSize: 12, fontWeight: '800' }}>{simOff ? '경로로 돌아가기' : '경로 벗어나기'}</Text>
-                </Pressable>
-              ) : null}
-            </View>
-          ) : null}
-
-          {ready && walk ? (
+          <CoursePlacesCard
+            fill
+            reached={reached}
+            summary={ready && walk ? (
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
               <Text style={{ fontSize: 13, color: COLOR.muted, flexShrink: 1 }}>
                 {remain !== null && remainSec !== null
@@ -521,31 +520,18 @@ export default function TravelScreen() {
                 <Text style={{ fontSize: 13, color: COLOR.red, fontWeight: '800' }}>전체 경로 보기</Text>
               </Pressable>
             </View>
-          ) : null}
-          <CoursePlacesCard
+            ) : undefined}
             route={route}
             selected={focus && typeof focus.index === 'number' ? focus.index : null}
             notes={notes}
             onPlacePress={ready ? pressPlace : undefined}
           />
-          {ready ? (
-            <Text style={{ fontSize: 12, color: COLOR.muted }}>장소를 누르면 지도에서 그 장소를 크게 볼 수 있어요.</Text>
-          ) : null}
-        </ScrollView>
+        </View>
       ) : null}
 
       {/* 하단 도크: 코스 현황 + 도장 확인 + 도착 확인 (기본·확대 공통) */}
       {ready ? (
         <View style={{ backgroundColor: COLOR.cream, paddingHorizontal: 14, paddingTop: 10, paddingBottom: 14 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-            <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.ink, marginRight: 2 }}>코스</Text>
-            {route.places.map((p, i) => (
-              <Image key={p.id} source={STAMP} style={{ width: 34, height: 34, opacity: i < reached ? 1 : 0.35 }} resizeMode="contain" />
-            ))}
-            <Text numberOfLines={1} style={{ marginLeft: 'auto', fontSize: 13, color: COLOR.redDark, fontWeight: '800', flexShrink: 1 }}>
-              {reached >= total ? '모두 완료' : `지금 ${reached + 1}번 장소`}
-            </Text>
-          </View>
           <View style={{ flexDirection: 'row', gap: 8 }}>
             <Pressable
               onPress={() => setSheet('stamps')}
