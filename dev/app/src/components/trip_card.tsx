@@ -41,6 +41,7 @@ export function TripCard({
   rootRef?: Ref<ComponentRef<typeof View>>; // 저장용 캡처 대상
 }) {
   const u = width / 100; // 목업의 1cqw
+  const f = (n: number) => Math.max(11, n * u); // 글자는 최소 11px (목업 디자인 기준 15절)
   const btn = Math.max(30, 10 * u); // 목업 #264: 10cqw (최소 30)
   const face = [styles.face, { paddingVertical: 5.5 * u, paddingHorizontal: 5 * u }, square && { borderWidth: 0, borderRadius: 0 }];
 
@@ -63,14 +64,14 @@ export function TripCard({
       <Wrap style={sideStyle(frontTurn, capture !== 'back')}>
         <View style={face}>
           <View style={[styles.pic, { padding: 3 * u }]}>
-            <Text style={{ fontSize: 3 * u, color: COLOR.muted, textAlign: 'center' }}>[장소 그림 자리 · 창작 후보]</Text>
+            <Text style={{ fontSize: f(3), color: COLOR.muted, textAlign: 'center' }}>[장소 그림 자리 · 창작 후보]</Text>
           </View>
           {/* 날짜와 날씨 한 줄 (목업: 날짜 옆에 날씨를 같은 줄로 둔다) */}
           <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6, marginTop: 3 * u }}>
-            <Text style={{ fontSize: 3.1 * u, color: COLOR.muted }}>{trip.date}</Text>
-            <Text style={{ flexShrink: 1, fontSize: 3.1 * u, color: COLOR.muted, textAlign: 'right' }}>{trip.wx}</Text>
+            <Text style={{ fontSize: f(3.1), color: COLOR.muted }}>{trip.date}</Text>
+            <Text style={{ flexShrink: 1, fontSize: f(3.1), color: COLOR.muted, textAlign: 'right' }}>{trip.wx}</Text>
           </View>
-          <Text style={{ fontSize: 5.6 * u, fontWeight: '800', color: COLOR.ink, marginTop: 1 * u, marginBottom: 2.5 * u, lineHeight: 5.6 * u * 1.3 }}>
+          <Text style={{ fontSize: f(5.6), fontWeight: '800', color: COLOR.ink, marginTop: 1 * u, marginBottom: 2.5 * u, lineHeight: 5.6 * u * 1.3 }}>
             {trip.title}
           </Text>
           <View style={{ flexDirection: 'row', gap: 1.5 * u }}>
@@ -80,20 +81,20 @@ export function TripCard({
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 1 * u, marginTop: 2.5 * u, paddingRight: 25 * u }}>
             <Image source={FACE} style={{ width: 11 * u, height: 11 * u }} resizeMode="contain" />
-            <Text style={{ flex: 1, fontSize: 3.4 * u, lineHeight: 3.4 * u * 1.4, color: COLOR.ink }}>{trip.say}</Text>
+            <Text style={{ flex: 1, fontSize: f(3.4), lineHeight: 3.4 * u * 1.4, color: COLOR.ink }}>{trip.say}</Text>
           </View>
         </View>
       </Wrap>
       <Wrap style={sideStyle(backTurn, capture === 'back')}>
         <View style={face}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 6 }}>
-            <Text style={{ fontSize: 3.1 * u, color: COLOR.muted }}>하랑이의 일기</Text>
-            <Text style={{ fontSize: 3.1 * u, color: COLOR.muted }}>{trip.date}</Text>
+            <Text style={{ fontSize: f(3.1), color: COLOR.muted }}>하랑이의 일기</Text>
+            <Text style={{ fontSize: f(3.1), color: COLOR.muted }}>{trip.date}</Text>
           </View>
-          <Text style={{ fontSize: 5.6 * u, fontWeight: '800', color: COLOR.ink, marginTop: 2 * u, marginBottom: 3 * u, lineHeight: 5.6 * u * 1.3 }}>
+          <Text style={{ fontSize: f(5.6), fontWeight: '800', color: COLOR.ink, marginTop: 2 * u, marginBottom: 3 * u, lineHeight: 5.6 * u * 1.3 }}>
             {trip.title}
           </Text>
-          <Text style={{ fontSize: 3.1 * u, color: COLOR.muted, marginBottom: 2 * u }}>{trip.wx}</Text>
+          <Text style={{ fontSize: f(3.1), color: COLOR.muted, marginBottom: 2 * u }}>{trip.wx}</Text>
           {trip.ents.map((e) => (
             <View
               key={e.rec}
@@ -109,19 +110,19 @@ export function TripCard({
               }}
             >
               <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={{ fontSize: 3.7 * u, fontWeight: '700', lineHeight: 3.7 * u * 1.45, color: COLOR.ink }}>{`${e.t} ${e.p}`}</Text>
-                <Text style={{ fontSize: 3.3 * u, lineHeight: 3.3 * u * 1.55, marginTop: 1 * u, color: COLOR.ink }}>{e.fact}</Text>
-                <Text style={{ fontSize: 3 * u, color: COLOR.muted, marginTop: 1 * u }}>{e.rec}</Text>
+                <Text style={{ fontSize: f(3.7), fontWeight: '700', lineHeight: 3.7 * u * 1.45, color: COLOR.ink }}>{`${e.t} ${e.p}`}</Text>
+                <Text style={{ fontSize: f(3.3), lineHeight: 3.3 * u * 1.55, marginTop: 1 * u, color: COLOR.ink }}>{e.fact}</Text>
+                <Text style={{ fontSize: f(3), color: COLOR.muted, marginTop: 1 * u }}>{e.rec}</Text>
               </View>
               <Image source={STAMP} style={{ width: 12 * u, height: 12 * u }} />
             </View>
           ))}
           <View style={{ marginTop: 'auto', borderTopWidth: 0.5 * u, borderTopColor: COLOR.shade, borderStyle: 'dashed', paddingTop: 3 * u }}>
-            <Text style={{ fontSize: 3.7 * u, lineHeight: 3.7 * u * 1.5, color: COLOR.ink }}>{call(trip.close, name)}</Text>
+            <Text style={{ fontSize: f(3.7), lineHeight: 3.7 * u * 1.5, color: COLOR.ink }}>{call(trip.close, name)}</Text>
           </View>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 2.5 * u, marginTop: 3 * u }}>
             <Image source={STAMP} style={{ width: 8 * u, height: 8 * u }} />
-            <Text style={{ flex: 1, fontSize: 3.1 * u, color: COLOR.muted }}>{`도장 3/3 · 이름은 ${call(trip.name, name)} 님 (호칭 규칙)`}</Text>
+            <Text style={{ flex: 1, fontSize: f(3.1), color: COLOR.muted }}>{`도장 3/3 · 이름은 ${call(trip.name, name)} 님 (호칭 규칙)`}</Text>
           </View>
         </View>
       </Wrap>
@@ -129,12 +130,12 @@ export function TripCard({
       {/* 뒤집기·전체보기: 카드 오른쪽 아래 동그란 버튼 (카드 위 따로 놓인 층) */}
       {showFlip && !capture ? (
         <Pressable onPress={onFlip} accessibilityLabel="카드 뒤집기" style={[styles.round, { width: btn, height: btn, right: 3 * u, bottom: 3.5 * u }]}>
-          <Text style={[styles.roundText, { fontSize: 5 * u }]}>↻</Text>
+          <Text style={[styles.roundText, { fontSize: f(5) }]}>↻</Text>
         </Pressable>
       ) : null}
       {onFull ? (
         <Pressable onPress={onFull} accessibilityLabel="전체보기" style={[styles.round, { width: btn, height: btn, right: 3 * u + 12 * u, bottom: 3.5 * u }]}>
-          <Text style={[styles.roundText, { fontSize: 4.2 * u }]}>⛶</Text>
+          <Text style={[styles.roundText, { fontSize: f(4.2) }]}>⛶</Text>
         </Pressable>
       ) : null}
     </View>

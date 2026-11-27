@@ -7,7 +7,7 @@ import { CoursePlacesCard } from '../components/course_places_card';
 import { CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
 import { TmapView } from '../components/tmap_view';
-import { ArriveFailKind, ArriveFailSheet, CutSheet, MissionSheet, StampSheet } from '../components/travel_sheets';
+import { ArriveFailKind, ArriveFailSheet, CutSheet, MissionSheet } from '../components/travel_sheets';
 import { getStamps } from '../lib/agents_api';
 import { getCurrentLocation } from '../lib/location';
 import { getWalk, WalkPlace, WalkResult } from '../lib/server_api';
@@ -57,7 +57,7 @@ export default function TravelScreen() {
   const [offRoute, setOffRoute] = useState(false); // 새 경로를 제안 중인가
   const [rerouting, setRerouting] = useState(false);
   const [toast, setToast] = useState<string | null>(null);
-  const [sheet, setSheet] = useState<'stamps' | 'mission' | 'cut' | null>(null); // 겹쳐 뜨는 창 (travel_sheets.tsx)
+  const [sheet, setSheet] = useState<"mission" | "cut" | null>(null); // 겹쳐 뜨는 창 (travel_sheets.tsx)
   const [arriveFail, setArriveFail] = useState<{ kind: ArriveFailKind; meters?: number } | null>(null); // 도착 확인 실패 카드 (S-06)
   const toastTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   // 개발용 시뮬레이션 (컴퓨터에서 걸어 볼 수 없어서)
@@ -552,8 +552,7 @@ export default function TravelScreen() {
           onSkip={() => { firstCutShown = true; setSheet(null); openDone(); }}
         />
       ) : null}
-      {sheet === 'stamps' ? <StampSheet title={route.title} names={placeNames} reached={reached} onClose={() => setSheet(null)} /> : null}
-      {sheet === 'mission' || autoMission ? (
+            {sheet === 'mission' || autoMission ? (
         <MissionSheet
           placeNo={reached + 1}
           placeName={placeNames[reached] ?? ''}
