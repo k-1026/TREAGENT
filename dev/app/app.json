@@ -2,7 +2,7 @@
   "expo": {
     "name": "app",
     "slug": "app",
-    "scheme":"treagent",
+    "scheme": "treagent",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -24,10 +24,21 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-location",
-          { 
-        "locationWhenInUsePermission": "오늘 날씨에 맞는 길을 추천하려고 앱을 쓰는 동안만 현재 위치를 사용해요."
-         }
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "오늘 날씨에 맞는 길을 추천하려고 앱을 쓰는 동안만 현재 위치를 사용해요."
+        }
+      ],
+      [
+        "expo-media-library",
+        {
+          "photosPermission": "여행 카드를 사진첩에 저장하려고 사진 접근 권한을 사용해요.",
+          "savePhotosPermission": "여행 카드를 사진첩에 저장하려고 사진 추가 권한을 사용해요.",
+          "granularPermissions": [
+            "photo"
+          ]
+        }
       ]
     ]
   }
