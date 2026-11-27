@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLOR.cream },
   scroll: { paddingTop: 16, paddingHorizontal: 18, paddingBottom: 28, gap: 14 },
   now: { flexDirection: 'row', alignItems: 'center', gap: 12 },
-  swatch: { width: 22, height: 22, borderWidth: 2, borderColor: COLOR.ink },
+  swatch: { width: 22, height: 22 },
   doRow: {
     flexDirection: 'row',
     gap: 10,

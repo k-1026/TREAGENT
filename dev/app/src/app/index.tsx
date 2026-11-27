@@ -53,23 +53,10 @@ const WALK_FRAMES = [
   require('../../assets/harangi_walk_side_03.png'),
   require('../../assets/harangi_walk_side_04.png'),
 ];
-// 출발 화살표 (56 기준 칸). 픽셀 칸이 아니라 삼각형·사각형으로 그린다.
-// 테두리 2.5px: 바깥 잉크 도형 위에 안쪽 노랑 도형을 올린다. 안쪽 좌표는 바깥 변을 2.5px 안으로 민 값
-// (빗변: 중심선 기준 안쪽 교차점 x=28±18.56, 꼭짓점 y=3.84, 촉 밑변 y=25.5, 기둥 x=20.5~35.5, 아래 y=53.5)으로 계산했다.
-const ARROW_INK = COLOR.ink;
-const ARROW_YELLOW = '#f5b82e';
+// 출발 화살표 (56 기준 칸). 테두리와 안쪽을 한 그림(depart_arrow.png)으로 그려서 안쪽 선과 끊김이 없다.
 function DepartArrow({ s }: { s: number }) {
   const u = (v: number) => v * s;
-  return (
-    <View style={{ width: u(56), height: u(56) }}>
-      {/* 화살촉: 바깥(잉크) → 안쪽(노랑) */}
-      <View style={{ position: 'absolute', left: u(4), top: 0, width: 0, height: 0, borderLeftWidth: u(24), borderRightWidth: u(24), borderBottomWidth: u(28), borderLeftColor: 'transparent', borderRightColor: 'transparent', borderBottomColor: ARROW_INK }} />
-      <View style={{ position: 'absolute', left: u(9.44), top: u(3.84), width: 0, height: 0, borderLeftWidth: u(18.56), borderRightWidth: u(18.56), borderBottomWidth: u(21.66), borderLeftColor: 'transparent', borderRightColor: 'transparent', borderBottomColor: ARROW_YELLOW }} />
-      {/* 기둥: 바깥(잉크) → 안쪽(노랑) */}
-      <View style={{ position: 'absolute', left: u(18), top: u(28), width: u(20), height: u(28), backgroundColor: ARROW_INK }} />
-      <View style={{ position: 'absolute', left: u(20.5), top: u(25.5), width: u(15), height: u(28), backgroundColor: ARROW_YELLOW }} />
-    </View>
-  );
+  return <Image source={require('../../assets/depart_arrow.png')} style={{ width: u(56), height: u(56) }} resizeMode="contain" />;
 }
 
 // 하랑이 숨쉬기: 위아래 4px (위치 확인 화면과 같은 움직임)
@@ -132,6 +119,13 @@ export default function HomeScreen() {
   const [bubbleGone, setBubbleGone] = useState(false);
   const [nextShown, setNextShown] = useState(false);
   const [readyOff, setReadyOff] = useState(false); // '나가지 않기'를 누르면 출발 준비를 접는다 (목업 cancelready)
+  const [leaveAsk, setLeaveAsk] = useState(false); // '나가지 않기' 확인 팝업
+  // 확인: 고른 길을 지우고 길 고르기 전 홈 상태로 돌아간다
+  const confirmLeave = () => {
+    today.choose(null);
+    setReadyOff(false);
+    setLeaveAsk(false);
+  };
   const ready = depart === 'idle' && !!route && !readyOff; // 출발 준비 상태: 현관문 화살표와 출발 대사가 보인다
   const turn = useRef(new Animated.Value(1)).current; // 정면 그림 가로 배율 1 → 0.1
   const walk = useRef(new Animated.Value(0)).current; // 걷기 진행 0 → 1 (1.5초)
@@ -236,7 +230,7 @@ export default function HomeScreen() {
         />
         {/* 라벨: 책(버튼 영역)의 가운데에 맞춘다. 목업보다 조금 위 */}
         <View pointerEvents="none" style={{ position: 'absolute', left: 232 * k - 5, width: 80 * k, top: 160 * k - crop, alignItems: 'center' }}>
-          <View style={[styles.mark, { position: 'relative', transform: [{ translateY: markUp ? -3 : 0 }] }]}>
+          <View style={[styles.mark, { position: 'relative', borderWidth: 2.5, boxShadow: 'none', transform: [{ translateY: markUp ? -3 : 0 }] }]}>
             <Text style={styles.markText}>오늘 페이지 ▾</Text>
           </View>
         </View>
@@ -301,10 +295,10 @@ export default function HomeScreen() {
         {/* 나가지 않기 (목업 .backbtn: 출발 준비 상태에서만, 오른쪽 위 268) */}
         {ready ? (
           <Pressable
-            onPress={() => setReadyOff(true)}
-            style={{ position: 'absolute', right: 12 * k, top: 268 * k - crop, zIndex: 7, backgroundColor: COLOR.paper, paddingVertical: 7, paddingHorizontal: 10 }}
+            onPress={() => setLeaveAsk(true)}
+            style={[styles.mark, { right: 12 * k, top: 268 * k - crop, zIndex: 7, backgroundColor: BADGE_TONE.normal.bg, borderWidth: 2.5, boxShadow: `0px 4px 0px 0px ${BADGE_TONE.normal.shade}`, paddingVertical: 8, paddingHorizontal: 14 }]}
           >
-            <Text style={{ fontSize: 12, fontWeight: '800', color: COLOR.ink }}>나가지 않기</Text>
+            <Text style={[styles.markText, { fontSize: 15 }]}>나가지 않기</Text>
           </Pressable>
         ) : null}
 
@@ -402,6 +396,22 @@ export default function HomeScreen() {
       </View>
 
       <BottomTab current="home" />
+      {leaveAsk ? (
+        <View style={styles.askDim}>
+          <View style={[pxBox(COLOR.paper), styles.askBox]}>
+            <Text style={styles.askTitle}>길 선택이 취소돼요</Text>
+            <Text style={styles.askText}>나가면 고른 길이 사라져요. 다시 길을 골라야 해요.</Text>
+            <View style={styles.askBtns}>
+              <Pressable onPress={() => setLeaveAsk(false)} style={[pxBox(), styles.askBtn]}>
+                <Text style={styles.askBtnText}>취소</Text>
+              </Pressable>
+              <Pressable onPress={confirmLeave} style={[pxBox(COLOR.red, COLOR.redDark), styles.askBtn]}>
+                <Text style={[styles.askBtnText, { color: '#fff' }]}>확인</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -411,6 +421,13 @@ const styles = StyleSheet.create({
 
   // 장면 (목업 .scene 바탕 #a85a24)
   scene: { backgroundColor: '#a85a24', overflow: 'hidden' },
+  askDim: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 20, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'center', padding: 24 },
+  askBox: { padding: 18, gap: 10 },
+  askTitle: { fontSize: 17, fontWeight: '800', color: COLOR.ink },
+  askText: { fontSize: 14, lineHeight: 20, color: COLOR.ink },
+  askBtns: { flexDirection: 'row', gap: 10, marginTop: 6 },
+  askBtn: { flex: 1, height: 46, alignItems: 'center', justifyContent: 'center' },
+  askBtnText: { fontSize: 15, fontWeight: '800', color: COLOR.ink },
 
   // 배지·말풍선도 목업에서 .px 칸이다. 배지 바탕·그림자 색은 상태마다 다르다 (BADGE_TONE)
   badge: {

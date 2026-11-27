@@ -66,9 +66,7 @@ export default function ChatScreen() {
         title="하랑이와 대화하기"
         sub="궁금한 걸 물어보세요"
         backLabel="‹ 뒤로"
-        onBack={() => (router.canGoBack() ? router.back() : goHome())}
-        rightLabel="⌂ 홈"
-        onRight={goHome}
+        onBack={goHome}
       />
 
       <View style={[CONTENT, styles.column]}>
@@ -120,7 +118,10 @@ export default function ChatScreen() {
             style={styles.input}
           />
           <Pressable onPress={send} accessibilityLabel="보내기" style={({ pressed }) => [styles.send, pressed && styles.pressed]}>
-            <PixelSprite grid={SEND_ARROW} cell={3} tint="#fff" />
+            {/* 화살표 그림의 무게중심(칸 기준 x 2.29)이 칸 가운데(3.5)보다 왼쪽이라 3.6px 오른쪽으로 밀어 맞춘다 */}
+            <View style={{ marginLeft: 7.6 }}>
+              <PixelSprite grid={SEND_ARROW} cell={3} tint="#fff" />
+            </View>
           </Pressable>
         </View>
       </View>

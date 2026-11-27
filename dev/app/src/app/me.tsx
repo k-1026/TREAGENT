@@ -35,8 +35,10 @@ export default function MeScreen() {
   const [saving, setSaving] = useState(false);
   const [nickNote, setNickNote] = useState<string | null>(null);
   const [confirmOut, setConfirmOut] = useState(false); // 로그아웃 확인 상자
+  const [popup, setPopup] = useState<'nick' | 'age' | null>(null); // 호칭·나이대를 확인하는 팝업
 
   const areaName = !place ? '중구' : place.kind === 'district' ? (findDistrict(place.code)?.name ?? '선택한 동네') : '현재 위치';
+  const ageLabel = AGE_OPTIONS.find((o) => o.value === profile?.ageGroup)?.label;
 
   const checkName = async () => {
     const nick = checkNickname(nickname);
@@ -76,6 +78,7 @@ export default function MeScreen() {
     const r = await save({ nickname: value, ageGroup });
     setSaving(false);
     setMessage(r.ok ? '저장했어요' : (ERROR_LABEL[r.error] ?? ERROR_LABEL.SERVER));
+    if (r.ok) setPopup(null);
   };
 
   return (
@@ -83,52 +86,24 @@ export default function MeScreen() {
       {/* 하단 탭 화면이라 뒤로 버튼은 없다 (목업 #v-me) */}
       <ScreenHead title="내 정보" sub="계정과 안내" />
       <ScrollView contentContainerStyle={[CONTENT, styles.scroll]}>
-        {/* 호칭 */}
+        {/* 호칭: 한 줄. 누르면 팝업에서 확인한다 (정했으면 잠김) */}
         <Text style={styles.h3}>호칭</Text>
-        {locked ? (
-          <View style={[pxBox(), styles.row]}>
-            <View style={{ flex: 1 }}>
-              <Text style={styles.rowTitle}>{profile?.nickname}</Text>
-              <Text style={styles.rowSmall}>한 번 정하면 바꿀 수 없어요. 다른 사람과 같은 이름은 못 써요 [임시 문구]</Text>
-            </View>
-            <Text style={styles.lock}>잠김</Text>
+        <Pressable onPress={() => setPopup('nick')} style={({ pressed }) => [pxBox(), styles.row, pressed && { opacity: 0.85 }]}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.rowTitle}>{locked ? profile?.nickname : '아직 정하지 않았어요'}</Text>
+            <Text style={styles.rowSmall}>{locked ? '한 번 정하면 바꿀 수 없어요' : '눌러서 정해 주세요'}</Text>
           </View>
-        ) : (
-          <>
-            <Text style={styles.rowSmall}>한 번 정하면 바꿀 수 없어요. 다른 사람과 같은 이름은 못 써요 [임시 문구]</Text>
-            <TextInput
-              value={nickname}
-              onChangeText={(t) => {
-                setNickname(t);
-                setNickNote(null);
-              }}
-              placeholder={`건너뛰면 "${DEFAULT_NICKNAME}"로 불러요`}
-              placeholderTextColor={COLOR.muted}
-              style={[pxBox(), styles.input]}
-            />
-            <View style={{ flexDirection: 'row', alignItems: 'center', gap: 10 }}>
-              <Pressable onPress={checkName} style={[pxBox(), { paddingVertical: 8, paddingHorizontal: 12 }]}>
-                <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 12 }}>중복 확인</Text>
-              </Pressable>
-              {nickNote && <Text style={{ flex: 1, color: COLOR.ink, fontSize: 12 }}>{nickNote}</Text>}
-            </View>
-          </>
-        )}
+          <Text style={locked ? styles.lock : styles.change}>{locked ? '잠김' : '정하기'}</Text>
+        </Pressable>
 
-        {/* 나이대 (앱 기능: 추천에 쓴다) */}
+        {/* 나이대: 한 줄. 누르면 팝업에서 고른다 (추천에 쓰는 앱 기능) */}
         <Text style={styles.h3}>나이대</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
-          {AGE_OPTIONS.map((o) => (
-            <Chip key={o.value} label={o.label} selected={ageGroup === o.value} onPress={() => setAgeGroup(o.value)} />
-          ))}
-        </View>
-        {message && <Text style={{ color: COLOR.ink }}>{message}</Text>}
-        <Pressable
-          onPress={submit}
-          disabled={saving}
-          style={({ pressed }) => [pxBox(COLOR.red, COLOR.redDark), styles.btn, { opacity: saving ? 0.6 : pressed ? 0.85 : 1 }]}
-        >
-          <Text style={[styles.btnText, { color: '#fff' }]}>저장</Text>
+        <Pressable onPress={() => setPopup('age')} style={({ pressed }) => [pxBox(), styles.row, pressed && { opacity: 0.85 }]}>
+          <View style={{ flex: 1 }}>
+            <Text style={styles.rowTitle}>{ageLabel ?? '아직 정하지 않았어요'}</Text>
+            <Text style={styles.rowSmall}>추천에 쓰는 정보예요</Text>
+          </View>
+          <Text style={styles.change}>변경</Text>
         </Pressable>
 
         {/* 지역 */}
@@ -184,6 +159,79 @@ export default function MeScreen() {
           </>
         )}
       </ScrollView>
+      {/* 팝업: 호칭 또는 나이대를 확인하고 고른다. 모달을 쓰지 않고 폰 화면 안(이 View 안)에만 덮는다 */}
+      {popup !== null && (
+        <View style={styles.dim}>
+          <View style={[pxBox(COLOR.paper), styles.popup]}>
+            {popup === 'nick' && (
+              <>
+                <Text style={styles.popupTitle}>호칭</Text>
+                {locked ? (
+                  <>
+                    <Text style={styles.rowTitle}>{profile?.nickname}</Text>
+                    <Text style={styles.rowSmall}>한 번 정하면 바꿀 수 없어요. 다른 사람과 같은 이름은 못 써요 [임시 문구]</Text>
+                  </>
+                ) : (
+                  <>
+                    <Text style={styles.rowSmall}>한 번 정하면 바꿀 수 없어요. 다른 사람과 같은 이름은 못 써요 [임시 문구]</Text>
+                    <View style={{ flexDirection: 'row', alignItems: 'stretch', gap: 8 }}>
+                    <TextInput
+                      value={nickname}
+                      onChangeText={(t) => {
+                        setNickname(t);
+                        setNickNote(null);
+                      }}
+                      placeholder={`${NICKNAME_MIN}~${NICKNAME_MAX}자`}
+                      placeholderTextColor={COLOR.muted}
+                      style={[pxBox(), styles.input, { flex: 1 }]}
+                    />
+                    <Pressable onPress={checkName} style={[pxBox(), { paddingHorizontal: 12, justifyContent: 'center' }]}>
+                      <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 12 }}>중복 확인</Text>
+                    </Pressable>
+                  </View>
+                    {nickNote && <Text style={{ color: COLOR.ink, fontSize: 12 }}>{nickNote}</Text>}
+                  </>
+                )}
+              </>
+            )}
+
+            {popup === 'age' && (
+              <>
+                <Text style={styles.popupTitle}>나이대</Text>
+                <View style={styles.ageGrid}>
+                  <View style={styles.ageRow}>
+                    {AGE_OPTIONS.slice(0, 3).map((o) => (
+                      <Chip key={o.value} label={o.label} selected={ageGroup === o.value} onPress={() => setAgeGroup(o.value)} style={styles.ageChip} textStyle={styles.ageChipText} />
+                    ))}
+                  </View>
+                  <View style={styles.ageRow}>
+                    {AGE_OPTIONS.slice(3).map((o) => (
+                      <Chip key={o.value} label={o.label} selected={ageGroup === o.value} onPress={() => setAgeGroup(o.value)} style={styles.ageChip} textStyle={styles.ageChipText} />
+                    ))}
+                  </View>
+                </View>
+              </>
+            )}
+
+            {message && <Text style={{ color: COLOR.ink }}>{message}</Text>}
+            <View style={styles.popupBtns}>
+              {(popup === 'age' || (popup === 'nick' && !locked)) && (
+                <Pressable
+                  onPress={submit}
+                  disabled={saving}
+                  style={({ pressed }) => [pxBox(COLOR.red, COLOR.redDark), styles.popupBtn, { opacity: saving ? 0.6 : pressed ? 0.85 : 1 }]}
+                >
+                  <Text style={[styles.popupBtnText, { color: '#fff' }]}>저장</Text>
+                </Pressable>
+              )}
+              <Pressable onPress={() => setPopup(null)} style={({ pressed }) => [pxBox(), styles.popupBtn, pressed && { opacity: 0.85 }]}>
+                <Text style={styles.popupBtnText}>닫기</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      )}
+
       <BottomTab current="me" />
     </View>
   );
@@ -202,4 +250,18 @@ const styles = StyleSheet.create({
   input: { padding: 12, color: COLOR.ink, fontSize: 15 },
   btn: { height: 52, alignItems: 'center', justifyContent: 'center' },
   btnText: { fontSize: 16, fontWeight: '800', color: COLOR.ink },
+  change: { fontSize: 13, fontWeight: '800', color: COLOR.ink },
+  // 팝업 덮개: 폰 화면(부모 View)만큼만 덮는다. 좌우 여백 20으로 카드가 폰 폭 안에 든다
+  dim: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, zIndex: 10, backgroundColor: 'rgba(0,0,0,0.4)', justifyContent: 'center', padding: 20 },
+  popup: { padding: 16, gap: 12, backgroundColor: COLOR.paper },
+  // 나이대 2줄: 10·20·30대 / 40·50·60대 이상 (한 줄에 3칸)
+  ageGrid: { gap: 6 }, // 나이대 두 줄 사이 간격
+  ageRow: { flexDirection: 'row', gap: 4 }, // 한 줄 안 칸 사이 간격 (8 → 4)
+  ageChip: { flex: 1 },
+  ageChipText: { fontSize: 15 }, // 나이대 버튼 글자 (12 → 15)
+  popupTitle: { fontSize: 17, fontWeight: '800', color: COLOR.ink }, // 팝업 제목 (나이대·호칭)
+  // 팝업 버튼: 화면을 꽉 채우지 않도록 가운데에 좁게 둔다
+  popupBtns: { flexDirection: 'row', justifyContent: 'center', gap: 10 },
+  popupBtn: { width: 110, height: 42, alignItems: 'center', justifyContent: 'center' },
+  popupBtnText: { fontSize: 15, fontWeight: '800', color: COLOR.ink },
 });
