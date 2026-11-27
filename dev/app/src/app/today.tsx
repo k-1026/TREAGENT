@@ -1,7 +1,7 @@
 // 오늘의 길 조건 고르기 (주소: /today) — 나이대·테마·동행을 고르고 받으면 후보 길 3개 화면(/today/routes)으로 간다
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { Chip } from '../components/chip';
 import { ScreenHead } from '../components/screen_head';
 import { COLOR, pxBox } from '../lib/theme';
@@ -60,28 +60,49 @@ export default function TodayScreen() {
   return (
     <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead title="오늘의 길" sub="하랑이가 오늘 날씨에 맞는 길 3개를 골라 줘요" backLabel="‹ 홈" onBack={() => router.back()} />
-      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
-        <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.ink }}>테마</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+      {/* 내용 전체(테마~하랑이)는 남은 화면 가운데에 둔다 (flexGrow + justifyContent: center) */}
+      <ScrollView contentContainerStyle={[{ padding: 16, gap: 12, flexGrow: 1, justifyContent: 'center' }, CONTENT]}>
+        <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.ink, textAlign: 'center' }}>테마</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8 }}>
           {THEME_OPTIONS.map((o) => (
-            <Chip key={o.value} label={o.label} selected={theme === o.value} onPress={() => setTheme(o.value)} />
+            <Chip
+              key={o.value}
+              label={o.label}
+              selected={theme === o.value}
+              onPress={() => setTheme(o.value)}
+              textStyle={{ fontSize: 15 }}
+            />
           ))}
         </View>
 
-        <Text style={{ fontSize: 13, fontWeight: '800', color: COLOR.ink }}>누구와 가나요</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 8 }}>
+        <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.ink, textAlign: 'center', marginTop: 8 }}>누구와 가나요</Text>
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'center', gap: 8 }}>
           {COMPANION_OPTIONS.map((o) => (
-            <Chip key={o.value} label={o.label} selected={companion === o.value} onPress={() => setCompanion(o.value)} />
+            <Chip
+              key={o.value}
+              label={o.label}
+              selected={companion === o.value}
+              onPress={() => setCompanion(o.value)}
+              textStyle={{ fontSize: 15 }}
+            />
           ))}
         </View>
 
         <Pressable
           onPress={load}
           disabled={loading}
-          style={[pxBox(COLOR.red, COLOR.redDark), { padding: 16, opacity: loading ? 0.6 : 1, marginTop: 8 }]}
+          style={[pxBox(COLOR.red, COLOR.redDark), { padding: 16, opacity: loading ? 0.6 : 1, marginTop: 16, alignItems: 'center' }]}
         >
-          <Text style={{ color: '#fff', fontWeight: '800', fontSize: 16 }}>AI 오늘의 길 받기</Text>
+          <Text style={{ color: '#fff', fontWeight: '800', fontSize: 16, textAlign: 'center' }}>하랑이에게 오늘의 길 추천받기</Text>
         </Pressable>
+
+        {/* 하랑이 (생각하는 그림): 버튼 밑에 */}
+        <Image
+          source={require('../../assets/harangi_think_v1.webp')}
+          style={{ width: 200, height: 210, alignSelf: 'center', marginTop: 4 }}
+          resizeMode="contain"
+          accessibilityLabel="하랑이"
+        />
 
         {loading && (
           <View style={{ gap: 6, alignItems: 'center' }}>
