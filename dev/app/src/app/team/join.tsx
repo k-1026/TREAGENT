@@ -1,7 +1,7 @@
 // 초대 코드로 들어가기 (주소: /team/join)
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, SafeAreaView, ScrollView, Text, TextInput } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, Text, TextInput, View } from 'react-native';
 import { ScreenHead } from '../../components/screen_head';
 import { useAuth } from '../../lib/auth_context';
 import { ERROR_LABEL } from '../../lib/labels';
@@ -41,7 +41,7 @@ export default function TeamJoinScreen() {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
+    <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead title="초대 코드" sub="친구가 알려 준 코드를 입력해요" backLabel="‹ 뒤로" onBack={() => router.back()} />
       {/* 내용은 남은 화면 가운데에 둔다 (flexGrow + justifyContent: center) */}
       <ScrollView contentContainerStyle={[{ padding: 16, gap: 12, flexGrow: 1, justifyContent: 'center' }, CONTENT]}>
@@ -72,6 +72,6 @@ export default function TeamJoinScreen() {
           <Text style={{ color: '#fff', fontWeight: '800', fontSize: 16 }}>들어가기</Text>
         </Pressable>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

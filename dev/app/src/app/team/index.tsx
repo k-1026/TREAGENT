@@ -1,14 +1,20 @@
 // 친구와 함께 (주소: /team) — 팀을 만들거나 초대 코드로 들어간다
 import { router } from 'expo-router';
-import { Image, Pressable, SafeAreaView, ScrollView, Text } from 'react-native';
+import { Image, Pressable, ScrollView, Text, View } from 'react-native';
 import { ScreenHead } from '../../components/screen_head';
 import { COLOR, pxBox } from '../../lib/theme';
 import { CONTENT } from '../../components/phone_column';
 
 export default function TeamHomeScreen() {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
-      <ScreenHead title="친구와 함께" sub="같은 길을 함께 걸어요" backLabel="‹ 뒤로" onBack={() => router.back()} />
+    <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
+      {/* 앞 화면이 없으면(주소로 바로 열었을 때) 뒤로가 아무 일도 안 하므로 홈으로 보낸다 */}
+      <ScreenHead
+        title="친구와 함께"
+        sub="같은 길을 함께 걸어요"
+        backLabel="‹ 뒤로"
+        onBack={() => (router.canGoBack() ? router.back() : router.replace('/'))}
+      />
       {/* 내용은 남은 화면 가운데에 둔다 (flexGrow + justifyContent: center) */}
       <ScrollView contentContainerStyle={[{ padding: 16, gap: 12, flexGrow: 1, justifyContent: 'center' }, CONTENT]}>
         <Pressable onPress={() => router.push('/team/create')} style={[pxBox(COLOR.red, COLOR.redDark), { padding: 16, gap: 4 }]}>
@@ -27,6 +33,6 @@ export default function TeamHomeScreen() {
           accessibilityLabel="하랑이"
         />
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }

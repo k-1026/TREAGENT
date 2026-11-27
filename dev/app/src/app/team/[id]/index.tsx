@@ -2,7 +2,7 @@
 // 실시간 알림이 없어서 몇 초마다 서버에서 다시 읽는다.
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, SafeAreaView, ScrollView, Text, View } from 'react-native';
+import { Pressable, ScrollView, Text, View  } from 'react-native';
 import { RouteCard } from '../../../components/route_card';
 import { ScreenHead } from '../../../components/screen_head';
 import { useAuth } from '../../../lib/auth_context';
@@ -68,7 +68,7 @@ export default function TeamLobbyScreen() {
   const line = route ? (route.briefing?.text ?? route.reason) : null;
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: COLOR.cream }}>
+    <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
       <ScreenHead
         title="우리 팀"
         sub={info ? `${info.memberCount}명이 모였어요` : '팀 정보를 불러오는 중이에요'}
@@ -148,6 +148,6 @@ export default function TeamLobbyScreen() {
           </>
         )}
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
