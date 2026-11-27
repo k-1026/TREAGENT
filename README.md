@@ -88,7 +88,7 @@
 | 서비스 컨셉, 길, 트랙 | [게임·서비스 컨셉](brand/game_concept.md), [기획안](plan/daeprica_hidden_quest_plan.md)의 "방향 변경"과 0장 |
 | 세계관, 하랑이 | [세계관](brand/worldview.md), [하랑이 설정](brand/character/profile/harangi_character.md), 이미지는 `brand/images/characters/` |
 | 앱 화면 설계 (스토리보드·목업) | [앱 화면 스토리보드](storyboard/app_screen_storyboard_v1.md), 목업 [홈](storyboard/app_home_mockup_v1.html)·[로그인·지역](storyboard/app_login_region_mockup_v1.html) |
-| 앱 기능·기술·담당, 만드는 순서 | [기능·기술 명세 v1](plan/spec/treagent_tech_spec_v1.md), 여행 저장·방문·완주 [설계 초안 v1](plan/spec/trip_visit_design_v1.md) |
+| 앱 기능·기술·담당, 만드는 순서 | [기능·기술 명세 v1](plan/spec/treagent_tech_spec_v1.md), 여행 저장·방문·완주 [설계 초안 v1](plan/spec/trip_visit_design_v1.md)·[결정 요청 v1](plan/spec/trip_visit_decision_request_v1.md) |
 | 앱·서버 실행과 배포, 새 컴퓨터 세팅 | [dev/README.md](dev/README.md), [세팅 가이드](dev/team_setup_guide_v1.md), 개발 규칙 [dev/CLAUDE.md](dev/CLAUDE.md) |
 | 근거 자료 (사용자 문제, 사례, 경쟁·운영 사례) | [리서치 안내](research/README.md), [페인포인트 후보](research/painpoint/candidates.md) |
 | 발표에서 받은 피드백 | [11/13 통합 정리](plan/feedback/20261113_presentation_feedback_v1.md), [11/18 평가](plan/feedback/20261118_pitch_followup_eval_v4.md) |
