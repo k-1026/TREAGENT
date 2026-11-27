@@ -30,7 +30,7 @@ export function ScreenHead({
     <View style={styles.head}>
       {/* 제목과 버튼은 화면 내용과 같은 폭(CONTENT) 안에 둔다. 넓은 웹 화면에서도 아래 내용과 줄이 맞는다. */}
       <View style={[CONTENT, { flex: 1 }]}>
-        <Text style={styles.title} numberOfLines={1}>
+        <Text style={[styles.title, !sub && { top: 55 }]} numberOfLines={1}>
           {title}
         </Text>
         {sub ? (
