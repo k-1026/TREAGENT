@@ -95,7 +95,7 @@ export default function TeamCandidatesScreen() {
       <ScrollView contentContainerStyle={[{ padding: 16, gap: 12 }, CONTENT]}>
         {!place && <Text style={{ color: COLOR.ink }}>위치를 먼저 정해 주세요.</Text>}
         {(loading || busy) && <ActivityIndicator color={COLOR.red} />}
-        {loading && <Text style={{ color: COLOR.muted, fontSize: 11 }}>하랑이가 후보 길을 고르는 중이에요. 조금 걸릴 수 있어요.</Text>}
+        {loading && <Text style={{ color: COLOR.muted, fontSize: 12 }}>하랑이가 후보 길을 고르는 중이에요. 조금 걸릴 수 있어요.</Text>}
         {error && <Text style={{ color: COLOR.ink }}>{ERROR_LABEL[error] ?? ERROR_LABEL.SERVER}</Text>}
         {notice && <Text style={{ color: COLOR.muted, fontSize: 12 }}>{notice}</Text>}
 

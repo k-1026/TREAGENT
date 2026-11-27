@@ -17,7 +17,7 @@ export function RouteCard({ route, index, onPress }: { route: TodayRoute; index:
       </View>
       <View style={{ flex: 1, gap: 3 }}>
         <Text style={{ fontSize: 12, fontWeight: '800', color: COLOR.ink }}>{route.title}</Text>
-        <Text style={{ fontSize: 10, color: COLOR.muted }}>
+        <Text style={{ fontSize: 12, color: COLOR.muted }}>
           {route.places.length}곳 · {route.durationMin ? `약 ${route.durationMin}분` : '소요시간 확인 필요'}
         </Text>
         <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 4 }}>
@@ -25,8 +25,8 @@ export function RouteCard({ route, index, onPress }: { route: TodayRoute; index:
             <Tag key={t} label={TYPE_LABEL[t] ?? t} tone={t === 'indoor' || t === 'exhibit' ? 'blue' : 'sage'} />
           ))}
         </View>
-        <Text style={{ fontSize: 10, color: COLOR.ink, lineHeight: 14 }}>{route.places.map((p) => p.name).join(' → ')}</Text>
-        <Text style={{ fontSize: 10, color: COLOR.redDark }}>{route.reason}</Text>
+        <Text style={{ fontSize: 12, color: COLOR.ink, lineHeight: 14 }}>{route.places.map((p) => p.name).join(' → ')}</Text>
+        <Text style={{ fontSize: 12, color: COLOR.redDark }}>{route.reason}</Text>
       </View>
     </Pressable>
   );

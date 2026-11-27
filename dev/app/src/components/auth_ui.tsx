@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
     textShadowOffset: { width: 2, height: 2 },
     textShadowRadius: 0,
   },
-  artSub: { color: '#fff3e0', fontSize: 11, marginTop: 2 },
+  artSub: { color: '#fff3e0', fontSize: 12, marginTop: 2 },
 
   // 아래쪽 입력 영역 (목업 .form: 크림 바탕)
   form: { flex: 1, backgroundColor: COLOR.cream },

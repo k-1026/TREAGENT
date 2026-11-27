@@ -84,5 +84,5 @@ export default function LoginScreen() {
 
 const styles = StyleSheet.create({
   link: { color: COLOR.redDark, fontWeight: '700', fontSize: 13, textAlign: 'center', padding: 8 },
-  note: { fontSize: 11, color: COLOR.muted, lineHeight: 16 },
+  note: { fontSize: 12, color: COLOR.muted, lineHeight: 17 },
 });

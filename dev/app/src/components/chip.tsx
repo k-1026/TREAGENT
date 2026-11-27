@@ -43,7 +43,7 @@ export function Tag({ label, tone = 'sage' }: { label: string; tone?: 'sage' | '
         alignSelf: 'flex-start',
         backgroundColor: bg,
         color: fg,
-        fontSize: 10,
+        fontSize: 12,
         fontWeight: '700',
         paddingVertical: 1,
         paddingHorizontal: 5,

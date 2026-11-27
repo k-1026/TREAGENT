@@ -88,7 +88,7 @@ function go(target: HomeGo | undefined) {
   if (!target) return; // 누르는 곳이 없는 안내 문구
   if (target === 'today') router.push('/today');
   else if (target === 'courses') router.push('/courses');
-  else if (target === 'region') router.push('/location');
+  else if (target === 'region') router.push('/location_setting');
   else if (target === 'reroute') router.push('/reroute');
   else soon('이어하기'); // travel: 진행 중인 여행이 저장되지 않아 아직 이어 갈 수 없다
 }
@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
   badgeMain: { fontSize: 12, fontWeight: '700', color: COLOR.ink },
   badgeSub: { fontSize: 12, color: COLOR.muted },
 
-  mark: { position: 'absolute', zIndex: 6, paddingVertical: 1, paddingHorizontal: 5, backgroundColor: COLOR.cream, borderWidth: 2, borderColor: COLOR.ink },
+  mark: { position: 'absolute', zIndex: 6, paddingVertical: 1, paddingHorizontal: 5, ...pxBox(COLOR.cream) },
   markText: { fontSize: 12, fontWeight: '800', color: COLOR.ink },
 
   // 테두리 3px: 꼬리(픽셀 3칸짜리 계단)와 두께를 맞춘다 (목업 .px는 1.5px였음)

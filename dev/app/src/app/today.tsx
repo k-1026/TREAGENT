@@ -107,7 +107,7 @@ export default function TodayScreen() {
         {loading && (
           <View style={{ gap: 6, alignItems: 'center' }}>
             <ActivityIndicator color={COLOR.red} />
-            <Text style={{ color: COLOR.muted, fontSize: 11 }}>하랑이가 길 3개를 고르는 중이에요. 조금 걸릴 수 있어요.</Text>
+            <Text style={{ color: COLOR.muted, fontSize: 12 }}>하랑이가 길 3개를 고르는 중이에요. 조금 걸릴 수 있어요.</Text>
           </View>
         )}
         {error && <Text style={{ color: COLOR.ink }}>{ERROR_LABEL[error] ?? ERROR_LABEL.SERVER}</Text>}

@@ -62,7 +62,7 @@ export default function WeatherScreen() {
           </View>
         </WxCard>
 
-        <WxButton label="지역 바꾸기" primary onPress={() => router.push('/location')} />
+        <WxButton label="지역 바꾸기" primary onPress={() => router.push('/location_setting')} />
       </ScrollView>
     </View>
   );

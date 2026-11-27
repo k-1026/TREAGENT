@@ -23,8 +23,8 @@ import { BTN_RED, COLOR, pxBox } from '../lib/theme';
 import { CONTENT } from '../components/phone_column';
 
 export default function DistrictScreen() {
-  // from=me를 받아 위치 화면으로 되돌려 보낼 때 그대로 넘긴다 (뒤로 버튼 유지)
-  const { from } = useLocalSearchParams<{ from?: string }>();
+  // mode=setting이면 설정 위치 화면(/location_setting)으로, 아니면 최초 위치 화면(/location)으로 돌아간다
+  const { mode } = useLocalSearchParams<{ mode?: string }>();
   return (
     <View style={styles.safe}>
       {/* 위쪽 주황 헤더 (목업 .head2) */}
@@ -45,7 +45,7 @@ export default function DistrictScreen() {
               <Pressable
                 key={d.code}
                 disabled={!open}
-                onPress={() => router.dismissTo({ pathname: '/location', params: { district: d.code, ...(from ? { from } : {}) } })}
+                onPress={() => router.dismissTo({ pathname: mode === 'setting' ? '/location_setting' : '/location', params: { district: d.code } })}
                 style={({ pressed }) => [
                   styles.tile,
                   open ? pxBox(BTN_RED, COLOR.redDark) : pxBox(COLOR.paper, COLOR.shade),
