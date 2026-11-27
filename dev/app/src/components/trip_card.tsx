@@ -121,7 +121,7 @@ export function TripMini({ trip, onPress }: { trip: Trip; onPress: () => void })
   return (
     <Pressable onPress={onPress} style={styles.thumb}>
       <View style={styles.mini}>
-        <Text style={{ fontSize: 10, color: COLOR.muted }}>{trip.date}</Text>
+        <Text style={{ fontSize: 12, color: COLOR.muted }}>{trip.date}</Text>
         <View style={{ flexDirection: 'row', gap: 3, flexWrap: 'wrap' }}>
           {[0, 1, 2].map((i) => (
             <Image key={i} source={STAMP} style={{ width: 17, height: 17 }} />
@@ -169,5 +169,5 @@ const styles = StyleSheet.create({
     boxShadow: `0px 4px 0px 0px ${COLOR.shade}`,
   },
   thumbTitle: { fontSize: 12, fontWeight: '800', color: COLOR.ink, marginTop: 6 },
-  thumbSub: { fontSize: 11, color: COLOR.muted },
+  thumbSub: { fontSize: 12, color: COLOR.muted },
 });

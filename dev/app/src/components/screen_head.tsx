@@ -5,7 +5,7 @@
  *       제목은 가운데(18px), 작은 설명은 제목 아래 가운데, 뒤로 버튼은 왼쪽.
  * 오른쪽 버튼(rightLabel, onRight)은 필요할 때만 넣는다 (예: 하랑이와 대화하기의 ⌂ 홈).
  */
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 import { COLOR } from '../lib/theme';
 import { CONTENT } from './phone_column';
 
@@ -15,6 +15,7 @@ export function ScreenHead({
   backLabel,
   onBack,
   rightLabel,
+  rightIcon,
   onRight,
 }: {
   title: string;
@@ -22,6 +23,7 @@ export function ScreenHead({
   backLabel?: string; // 없으면 뒤로 버튼을 그리지 않는다 (예: 하단 탭으로 여는 장부)
   onBack?: () => void;
   rightLabel?: string;
+  rightIcon?: ImageSourcePropType; // 글자 대신 그림 (하단 탭 아이콘과 같은 그림을 쓴다)
   onRight?: () => void;
 }) {
   return (
@@ -41,9 +43,13 @@ export function ScreenHead({
             <Text style={styles.navText}>{backLabel}</Text>
           </Pressable>
         ) : null}
-        {rightLabel && onRight ? (
-          <Pressable onPress={onRight} style={[styles.navButton, { right: 12 }]}>
-            <Text style={styles.navText}>{rightLabel}</Text>
+        {(rightLabel || rightIcon) && onRight ? (
+          <Pressable onPress={onRight} accessibilityLabel={rightLabel ?? '홈'} style={[styles.navButton, { right: 12 }]}>
+            {rightIcon ? (
+              <Image source={rightIcon} style={styles.navIcon} tintColor={COLOR.ink} resizeMode="contain" />
+            ) : (
+              <Text style={styles.navText}>{rightLabel}</Text>
+            )}
           </Pressable>
         ) : null}
       </View>
@@ -79,4 +85,6 @@ const styles = StyleSheet.create({
     borderColor: COLOR.ink,
   },
   navText: { color: COLOR.ink, fontSize: 14, fontWeight: '800' },
+  // 하단 탭 홈 아이콘과 같은 비율 (22×20)을 머리글에 맞게 줄인 크기
+  navIcon: { width: 18, height: 16 },
 });

@@ -17,7 +17,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { COLOR } from '../lib/theme';
+import { COLOR, pxBox } from '../lib/theme';
 
 type CutKey = 'c1' | 'c2';
 const CUTS: Record<CutKey, { tag: string; art: string; lines: string[] }> = {
@@ -141,9 +141,9 @@ const styles = StyleSheet.create({
   artBox: { borderWidth: 2, borderColor: '#d9bf98', borderStyle: 'dashed', paddingVertical: 18, paddingHorizontal: 16, backgroundColor: 'rgba(43,26,34,0.55)' },
   artText: { color: '#f3dfc0', fontSize: 14, lineHeight: 22, textAlign: 'center' },
 
-  tag: { position: 'absolute', top: 52, left: 14, zIndex: 5, backgroundColor: COLOR.cream, borderWidth: 2, borderColor: COLOR.ink, paddingVertical: 4, paddingHorizontal: 10 },
+  tag: { position: 'absolute', top: 52, left: 14, zIndex: 5, ...pxBox(COLOR.cream), paddingVertical: 4, paddingHorizontal: 10 },
   tagText: { fontSize: 13, fontWeight: '800', color: COLOR.ink },
-  skip: { position: 'absolute', top: 52, right: 14, zIndex: 5, backgroundColor: COLOR.cream, borderWidth: 2, borderColor: COLOR.ink, paddingVertical: 6, paddingHorizontal: 12 },
+  skip: { position: 'absolute', top: 52, right: 14, zIndex: 5, ...pxBox(COLOR.cream), paddingVertical: 6, paddingHorizontal: 12 },
   skipText: { fontSize: 14, fontWeight: '800', color: COLOR.ink },
 
   bottom: { position: 'absolute', left: 0, right: 0, bottom: 0, zIndex: 4 },
@@ -155,10 +155,10 @@ const styles = StyleSheet.create({
   dot: { width: 8, height: 8, backgroundColor: COLOR.shade, borderWidth: 1, borderColor: COLOR.ink },
 
   end: { position: 'absolute', left: 0, right: 0, top: 0, bottom: 0, backgroundColor: COLOR.cream, justifyContent: 'center', gap: 16, paddingHorizontal: 24, zIndex: 6 },
-  card: { backgroundColor: COLOR.paper, borderWidth: 2, borderColor: COLOR.ink, padding: 18, alignItems: 'center', gap: 6 },
+  card: { ...pxBox(COLOR.paper), padding: 18, alignItems: 'center', gap: 6 },
   endTitle: { fontSize: 17, lineHeight: 24, fontWeight: '800', color: COLOR.ink, textAlign: 'center' },
   endSub: { fontSize: 14, lineHeight: 21, color: COLOR.muted, textAlign: 'center' },
-  hara: { backgroundColor: COLOR.paper, borderWidth: 2, borderColor: COLOR.ink, paddingVertical: 12, paddingHorizontal: 14 },
+  hara: { ...pxBox(COLOR.paper), paddingVertical: 12, paddingHorizontal: 14 },
   haraText: { fontSize: 15, lineHeight: 24, color: COLOR.ink },
   haraName: { fontWeight: '800', color: COLOR.beam },
   note: { fontSize: 13, lineHeight: 20, color: COLOR.muted },

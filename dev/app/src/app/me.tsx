@@ -140,7 +140,7 @@ export default function MeScreen() {
             <Text style={styles.rowTitle}>{areaName}</Text>
             <Text style={styles.rowSmall}>지금 이용할 수 있는 곳 (F-23)</Text>
           </View>
-          <Pressable onPress={() => router.push({ pathname: '/location', params: { from: 'me' } })} style={[pxBox(COLOR.cream), { paddingVertical: 8, paddingHorizontal: 12 }]}>
+          <Pressable onPress={() => router.push('/location_setting')} style={[pxBox(COLOR.cream), { paddingVertical: 8, paddingHorizontal: 12 }]}>
             <Text style={{ color: COLOR.ink, fontWeight: '700', fontSize: 13 }}>변경</Text>
           </Pressable>
         </View>

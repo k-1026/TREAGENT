@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
   bubbleText: { fontSize: 14, lineHeight: 21, color: COLOR.ink },
   source: {
     marginTop: 6,
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '800',
     color: COLOR.muted,
     backgroundColor: '#fff',

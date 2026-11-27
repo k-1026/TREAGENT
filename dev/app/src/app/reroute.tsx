@@ -19,7 +19,7 @@ import { ScrollView, StyleSheet, Text, View } from 'react-native';
 import { CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
 import { WxButton, WxCard, wxText } from '../components/weather_ui';
-import { COLOR } from '../lib/theme';
+import { COLOR, pxBox } from '../lib/theme';
 
 type Sit = 'closed' | 'heat' | 'storm' | 'wind' | 'crowd' | 'off' | 'none';
 type Tone = 'warn' | 'storm' | 'ok' | 'grey';
@@ -134,9 +134,9 @@ export default function RerouteScreen() {
 const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLOR.cream },
   scroll: { paddingTop: 16, paddingHorizontal: 18, paddingBottom: 28, gap: 14 },
-  banner: { paddingVertical: 14, paddingHorizontal: 16, borderWidth: 2, borderColor: COLOR.ink },
+  banner: { paddingVertical: 14, paddingHorizontal: 16, ...pxBox() },
   bannerText: { fontSize: 16, lineHeight: 24, fontWeight: '700' },
-  hara: { backgroundColor: COLOR.paper, paddingVertical: 12, paddingHorizontal: 14, borderWidth: 2, borderColor: COLOR.ink },
+  hara: { ...pxBox(COLOR.paper), paddingVertical: 12, paddingHorizontal: 14 },
   haraText: { fontSize: 15, lineHeight: 24, color: COLOR.ink },
   haraName: { fontWeight: '800', color: COLOR.beam },
   foot: { fontSize: 13, lineHeight: 20, color: COLOR.muted },

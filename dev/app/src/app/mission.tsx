@@ -19,7 +19,7 @@ import { CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
 import { LiveMission } from '../components/live_mission';
 import { WxButton, WxCard, wxText } from '../components/weather_ui';
-import { COLOR } from '../lib/theme';
+import { COLOR, pxBox } from '../lib/theme';
 
 type Step = 'g' | 'r' | 'q' | 'd';
 type Result = 'ok' | 'store' | 'date' | 'read' | 'retake';
@@ -184,7 +184,7 @@ export default function MissionScreen() {
 
   return (
     <View style={styles.safe}>
-      <ScreenHead title={live ? '미션' : TITLE[step]} backLabel="‹ 뒤로" onBack={back} rightLabel="⌂ 홈" onRight={() => router.replace('/')} />
+      <ScreenHead title={live ? '미션' : TITLE[step]} backLabel="‹ 뒤로" onBack={back} rightIcon={require('../../assets/tab_home.png')} onRight={() => router.replace('/')} />
       <ScrollView contentContainerStyle={[CONTENT, styles.scroll]}>
         {live ? <LiveMission placeId={params.placeId as string} placeName={params.placeName} /> : null}
         {!live && step === 'g' ? (
@@ -314,14 +314,14 @@ const styles = StyleSheet.create({
   safe: { flex: 1, backgroundColor: COLOR.cream },
   scroll: { paddingTop: 16, paddingHorizontal: 18, paddingBottom: 28, gap: 14 },
 
-  frame: { height: 200, backgroundColor: COLOR.cream2, borderWidth: 2, borderColor: COLOR.ink, alignItems: 'center', justifyContent: 'center', padding: 10 },
+  frame: { height: 200, ...pxBox(COLOR.cream2), alignItems: 'center', justifyContent: 'center', padding: 10 },
   frameText: { fontSize: 14, lineHeight: 21, color: COLOR.muted, textAlign: 'center' },
-  tag: { alignSelf: 'flex-start', backgroundColor: COLOR.cream2, borderWidth: 2, borderColor: COLOR.ink, paddingVertical: 4, paddingHorizontal: 10 },
+  tag: { alignSelf: 'flex-start', ...pxBox(COLOR.cream2), paddingVertical: 4, paddingHorizontal: 10 },
   tagText: { fontSize: 13, fontWeight: '800', color: COLOR.ink },
-  hara: { backgroundColor: COLOR.paper, borderWidth: 2, borderColor: COLOR.ink, paddingVertical: 12, paddingHorizontal: 14 },
+  hara: { ...pxBox(COLOR.paper), paddingVertical: 12, paddingHorizontal: 14 },
   haraText: { fontSize: 15, lineHeight: 22, color: COLOR.ink },
   haraName: { fontWeight: '800', color: COLOR.beam },
-  banner: { paddingVertical: 14, paddingHorizontal: 16, borderWidth: 2, borderColor: COLOR.ink },
+  banner: { paddingVertical: 14, paddingHorizontal: 16, ...pxBox() },
   bannerText: { fontSize: 16, lineHeight: 24, fontWeight: '700' },
 
   row2: { flexDirection: 'row', gap: 12 },
@@ -331,7 +331,7 @@ const styles = StyleSheet.create({
   foot: { fontSize: 13, lineHeight: 20, color: COLOR.muted },
 
   // 퀴즈 보기 (목업 .opt)
-  opt: { minHeight: 52, justifyContent: 'center', paddingVertical: 10, paddingHorizontal: 14, backgroundColor: COLOR.paper, borderWidth: 2, borderColor: COLOR.ink },
+  opt: { minHeight: 52, justifyContent: 'center', paddingVertical: 10, paddingHorizontal: 14, ...pxBox(COLOR.paper) },
   optRight: { backgroundColor: '#e4ecd9' },
   optWrong: { backgroundColor: '#ffe1d6' },
   optText: { fontSize: 16, fontWeight: '700', color: COLOR.ink },

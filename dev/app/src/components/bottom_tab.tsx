@@ -6,16 +6,16 @@
  * 쓰는 곳: 홈 화면(app/index.tsx), 장부(app/ledger.tsx)
  */
 import { router } from 'expo-router';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, View } from 'react-native';
 import { COLOR } from '../lib/theme';
-import { PixelIcon, PixelIconName } from './pixel_icons';
 
 type TabKey = 'home' | 'ledger' | 'me';
 
-const TABS: { key: TabKey; label: string; icon: PixelIconName; go: () => void }[] = [
-  { key: 'home', label: '홈', icon: 'home', go: () => router.replace('/') },
-  { key: 'ledger', label: '장부', icon: 'book', go: () => router.replace('/ledger') },
-  { key: 'me', label: '내 정보', icon: 'me', go: () => router.push('/me') },
+// 탭 아이콘: 목업의 모양(집·펼친 책·사람)을 흰색 그림으로 만든 것. 색은 tintColor로 입힌다.
+const TABS: { key: TabKey; label: string; icon: ImageSourcePropType; go: () => void }[] = [
+  { key: 'home', label: '홈', icon: require('../../assets/tab_home.png'), go: () => router.replace('/') },
+  { key: 'ledger', label: '장부', icon: require('../../assets/tab_book.png'), go: () => router.replace('/ledger') },
+  { key: 'me', label: '내 정보', icon: require('../../assets/tab_me.png'), go: () => router.push('/me') },
 ];
 
 export function BottomTab({ current }: { current: TabKey }) {
@@ -26,7 +26,7 @@ export function BottomTab({ current }: { current: TabKey }) {
         const color = on ? COLOR.ink : COLOR.muted;
         return (
           <Pressable key={t.key} onPress={on ? undefined : t.go} style={styles.button} accessibilityState={{ selected: on }}>
-            <PixelIcon name={t.icon} color={color} />
+            <Image source={t.icon} style={styles.icon} tintColor={color} resizeMode="contain" />
             <Text style={[styles.label, { color }]}>{t.label}</Text>
           </Pressable>
         );
@@ -38,5 +38,6 @@ export function BottomTab({ current }: { current: TabKey }) {
 const styles = StyleSheet.create({
   bar: { height: 84, backgroundColor: COLOR.paper, borderTopWidth: 3, borderTopColor: COLOR.ink, flexDirection: 'row', paddingTop: 8 },
   button: { flex: 1, alignItems: 'center', gap: 5, paddingTop: 6 },
+  icon: { width: 22, height: 20 },
   label: { fontSize: 12, fontWeight: '700' },
 });

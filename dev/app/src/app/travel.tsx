@@ -410,7 +410,7 @@ export default function TravelScreen() {
               <View
                 style={{
                   position: 'absolute', top: 8, left: 8, right: 8, zIndex: 5, backgroundColor: COLOR.paper,
-                  borderWidth: 2, borderColor: COLOR.ink, paddingVertical: 6, paddingHorizontal: 10,
+                  paddingVertical: 6, paddingHorizontal: 10,
                 }}
                 pointerEvents="none"
               >
@@ -422,7 +422,7 @@ export default function TravelScreen() {
             ) : null}
             <Pressable
               onPress={toggleFollow}
-              style={{ position: 'absolute', left: 10, bottom: 10, zIndex: 5, backgroundColor: followOn ? COLOR.red : COLOR.paper, borderWidth: 2, borderColor: COLOR.ink, paddingVertical: 5, paddingHorizontal: 8 }}
+              style={{ position: 'absolute', left: 10, bottom: 10, zIndex: 5, ...pxBox(followOn ? COLOR.red : COLOR.paper), paddingVertical: 5, paddingHorizontal: 8 }}
             >
               <Text style={{ color: followOn ? '#fff' : COLOR.ink, fontWeight: '800', fontSize: 12 }}>
                 {followOn ? '내 위치 따라가는 중' : '내 위치 따라가기'}
@@ -431,7 +431,7 @@ export default function TravelScreen() {
             <Pressable
               onPress={acceptReroute}
               accessibilityLabel="지금 위치에서 다시 길 찾기"
-              style={{ position: 'absolute', left: 10, bottom: 46, zIndex: 5, backgroundColor: COLOR.paper, borderWidth: 2, borderColor: COLOR.ink, paddingVertical: 5, paddingHorizontal: 8 }}
+              style={{ position: 'absolute', left: 10, bottom: 46, zIndex: 5, ...pxBox(COLOR.paper), paddingVertical: 5, paddingHorizontal: 8 }}
             >
               <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 12 }}>{rerouting ? '찾는 중…' : '다시 길 찾기'}</Text>
             </Pressable>
