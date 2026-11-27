@@ -54,7 +54,11 @@ export function TripCard({
           <View style={[styles.pic, { padding: 3 * u }]}>
             <Text style={{ fontSize: 3 * u, color: COLOR.muted, textAlign: 'center' }}>[장소 그림 자리 · 창작 후보]</Text>
           </View>
-          <Text style={{ fontSize: 3.1 * u, color: COLOR.muted, marginTop: 3 * u }}>{trip.date}</Text>
+          {/* 날짜와 날씨 한 줄 (목업: 날짜 옆에 날씨를 같은 줄로 둔다) */}
+          <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', gap: 6, marginTop: 3 * u }}>
+            <Text style={{ fontSize: 3.1 * u, color: COLOR.muted }}>{trip.date}</Text>
+            <Text style={{ flexShrink: 1, fontSize: 3.1 * u, color: COLOR.muted, textAlign: 'right' }}>{trip.wx}</Text>
+          </View>
           <Text style={{ fontSize: 5.6 * u, fontWeight: '800', color: COLOR.ink, marginTop: 1 * u, marginBottom: 2.5 * u, lineHeight: 5.6 * u * 1.3 }}>
             {trip.title}
           </Text>
@@ -63,8 +67,6 @@ export function TripCard({
               <Image key={i} source={STAMP} style={{ width: 10 * u, height: 10 * u }} />
             ))}
           </View>
-          {/* 날씨 한 줄 (목업: 앞면에도 날씨 한 줄을 둔다) */}
-          <Text style={{ fontSize: 3.1 * u, color: COLOR.muted, marginTop: 2 * u }}>{trip.wx}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 1 * u, marginTop: 2.5 * u, paddingRight: 25 * u }}>
             <Image source={FACE} style={{ width: 11 * u, height: 11 * u }} resizeMode="contain" />
             <Text style={{ flex: 1, fontSize: 3.4 * u, lineHeight: 3.4 * u * 1.4, color: COLOR.ink }}>{trip.say}</Text>
