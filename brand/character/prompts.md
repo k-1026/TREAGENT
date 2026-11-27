@@ -295,3 +295,34 @@ Composition: the scene fills the entire frame edge to edge, no white margins. Ke
 - `brand/character/pose/pose_list_v1.md` (표정·포즈 기준)
 - 사용자 제공 캐릭터 설명 시트 (2D 스타일 기준, 2026-11-23)
 - `CLAUDE.md` (민감한 소재, 이미지 프롬프트 기록 위치)
+
+## 포즈·표정 변형 (2026-11-27, 픽셀 RPG 스타일)
+
+- 참조: `brand/images/characters/sprites/harangi_fullbody_pixel_transparent.png` (픽셀 전신, 사용자 제공), `brand/images/items/ledger_closed_sprite_v1.png` (덮인 장부). 이 두 파일은 저장소에 있을 때 함께 첨부합니다.
+- 공통 조건: 픽셀 RPG 스타일, 진한 갈색 외곽선, 평면 색, 단색 또는 투명 배경. 부채·조끼·납작만두 포쉐트 유지. 속눈썹 없음, 3D 장신구·광택 없음. 눈썹은 기본 기준(얇고 짧은 갈색 호, 좌우 대칭)을 따르고, 포즈에서는 각도 변화만 허용합니다.
+- 눈 빛: 기본은 눈마다 흰 빛 1개 (오른쪽 위). 기도 포즈만 빛 2개 (왼쪽 아래 작은 빛 추가).
+
+### P-A · 고민하는 포즈
+
+- EN: `Pixel-art RPG chibi squirrel mascot Harangi, same identity as the reference: apple-red fur, cream face and belly, blue eyes, green leaf on head, dark brown outline. Pose: thinking, one paw resting on the chin, the other arm supporting the elbow from below. Eyebrows slightly raised at the outer ends, gentle smile, not sad, not angry. Keep the cream hood vest, red strap, and nakjakmandu-shaped pouch. Plain background.`
+- KR: 한 손은 턱, 다른 팔은 팔꿈치를 받침. 눈썹 바깥 끝을 살짝 올리고 미소 유지. 슬프거나 화난 얼굴이 아님.
+- 결과:
+  - `harangi_pose_think_v1.webp`: 채택 추천 (바깥 눈썹 끝이 올라가고 미소 유지)
+  - `harangi_pose_think_v2.webp`: 보류 (눈썹 안쪽이 내려와 찌푸린 인상)
+
+### P-B · 기대하는 표정 (기도)
+
+- EN: `Pixel-art RPG chibi squirrel mascot Harangi, same identity as the reference. Pose: both paws pressed together in front of the upper chest as if praying, simplified detail. Expression: hopeful and excited, eyes sparkling. Each eye has its original upper-right white highlight plus one extra small white highlight at the lower-left, two highlights per eye. Keep the cream vest, red strap and pouch. Plain background.`
+- KR: 두 손을 모아 기도하는 기대 표정. 눈 하나에 흰 빛 2개 (기존 빛 + 왼쪽 아래 작은 빛). 예외 규칙이므로 기본 표정에는 쓰지 않음.
+- 결과: `harangi_pose_pray_v1.webp` 채택 후보 (빛 2개 예외 적용)
+
+### P-C · 새 곳에 도착해 둘러보는 포즈
+
+- EN: `Pixel-art RPG chibi squirrel mascot Harangi, same identity as the reference. Pose: just arrived at a new place, looking around, body slightly turned. Mouth in a small open O shape, eyes wide. Holding the closed ledger in both paws: red cover with a gold wind mark and gold corners, as in the reference ledger image. Keep the cream vest, red strap and pouch. Plain background.`
+- KR: 새 장소에 도착해 둘러보는 모습. 입은 O 모양, 두 손으로 덮인 빨간 장부를 들고 있음.
+- 결과: `harangi_pose_look_v1.webp` 채택 후보. 몸이 정면이라 "둘러본다"는 느낌은 약함. 더 뚜렷하게 하려면 고개를 돌린 버전을 추가로 생성 `[확인 필요]`
+
+### 결정 필요
+
+- 눈 빛 2개는 기도 포즈 예외로 두었음 (팀 기준: 기본 1개).
+- 둘러보기 포즈의 고개 방향 강화 여부.
