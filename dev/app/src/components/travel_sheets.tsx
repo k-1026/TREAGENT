@@ -16,11 +16,11 @@ import { COLOR, pxBox } from '../lib/theme';
 const STAMP = require('../../assets/stamp_nungeum.webp');
 
 // 어두운 바탕 + 가운데 종이 창 (목업 .dim, .sheet.center)
-function Dialog({ children, onClose }: { children: ReactNode; onClose: () => void }) {
+function Dialog({ children, onClose, sheetStyle }: { children: ReactNode; onClose: () => void; sheetStyle?: object }) {
   return (
     <View style={styles.dim}>
       <Pressable style={StyleSheet.absoluteFill} onPress={onClose} accessibilityLabel="닫기" />
-      <View style={styles.sheet}>{children}</View>
+      <View style={[styles.sheet, sheetStyle]}>{children}</View>
     </View>
   );
 }
@@ -133,3 +133,43 @@ const styles = StyleSheet.create({
   btn: { height: 48, alignItems: 'center', justifyContent: 'center' },
   btnText: { fontSize: 15, fontWeight: '800', color: COLOR.ink },
 });
+
+// 도착 확인 실패 카드 (목업 S-06): 권한 꺼짐 · 측위 실패 · 거리·정확도 문제 · 응답 누락 네 가지 사유.
+// 문구는 목업의 임시 문구를 그대로 쓴다. 응답 누락은 서버에 도착 기록을 보내는 기능이 생기면 연결한다 [확인 필요: TODO(PR F)].
+export type ArriveFailKind = 'denied' | 'fail' | 'far' | 'noresp';
+const ARRIVE_FAIL: Record<ArriveFailKind, { title: string; body: string }> = {
+  denied: { title: '위치 권한이 꺼져 있어요', body: '위치를 켜야 도착을 확인할 수 있어요. 설정에서 켜 주세요.' },
+  fail: { title: '위치를 읽지 못했어요', body: '잠시 뒤 다시 확인해 주세요.' },
+  far: { title: '아직 장소에서 조금 떨어져 있어요', body: '장소 가까이 가서 다시 확인해 주세요.\n위치 정확도가 낮을 수도 있어요.' },
+  noresp: { title: '인증 기록 확인이 늦어요', body: '기록을 먼저 다시 확인해요. 같은 요청은 한 번만 보내요.' },
+};
+
+export function ArriveFailSheet({
+  kind,
+  meters,
+  onRetry,
+  onSettings,
+  onClose,
+}: {
+  kind: ArriveFailKind;
+  meters?: number; // far일 때 장소까지 남은 거리(m)
+  onRetry: () => void;
+  onSettings: () => void;
+  onClose: () => void;
+}) {
+  const info = ARRIVE_FAIL[kind];
+  return (
+    <Dialog onClose={onClose} sheetStyle={{ borderRadius: 24, borderWidth: 2.5, borderColor: COLOR.ink, padding: 20, gap: 10, alignItems: 'center' }}>
+      {/* 하랑이 얼굴: 창 위쪽 */}
+      <Image source={require('../../assets/harangi_face_arrive_v1.webp')} style={{ width: 96, height: 96 }} resizeMode="contain" />
+      <Text style={[styles.ttl, { textAlign: 'center' }]}>{info.title}</Text>
+      <Text style={[styles.body, { textAlign: 'center' }]}>{info.body}</Text>
+      {kind === 'far' && meters !== undefined ? <Text style={[styles.muted, { textAlign: 'center' }]}>{`장소까지 약 ${Math.round(meters)}m 남았어요`}</Text> : null}
+      <View style={{ gap: 8, alignSelf: 'stretch' }}>
+        {kind === 'denied' ? <Btn label="설정 열기" onPress={onSettings} /> : null}
+        <Btn label="다시 확인" primary onPress={onRetry} />
+        <Btn label="닫기" onPress={onClose} />
+      </View>
+    </Dialog>
+  );
+}
