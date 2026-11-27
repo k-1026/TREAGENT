@@ -42,7 +42,7 @@ export default function CoursesScreen() {
     setAttempt((a) => a + 1);
   };
 
-  // 위치를 아직 안 정했으면 처음 화면으로 돌려보낸다 (앱을 다시 켜면 메모리가 비기 때문)
+  // 위치를 아직 안 정했으면 위치 화면으로 보낸다 (앱을 다시 켜면 메모리가 비기 때문). 오늘의 길(today.tsx)과 같은 방식 (#317)
   if (!place) {
     return (
       <View style={styles.safe}>
@@ -51,8 +51,8 @@ export default function CoursesScreen() {
           <View style={[pxBox(), styles.card]}>
             <Text style={styles.big}>위치를 먼저 정해 주세요</Text>
           </View>
-          <Pressable onPress={() => router.replace('/')} style={({ pressed }) => [pxBox(COLOR.red, COLOR.redDark), styles.btn, pressed && { opacity: 0.85 }]}>
-            <Text style={styles.btnText}>처음으로</Text>
+          <Pressable onPress={() => router.replace('/location')} style={({ pressed }) => [pxBox(COLOR.red, COLOR.redDark), styles.btn, pressed && { opacity: 0.85 }]}>
+            <Text style={styles.btnText}>위치 정하러 가기</Text>
           </Pressable>
         </View>
       </View>
