@@ -4,7 +4,8 @@
  *  - 저장, 웹: 카드 칸을 PNG로 찍어 파일로 내려받는다 (html2canvas-pro가 있어야 찍힌다).
  *  - 공유, 휴대폰: 카드 PNG를 붙여 휴대폰 기본 공유창을 연다(expo-sharing). 어느 앱으로 보낼지는 공유창에서 고른다.
  *  - 공유, 웹: 브라우저가 파일 공유를 지원하면(navigator.share) 공유창을 연다. 지원하지 않으면 'unsupported'.
- *  - 앨범 폴더(예: daeprica)는 만들지 않는다. 폴더 이름은 정해지지 않았다 [확인 필요].
+ *  - 앞뒤 저장(saveCardImages): 사진첩 'daeprica' 앨범에 넣는다. 앨범을 찾거나 만들 수 없으면(예: 아이폰에서 사진 추가 권한만 있을 때)
+ *    앨범 없이 사진첩에 저장하고 'saved_no_album'을 돌려준다. 저장 자체가 실패하지 않게 하려는 것이다 [확인 필요: 실제 기기].
  *  - 사진에는 위치 정보(EXIF)를 넣지 않는다. 화면을 찍은 PNG라 위치가 없다.
  */
 import * as MediaLibrary from 'expo-media-library/legacy';
@@ -14,7 +15,7 @@ import { Platform, View } from 'react-native';
 import { captureRef } from 'react-native-view-shot';
 
 type CardRef = RefObject<ComponentRef<typeof View> | null>;
-export type SaveResult = 'saved' | 'downloaded' | 'denied' | 'failed';
+export type SaveResult = 'saved' | 'saved_no_album' | 'downloaded' | 'denied' | 'failed';
 export type ShareResult = 'shared' | 'cancelled' | 'unsupported' | 'failed';
 
 /** 파일 이름: trip_card_20261127.png (오늘 날짜) */
@@ -90,14 +91,30 @@ export async function saveCardImages(front: CardRef, back: CardRef): Promise<Sav
     }
     const perm = await MediaLibrary.requestPermissionsAsync(true); // 사진 추가만 (읽기 권한은 묻지 않음)
     if (!perm.granted) return 'denied';
+    let noAlbum = false;
     for (const [target, side] of [[front, 'front'], [back, 'back']] as const) {
       const uri = await captureRef(target, { format: 'png', result: 'tmpfile', fileName: fileName().replace('.png', `_${side}`) });
-      const asset = await MediaLibrary.createAssetAsync(uri);
-      const album = await MediaLibrary.getAlbumAsync(ALBUM);
-      if (album) await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
-      else await MediaLibrary.createAlbumAsync(ALBUM, asset, false);
+      let asset: MediaLibrary.Asset;
+      try {
+        asset = await MediaLibrary.createAssetAsync(uri);
+      } catch (e) {
+        // 사진 정보를 받을 권한이 없으면 여기서 막힌다 → 앨범 없이 사진첩에만 넣는다 (사진 추가 권한으로 된다)
+        if (__DEV__) console.warn('[save_card] 앨범용 저장 실패, 사진첩에 저장', e);
+        await MediaLibrary.saveToLibraryAsync(uri);
+        noAlbum = true;
+        continue;
+      }
+      try {
+        const album = await MediaLibrary.getAlbumAsync(ALBUM);
+        if (album) await MediaLibrary.addAssetsToAlbumAsync([asset], album, false);
+        else await MediaLibrary.createAlbumAsync(ALBUM, asset, false);
+      } catch (e) {
+        // 사진은 이미 사진첩에 들어갔다. 앨범에만 못 넣었다
+        if (__DEV__) console.warn('[save_card] daeprica 앨범에 넣지 못함', e);
+        noAlbum = true;
+      }
     }
-    return 'saved';
+    return noAlbum ? 'saved_no_album' : 'saved';
   } catch (e) {
     if (__DEV__) console.warn('[save_card] 앞뒤 저장 실패', e);
     return 'failed';

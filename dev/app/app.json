@@ -24,9 +24,6 @@
     },
     "plugins": [
       "expo-router",
-      ["expo-media-library",
-        { "photosPermission": "여행 카드를 사진첩에서 고르려고 사진 접근을 써요.", "savePhotosPermission": "여행 카드 이미지를 사진첩 daeprica 앨범에 저장하려고 사진 추가 권한을 써요." }
-      ],
       [
         "expo-location",
         {
@@ -36,8 +33,8 @@
       [
         "expo-media-library",
         {
-          "photosPermission": "여행 카드를 사진첩에 저장하려고 사진 접근 권한을 사용해요.",
-          "savePhotosPermission": "여행 카드를 사진첩에 저장하려고 사진 추가 권한을 사용해요.",
+          "photosPermission": "여행 카드를 사진첩 daeprica 앨범에 모으려고 사진 접근을 써요.",
+          "savePhotosPermission": "여행 카드 이미지를 사진첩 daeprica 앨범에 저장하려고 사진 추가 권한을 써요.",
           "granularPermissions": [
             "photo"
           ]
