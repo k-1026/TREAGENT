@@ -63,6 +63,8 @@ export function TripCard({
               <Image key={i} source={STAMP} style={{ width: 10 * u, height: 10 * u }} />
             ))}
           </View>
+          {/* 날씨 한 줄 (목업: 앞면에도 날씨 한 줄을 둔다) */}
+          <Text style={{ fontSize: 3.1 * u, color: COLOR.muted, marginTop: 2 * u }}>{trip.wx}</Text>
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 1 * u, marginTop: 2.5 * u, paddingRight: 25 * u }}>
             <Image source={FACE} style={{ width: 11 * u, height: 11 * u }} resizeMode="contain" />
             <Text style={{ flex: 1, fontSize: 3.4 * u, lineHeight: 3.4 * u * 1.4, color: COLOR.ink }}>{trip.say}</Text>
