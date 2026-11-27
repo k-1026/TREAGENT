@@ -367,7 +367,7 @@ export default function TravelScreen() {
           { overflow: 'hidden', backgroundColor: COLOR.cream2 },
           full
             ? { flex: 1 }
-            : { height: 290, marginHorizontal: 16, marginTop: 12, ...pxBox(COLOR.cream2) },
+            : { height: 270, marginHorizontal: 16, marginTop: 10, ...pxBox(COLOR.cream2) },
         ]}
       >
         {phase.name === 'loading' ? (
@@ -477,7 +477,7 @@ export default function TravelScreen() {
 
       {/* 안내 영역 (기본 화면만) */}
       {!full ? (
-        <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 14, paddingBottom: 0, gap: 10, overflow: 'hidden' }}>
+        <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 0, gap: 8, overflow: 'hidden' }}>
           {rerouting ? <ActivityIndicator color={COLOR.red} /> : null}
 
           {ready ? (
@@ -490,24 +490,22 @@ export default function TravelScreen() {
                     <Text style={{ color: mode === m ? '#fff' : COLOR.ink, fontWeight: '800', fontSize: 13 }}>{m === 'walk' ? '도보' : '대중교통'}</Text>
                   </Pressable>
                 ))}
+                {reached < total ? (
+                  <Pressable onPress={() => router.push('/reroute')} style={[smallBtn, { marginLeft: 'auto' }]}>
+                    <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 13 }}>대체 길 보기</Text>
+                  </Pressable>
+                ) : null}
               </View>
               {mode === 'transit' && walk?.segments ? (
-                <View style={{ backgroundColor: COLOR.paper, borderWidth: 1.5, borderColor: COLOR.ink, borderRadius: 6, padding: 8, gap: 3 }}>
-                  {walk.segments.map((sg, i) => (
-                    <Text key={i} style={{ fontSize: 12, color: COLOR.ink }}>
-                      {`${(walk.startIncluded ? reached + i : reached + i) + 1}번 장소 구간 · ${sg.type === 'transit'
-                        ? sg.legs.filter((l) => l.mode !== 'WALK').map((l) => `${l.mode === 'SUBWAY' ? '지하철' : '버스'}${l.route ? ` ${l.route}` : ''}`).join(' → ') || '대중교통'
-                        : '도보'} ${minText(sg.time)}${sg.fare ? ` · ${sg.fare.toLocaleString('ko-KR')}원` : ''}`}
-                    </Text>
-                  ))}
-                  {walk.fare ? <Text style={{ fontSize: 12, fontWeight: '800', color: COLOR.redDark }}>{`요금 합계 약 ${walk.fare.toLocaleString('ko-KR')}원`}</Text> : null}
-                </View>
+                <Text style={{ fontSize: 12, color: COLOR.ink, fontWeight: '700' }}>
+                  {`대중교통 · 환승 ${walk.segments.reduce((n, sg) => n + sg.transfers, 0)}회${walk.fare ? ` · 요금 약 ${walk.fare.toLocaleString('ko-KR')}원` : ''}`}
+                </Text>
               ) : null}
             </View>
           ) : null}
 
           <CoursePlacesCard
-            fill
+            fill={!!ready}
             reached={reached}
             summary={ready && walk ? (
             <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -531,7 +529,7 @@ export default function TravelScreen() {
 
       {/* 하단 도크: 코스 현황 + 도장 확인 + 도착 확인 (기본·확대 공통) */}
       {ready ? (
-        <View style={{ backgroundColor: COLOR.cream, paddingHorizontal: 14, paddingTop: 10, paddingBottom: 14 }}>
+        <View style={{ backgroundColor: COLOR.cream, paddingHorizontal: 14, paddingTop: 8, paddingBottom: 10 }}>
           <View style={{ flexDirection: 'row', gap: 8 }}>
             <Pressable
               onPress={() => setSheet('stamps')}
@@ -562,11 +560,6 @@ export default function TravelScreen() {
                       ? ''
                       : '내 위치를 찾는 중이에요'}
           </Text>
-          {reached < total ? (
-            <Pressable onPress={() => router.push('/reroute')} style={[pxBox(), { marginTop: 10, height: 44, alignItems: 'center', justifyContent: 'center' }]}>
-              <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 15 }}>대체 길 보기</Text>
-            </Pressable>
-          ) : null}
         </View>
       ) : null}
 

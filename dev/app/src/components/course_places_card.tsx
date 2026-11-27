@@ -31,7 +31,7 @@ export function CoursePlacesCard({ route, selected = null, notes = [], onPlacePr
         </View>
         {summary ? <View>{summary}</View> : null}
       </View>
-      <View style={[{ paddingHorizontal: 14, paddingVertical: 10, gap: fill ? 18 : 10 }, fill ? { flex: 1, justifyContent: 'space-evenly' } : null]}>
+      <View style={[{ paddingHorizontal: 14, paddingVertical: 10, gap: fill ? 14 : 10 }, fill ? { flex: 1, justifyContent: 'space-evenly' } : null]}>
         {route.places.map((p, i) => (
           <Pressable
             key={p.id}
