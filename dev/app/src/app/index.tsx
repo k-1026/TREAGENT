@@ -338,7 +338,7 @@ export default function HomeScreen() {
         {nextShown ? (
           <Pressable
             onPress={() => router.push('/travel')}
-            style={[pxBox(COLOR.red, COLOR.redDark), { borderWidth: 2.5, boxShadow: 'none', position: 'absolute', right: 12 * k, bottom: 50 * k, zIndex: 7, paddingVertical: 8, paddingHorizontal: 12 }]}
+            style={[pxBox(COLOR.red, COLOR.redDark), { borderWidth: 2.5, boxShadow: 'none', position: 'absolute', right: 12 * k, top: 268 * k - crop, zIndex: 7, paddingVertical: 8, paddingHorizontal: 12 }]}
           >
             <Text style={{ color: '#fff', fontSize: 13, fontWeight: '800' }}>여행 지도 보기 ›</Text>
           </Pressable>

@@ -310,10 +310,6 @@ export default function TravelScreen() {
     setFollow(false); // 장소를 크게 볼 때는 내 위치를 따라가지 않는다
     setFocus((f) => ({ n: (f?.n ?? 0) + 1, index: i }));
   };
-  const showAll = () => {
-    setFollow(false);
-    setFocus((f) => ({ n: (f?.n ?? 0) + 1, index: null }));
-  };
   const toggleFollow = () => {
     if (!follow && !(sim || (gps?.accuracy ?? Infinity) <= 100)) {
       showToast('위치 정확도가 낮아서 따라가기를 쓸 수 없어요');
@@ -496,11 +492,6 @@ export default function TravelScreen() {
                   </Pressable>
                 ) : null}
               </View>
-              {mode === 'transit' && walk?.segments ? (
-                <Text style={{ fontSize: 12, color: COLOR.ink, fontWeight: '700' }}>
-                  {`대중교통 · 환승 ${walk.segments.reduce((n, sg) => n + sg.transfers, 0)}회${walk.fare ? ` · 요금 약 ${walk.fare.toLocaleString('ko-KR')}원` : ''}`}
-                </Text>
-              ) : null}
             </View>
           ) : null}
 
@@ -508,16 +499,9 @@ export default function TravelScreen() {
             fill={!!ready}
             reached={reached}
             summary={ready && walk ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={{ fontSize: 13, color: COLOR.muted, flexShrink: 1 }}>
-                {remain !== null && remainSec !== null
-                  ? `남은 ${distText(remain)} · ${mode === 'transit' ? '대중교통' : '도보'} 약 ${minText(remainSec)}`
-                  : `전체 ${distText(walk.distance)} · ${mode === 'transit' ? '대중교통' : '도보'} 약 ${minText(walk.time)}`}
+              <Text style={{ fontSize: 12, color: COLOR.muted, fontWeight: '700' }}>
+                {`${distText(walk.distance)} · ${mode === 'transit' ? `대중교통 ${minText(walk.time)}${walk.fare ? ` · ${walk.fare.toLocaleString('ko-KR')}원` : ''}` : `도보 ${minText(walk.time)}`}`}
               </Text>
-              <Pressable onPress={showAll}>
-                <Text style={{ fontSize: 13, color: COLOR.red, fontWeight: '800' }}>전체 경로 보기</Text>
-              </Pressable>
-            </View>
             ) : undefined}
             route={route}
             selected={focus && typeof focus.index === 'number' ? focus.index : null}
@@ -531,16 +515,10 @@ export default function TravelScreen() {
       {ready ? (
         <View style={{ backgroundColor: COLOR.cream, paddingHorizontal: 14, paddingTop: 8, paddingBottom: 10 }}>
           <View style={{ flexDirection: 'row', gap: 8 }}>
-            <Pressable
-              onPress={() => setSheet('stamps')}
-              style={[pxBox(), { flex: 1, height: 52, alignItems: 'center', justifyContent: 'center' }]}
-            >
-              <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 15 }}>도장 확인</Text>
-            </Pressable>
             {/* 큰 버튼: 도착 확인 → (도착하면) 미션 창 → (모두 걸으면) 완주 한 장 */}
             <Pressable
               onPress={reached >= total ? onFinish : isArrived ? () => setSheet('mission') : onArrive}
-              style={[pxBox(BTN_RED, COLOR.redDark), { flex: 1.4, height: 52, alignItems: 'center', justifyContent: 'center' }]}
+              style={[pxBox(BTN_RED, COLOR.redDark), { flex: 1, height: 52, alignItems: 'center', justifyContent: 'center' }]}
             >
               <Text style={{ color: '#fff', fontWeight: '800', fontSize: 15 }}>
                 {reached >= total ? '완주 한 장 보기' : isArrived ? `미션 확인하기 · ${reached + 1}번 장소` : '도착 확인하기'}

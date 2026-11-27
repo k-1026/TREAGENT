@@ -27,9 +27,8 @@ export function CoursePlacesCard({ route, selected = null, notes = [], onPlacePr
           {[...new Set(route.places.map((p) => p.type))].map((t) => (
             <Tag key={t} label={TYPE_LABEL[t] ?? t} tone={t === 'indoor' || t === 'exhibit' ? 'blue' : 'sage'} />
           ))}
-          {summary ? null : <Tag label={route.durationMin ? `${route.durationMin}분` : '시간 확인 필요'} tone="yellow" />}
+          {summary ? summary : <Tag label={route.durationMin ? `${route.durationMin}분` : '시간 확인 필요'} tone="yellow" />}
         </View>
-        {summary ? <View>{summary}</View> : null}
       </View>
       <View style={[{ paddingHorizontal: 14, paddingVertical: 10, gap: fill ? 14 : 10 }, fill ? { flex: 1, justifyContent: 'space-evenly' } : null]}>
         {route.places.map((p, i) => (
