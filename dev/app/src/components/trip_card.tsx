@@ -6,7 +6,8 @@
  * - TripMini: 장부 목록의 작은 카드 (날짜만 보임)
  * 문구는 trip_card_data.ts의 자리표시 그대로다. 호칭은 닉네임으로 바꿔 보인다 (호칭 규칙 F-02).
  */
-import { Image, Pressable, StyleSheet, Text, View } from 'react-native';
+import { useEffect, useRef } from 'react';
+import { Animated, Easing, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { COLOR } from '../lib/theme';
 import type { Trip } from '../lib/trip_card_data';
 
@@ -38,9 +39,17 @@ export function TripCard({
   const btn = Math.max(30, 10 * u); // 목업 #264: 10cqw (최소 30)
   const face = [styles.face, { paddingVertical: 5.5 * u, paddingHorizontal: 5 * u }, square && { borderWidth: 0, borderRadius: 0 }];
 
+  // 뒤집기: 0 → 1로 가면 카드가 세로축(Y)을 따라 180도 돈다 (목업 .tc-inner rotateY(180deg))
+  const spin = useRef(new Animated.Value(flipped ? 1 : 0)).current;
+  useEffect(() => {
+    Animated.timing(spin, { toValue: flipped ? 1 : 0, duration: 600, easing: Easing.inOut(Easing.cubic), useNativeDriver: false }).start();
+  }, [flipped, spin]);
+  const frontTurn = spin.interpolate({ inputRange: [0, 1], outputRange: ['0deg', '180deg'] });
+  const backTurn = spin.interpolate({ inputRange: [0, 1], outputRange: ['180deg', '360deg'] });
+
   return (
     <View style={{ width, height: (width * 16) / 9 }}>
-      {!flipped ? (
+      <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ perspective: 1000 }, { rotateY: frontTurn }], backfaceVisibility: 'hidden' }]}>
         <View style={face}>
           <View style={[styles.pic, { padding: 3 * u }]}>
             <Text style={{ fontSize: 3 * u, color: COLOR.muted, textAlign: 'center' }}>[장소 그림 자리 · 창작 후보]</Text>
@@ -59,7 +68,8 @@ export function TripCard({
             <Text style={{ flex: 1, fontSize: 3.4 * u, lineHeight: 3.4 * u * 1.4, color: COLOR.ink }}>{trip.say}</Text>
           </View>
         </View>
-      ) : (
+      </Animated.View>
+      <Animated.View style={[StyleSheet.absoluteFill, { transform: [{ perspective: 1000 }, { rotateY: backTurn }], backfaceVisibility: 'hidden' }]}>
         <View style={face}>
           <View style={{ flexDirection: 'row', justifyContent: 'space-between', gap: 6 }}>
             <Text style={{ fontSize: 3.1 * u, color: COLOR.muted }}>하랑이의 일기</Text>
@@ -99,7 +109,7 @@ export function TripCard({
             <Text style={{ flex: 1, fontSize: 3.1 * u, color: COLOR.muted }}>{`도장 3/3 · 이름은 ${call(trip.name, name)} 님 (호칭 규칙)`}</Text>
           </View>
         </View>
-      )}
+      </Animated.View>
 
       {/* 뒤집기·전체보기: 카드 오른쪽 아래 동그란 버튼 (카드 위 따로 놓인 층) */}
       {showFlip ? (
