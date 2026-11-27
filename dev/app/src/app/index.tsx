@@ -296,7 +296,7 @@ export default function HomeScreen() {
         {ready ? (
           <Pressable
             onPress={() => setLeaveAsk(true)}
-            style={[styles.mark, { right: 12 * k, top: 268 * k - crop, zIndex: 7, backgroundColor: BADGE_TONE.normal.bg, borderWidth: 2.5, boxShadow: `0px 4px 0px 0px ${BADGE_TONE.normal.shade}`, paddingVertical: 8, paddingHorizontal: 14 }]}
+            style={[styles.mark, { right: 12 * k, top: 268 * k - crop, zIndex: 7, backgroundColor: BADGE_TONE.normal.bg, borderWidth: 2.5, boxShadow: 'none', paddingVertical: 8, paddingHorizontal: 14 }]}
           >
             <Text style={[styles.markText, { fontSize: 15 }]}>나가지 않기</Text>
           </Pressable>

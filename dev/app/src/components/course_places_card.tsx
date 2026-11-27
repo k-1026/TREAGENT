@@ -22,12 +22,15 @@ export function CoursePlacesCard({ route, selected = null, notes = [], onPlacePr
   return (
     <View style={[pxBox(), fill ? { flex: 1 } : null]}>
       <View style={{ paddingHorizontal: 14, paddingVertical: 10, gap: 6, borderBottomWidth: 2, borderBottomColor: COLOR.ink }}>
-        <Text style={{ fontSize: 18, lineHeight: 24, fontWeight: '800', color: COLOR.ink }}>{route.title}</Text>
-        <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, alignItems: 'center' }}>
-          {[...new Set(route.places.map((p) => p.type))].map((t) => (
-            <Tag key={t} label={TYPE_LABEL[t] ?? t} tone={t === 'indoor' || t === 'exhibit' ? 'blue' : 'sage'} />
-          ))}
-          {summary ? summary : <Tag label={route.durationMin ? `${route.durationMin}분` : '시간 확인 필요'} tone="yellow" />}
+        {/* 길 이름은 왼쪽, 태그와 거리·시간은 같은 줄 오른쪽 끝에 둔다 */}
+        <View style={{ flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: 6 }}>
+          <Text style={{ fontSize: 18, lineHeight: 24, fontWeight: '800', color: COLOR.ink }}>{route.title}</Text>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: 6, alignItems: 'center', justifyContent: 'flex-end', flexShrink: 1 }}>
+            {[...new Set(route.places.map((p) => p.type))].map((t) => (
+              <Tag key={t} label={TYPE_LABEL[t] ?? t} tone={t === 'indoor' || t === 'exhibit' ? 'blue' : 'sage'} />
+            ))}
+            {summary ? summary : <Tag label={route.durationMin ? `${route.durationMin}분` : '시간 확인 필요'} tone="yellow" />}
+          </View>
         </View>
       </View>
       <View style={[{ paddingHorizontal: 14, paddingVertical: 10, gap: fill ? 14 : 10 }, fill ? { flex: 1, justifyContent: 'space-evenly' } : null]}>

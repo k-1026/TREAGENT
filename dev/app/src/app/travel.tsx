@@ -2,7 +2,7 @@
 // 내 위치는 처음 경로를 받을 때와 "새 경로 보기"를 누를 때만 서버로 보낸다. 걷는 동안의 위치는 기기 안에서만 쓴다.
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, Text, View } from 'react-native';
 import { CoursePlacesCard } from '../components/course_places_card';
 import { CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
@@ -357,6 +357,27 @@ export default function TravelScreen() {
         onRight={() => router.dismissTo('/')}
       />
 
+      {/* 경로 이탈 팝업: 화면 전체의 가운데에 띄운다 (지도 밖). 바깥 칸은 터치를 막지 않아서 뒤의 버튼은 그대로 누를 수 있다 */}
+      {offRoute ? (
+        <View pointerEvents="box-none" style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 10, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ width: 300, minHeight: 300, borderRadius: 28, borderWidth: 4, borderColor: COLOR.redDark, backgroundColor: '#ffe1d6', padding: 20, gap: 6, alignItems: 'center', justifyContent: 'center' }}>
+            {/* 하랑이 얼굴: 팝업 위쪽 */}
+            <Image source={require('../../assets/harangi_face_alert_v1.webp')} style={{ width: 96, height: 96, marginBottom: -8 }} resizeMode="contain" />
+            <Text style={{ color: COLOR.redDark, fontWeight: '800', fontSize: 16, lineHeight: 24, textAlign: 'center' }}>
+              경로에서 벗어났어요.{'\n'}지금 위치에서 대체 길을 볼까요?
+            </Text>
+            <View style={{ alignSelf: 'stretch', gap: 10, marginTop: 10 }}>
+              <Pressable onPress={() => router.push({ pathname: '/reroute', params: { sit: 'off' } })} style={[smallBtn, { alignSelf: 'stretch', alignItems: 'center', backgroundColor: COLOR.red, borderColor: COLOR.redDark, paddingVertical: 10 }]}>
+                <Text style={{ color: '#fff', fontWeight: '800', fontSize: 15 }}>대체 길 보기</Text>
+              </Pressable>
+              <Pressable onPress={keepRoute} style={[smallBtn, { alignSelf: 'stretch', alignItems: 'center', backgroundColor: COLOR.paper, paddingVertical: 10 }]}>
+                <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 15 }}>그대로 가기</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      ) : null}
+
       {/* 지도 영역 (확대하면 남는 공간을 모두 쓴다) */}
       <View
         style={[
@@ -406,19 +427,6 @@ export default function TravelScreen() {
           <>
             <TmapView appKey={APP_KEY} center={all[0]} state={state} />
             {/* 경로 이탈: 지도 위에서 바로 보이게 한다. 자동으로 바꾸지 않고 [다시 길 찾기]를 누르면 지금 위치에서 새 경로를 받는다 */}
-            {offRoute ? (
-              <View style={{ position: 'absolute', top: 8, left: 8, right: 8, zIndex: 6, backgroundColor: '#ffe1d6', borderWidth: 2, borderColor: COLOR.redDark, padding: 10, gap: 8 }}>
-                <Text style={{ color: COLOR.redDark, fontWeight: '800', fontSize: 14 }}>경로에서 벗어났어요. 지금 위치에서 다시 길을 찾을까요?</Text>
-                <View style={{ flexDirection: 'row', gap: 8 }}>
-                  <Pressable onPress={acceptReroute} style={[smallBtn, { backgroundColor: COLOR.red, borderColor: COLOR.redDark }]}>
-                    <Text style={{ color: '#fff', fontWeight: '800', fontSize: 14 }}>다시 길 찾기</Text>
-                  </Pressable>
-                  <Pressable onPress={keepRoute} style={smallBtn}>
-                    <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 14 }}>그대로 가기</Text>
-                  </Pressable>
-                </View>
-              </View>
-            ) : null}
             {/* 길 안내 한 줄: 다음 안내 지점까지 남은 거리와 문장 */}
             {step && !offRoute ? (
               <View
@@ -486,11 +494,6 @@ export default function TravelScreen() {
                     <Text style={{ color: mode === m ? '#fff' : COLOR.ink, fontWeight: '800', fontSize: 13 }}>{m === 'walk' ? '도보' : '대중교통'}</Text>
                   </Pressable>
                 ))}
-                {reached < total ? (
-                  <Pressable onPress={() => router.push('/reroute')} style={[smallBtn, { marginLeft: 'auto' }]}>
-                    <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 13 }}>대체 길 보기</Text>
-                  </Pressable>
-                ) : null}
               </View>
             </View>
           ) : null}
