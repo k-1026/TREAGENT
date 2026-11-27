@@ -43,7 +43,12 @@ export default function TodayPageScreen() {
         </View>
 
         {noCells ? (
-          <EmptyState title="오늘은 안내할 칸이 없어요" sub="[승인 대사 대기 · 오늘 칸 없음] 내일 다시 확인해요." />
+          // 빈 상태 버튼: 목업 empty_states_mockup_v1의 today [다른 길 보기] → 오늘의 길 고르기
+          <EmptyState
+            title="오늘은 안내할 칸이 없어요"
+            sub="[승인 대사 대기 · 오늘 칸 없음] 내일 다시 확인해요."
+            action={{ label: '다른 길 보기', onPress: () => router.push('/today') }}
+          />
         ) : (
           <>
             <Text style={styles.h3}>
