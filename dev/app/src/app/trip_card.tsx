@@ -103,6 +103,7 @@ export default function TripCardScreen() {
   const hideCardButtons = () => new Promise((r) => requestAnimationFrame(() => setTimeout(r, 50)));
   const SAVE_MSG: Record<SaveResult, string> = {
     saved: '사진첩에 카드를 저장했어요',
+    saved_no_album: '사진첩에 카드를 저장했어요. 앨범에는 넣지 못했어요',
     downloaded: '카드 이미지를 내려받았어요',
     denied: '사진 저장 권한이 없어요. 설정에서 켜 주세요',
     failed: '카드를 저장하지 못했어요. 다시 해 주세요',
