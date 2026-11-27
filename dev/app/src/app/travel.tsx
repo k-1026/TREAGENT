@@ -2,7 +2,7 @@
 // 내 위치는 처음 경로를 받을 때와 "새 경로 보기"를 누를 때만 서버로 보낸다. 걷는 동안의 위치는 기기 안에서만 쓴다.
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { ActivityIndicator, Image, Pressable, ScrollView, Text, View } from 'react-native';
+import { ActivityIndicator, Image, Pressable, Text, View } from 'react-native';
 import { CoursePlacesCard } from '../components/course_places_card';
 import { CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
@@ -18,7 +18,6 @@ import { useLiveLocation } from '../lib/use_live_location';
 import { buildTrack, distM, LatLng, nextStep, passedPath, pointAt, project, remainingPath, turnMark } from '../lib/walk_nav';
 
 const APP_KEY = process.env.EXPO_PUBLIC_TMAP_APP_KEY ?? '';
-const STAMP = require('../../assets/stamp_nungeum.webp');
 
 // 아래 기준값은 팀이 정하기 전의 임시 값이다 (dev/CLAUDE.md "결정 필요": 이탈 기준 N미터·M초, 도착 판정).
 const OFF_ROUTE_M = 40; // 경로에서 이만큼 벗어나면 이탈 후보
@@ -311,10 +310,6 @@ export default function TravelScreen() {
     setFollow(false); // 장소를 크게 볼 때는 내 위치를 따라가지 않는다
     setFocus((f) => ({ n: (f?.n ?? 0) + 1, index: i }));
   };
-  const showAll = () => {
-    setFollow(false);
-    setFocus((f) => ({ n: (f?.n ?? 0) + 1, index: null }));
-  };
   const toggleFollow = () => {
     if (!follow && !(sim || (gps?.accuracy ?? Infinity) <= 100)) {
       showToast('위치 정확도가 낮아서 따라가기를 쓸 수 없어요');
@@ -356,12 +351,32 @@ export default function TravelScreen() {
       {/* 머리글: 다른 화면과 같은 모양 (목업: 뒤로 · 제목+설명 · 홈). 확대 중이면 [‹ 줄이기] */}
       <ScreenHead
         title="여행 지도"
-        sub={`${route.title} · 도장 ${reached}/${total}`}
         backLabel={full ? '‹ 줄이기' : '‹ 뒤로'}
         onBack={goBack}
-        rightLabel="⌂ 홈"
+        rightIcon={require('../../assets/tab_home.png')}
         onRight={() => router.dismissTo('/')}
       />
+
+      {/* 경로 이탈 팝업: 화면 전체의 가운데에 띄운다 (지도 밖). 바깥 칸은 터치를 막지 않아서 뒤의 버튼은 그대로 누를 수 있다 */}
+      {offRoute ? (
+        <View pointerEvents="box-none" style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, zIndex: 10, alignItems: 'center', justifyContent: 'center' }}>
+          <View style={{ width: 300, minHeight: 300, borderRadius: 28, borderWidth: 4, borderColor: COLOR.redDark, backgroundColor: '#ffe1d6', padding: 20, gap: 6, alignItems: 'center', justifyContent: 'center' }}>
+            {/* 하랑이 얼굴: 팝업 위쪽 */}
+            <Image source={require('../../assets/harangi_face_alert_v1.webp')} style={{ width: 96, height: 96, marginBottom: -8 }} resizeMode="contain" />
+            <Text style={{ color: COLOR.redDark, fontWeight: '800', fontSize: 16, lineHeight: 24, textAlign: 'center' }}>
+              경로에서 벗어났어요.{'\n'}지금 위치에서 대체 길을 볼까요?
+            </Text>
+            <View style={{ alignSelf: 'stretch', gap: 10, marginTop: 10 }}>
+              <Pressable onPress={() => router.push({ pathname: '/reroute', params: { sit: 'off' } })} style={[smallBtn, { alignSelf: 'stretch', alignItems: 'center', backgroundColor: COLOR.red, borderColor: COLOR.redDark, paddingVertical: 10 }]}>
+                <Text style={{ color: '#fff', fontWeight: '800', fontSize: 15 }}>대체 길 보기</Text>
+              </Pressable>
+              <Pressable onPress={keepRoute} style={[smallBtn, { alignSelf: 'stretch', alignItems: 'center', backgroundColor: COLOR.paper, paddingVertical: 10 }]}>
+                <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 15 }}>그대로 가기</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
+      ) : null}
 
       {/* 지도 영역 (확대하면 남는 공간을 모두 쓴다) */}
       <View
@@ -369,7 +384,7 @@ export default function TravelScreen() {
           { overflow: 'hidden', backgroundColor: COLOR.cream2 },
           full
             ? { flex: 1 }
-            : { height: 290, marginHorizontal: 16, marginTop: 12, borderWidth: 3, borderColor: COLOR.ink },
+            : { height: 270, marginHorizontal: 16, marginTop: 10, ...pxBox(COLOR.cream2) },
         ]}
       >
         {phase.name === 'loading' ? (
@@ -412,19 +427,6 @@ export default function TravelScreen() {
           <>
             <TmapView appKey={APP_KEY} center={all[0]} state={state} />
             {/* 경로 이탈: 지도 위에서 바로 보이게 한다. 자동으로 바꾸지 않고 [다시 길 찾기]를 누르면 지금 위치에서 새 경로를 받는다 */}
-            {offRoute ? (
-              <View style={{ position: 'absolute', top: 8, left: 8, right: 8, zIndex: 6, backgroundColor: '#ffe1d6', borderWidth: 2, borderColor: COLOR.redDark, padding: 10, gap: 8 }}>
-                <Text style={{ color: COLOR.redDark, fontWeight: '800', fontSize: 14 }}>경로에서 벗어났어요. 지금 위치에서 다시 길을 찾을까요?</Text>
-                <View style={{ flexDirection: 'row', gap: 8 }}>
-                  <Pressable onPress={acceptReroute} style={[smallBtn, { backgroundColor: COLOR.red, borderColor: COLOR.redDark }]}>
-                    <Text style={{ color: '#fff', fontWeight: '800', fontSize: 14 }}>다시 길 찾기</Text>
-                  </Pressable>
-                  <Pressable onPress={keepRoute} style={smallBtn}>
-                    <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 14 }}>그대로 가기</Text>
-                  </Pressable>
-                </View>
-              </View>
-            ) : null}
             {/* 길 안내 한 줄: 다음 안내 지점까지 남은 거리와 문장 */}
             {step && !offRoute ? (
               <View
@@ -463,11 +465,23 @@ export default function TravelScreen() {
             </Pressable>
           </>
         ) : null}
+        {ready && __DEV__ ? (
+            <View style={{ position: 'absolute', left: 10, top: 10, zIndex: 6, flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
+              <Pressable onPress={() => { setSimAlong(prog?.along ?? 0); setSimOff(false); setFollow(true); setSim((v) => !v); }} style={smallBtn}>
+                <Text style={{ color: COLOR.ink, fontSize: 12, fontWeight: '800' }}>{sim ? '■ 시뮬레이션 끄기' : '▶ 걷기 시뮬레이션 (개발용)'}</Text>
+              </Pressable>
+              {sim ? (
+                <Pressable onPress={() => setSimOff((v) => !v)} style={smallBtn}>
+                  <Text style={{ color: COLOR.ink, fontSize: 12, fontWeight: '800' }}>{simOff ? '경로로 돌아가기' : '경로 벗어나기'}</Text>
+                </Pressable>
+              ) : null}
+            </View>
+          ) : null}
       </View>
 
       {/* 안내 영역 (기본 화면만) */}
       {!full ? (
-        <ScrollView style={{ flex: 1 }} contentContainerStyle={{ padding: 16, paddingTop: 14, gap: 10 }}>
+        <View style={{ flex: 1, paddingHorizontal: 16, paddingTop: 10, paddingBottom: 0, gap: 8, overflow: 'hidden' }}>
           {rerouting ? <ActivityIndicator color={COLOR.red} /> : null}
 
           {ready ? (
@@ -481,82 +495,33 @@ export default function TravelScreen() {
                   </Pressable>
                 ))}
               </View>
-              {mode === 'transit' && walk?.segments ? (
-                <View style={{ backgroundColor: COLOR.paper, borderWidth: 1.5, borderColor: COLOR.ink, borderRadius: 6, padding: 8, gap: 3 }}>
-                  {walk.segments.map((sg, i) => (
-                    <Text key={i} style={{ fontSize: 12, color: COLOR.ink }}>
-                      {`${(walk.startIncluded ? reached + i : reached + i) + 1}번 장소 구간 · ${sg.type === 'transit'
-                        ? sg.legs.filter((l) => l.mode !== 'WALK').map((l) => `${l.mode === 'SUBWAY' ? '지하철' : '버스'}${l.route ? ` ${l.route}` : ''}`).join(' → ') || '대중교통'
-                        : '도보'} ${minText(sg.time)}${sg.fare ? ` · ${sg.fare.toLocaleString('ko-KR')}원` : ''}`}
-                    </Text>
-                  ))}
-                  {walk.fare ? <Text style={{ fontSize: 12, fontWeight: '800', color: COLOR.redDark }}>{`요금 합계 약 ${walk.fare.toLocaleString('ko-KR')}원`}</Text> : null}
-                </View>
-              ) : null}
             </View>
           ) : null}
 
-
-          {ready && __DEV__ ? (
-            <View style={{ flexDirection: 'row', gap: 8, flexWrap: 'wrap' }}>
-              <Pressable onPress={() => { setSimAlong(prog?.along ?? 0); setSimOff(false); setFollow(true); setSim((v) => !v); }} style={smallBtn}>
-                <Text style={{ color: COLOR.ink, fontSize: 12, fontWeight: '800' }}>{sim ? '■ 시뮬레이션 끄기' : '▶ 걷기 시뮬레이션 (개발용)'}</Text>
-              </Pressable>
-              {sim ? (
-                <Pressable onPress={() => setSimOff((v) => !v)} style={smallBtn}>
-                  <Text style={{ color: COLOR.ink, fontSize: 12, fontWeight: '800' }}>{simOff ? '경로로 돌아가기' : '경로 벗어나기'}</Text>
-                </Pressable>
-              ) : null}
-            </View>
-          ) : null}
-
-          {ready && walk ? (
-            <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
-              <Text style={{ fontSize: 13, color: COLOR.muted, flexShrink: 1 }}>
-                {remain !== null && remainSec !== null
-                  ? `남은 ${distText(remain)} · ${mode === 'transit' ? '대중교통' : '도보'} 약 ${minText(remainSec)}`
-                  : `전체 ${distText(walk.distance)} · ${mode === 'transit' ? '대중교통' : '도보'} 약 ${minText(walk.time)}`}
-              </Text>
-              <Pressable onPress={showAll}>
-                <Text style={{ fontSize: 13, color: COLOR.red, fontWeight: '800' }}>전체 경로 보기</Text>
-              </Pressable>
-            </View>
-          ) : null}
           <CoursePlacesCard
+            fill={!!ready}
+            reached={reached}
+            summary={ready && walk ? (
+              <Text style={{ fontSize: 12, color: COLOR.muted, fontWeight: '700' }}>
+                {`${distText(walk.distance)} · ${mode === 'transit' ? `대중교통 ${minText(walk.time)}${walk.fare ? ` · ${walk.fare.toLocaleString('ko-KR')}원` : ''}` : `도보 ${minText(walk.time)}`}`}
+              </Text>
+            ) : undefined}
             route={route}
             selected={focus && typeof focus.index === 'number' ? focus.index : null}
             notes={notes}
             onPlacePress={ready ? pressPlace : undefined}
           />
-          {ready ? (
-            <Text style={{ fontSize: 12, color: COLOR.muted }}>장소를 누르면 지도에서 그 장소를 크게 볼 수 있어요.</Text>
-          ) : null}
-        </ScrollView>
+        </View>
       ) : null}
 
       {/* 하단 도크: 코스 현황 + 도장 확인 + 도착 확인 (기본·확대 공통) */}
       {ready ? (
-        <View style={{ backgroundColor: COLOR.cream, paddingHorizontal: 14, paddingTop: 10, paddingBottom: 14 }}>
-          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 10 }}>
-            <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.ink, marginRight: 2 }}>코스</Text>
-            {route.places.map((p, i) => (
-              <Image key={p.id} source={STAMP} style={{ width: 34, height: 34, opacity: i < reached ? 1 : 0.35 }} resizeMode="contain" />
-            ))}
-            <Text numberOfLines={1} style={{ marginLeft: 'auto', fontSize: 13, color: COLOR.redDark, fontWeight: '800', flexShrink: 1 }}>
-              {reached >= total ? '모두 완료' : `지금 ${reached + 1}번 장소`}
-            </Text>
-          </View>
+        <View style={{ backgroundColor: COLOR.cream, paddingHorizontal: 14, paddingTop: 8, paddingBottom: 10 }}>
           <View style={{ flexDirection: 'row', gap: 8 }}>
-            <Pressable
-              onPress={() => setSheet('stamps')}
-              style={[pxBox(), { flex: 1, height: 52, alignItems: 'center', justifyContent: 'center' }]}
-            >
-              <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 15 }}>도장 확인</Text>
-            </Pressable>
             {/* 큰 버튼: 도착 확인 → (도착하면) 미션 창 → (모두 걸으면) 완주 한 장 */}
             <Pressable
               onPress={reached >= total ? onFinish : isArrived ? () => setSheet('mission') : onArrive}
-              style={[pxBox(BTN_RED, COLOR.redDark), { flex: 1.4, height: 52, alignItems: 'center', justifyContent: 'center' }]}
+              style={[pxBox(BTN_RED, COLOR.redDark), { flex: 1, height: 52, alignItems: 'center', justifyContent: 'center' }]}
             >
               <Text style={{ color: '#fff', fontWeight: '800', fontSize: 15 }}>
                 {reached >= total ? '완주 한 장 보기' : isArrived ? `미션 확인하기 · ${reached + 1}번 장소` : '도착 확인하기'}
@@ -576,11 +541,6 @@ export default function TravelScreen() {
                       ? ''
                       : '내 위치를 찾는 중이에요'}
           </Text>
-          {reached < total ? (
-            <Pressable onPress={() => router.push('/reroute')} style={[pxBox(), { marginTop: 10, height: 44, alignItems: 'center', justifyContent: 'center' }]}>
-              <Text style={{ color: COLOR.ink, fontWeight: '800', fontSize: 15 }}>대체 길 보기</Text>
-            </Pressable>
-          ) : null}
         </View>
       ) : null}
 
