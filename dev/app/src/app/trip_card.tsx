@@ -17,7 +17,7 @@
  */
 import { router, useLocalSearchParams } from 'expo-router';
 import { ComponentRef, useEffect, useRef, useState } from 'react';
-import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { Image, ImageSourcePropType, Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { APP_MAX_WIDTH, CONTENT } from '../components/phone_column';
 import { ScreenHead } from '../components/screen_head';
 import { TripCard } from '../components/trip_card';
@@ -35,6 +35,24 @@ const SHARE_TO: { label: string; app: string | null }[] = [
   { label: '카카오톡', app: '카카오톡' },
   { label: '링크 복사', app: null },
 ];
+
+// 공유 버튼의 그림: 인스타그램·카카오톡은 로고, 링크 복사는 체인 아이콘(아래에서 그린다)
+const SHARE_ICON: Record<string, ImageSourcePropType | 'link'> = {
+  인스타그램: require('../../assets/share_instagram.png'),
+  카카오톡: require('../../assets/share_kakaotalk.png'),
+  '링크 복사': 'link',
+};
+
+// 체인 아이콘: 기울어진 고리 두 개를 겹쳐 그린다 (잉크색 테두리, 바탕 없음)
+function ChainIcon() {
+  const link = { width: 16, height: 10, borderRadius: 5, borderWidth: 2.5, borderColor: COLOR.ink };
+  return (
+    <View style={{ width: 26, height: 26 }}>
+      <View style={[link, { position: 'absolute', left: 1, top: 8, transform: [{ rotate: '-45deg' }] }]} />
+      <View style={[link, { position: 'absolute', right: 1, top: 8, transform: [{ rotate: '-45deg' }] }]} />
+    </View>
+  );
+}
 
 export default function TripCardScreen() {
   const params = useLocalSearchParams<{ i?: string; done?: string; title?: string; names?: string; ids?: string }>();
@@ -149,18 +167,22 @@ export default function TripCardScreen() {
           <Pressable onPress={() => setShareOpen(false)} accessibilityLabel="닫기" style={{ position: 'absolute', top: 0, bottom: 0, left: 0, right: 0, backgroundColor: 'rgba(60,40,20,0.45)' }} />
           <View style={{ width: 280, padding: 18, gap: 10, backgroundColor: COLOR.paper, borderWidth: 3, borderColor: COLOR.ink, borderRadius: 16 }}>
             <Text style={{ fontSize: 16, fontWeight: '800', color: COLOR.ink, textAlign: 'center' }}>카드 공유하기</Text>
-            {SHARE_TO.map((c) => (
-              <Pressable
-                key={c.label}
-                onPress={() => { setShareOpen(false); onShare(c); }}
-                disabled={saving}
-                style={[pxBox(), { height: 48, alignItems: 'center', justifyContent: 'center' }, saving && { opacity: 0.6 }]}
-              >
-                <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.ink }}>{c.label}</Text>
-              </Pressable>
-            ))}
-            <Pressable onPress={() => setShareOpen(false)} style={{ height: 44, alignItems: 'center', justifyContent: 'center' }}>
-              <Text style={{ fontSize: 14, color: COLOR.muted, fontWeight: '700' }}>닫기</Text>
+            {SHARE_TO.map((c) => {
+              const icon = SHARE_ICON[c.label];
+              return (
+                <Pressable
+                  key={c.label}
+                  onPress={() => { setShareOpen(false); onShare(c); }}
+                  disabled={saving}
+                  style={[pxBox(), { height: 52, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 10 }, saving && { opacity: 0.6 }]}
+                >
+                  {icon === 'link' ? <ChainIcon /> : icon ? <Image source={icon} style={{ width: 26, height: 26 }} resizeMode="contain" /> : null}
+                  <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.ink }}>{c.label}</Text>
+                </Pressable>
+              );
+            })}
+            <Pressable onPress={() => setShareOpen(false)} style={[pxBox(), { height: 48, alignItems: 'center', justifyContent: 'center' }]}>
+              <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.ink }}>닫기</Text>
             </Pressable>
           </View>
         </View>
