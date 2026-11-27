@@ -80,7 +80,7 @@ export default function TripCardScreen() {
   return (
     <View style={styles.safe}>
       {isDone ? (
-        <ScreenHead title="완주" sub="하랑이와 함께 끝까지 걸었어요" backLabel="‹ 홈" onBack={home} />
+        <ScreenHead title="완주" sub="하랑이와 함께 끝까지 걸었어요" backLabel="‹ 뒤로" onBack={home} />
       ) : (
         <ScreenHead title="내 여행" sub="지난 여행 한 장" backLabel="‹ 장부" onBack={back} />
       )}

@@ -28,7 +28,7 @@ export default function TeamHomeScreen() {
         {/* 하랑이 (손 흔드는 그림): 페이지 맨 아래, 버튼 밑에 크게 */}
         <Image
           source={require('../../../assets/harangi_team_wave.png')}
-          style={{ width: 230, height: 238, alignSelf: 'center', marginTop: 8 }}
+          style={{ width: 200, height: 210, alignSelf: 'center', marginTop: 8 }}
           resizeMode="contain"
           accessibilityLabel="하랑이"
         />

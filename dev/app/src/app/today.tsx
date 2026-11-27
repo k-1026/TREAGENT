@@ -59,7 +59,7 @@ export default function TodayScreen() {
 
   return (
     <View style={{ flex: 1, backgroundColor: COLOR.cream }}>
-      <ScreenHead title="오늘의 길" sub="하랑이가 오늘 날씨에 맞는 길 3개를 골라 줘요" backLabel="‹ 홈" onBack={() => router.back()} />
+      <ScreenHead title="오늘의 길" sub="하랑이가 오늘 날씨에 맞는 길 3개를 골라 줘요" backLabel="‹ 뒤로" onBack={() => router.back()} />
       {/* 내용 전체(테마~하랑이)는 남은 화면 가운데에 둔다 (flexGrow + justifyContent: center) */}
       <ScrollView contentContainerStyle={[{ padding: 16, gap: 12, flexGrow: 1, justifyContent: 'center' }, CONTENT]}>
         <Text style={{ fontSize: 15, fontWeight: '800', color: COLOR.ink, textAlign: 'center' }}>테마</Text>
