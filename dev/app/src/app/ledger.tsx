@@ -154,7 +154,7 @@ export default function LedgerScreen() {
                 </View>
               </Pressable>
             ) : (
-              <EmptyState title="아직 앨범이 비어 있어요" sub="같이 걸으면 이야기가 생겨요." action={{ label: '길 걸으러 가기', onPress: () => router.push('/today') }} />
+              <EmptyState title="아직 앨범이 비어 있어요" sub="같이 걸으면 이야기가 생겨요." action={{ label: '오늘의 길 고르기', onPress: () => router.push('/today') }} />
             )}
           </View>
         ) : null}
