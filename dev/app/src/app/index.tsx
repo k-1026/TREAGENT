@@ -78,6 +78,9 @@ function createBob() {
   return { value, y: value.interpolate({ inputRange: [0, 1], outputRange: [0, -4] }) };
 }
 
+// 출발 대사의 길 이름: "근대골목길"처럼 이름이 '길'로 끝나면 '길'을 또 붙이지 않는다 ("근대골목길 길로" 방지)
+const routeTitle = (title?: string) => (!title ? '오늘의 길' : title.endsWith('길') ? title : `${title} 길`);
+
 const soon = (what: string) => router.push({ pathname: '/soon', params: { what } });
 
 // 큰 버튼·알림 띠가 갈 곳. 화면이 아직 없는 곳은 준비 중으로 보낸다.
@@ -177,7 +180,7 @@ export default function HomeScreen() {
   const bubbleMode: 'main' | 'depart' | 'none' =
     depart === 'idle' ? (ready ? 'depart' : 'main') : bubbleGone ? 'none' : 'depart';
   const departText =
-    depart === 'idle' ? `오늘은 ${route?.title ?? '오늘의'} 길로 가 볼까요?` : '자, 이제 오늘의 길을 걸으러 가요!';
+    depart === 'idle' ? `오늘은 ${routeTitle(route?.title)}로 가 볼까요?` : '자, 이제 오늘의 길을 걸으러 가요!';
 
   useEffect(() => {
     const loop = Animated.loop(

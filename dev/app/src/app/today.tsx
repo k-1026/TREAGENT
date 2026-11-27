@@ -49,8 +49,9 @@ export default function TodayScreen() {
     return (
       <View style={{ flex: 1, backgroundColor: COLOR.cream, padding: 20, gap: 12 }}>
         <Text style={{ color: COLOR.ink }}>위치를 먼저 정해 주세요.</Text>
-        <Pressable onPress={() => router.replace('/')}>
-          <Text style={{ color: COLOR.red, fontWeight: '700' }}>처음으로</Text>
+        {/* 장부·앨범·주머니의 빈 화면 버튼이나 홈에서 바로 오면 위치가 없을 수 있다 → 위치 화면으로 보낸다 (위치를 정하면 다시 여기로 온다) */}
+        <Pressable onPress={() => router.replace('/location')}>
+          <Text style={{ color: COLOR.red, fontWeight: '700' }}>위치 정하러 가기</Text>
         </Pressable>
       </View>
     );
