@@ -1,6 +1,5 @@
 /*
  * [travel_sheets.tsx] 여행 지도의 겹쳐 뜨는 창 2개 — 목업 storyboard/travel_map_mockup_v1.html
- *  - StampSheet: [도장 확인] 받은 도장 목록 (목업 #stampsheet)
  *  - MissionSheet: 도착 확인 뒤 [미션 확인하기] 창 (목업 #mission)
  *  - CutSheet: 첫 완주 때 [완주 한 장 보기] 앞에 한 번 뜨는 컷씬 ② 안내 (목업 #cut)
  *  - (완주 한 장은 9:16 카드 화면 app/trip_card.tsx?done=1로 옮겼다 — 목업 app_home_mockup_v1.html #v-done)
@@ -47,38 +46,6 @@ function Hara({ text }: { text: string }) {
   );
 }
 
-// 도장 확인: 장소마다 번호 칸 + 이름 + 상태 + 도장 그림
-export function StampSheet({ title, names, reached, onClose }: { title: string; names: string[]; reached: number; onClose: () => void }) {
-  return (
-    <Dialog onClose={onClose}>
-      <Text style={styles.ttl}>{`받은 도장 ${reached}/${names.length}`}</Text>
-      <Text style={styles.muted}>{title}</Text>
-      <View style={{ marginTop: 10, gap: 8 }}>
-        {names.map((n, i) => {
-          const done = i < reached;
-          const cur = i === reached;
-          return (
-            <View key={`${n}-${i}`} style={styles.srow}>
-              <View style={[styles.sn, done && { backgroundColor: COLOR.sage }, cur && { backgroundColor: COLOR.red }]}>
-                <Text style={{ fontSize: 12, fontWeight: '800', color: cur ? '#fff' : COLOR.ink }}>{i + 1}</Text>
-              </View>
-              <View style={{ flex: 1, minWidth: 0 }}>
-                <Text style={{ fontSize: 13, lineHeight: 18, color: COLOR.ink }}>{n}</Text>
-                <Text style={styles.muted}>{done ? '도장 받음' : cur ? '다음 장소' : '아직'}</Text>
-              </View>
-              <Image source={STAMP} style={{ width: 44, height: 44, opacity: done ? 1 : 0.35 }} resizeMode="contain" />
-            </View>
-          );
-        })}
-      </View>
-      <View style={{ marginTop: 4 }}>
-        <Btn label="닫기" onPress={onClose} />
-      </View>
-    </Dialog>
-  );
-}
-
-// 미션 창: 목업은 [미션 마치기]/[나중에 하기]. 앱은 미션 화면(/mission)으로 이어 준다.
 export function MissionSheet({
   placeNo,
   placeName,
